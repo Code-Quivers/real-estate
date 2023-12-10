@@ -7,42 +7,92 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Prisma schema
+
 model User {
-  userId     String     @id @default(uuid())
-  email      String     @unique
-  password   String
-  userStatus UserStatus @default(Active)
-  profileId  String?    @unique
-  createdAt  DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt  DateTime   @updatedAt @db.Timestamptz(0)
-  profile    Profile?   @relation(fields: [profileId], references: [profileId])
+  userId          String           @id @default(uuid()) // Change uuid() to auto() for the primary key
+  email           String           @unique
+  password        String
+  userStatus      UserStatus       @default(ACTIVE)
+  createdAt       DateTime         @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(0)
+  Tenant          Tenant?
+  PropertyOwner   PropertyOwner?
+  ServiceProvider ServiceProvider?
 
   @@map("users")
 }
 
-model Profile {
-  profileId            String                 @id @default(uuid())
-  firstName            String
-  lastName             String
-  profileImage         String?
-  role                 UserRoles              @default(USER)
-  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
-  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
-  User                 User?
+model Tenant {
+  tenantId  String   @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId    String   @unique
+  firstName String
+  lastName  String
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  user      User     @relation(fields: [userId], references: [userId])
 
-
-  @@map("profiles")
+  @@map("tenants")
 }
 
+model PropertyOwner {
+  propertyOwnerId String   @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId          String   @unique
+  firstName       String
+  lastName        String
+  createdAt       DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(0)
+  user            User     @relation(fields: [userId], references: [userId])
 
-enum UserRoles {
-  SUPERADMIN
-  ADMIN
-  USER
+  @@map("propertyOwners")
 }
+
+model ServiceProvider {
+  serviceProviderId String   @id @default(uuid()) // Change uuid() to auto() for the primary key
+  firstName         String
+  lastName          String
+  userId            String   @unique
+  createdAt         DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt         DateTime @updatedAt @db.Timestamptz(0)
+  user              User     @relation(fields: [userId], references: [userId])
+
+  @@map("serviceProviders")
+}
+
 
 enum UserStatus {
-  Active
-  Paused
-  Suspended
+  ACTIVE
+  PAUSED
+  SUSPENDED
 }
+
+// enum UserRoles {
+//   SUPERADMIN
+//   TENANT
+//   PROPERTY_OWNER
+//   SERVICE_PROVIDER
+// }
+
+
+
+//  profileId  String?    @unique
+//   profile    Profile?   @relation(fields: [profileId], references: [profileId])
+
+// model Profile {
+//   profileId       String        @id @default(auto()) // Change uuid() to auto() for the primary key
+//   firstName       String
+//   lastName        String
+//   profileImage    String?
+//   createdAt       DateTime      @default(now()) @db.Timestamptz(0)
+//   updatedAt       DateTime      @updatedAt @db.Timestamptz(0)
+//   userId          String        @unique // Add this field to associate a profile with a user
+//   user            User          @relation(fields: [userId], references: [userId])
+//   tenantId        String
+//   tenant          Tenant?       @relation(fields: [tenantId], references: [tenantId])
+//   propertyOwnerId   String
+//   propertyOwner   PropertyOwner? @relation(fields: [propertyOwnerId], references: [propertyOwnerId])
+//   serviceProviderUserId String
+//   serviceProvider ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
+
+//   @@map("profiles")
+// }
