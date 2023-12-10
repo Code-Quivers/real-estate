@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId     String     @id @default(uuid())
+  email      String     @unique
+  password   String
+  userStatus UserStatus @default(Active)
+  profileId  String?    @unique
+  createdAt  DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt  DateTime   @updatedAt @db.Timestamptz(0)
+  profile    Profile?   @relation(fields: [profileId], references: [profileId])
+
+  @@map("users")
+}
+
+model Profile {
+  profileId            String                 @id @default(uuid())
+  firstName            String
+  lastName             String
+  profileImage         String?
+  role                 UserRoles              @default(USER)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  BulkProductionStatus BulkProductionStatus[]
+  LdCpAopStatus        LdCpAopStatus[]
+  Orders               Orders[]
+  PPStrikeOffStatus    PPStrikeOffStatus[]
+  Styles               Styles[]
+  User                 User?
+  TackPack             TackPack[]
+
+  @@map("profiles")
+}
+
+model Factory {
+  factoryId      String   @id @default(uuid())
+  factoryName    String   @unique
+  factoryAddress String
+  createdAt      DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(0)
+  Styles         Styles[]
+
+  @@map("factories")
+}
+
+model Styles {
+  styleNo              String                 @id @unique
+  image                String
+  fabric               String
+  isActiveStyle        Boolean                @default(true)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime               @updatedAt @db.Timestamptz(0)
+  profileId            String
+  factoryId            String?
+  itemId               String
+  BulkProductionStatus BulkProductionStatus[]
+  couriers             Courier[]
+  ldCpAopStatus        LdCpAopStatus[]
+  orders               Orders[]
+  PPStrikeOffStatus    PPStrikeOffStatus[]
+  PPSubmission         PPSubmission?
+  factory              Factory?               @relation(fields: [factoryId], references: [factoryId])
+  item                 Item                   @relation(fields: [itemId], references: [itemId])
+  profile              Profile                @relation(fields: [profileId], references: [profileId])
+  tackPack             TackPack[]
+
+  @@map("styles")
+}
+
+model PPSubmission {
+  ppSubmissionId        String    @id @default(uuid())
+  factorySubmissionDate DateTime
+  factorySubmittedDate  DateTime?
+  delayDays             Int?
+  createdAt             DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt             DateTime  @updatedAt @db.Timestamptz(0)
+  styleNo               String    @unique
+  Styles                Styles    @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("pp_submission")
+}
+
+model Item {
+  itemId    String   @id @default(uuid())
+  itemName  String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  Styles    Styles[]
+
+  @@map("items")
+}
+
+model Orders {
+  orderNo       String   @id @unique
+  noOfPack      Int
+  totalPack     Int
+  totalPc       Int
+  isActiveOrder Boolean  @default(true)
+  buyerEtd      DateTime
+  factoryEtd    DateTime
+  friDate       DateTime
+  styleNo       String
+  createdAt     DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(0)
+  portId        String
+  Port          Port     @relation(fields: [portId], references: [portId])
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [profileId])
+  style         Styles   @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("orders")
+}
+
+model TackPack {
+  tackpackId      String   @id @default(uuid())
+  tackPackComment String
+  tackFile        String
+  styleNo         String
+  style           Styles   @relation(fields: [styleNo], references: [styleNo])
+  profileId       String
+  profile         Profile  @relation(fields: [profileId], references: [profileId])
+  createdAt       DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(0)
+
+  @@map("tackpack")
+}
+
+model Port {
+  portId      String   @id @default(uuid())
+  portName    String
+  portAddress String
+  createdAt   DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(0)
+  orders      Orders[]
+
+  @@map("port_addresses")
+}
+
+model PPStrikeOffStatus {
+  ppStatusId      String   @id @default(uuid())
+  ppStatusComment String
+  styleNo         String
+  createdAt       DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(0)
+  profileId       String
+  profile         Profile  @relation(fields: [profileId], references: [profileId])
+  style           Styles   @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("pp_strike_off_status")
+}
+
+model BulkProductionStatus {
+  bulkProductionId      String   @id @default(uuid())
+  bulkProductionComment String
+  styleNo               String
+  createdAt             DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt             DateTime @updatedAt @db.Timestamptz(0)
+  profileId             String
+  profile               Profile  @relation(fields: [profileId], references: [profileId])
+  style                 Styles   @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("bulk_production_status")
+}
+
+model LdCpAopStatus {
+  ldCpAopStatusId      String   @id @default(uuid())
+  ldCpAopStatusComment String
+  styleNo              String
+  profileId            String
+  createdAt            DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime @updatedAt @db.Timestamptz(0)
+  profile              Profile  @relation(fields: [profileId], references: [profileId])
+  style                Styles   @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("ldCpAopStatus")
+}
+
+model Courier {
+  courierId      String   @id @default(uuid())
+  courierName    String
+  awbNo          String
+  courierDate    DateTime @default(now()) @db.Timestamptz(0)
+  courierDetails String
+  courierWeight  String
+  styleNo        String
+  createdAt      DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(0)
+  style          Styles   @relation(fields: [styleNo], references: [styleNo])
+
+  @@map("courier_details")
+}
+
+enum UserRoles {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  Active
+  Paused
+  Suspended
+}
