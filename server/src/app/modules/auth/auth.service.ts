@@ -16,7 +16,7 @@ import { UserRoles, UserStatus } from '@prisma/client';
 //! Tenant User Create
 
 const createNewUserForTenant = async (payload: IUserCreate) => {
-  const { password, email } = payload;
+  const { password, email, userName } = payload;
   const hashedPassword = await bcrypt.hash(
     password,
     Number(config.bcrypt_salt_rounds)
@@ -24,6 +24,14 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
 
   // transaction start
   const newUser = await prisma.$transaction(async transactionClient => {
+    const userNameTaken = await transactionClient.user.findFirst({
+      where: { userName },
+    });
+
+    if (userNameTaken) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Username is already in use');
+    }
+
     const isUserExist = await transactionClient.user.findFirst({
       where: { email },
     });
@@ -36,6 +44,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
       data: {
         email,
         password: hashedPassword,
+        userName,
         role: UserRoles.TENANT,
         userStatus: UserStatus.ACTIVE,
       },
@@ -65,6 +74,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
         userId: true,
         user: {
           select: {
+            userName: true,
             email: true,
             role: true,
             userStatus: true,
