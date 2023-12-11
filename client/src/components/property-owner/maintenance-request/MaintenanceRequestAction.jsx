@@ -12,7 +12,7 @@ const MaintenanceRequestAction = () => {
     <>
       <div className="space-y-3.5 flex flex-col">
         <PrimaryButton title={"Accept"} />
-        <PrimaryButton title={"Contact"} onClickHandler={handleOpen} />
+        <PrimaryButton title="Contact" onClickHandler={handleOpen} />
         <PrimaryButton title={"Reject"} />
       </div>
       {/* contact Modal */}

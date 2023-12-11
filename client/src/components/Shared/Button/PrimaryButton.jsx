@@ -6,7 +6,7 @@ const PrimaryButton = ({ title, btnLoading, btnType, onClickHandler }) => {
       onClick={onClickHandler ?? null}
       loading={btnLoading}
       type={btnType ?? "button"}
-      className={`!px-12 !py-4 !bg-[#29429f] !text-white !rounded-none `}
+      className={`!px-12 !py-3 !bg-[#29429f] !text-white !rounded-none `}
       size="lg"
       appearance="default"
     >
