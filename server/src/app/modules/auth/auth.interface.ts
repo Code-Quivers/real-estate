@@ -2,6 +2,7 @@ import { UserRoles, UserStatus } from '@prisma/client';
 export type IUserCreate = {
   firstName: string;
   lastName: string;
+  userName: string;
   // profileImage?: string | null | undefined;
   userStatus: UserStatus;
   email: string;

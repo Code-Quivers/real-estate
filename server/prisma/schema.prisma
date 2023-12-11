@@ -12,11 +12,12 @@ datasource db {
 model User {
   userId          String           @id @default(uuid()) // Change uuid() to auto() for the primary key
   email           String           @unique
+  userName        String           @unique
   password        String
   userStatus      UserStatus       @default(ACTIVE)
   createdAt       DateTime         @default(now()) @db.Timestamptz(0)
   updatedAt       DateTime         @updatedAt @db.Timestamptz(0)
-  role            UserRoles           
+  role            UserRoles
   tenant          Tenant?
   propertyOwner   PropertyOwner?
   serviceProvider ServiceProvider?
@@ -60,7 +61,6 @@ model ServiceProvider {
   @@map("serviceProviders")
 }
 
-
 enum UserStatus {
   ACTIVE
   PAUSED
@@ -73,8 +73,6 @@ enum UserRoles {
   PROPERTY_OWNER
   SERVICE_PROVIDER
 }
-
-
 
 //  profileId  String?    @unique
 //   profile    Profile?   @relation(fields: [profileId], references: [profileId])
