@@ -29,7 +29,7 @@ const PropertyOwnerSavedTenants = () => {
         <div className="flex justify-center">
           <h2 className="text-4xl font-medium">Saved Tenants</h2>
         </div>
-        {/* requests */}
+        {/* saved tenants */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
           {allRequest?.map((singleReq) => (
             <div

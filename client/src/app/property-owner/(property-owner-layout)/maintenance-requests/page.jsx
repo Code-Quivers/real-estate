@@ -1,5 +1,4 @@
 import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
-import ContactModal from "@/components/property-owner/maintenance-request/ContactModal";
 import MaintenanceRequestAction from "@/components/property-owner/maintenance-request/MaintenanceRequestAction";
 import Image from "next/image";
 
@@ -25,7 +24,6 @@ const MaintenanceRequest = () => {
     },
   ];
 
-  const handleOpen = () => setOpen(true);
   return (
     <>
       <section className="max-w-[1050px]  mb-5 mt-14 2xl:mx-auto lg:px-5    2xl:px-0 ">
