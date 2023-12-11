@@ -36,6 +36,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   eventKey="1"
                   icon={<DashboardIcon />}
+                  className="hover:!bg-[#1b3697]"
                   style={{
                     backgroundColor: "#29429f",
                     borderTop: "2px solid #000",
@@ -46,6 +47,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   eventKey="2"
                   active
+                  className="hover:!bg-[#1b3697]"
                   style={{
                     backgroundColor: "#29429f",
                   }}
@@ -56,6 +58,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="3"
+                  className="hover:!bg-[#1b3697]"
                   icon={<GroupIcon />}
                 >
                   Saved Tenants
@@ -63,6 +66,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="4"
+                  className="hover:!bg-[#1b3697]"
                   icon={<GroupIcon />}
                 >
                   Unit Information
@@ -70,6 +74,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="5"
+                  className="hover:!bg-[#1b3697]"
                   icon={<GroupIcon />}
                 >
                   Documents
@@ -77,6 +82,7 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="6"
+                  className="hover:!bg-[#1b3697]"
                   icon={<GroupIcon />}
                 >
                   Messages
@@ -84,11 +90,13 @@ const PropertyOwnerSidebar = () => {
                 <Nav.Item
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="7"
+                  className="hover:!bg-[#1b3697]"
                   icon={<GroupIcon />}
                 >
                   Service Providers
                 </Nav.Item>
                 <Nav.Item
+                  className="hover:!bg-[#1b3697]"
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="8"
                   icon={<GroupIcon />}
@@ -96,6 +104,7 @@ const PropertyOwnerSidebar = () => {
                   Saved Service Providers
                 </Nav.Item>
                 <Nav.Item
+                  className="hover:!bg-[#1b3697]"
                   style={{ backgroundColor: "#29429f" }}
                   eventKey="9"
                   icon={<GroupIcon />}
