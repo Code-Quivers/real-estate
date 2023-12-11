@@ -12,6 +12,7 @@ import {
   IUserLogin,
 } from './auth.interface';
 import { UserRoles, UserStatus } from '@prisma/client';
+import { userFindUnique } from './auth.utils';
 
 //! Tenant User Create
 
@@ -22,23 +23,8 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
     Number(config.bcrypt_salt_rounds)
   );
 
-  // transaction start
   const newUser = await prisma.$transaction(async transactionClient => {
-    const userNameTaken = await transactionClient.user.findFirst({
-      where: { userName },
-    });
-
-    if (userNameTaken) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Username is already in use');
-    }
-
-    const isUserExist = await transactionClient.user.findFirst({
-      where: { email },
-    });
-
-    if (isUserExist) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Email is already in use');
-    }
+    await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
       data: {
@@ -51,7 +37,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
     });
 
     if (!createdUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Tenant creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
     }
 
     const tenantData: any = {
@@ -95,11 +81,141 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
 
 //! Property Owner User Create
 
-const createNewUserForPropertyOwner = async () => {};
+const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
+  const { password, email, userName } = payload;
+  const hashedPassword = await bcrypt.hash(
+    password,
+    Number(config.bcrypt_salt_rounds)
+  );
+
+  // transaction start
+  const newUser = await prisma.$transaction(async transactionClient => {
+    await userFindUnique(userName, email, transactionClient);
+
+    const createdUser = await transactionClient.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        userName,
+        role: UserRoles.TENANT,
+        userStatus: UserStatus.ACTIVE,
+      },
+    });
+
+    if (!createdUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+    }
+
+    const propertyOwnerData: any = {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      user: {
+        connect: {
+          userId: createdUser.userId,
+        },
+      },
+      // profileImage: payload?.profileImage,
+    };
+
+    const propertyOwnerUser = await transactionClient.propertyOwner.create({
+      data: propertyOwnerData,
+      select: {
+        firstName: true,
+        lastName: true,
+        propertyOwnerId: true,
+        userId: true,
+        user: {
+          select: {
+            userName: true,
+            email: true,
+            role: true,
+            userStatus: true,
+          },
+        },
+      },
+    });
+
+    if (!propertyOwnerUser) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Property Owner creation failed'
+      );
+    }
+
+    return propertyOwnerUser;
+  });
+
+  return newUser;
+};
 
 //! Service Provider User Create
 
-const createNewUserForServiceProvider = async () => {};
+const createNewUserForServiceProvider = async (payload: IUserCreate) => {
+  const { password, email, userName } = payload;
+  const hashedPassword = await bcrypt.hash(
+    password,
+    Number(config.bcrypt_salt_rounds)
+  );
+
+  // transaction start
+  const newUser = await prisma.$transaction(async transactionClient => {
+    await userFindUnique(userName, email, transactionClient);
+
+    const createdUser = await transactionClient.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        userName,
+        role: UserRoles.TENANT,
+        userStatus: UserStatus.ACTIVE,
+      },
+    });
+
+    if (!createdUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+    }
+
+    const propertyOwnerData: any = {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      user: {
+        connect: {
+          userId: createdUser.userId,
+        },
+      },
+      // profileImage: payload?.profileImage,
+    };
+
+    const propertyOwnerUser = await transactionClient.propertyOwner.create({
+      data: propertyOwnerData,
+      select: {
+        firstName: true,
+        lastName: true,
+        propertyOwnerId: true,
+        userId: true,
+        user: {
+          select: {
+            userName: true,
+            email: true,
+            role: true,
+            userStatus: true,
+          },
+        },
+      },
+    });
+
+    if (!propertyOwnerUser) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Property Owner creation failed'
+      );
+    }
+
+    return propertyOwnerUser;
+  });
+
+  return newUser;
+};
 
 //login
 const userLogin = async (
