@@ -166,7 +166,7 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
         email,
         password: hashedPassword,
         userName,
-        role: UserRoles.TENANT,
+        role: UserRoles.SERVICE_PROVIDER,
         userStatus: UserStatus.ACTIVE,
       },
     });
@@ -175,7 +175,7 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
     }
 
-    const propertyOwnerData: any = {
+    const serviceProviderData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
       user: {
@@ -186,12 +186,13 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       // profileImage: payload?.profileImage,
     };
 
-    const propertyOwnerUser = await transactionClient.propertyOwner.create({
-      data: propertyOwnerData,
+
+    const serviceProviderUser = await transactionClient.serviceProvider.create({
+      data: serviceProviderData,
       select: {
         firstName: true,
         lastName: true,
-        propertyOwnerId: true,
+        serviceProviderId: true,
         userId: true,
         user: {
           select: {
@@ -204,14 +205,15 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       },
     });
 
-    if (!propertyOwnerUser) {
+    if (!serviceProviderUser) {
       throw new ApiError(
         httpStatus.BAD_REQUEST,
-        'Property Owner creation failed'
+        'Service Provider creation failed'
       );
     }
 
-    return propertyOwnerUser;
+    return serviceProviderUser;
+
   });
 
   return newUser;
