@@ -16,9 +16,10 @@ model User {
   userStatus      UserStatus       @default(ACTIVE)
   createdAt       DateTime         @default(now()) @db.Timestamptz(0)
   updatedAt       DateTime         @updatedAt @db.Timestamptz(0)
-  Tenant          Tenant?
-  PropertyOwner   PropertyOwner?
-  ServiceProvider ServiceProvider?
+  role            UserRoles           
+  tenant          Tenant?
+  propertyOwner   PropertyOwner?
+  serviceProvider ServiceProvider?
 
   @@map("users")
 }
@@ -66,12 +67,12 @@ enum UserStatus {
   SUSPENDED
 }
 
-// enum UserRoles {
-//   SUPERADMIN
-//   TENANT
-//   PROPERTY_OWNER
-//   SERVICE_PROVIDER
-// }
+enum UserRoles {
+  SUPERADMIN
+  TENANT
+  PROPERTY_OWNER
+  SERVICE_PROVIDER
+}
 
 
 
