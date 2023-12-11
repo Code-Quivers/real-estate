@@ -2,41 +2,55 @@ import Image from "next/image";
 import tenantImage from "@/assets/home/tenant.png";
 import propertyOwnerImage from "@/assets/home/propertyOwner.png";
 import serviceProviderImage from "@/assets/home/serviceProvider.png";
+import Link from "next/link";
 
 const HomePage = () => {
   const allData = [
     {
       title: "Tenant",
       image: tenantImage,
+      href: "/tenant",
     },
     {
       title: "Property Owner",
       image: propertyOwnerImage,
+      href: "/property-owner",
     },
     {
       title: "Service Provider",
       image: serviceProviderImage,
+      href: "/service-provider",
     },
   ];
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-center gap-10 ">
-      <div className="flex justify-center ">
-        <h1 className="text-6xl font-bold">Which best describes you?</h1>
+    <div className="md:h-[100vh] flex flex-col items-center justify-center  max-md:mt-10 max-lg:pb-10">
+      <div className="flex justify-center   ">
+        <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold max-lg:text-center ">
+          Which best describes you?
+        </h1>
       </div>
-      <div className="grid grid-cols-3 gap-5 justify-center max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-5 mt-10 lg:mt-20 justify-center max-lg:mx-5 max-w-7xl mx-auto  ">
         {allData.map((data) => (
           <div
             key={Math.random()}
-            className="col-span-1 flex flex-col justify-center items-center rounded-3xl  bg-[#29429f]"
+            className="col-span-1 flex justify-center rounded-[40px] lg:rounded-[60px] items-center overflow-hidden"
           >
-            <Image
-              src={serviceProviderImage}
-              className="object-contain  w-[60%] border  "
-              alt=""
-            />
-            <h3 className="text-white text-3xl font-semibold">
-              Service Provider
-            </h3>
+            <Link
+              className="w-full grid grid-cols-1 justify-center  p-5 py-7 lg:py-10 rounded-[40px] lg:rounded-[60px]  bg-[#29429f]  hover:bg-[#1d3796] transition-all duration-400 ease-in-out  items-center  "
+              key={Math.random()}
+              href={data.href}
+            >
+              <div className="flex w-full flex-col items-center justify-center gap-5">
+                <Image
+                  src={data.image}
+                  className="object-contain overflow-hidden  object-center  h-[250px] lg:h-[300px]   "
+                  alt=""
+                />
+                <h3 className="text-white text-4xl font-semibold">
+                  {data.title}
+                </h3>
+              </div>
+            </Link>
           </div>
         ))}
       </div>
