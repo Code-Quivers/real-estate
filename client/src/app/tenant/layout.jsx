@@ -1,4 +1,5 @@
 "use client";
+
 import { Container, Sidebar, Sidenav, Content, Navbar, Nav } from "rsuite";
 import CogIcon from "@rsuite/icons/legacy/Cog";
 import AngleLeftIcon from "@rsuite/icons/legacy/AngleLeft";
