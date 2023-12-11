@@ -9,6 +9,11 @@
   align-items: center;
 }
 
+.rs-modal-content {
+  border-radius: 0 !important;
+  padding: 0px !important;
+}
+
 /* rs date picker button */
 .rs-btn-primary {
   background-color: #3498ff !important;
