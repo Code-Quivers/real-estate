@@ -3,6 +3,7 @@ import tenantImage from "@/assets/home/tenant.png";
 import propertyOwnerImage from "@/assets/home/propertyOwner.png";
 import serviceProviderImage from "@/assets/home/serviceProvider.png";
 import Link from "next/link";
+import { Button } from "rsuite";
 
 const HomePage = () => {
   const allData = [
@@ -28,6 +29,9 @@ const HomePage = () => {
         <h1 className="text-5xl md:text-5xl lg:text-6xl font-bold max-lg:text-center ">
           Which best describes you?
         </h1>
+        <Button appearance="primary" color="cyan">
+          Primary
+        </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-5 mt-10 lg:mt-20 justify-center max-lg:mx-5 max-w-7xl mx-auto  ">
         {allData.map((data) => (
