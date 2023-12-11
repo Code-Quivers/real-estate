@@ -11,8 +11,11 @@ import {
   IUserCreate,
   IUserLogin,
 } from './auth.interface';
+import { UserRoles, UserStatus } from '@prisma/client';
 
-const createNewUser = async (payload: IUserCreate) => {
+//! Tenant User Create
+
+const createNewUserForTenant = async (payload: IUserCreate) => {
   const { password, email } = payload;
   const hashedPassword = await bcrypt.hash(
     password,
@@ -29,49 +32,64 @@ const createNewUser = async (payload: IUserCreate) => {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Email is already in use');
     }
 
-    const profileData = {
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      profileImage: payload?.profileImage,
-      role: payload?.role,
-    };
-
-    const createdProfile = await transactionClient.profile.create({
-      data: profileData,
-    });
-
-    if (!createdProfile) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Profile creation failed');
-    }
-
     const createdUser = await transactionClient.user.create({
       data: {
         email,
         password: hashedPassword,
-        profile: {
-          connect: {
-            profileId: createdProfile.profileId,
-          },
-        },
-      },
-      select: {
-        userId: true,
-        email: true,
-        createdAt: true,
-        userStatus: true,
-        profile: true,
+        role: UserRoles.TENANT,
+        userStatus: UserStatus.ACTIVE,
       },
     });
 
     if (!createdUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Tenant creation failed');
     }
 
-    return createdUser;
+    const tenantData: any = {
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      user: {
+        connect: {
+          userId: createdUser.userId,
+        },
+      },
+      // profileImage: payload?.profileImage,
+    };
+
+    const tenantUser = await transactionClient.tenant.create({
+      data: tenantData,
+      select: {
+        firstName: true,
+        lastName: true,
+        tenantId: true,
+        userId: true,
+        user: {
+          select: {
+            email: true,
+            role: true,
+            userStatus: true,
+          },
+        },
+      },
+    });
+
+    if (!tenantUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Tenant creation failed');
+    }
+
+    return tenantUser;
   });
 
   return newUser;
 };
+
+//! Property Owner User Create
+
+const createNewUserForPropertyOwner = async () => {};
+
+//! Service Provider User Create
+
+const createNewUserForServiceProvider = async () => {};
 
 //login
 const userLogin = async (
@@ -199,7 +217,9 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
 };
 
 export const AuthService = {
-  createNewUser,
+  createNewUserForTenant,
+  createNewUserForPropertyOwner,
+  createNewUserForServiceProvider,
   userLogin,
   refreshToken,
 };

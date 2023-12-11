@@ -6,18 +6,49 @@ import sendResponse from '../../../shared/sendResponse';
 import { IRefreshTokenResponse } from './auth.interface';
 import { AuthService } from './auth.service';
 
-//! User Create
+//! Tenant User Create
 
-const createNewUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.createNewUser(req.body);
+const createNewUserForTenant = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForTenant(req.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User created successfully!',
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Tenant created successfully!',
+      data: result,
+    });
+  }
+);
+
+//! Property Owner User Create
+
+const createNewUserForPropertyOwner = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForPropertyOwner(req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Tenant created successfully!',
+      data: result,
+    });
+  }
+);
+
+//! Service Provider User Create
+
+const createNewUserForServiceProvider = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForServiceProvider(req.body);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Tenant created successfully!',
+      data: result,
+    });
+  }
+);
 
 //User Login
 
@@ -67,7 +98,9 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const AuthController = {
-  createNewUser,
+  createNewUserForTenant,
+  createNewUserForPropertyOwner,
+  createNewUserForServiceProvider,
   userLogin,
   refreshToken,
 };
