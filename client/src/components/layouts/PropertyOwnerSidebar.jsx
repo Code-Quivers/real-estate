@@ -59,12 +59,12 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/saved-tenants"
-              style={{ backgroundColor: "#29429f" }}
-              eventKey="3"
               className={`hover:!bg-[#1b3697] ${
                 activeLink === "/property-owner/saved-tenants" &&
                 "!bg-[#1b3697]"
               }`}
+              style={{ backgroundColor: "#29429f" }}
+              eventKey="3"
               icon={<GroupIcon />}
             >
               Saved Tenants
@@ -94,9 +94,14 @@ const PropertyOwnerSidebar = () => {
               Messages
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/service-providers"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/service-providers" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="7"
-              className="hover:!bg-[#1b3697]"
               icon={<GroupIcon />}
             >
               Service Providers
