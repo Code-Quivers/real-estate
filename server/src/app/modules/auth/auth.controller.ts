@@ -30,7 +30,7 @@ const createNewUserForPropertyOwner = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Tenant created successfully!',
+      message: 'Property Owner created successfully!',
       data: result,
     });
   }
@@ -44,7 +44,7 @@ const createNewUserForServiceProvider = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Tenant created successfully!',
+      message: 'Service Provider successfully!',
       data: result,
     });
   }
