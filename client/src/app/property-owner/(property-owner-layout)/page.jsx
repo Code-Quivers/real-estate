@@ -7,14 +7,14 @@ import { FaPencilAlt } from "react-icons/fa";
 
 const PropertyOwnerInformation = () => {
   return (
-    <section className="max-w-7xl   mx-auto  ">
+    <section className="max-w-[1050px]  mb-5  2xl:mx-auto lg:px-5    2xl:px-0 ">
       {/* profile Information */}
-      <div className="flex  max-md:mb-5 items-center md:items-center max-w-4xl  md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between lg:mr-10 ">
-        <div className="flex    justify-start max-md:gap-2  md:justify-center items-center">
-          <div className="">
+      <div className="grid grid-cols-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between lg:mr-10 ">
+        <div className="col-span-4 flex    justify-start max-md:gap-2  md:justify-start items-center ">
+          <div>
             <Image
               src={profileLogo}
-              className="max-md:w-[80px]"
+              className="max-md:w-[80px] select-none"
               alt="Profile Image"
             />
           </div>
@@ -24,13 +24,15 @@ const PropertyOwnerInformation = () => {
             <h4>Phone Number</h4>
           </div>
         </div>
-        <div className=" flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
-          <h5 className="font-medium text-sm md:text-xl">Score</h5>
-          <div className=" outline outline-4 md:outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[60px] h-[60px]">
-            <div className=" flex w-full flex-col justify-center items-center">
-              <span className="font-medium">9</span>
-              <span className="w-[70%] border-t border-[#b6b6b6]" />
-              <span className="font-medium">10</span>
+        <div>
+          <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
+            <h5 className="font-medium text-sm md:text-xl">Score</h5>
+            <div className=" outline outline-4 md:outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[60px] h-[60px]">
+              <div className=" flex w-full flex-col justify-center items-center">
+                <span className="font-medium">9</span>
+                <span className="w-[70%] border-t border-[#b6b6b6]" />
+                <span className="font-medium">10</span>
+              </div>
             </div>
           </div>
         </div>
