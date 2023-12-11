@@ -1,4 +1,5 @@
 "use client";
+
 import { Container, Sidebar, Sidenav, Content, Navbar, Nav } from "rsuite";
 import CogIcon from "@rsuite/icons/legacy/Cog";
 import AngleLeftIcon from "@rsuite/icons/legacy/AngleLeft";
@@ -42,7 +43,7 @@ const NavToggle = ({ expand, onChange }) => {
   );
 };
 
-const RootLayout = ({ children }) => {
+const PropertyOwnerSidebar = () => {
   const [expand, setExpand] = useState(true);
   return (
     <div className="show-fake-browser sidebar-page ">
@@ -90,13 +91,9 @@ const RootLayout = ({ children }) => {
           </Sidenav>
           <NavToggle expand={expand} onChange={() => setExpand(!expand)} />
         </Sidebar>
-
-        <Container>
-          <Content className="m-3">{children}</Content>
-        </Container>
       </Container>
     </div>
   );
 };
 
-export default RootLayout;
+export default PropertyOwnerSidebar;
