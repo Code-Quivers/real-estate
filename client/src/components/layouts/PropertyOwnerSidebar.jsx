@@ -105,7 +105,12 @@ const PropertyOwnerSidebar = () => {
               Saved Service Providers
             </Nav.Item>
             <Nav.Item
-              className="hover:!bg-[#1b3697] "
+              as={Link}
+              href="/property-owner/maintenance-requests"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/maintenance-requests" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",
