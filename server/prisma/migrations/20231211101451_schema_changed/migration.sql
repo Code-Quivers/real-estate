@@ -8,6 +8,7 @@ CREATE TYPE "UserRoles" AS ENUM ('SUPERADMIN', 'TENANT', 'PROPERTY_OWNER', 'SERV
 CREATE TABLE "users" (
     "userId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "userName" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "userStatus" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -55,6 +56,9 @@ CREATE TABLE "serviceProviders" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_userName_key" ON "users"("userName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tenants_userId_key" ON "tenants"("userId");

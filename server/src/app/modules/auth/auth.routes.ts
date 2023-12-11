@@ -14,14 +14,14 @@ router.post(
 
 router.post(
   '/property-owner/create-user',
-  auth(UserRoles.SUPERADMIN, UserRoles.PROPERTY_OWNER),
+  // auth(UserRoles.SUPERADMIN, UserRoles.PROPERTY_OWNER),
   // validateRequest(UserValidation.createUser),
   AuthController.createNewUserForPropertyOwner
 );
 
 router.post(
   '/service-provider/create-user',
-  auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER),
+  // auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER),
   // validateRequest(UserValidation.createUser),
   AuthController.createNewUserForServiceProvider
 );
