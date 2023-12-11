@@ -9,9 +9,9 @@ import { availableUnits } from "./AvailableUnitsCardFakeData";
 import Link from "next/link";
 import AvailableUnitsModal from "./AvailableUnitsModal";
 
+// Search Location data
 const data = [
-  "Eugenia",
-  "Bryan",
+  "Newest",
   "Linda",
   "Nancy",
   "Lloyd",
@@ -20,6 +20,7 @@ const data = [
   "Albert",
 ].map((item) => ({ label: item, value: item }));
 
+// Price data
 const pricePicker = {
   width: 224,
   display: "block",
@@ -27,16 +28,10 @@ const pricePicker = {
 };
 
 // sorting data
-const datas = [
-  "Eugenia",
-  "Bryan",
-  "Linda",
-  "Nancy",
-  "Lloyd",
-  "Alice",
-  "Julia",
-  "Albert",
-].map((item) => ({ label: item, value: item }));
+const datas = ["Newest", "Oldest"].map((item) => ({
+  label: item,
+  value: item,
+}));
 
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
@@ -77,8 +72,7 @@ const AvailableUnitsCard = () => {
       <div className="text-end">
         <SelectPicker
           color="blue"
-          appearance="primary"
-          label="User"
+          label="Sort"
           data={datas}
           style={{ width: 224 }}
         />

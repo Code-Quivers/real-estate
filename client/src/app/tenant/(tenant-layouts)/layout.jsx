@@ -100,6 +100,8 @@ const RootLayout = ({ children }) => {
                     Available Units
                   </Nav.Item>
                   <Nav.Item
+                    as={Link}
+                    href="/tenant/saved-units"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="3"
                     icon={<GroupIcon />}
@@ -107,6 +109,8 @@ const RootLayout = ({ children }) => {
                     Saved Units
                   </Nav.Item>
                   <Nav.Item
+                    as={Link}
+                    href="/tenant/unit-information"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="4"
                     icon={<GroupIcon />}
@@ -114,6 +118,8 @@ const RootLayout = ({ children }) => {
                     Unit Information
                   </Nav.Item>
                   <Nav.Item
+                    as={Link}
+                    href="/tenant/documents"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="5"
                     icon={<GroupIcon />}
@@ -121,6 +127,8 @@ const RootLayout = ({ children }) => {
                     Documents
                   </Nav.Item>
                   <Nav.Item
+                    as={Link}
+                    href="/tenant/messages"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="6"
                     icon={<GroupIcon />}
@@ -128,6 +136,8 @@ const RootLayout = ({ children }) => {
                     Messages
                   </Nav.Item>
                   <Nav.Item
+                    as={Link}
+                    href="/tenant/request"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="7"
                     icon={<GroupIcon />}
