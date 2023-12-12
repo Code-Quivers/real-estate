@@ -62,7 +62,7 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
     <div>
       <Modal size={"lg"} open={open} onClose={handleClose}>
         <Modal.Body>
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start p-2 -mb-5">
             <div className="w-2/5">
               <Image
                 className="h-32 my-1 object-cover"
@@ -313,14 +313,14 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button onClick={handleClose} appearance="subtle">
             Cancel
           </Button>
           <Button onClick={handleClose} appearance="primary">
             Ok
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </div>
   );

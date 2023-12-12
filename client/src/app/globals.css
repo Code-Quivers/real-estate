@@ -15,6 +15,11 @@
 
 }
 
+.rs-btn-lg {
+  background-color: #29429F !important;
+  color: white !important;
+}
+
 .rs-modal-content {
   border-radius: 0 !important;
   padding: 0px !important;

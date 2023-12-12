@@ -6,7 +6,6 @@ import { Modal, Button, Placeholder } from "rsuite";
 import { SelectPicker } from "rsuite";
 import Image from "next/image";
 import { availableUnits } from "./AvailableUnitsCardFakeData";
-import Link from "next/link";
 import AvailableUnitsModal from "./AvailableUnitsModal";
 
 // Search Location data
