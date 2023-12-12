@@ -137,7 +137,7 @@ const RootLayout = ({ children }) => {
                   </Nav.Item>
                   <Nav.Item
                     as={Link}
-                    href="/tenant/request"
+                    href="/tenant/requests"
                     style={{ backgroundColor: "#29429f" }}
                     eventKey="7"
                     icon={<GroupIcon />}
