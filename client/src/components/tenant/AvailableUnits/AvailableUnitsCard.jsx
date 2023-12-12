@@ -6,12 +6,11 @@ import { Modal, Button, Placeholder } from "rsuite";
 import { SelectPicker } from "rsuite";
 import Image from "next/image";
 import { availableUnits } from "./AvailableUnitsCardFakeData";
-import Link from "next/link";
 import AvailableUnitsModal from "./AvailableUnitsModal";
 
+// Search Location data
 const data = [
-  "Eugenia",
-  "Bryan",
+  "Newest",
   "Linda",
   "Nancy",
   "Lloyd",
@@ -20,6 +19,7 @@ const data = [
   "Albert",
 ].map((item) => ({ label: item, value: item }));
 
+// Price data
 const pricePicker = {
   width: 224,
   display: "block",
@@ -27,23 +27,17 @@ const pricePicker = {
 };
 
 // sorting data
-const datas = [
-  "Eugenia",
-  "Bryan",
-  "Linda",
-  "Nancy",
-  "Lloyd",
-  "Alice",
-  "Julia",
-  "Albert",
-].map((item) => ({ label: item, value: item }));
+const datas = ["Newest", "Oldest"].map((item) => ({
+  label: item,
+  value: item,
+}));
 
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       {/* search with price section start */}
       <div className="flex justify-start items-start gap-5 border-r-0 border-gray-800">
         <div>
@@ -77,8 +71,7 @@ const AvailableUnitsCard = () => {
       <div className="text-end">
         <SelectPicker
           color="blue"
-          appearance="primary"
-          label="User"
+          label="Sort"
           data={datas}
           style={{ width: 224 }}
         />
