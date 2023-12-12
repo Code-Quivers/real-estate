@@ -31,6 +31,7 @@ export type IUserResponse = {
 export type IUserLogin = {
   email: string;
   password: string;
+  userName: string;
 };
 export type ILoginUserResponse = {
   accessToken: string;
