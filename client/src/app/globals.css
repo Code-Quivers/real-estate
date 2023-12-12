@@ -17,7 +17,10 @@
 
 .rs-modal-content {
   border-radius: 0 !important;
-  padding: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
 }
 
 /* rs date picker button */
@@ -43,4 +46,14 @@
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+}
+
+
+/* pop over */
+.rs-popover {
+
+  border-radius: 15px !important;
+
+  padding: 0px !important;
+
 }
