@@ -30,6 +30,33 @@ model Tenant {
   userId    String   @unique
   firstName String
   lastName  String
+  dateOfBirth DateTime
+  socialSecurityNumber String?
+  drivingLicenseNumber String?
+  presentAddress String?
+  isCriminalRecord Boolean?
+  criminalRecordDescription String?
+  CurrentEmployer String?
+  EmployerContactInfo String?
+  JobTitle String?
+  AnnualSalary Int?
+  OtherIncomeSource String?
+  CurrentCreditScore Int?
+  isSmoker Boolean?
+  allergies String?
+  isHaveOtherMember Boolean?
+  numberOfMember Int?
+  isPets  Boolean?
+  typeOfPets String?
+  isPetVacinated Boolean?
+  isAgree Boolean?
+  comment String?
+  prevLandlordName String?
+  prevLandlordContactInfo String?
+  lengthOfPrevTenancy String?
+  affordableRentAmount Int?
+  leavingReason String?
+  isLatePaid Boolean?
   createdAt DateTime @default(now()) @db.Timestamptz(0)
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
   user      User     @relation(fields: [userId], references: [userId])
