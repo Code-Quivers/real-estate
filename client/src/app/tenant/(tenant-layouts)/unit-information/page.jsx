@@ -4,7 +4,7 @@ import unitInfoImage from "@/assets/tenant/AustralianHousing-scaled.webp";
 
 const page = () => {
   return (
-    <div>
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       <h2 className="text-2xl mb-5 text-center">Unit Information</h2>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 border">
         <div>

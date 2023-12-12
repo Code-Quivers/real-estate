@@ -5,7 +5,7 @@ import PrimaryButtonForTenant from "@/components/tenant/PrimaryButtonForTenant";
 
 const page = () => {
   return (
-    <div className="text-center">
+    <div className="text-center max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       <h2 className="text-2xl mb-5">Requests you sent</h2>
       <div className="flex justify-between items-center border">
         <div className="flex justify-start items-center gap-5">

@@ -1,6 +1,6 @@
 const HomePage = () => {
   return (
-    <div>
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, nam nobis
       corrupti expedita quos totam repellat quisquam in est autem neque. Sunt,
       voluptatem numquam. Dolorum, repudiandae expedita dolores inventore quas,
