@@ -47,8 +47,12 @@ const PropertyOwnerSidebar = () => {
             </Nav.Item>
             <Nav.Item
               eventKey="2"
-              active
-              className="hover:!bg-[#1b3697]"
+              as={Link}
+              href="/property-owner/available-tenants"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/available-tenants" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -70,9 +74,14 @@ const PropertyOwnerSidebar = () => {
               Saved Tenants
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/unit-information"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/unit-information" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
-              className="hover:!bg-[#1b3697]"
               icon={<GroupIcon />}
             >
               Unit Information
