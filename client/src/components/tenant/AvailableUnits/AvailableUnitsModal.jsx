@@ -54,8 +54,6 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
     },
   ];
 
-  console.log(schools[0].schoolNearBy);
-
   const pets = ["Dogs", "Cats", "Birds"];
 
   return (

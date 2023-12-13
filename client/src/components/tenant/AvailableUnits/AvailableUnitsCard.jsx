@@ -37,7 +37,7 @@ const AvailableUnitsCard = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       {/* search with price section start */}
       <div className="flex justify-start items-start gap-5 border-r-0 border-gray-800">
         <div>

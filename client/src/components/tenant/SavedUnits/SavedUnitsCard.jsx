@@ -7,6 +7,10 @@ import { availableUnits } from "../AvailableUnits/AvailableUnitsCardFakeData";
 const SavedUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  console.log("units", units);
+  console.log("modalOpen", modalOpen);
+
   return (
     <div>
       {/* Available units card start */}
