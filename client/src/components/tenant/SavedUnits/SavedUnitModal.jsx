@@ -5,7 +5,7 @@ import { Modal } from "rsuite";
 import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
 import Link from "next/link";
 
-const AvailableUnitsModal = ({ open, setOpen, units }) => {
+const SavedUnitsModal = ({ open, setOpen, units }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
 
@@ -324,4 +324,4 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
   );
 };
 
-export default AvailableUnitsModal;
+export default SavedUnitsModal;

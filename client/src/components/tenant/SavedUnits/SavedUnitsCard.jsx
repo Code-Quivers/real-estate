@@ -1,15 +1,12 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
-import AvailableUnitsModal from "../AvailableUnits/AvailableUnitsModal";
+import { useState } from "react";
 import { availableUnits } from "../AvailableUnits/AvailableUnitsCardFakeData";
+import SavedUnitsModal from "./SavedUnitModal";
 
 const SavedUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  console.log("units", units);
-  console.log("modalOpen", modalOpen);
 
   return (
     <div>
@@ -46,15 +43,16 @@ const SavedUnitsCard = () => {
                 </div>
               </div>
             </div>
-            <AvailableUnitsModal
-              open={modalOpen}
-              setOpen={setModalOpen}
-              availableUnits={availableUnits}
-              units={units}
-            />
           </div>
         ))}
       </div>
+      {/* modal */}
+      <SavedUnitsModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        availableUnits={availableUnits}
+        units={units}
+      />
       {/* Available units card end */}
     </div>
   );
