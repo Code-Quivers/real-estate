@@ -44,7 +44,7 @@ const createNewUserForServiceProvider = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Service Provider successfully!',
+      message: 'Service Provider Created successfully!',
       data: result,
     });
   }

@@ -97,7 +97,7 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
         email,
         password: hashedPassword,
         userName,
-        role: UserRoles.TENANT,
+        role: UserRoles.PROPERTY_OWNER,
         userStatus: UserStatus.ACTIVE,
       },
     });
