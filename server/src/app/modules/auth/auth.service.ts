@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
@@ -223,20 +224,19 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
 const userLogin = async (
   loginData: IUserLogin
 ): Promise<ILoginUserResponse> => {
-  const { email, password } = loginData;
+  const { email, password, userName } = loginData;
 
   const isUserExist = await prisma.user.findUnique({
     where: {
       email,
+      userName,
     },
     include: {
-      profile: {
+      tenant: {
         select: {
-          profileId: true,
-          role: true,
-          profileImage: true,
           firstName: true,
           lastName: true,
+          tenantId: true,
         },
       },
     },
@@ -252,31 +252,37 @@ const userLogin = async (
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect !!');
   }
 
-  const { userId, profile, email: loggedInEmail } = isUserExist;
+  const {
+    userId,
+    tenant,
+    role,
+    userStatus,
+    email: loggedInEmail,
+  } = isUserExist;
 
   // create access token & refresh token
   const accessToken = jwtHelpers.createToken(
     {
       userId,
-      role: profile?.role,
-      profileId: profile?.profileId,
+      role,
+      tenantId: tenant?.tenantId,
       email: loggedInEmail,
-      profileImage: profile?.profileImage,
-      firstName: profile?.firstName,
-      lastName: profile?.lastName,
+      userStatus,
+      firstName: tenant?.firstName,
+      lastName: tenant?.lastName,
     },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
   const refreshToken = jwtHelpers.createToken(
     {
-      userId: isUserExist.userId,
-      role: profile?.role,
-      profileId: profile?.profileId,
+      userId,
+      role,
+      tenantId: tenant?.tenantId,
       email: loggedInEmail,
-      profileImage: profile?.profileImage,
-      firstName: profile?.firstName,
-      lastName: profile?.lastName,
+      userStatus,
+      firstName: tenant?.firstName,
+      lastName: tenant?.lastName,
     },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string

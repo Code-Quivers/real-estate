@@ -48,9 +48,9 @@ const ServiceProviderSidebar = () => {
             <Nav.Item
               eventKey="2"
               as={Link}
-              href="/service-providers/messages"
+              href="/service-provider/messages"
               className={`hover:!bg-[#1b3697] ${
-                activeLink === "/service-providers/messages" && "!bg-[#1b3697]"
+                activeLink === "/service-provider/messages" && "!bg-[#1b3697]"
               }`}
               style={{
                 backgroundColor: "#29429f",
@@ -61,9 +61,9 @@ const ServiceProviderSidebar = () => {
             </Nav.Item>
             <Nav.Item
               as={Link}
-              href="/service-providers/pending-orders"
+              href="/service-provider/pending-orders"
               className={`hover:!bg-[#1b3697] ${
-                activeLink === "/service-providers/pending-orders" &&
+                activeLink === "/service-provider/pending-orders" &&
                 "!bg-[#1b3697]"
               }`}
               style={{

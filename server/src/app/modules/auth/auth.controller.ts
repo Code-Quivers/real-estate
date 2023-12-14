@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 const createNewUserForTenant = catchAsync(
   async (req: Request, res: Response) => {
     const result = await AuthService.createNewUserForTenant(req.body);
+    console.log('111111111111111111', result);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
