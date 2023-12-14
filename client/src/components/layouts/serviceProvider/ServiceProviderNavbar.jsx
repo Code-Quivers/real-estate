@@ -8,6 +8,7 @@ const ServiceProviderNavbar = () => {
   const handleOpen = () => {
     setOpen(true);
   };
+
   return (
     <div className="md:hidden">
       <Button size="xs" onClick={() => handleOpen()}>

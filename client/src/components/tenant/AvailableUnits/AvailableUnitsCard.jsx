@@ -1,7 +1,6 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
-import { Modal, Button, Placeholder } from "rsuite";
 
 import { SelectPicker } from "rsuite";
 import Image from "next/image";
@@ -37,9 +36,9 @@ const AvailableUnitsCard = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
+    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
-      <div className="flex justify-start items-start gap-5 border-r-0 border-gray-800">
+      <div className="grid grid-cols-2 lg:flex justify-start items-start  lg:gap-5 border-r-0 border-gray-800">
         <div>
           <SelectPicker
             size="lg"
@@ -121,6 +120,7 @@ const AvailableUnitsCard = () => {
           </div>
         ))}
       </div>
+
       {/* Available units card end */}
       {/* Available units details using popup start */}
       <AvailableUnitsModal
@@ -130,7 +130,7 @@ const AvailableUnitsCard = () => {
         units={units}
       />
       {/* Available units details using popup end */}
-    </div>
+    </section>
   );
 };
 

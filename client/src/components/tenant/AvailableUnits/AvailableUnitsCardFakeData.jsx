@@ -54,4 +54,12 @@ export const availableUnits = [
     bath: "3 Bath",
     address: "456 Oak Ave, NY 11201",
   },
+  {
+    id: 1,
+    image: house6,
+    price: "$3588",
+    bed: "2 Bed",
+    bath: "3 Bath",
+    address: "456 Oak Ave, NY 11201",
+  },
 ];
