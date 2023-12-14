@@ -103,11 +103,18 @@ const AvailableUnitsCard = () => {
                 </h2>
                 <h2 className="text-sm">{unit.address}</h2>
               </div>
-              <div>
+              {/* <div>
                 <div className="py-2 px-5 rounded-full border-2 border-red-700">
                   <p className="text-sm text-center">9</p>
                   <hr />
                   <p className="text-sm text-center">10</p>
+                </div>
+              </div> */}
+              <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+                <div className=" flex w-full flex-col justify-center items-center">
+                  <span className="font-medium">9</span>
+                  <span className="w-[70%] border-t border-[#b6b6b6]" />
+                  <span className="font-medium">10</span>
                 </div>
               </div>
             </div>
