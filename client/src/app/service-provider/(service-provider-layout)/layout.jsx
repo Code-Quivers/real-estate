@@ -1,27 +1,21 @@
 import ServiceProviderNavbar from "@/components/layouts/serviceProvider/ServiceProviderNavbar";
 import ServiceProviderSidebar from "@/components/layouts/serviceProvider/ServiceProviderSidebar";
 
-const ServiceProviderLayout = ({ children }) => {
+const PropertyOwnerLayout = ({ children }) => {
   return (
-    <>
-      {/* navbar for mobile */}
-      <div>
-        <ServiceProviderNavbar />
-      </div>
-      {/* main */}
+    <section>
+      <ServiceProviderNavbar />
       <div className="md:grid md:grid-cols-9 bg-[#f6f7f8]  ">
         <div
-          className="
+          className="max-md:hidden
        md:col-span-3 lg:col-span-2 w-full"
         >
-          <div className="max-md:hidden">
-            <ServiceProviderSidebar />
-          </div>
+          <ServiceProviderSidebar />
         </div>
         <div className="col-span-6 border lg:col-span-7 ">{children}</div>
       </div>
-    </>
+    </section>
   );
 };
 
-export default ServiceProviderLayout;
+export default PropertyOwnerLayout;

@@ -12,7 +12,7 @@ const ServiceProviderSidebar = () => {
   const activeLink = usePathname();
 
   return (
-    <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
+    <div className="!h-screen shadow-md !sticky top-0 overflow-y-auto">
       <Sidenav
         expanded={true}
         className="h-screen !bg-[#29429f]"
