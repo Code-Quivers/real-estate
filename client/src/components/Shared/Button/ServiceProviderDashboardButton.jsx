@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "rsuite";
 
 const ServiceProviderDashboardButton = ({
@@ -5,14 +6,15 @@ const ServiceProviderDashboardButton = ({
   secondTitle,
   btnLoading,
   btnType,
-  onClickHandler,
+  href,
 }) => {
   return (
     <Button
-      onClick={onClickHandler ?? null}
+      as={Link}
+      href={href}
       loading={btnLoading}
       type={btnType ?? "button"}
-      className={`!px-10 whitespace-pre-wrap !py-2 !bg-[#29429f] !text-white !rounded-full `}
+      className={`!px-10 whitespace-pre-wrap  !py-2 !bg-[#29429f] !text-white !rounded-full `}
       size="lg"
       appearance="default"
     >

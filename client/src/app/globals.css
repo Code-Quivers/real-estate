@@ -3,7 +3,33 @@
 @tailwind utilities;
 
 
+/* ! scrollbar */
+body::-webkit-scrollbar {
+  width: 6px;
+  /* width of the entire scrollbar */
+}
 
+
+
+body::-webkit-scrollbar-track {
+  background: #b4bbd4;
+  /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #29429F;
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
+  border: 3px solid #29429F;
+  /* creates padding around scroll thumb */
+}
+
+
+
+
+
+/* !others */
 .rs-modal-wrapper {
   display: flex;
   align-items: center;
