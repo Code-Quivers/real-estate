@@ -69,6 +69,7 @@ model PropertyOwner {
   userId          String     @unique
   firstName       String
   lastName        String
+  phoneNumber     String
   createdAt       DateTime   @default(now()) @db.Timestamptz(0)
   updatedAt       DateTime   @updatedAt @db.Timestamptz(0)
   user            User       @relation(fields: [userId], references: [userId])
