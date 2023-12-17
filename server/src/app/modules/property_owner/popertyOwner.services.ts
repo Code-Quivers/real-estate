@@ -38,6 +38,7 @@ const createOrUpdatePropertyOwner = async (payload: IPropertyOwner) => {
         }
         return res;
     })
+    return propertyOwner;
 }
 
 export const PropertyOwnerServices = {
