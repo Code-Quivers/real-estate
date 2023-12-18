@@ -1,61 +1,97 @@
-const HomePage = () => {
+"use client";
+
+import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import Image from "next/image";
+
+import { useSearchParams } from "next/navigation";
+import TenantProfileButton from "@/components/tenant/Profile/TenantProfileButton";
+import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
+import TenantPersonalInformationEdit from "@/components/tenant/Profile/TenantPersonalInformationEdit";
+
+const TenantProfile = () => {
+  const paramsName = useSearchParams().get("editing");
+
   return (
-    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, nam nobis
-      corrupti expedita quos totam repellat quisquam in est autem neque. Sunt,
-      voluptatem numquam. Dolorum, repudiandae expedita dolores inventore quas,
-      aut debitis et, tempora deleniti dicta doloribus accusantium ipsam ex?
-      Beatae error voluptates ab vel repellendus. Dignissimos eveniet suscipit
-      inventore maiores perferendis ex unde omnis accusantium enim culpa,
-      corrupti eaque necessitatibus adipisci? Earum est a nobis fugit
-      accusantium rem at tempora expedita minima animi fuga sed in praesentium
-      eaque, velit neque consequatur molestias blanditiis? Molestiae eos
-      quaerat, quam consectetur tenetur impedit suscipit autem explicabo non
-      provident iusto quia fuga architecto eveniet eligendi ad iure cupiditate
-      totam. A quasi fugit illum quos dolor commodi corporis quis expedita
-      fugiat. Accusantium exercitationem necessitatibus consequuntur qui unde
-      voluptatum aspernatur aliquid minus, tempora deserunt commodi ipsam, ea
-      architecto voluptatibus quis, debitis modi quibusdam fugiat voluptates
-      recusandae nostrum nihil facilis dolore. Provident unde doloribus, at
-      cumque maiores assumenda repellat id iusto et fuga dolorum labore enim
-      dolor maxime asperiores voluptatem autem fugit eius optio cum temporibus?
-      Nisi, molestias temporibus quas voluptate repellendus dolor dolorem
-      eveniet magnam ex aspernatur labore aliquam, placeat ratione vitae
-      deserunt eum est neque ducimus nam amet! Quisquam asperiores excepturi
-      nulla quia eveniet possimus facere tempore! Maiores suscipit quisquam
-      voluptatibus eveniet dolores ipsa deserunt soluta nam, fuga, corrupti
-      consequuntur in laborum expedita officia nulla saepe totam voluptate
-      dolore quaerat voluptas blanditiis facilis autem? Ipsam, non. Neque minima
-      a exercitationem, accusamus maxime quibusdam fugiat debitis nesciunt illum
-      suscipit voluptatum, ratione fugit ullam perspiciatis odio omnis eligendi.
-      Obcaecati exercitationem ut itaque assumenda maxime minus neque
-      accusantium magnam totam ea porro facilis excepturi, molestiae alias
-      adipisci vitae maiores, numquam modi necessitatibus harum blanditiis
-      incidunt enim iusto! Architecto adipisci iste, cupiditate voluptatibus
-      officia dolores aspernatur facilis iure excepturi aut ex. Numquam ex saepe
-      maiores, minima ratione nemo repellendus ab perspiciatis officiis ea sint
-      ipsum sit asperiores dolore rem placeat beatae sapiente omnis fugiat!
-      Dolorum soluta placeat, rerum corporis necessitatibus nihil aliquid eaque
-      animi assumenda, hic, facere nam in officia unde itaque at delectus fugiat
-      adipisci qui commodi? Sunt explicabo dolor architecto pariatur ea
-      provident ipsum, nesciunt id praesentium quo nihil tempore inventore quis
-      culpa est repellendus laborum fuga error ducimus voluptates alias, soluta
-      cumque neque voluptas! Voluptatem commodi sint modi recusandae dignissimos
-      explicabo vel similique eligendi, expedita quae veniam cumque laudantium
-      sunt soluta earum aliquam nostrum delectus debitis omnis id quis qui quasi
-      voluptates suscipit. Assumenda, maxime id praesentium a quo perspiciatis
-      sit labore perferendis omnis facilis harum minus obcaecati. Quo atque
-      vero, enim quisquam magnam rem quaerat molestias, rerum explicabo optio
-      omnis! Corrupti, ex magnam adipisci rerum consectetur quas, odio autem
-      veritatis, consequuntur corporis sint labore laboriosam voluptatem aliquam
-      similique enim explicabo incidunt ut perferendis expedita totam ipsum nisi
-      ipsa! Praesentium quis voluptate debitis temporibus aliquid velit
-      architecto impedit quisquam laboriosam eligendi id, sequi similique ab
-      consequuntur sint iure tempora. Perferendis, nostrum. Reiciendis illum
-      dolor ut harum ea iste totam non alias natus tenetur, autem quos atque.
-      Delectus distinctio vero voluptate aut odit a, dicta praesentium.
-    </div>
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-10    2xl:px-0 ">
+      {/* profile Information */}
+      <div className="grid grid-cols-5 mt-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
+        <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
+          <div className="border shadow-lg rounded-full">
+            <Image
+              src={profileLogo}
+              className="max-md:w-[80px] md:w-[150px]  select-none"
+              alt="Profile Image"
+            />
+          </div>
+          <div>
+            <h4 className="text-lg font-medium">Name </h4>
+            <h4 className="text-lg font-medium">Email Address </h4>
+            <h4 className="text-lg font-medium">Phone Number</h4>
+          </div>
+        </div>
+        {/* score */}
+        <div>
+          <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
+            <h5 className="font-medium text-sm md:text-xl">Score</h5>
+            <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+              <div className=" flex w-full flex-col justify-center items-center">
+                <span className="font-medium">9</span>
+                <span className="w-[70%] border-t border-[#b6b6b6]" />
+                <span className="font-medium">10</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Dashboard */}
+      <div className="mt-10 grid grid-cols-5 w-full lg:mt-8 items-stretch gap-5">
+        {/* Personal Information */}
+        <div className=" ">
+          <TenantProfileButton
+            firstTitle="Personal"
+            secondTitle="Information"
+            href="/tenant?editing=personal-information"
+          />
+        </div>
+        {/* Rental History */}
+        <div>
+          <TenantProfileButton
+            firstTitle="Rental"
+            secondTitle="History"
+            href="/tenant?editing=rental-history"
+          />
+        </div>
+        {/* income information */}
+        <div>
+          <TenantProfileButton
+            firstTitle="Income"
+            secondTitle="Information"
+            href="/tenant?editing=income-information"
+          />
+        </div>
+        {/* pets */}
+        <div>
+          <TenantProfileButton
+            firstTitle="Pets"
+            href="/tenant?editing=pets-information"
+          />
+        </div>
+        {/* Other Information */}
+        <div>
+          <TenantProfileButton
+            firstTitle="Other"
+            secondTitle="Information"
+            href="/tenant?editing=other-information"
+          />
+        </div>
+      </div>
+
+      {paramsName === null && <TenantProfileInformation />}
+      {paramsName === "personal-information" && (
+        <TenantPersonalInformationEdit />
+      )}
+    </section>
   );
 };
 
-export default HomePage;
+export default TenantProfile;

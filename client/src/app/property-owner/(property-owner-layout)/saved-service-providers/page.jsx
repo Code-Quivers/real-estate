@@ -1,44 +1,12 @@
 "use client";
-import { FaSearch } from "react-icons/fa";
-import { Popover, SelectPicker, Whisper } from "rsuite";
-import { AutoComplete, InputGroup } from "rsuite";
+import { Popover, Whisper } from "rsuite";
+
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
-import MaintenanceServiceProviderModal from "@/components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
+import MaintenanceServiceProviderModal from "../../../../components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
 
 const PropertyOwnerServiceProviders = () => {
-  const data = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-  ].map((item) => ({ label: item, value: item }));
-  const datas = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-    "Louisa",
-    "Lester",
-    "Lola",
-    "Lydia",
-    "Hal",
-    "Hannah",
-    "Harriet",
-    "Hattie",
-    "Hazel",
-    "Hilda",
-  ];
-
   const allRequest = [
     {
       serviceProviderName: "Service Provider Name",

@@ -5,7 +5,7 @@ import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
-import MaintenanceServiceProviderModal from "@/components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
+import MaintenanceServiceProviderModal from "../../../../components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
 
 const PropertyOwnerServiceProviders = () => {
   const data = [

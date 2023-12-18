@@ -3,7 +3,6 @@ import tenantImage from "@/assets/home/tenant.png";
 import propertyOwnerImage from "@/assets/home/propertyOwner.png";
 import serviceProviderImage from "@/assets/home/serviceProvider.png";
 import Link from "next/link";
-import { Button } from "rsuite";
 
 const HomePage = () => {
   const allData = [

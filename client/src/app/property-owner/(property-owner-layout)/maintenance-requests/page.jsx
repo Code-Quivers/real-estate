@@ -1,5 +1,5 @@
 import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
-import MaintenanceRequestAction from "@/components/property-owner/maintenance-request/MaintenanceRequestAction";
+import MaintenanceRequestAction from "../../../../components/property-owner/maintenance-request/MaintenanceRequestAction";
 import Image from "next/image";
 
 const MaintenanceRequest = () => {
