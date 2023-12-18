@@ -47,7 +47,7 @@ const propertyAdd = async (payload: any) => {
 const getProperties = async () => {
     const res = await prisma.$transaction(async transactionClient => {
         const properties = await transactionClient.property.findMany()
-        if (properties) {
+        if (properties.length >= 0) {
             return properties
         } else {
             throw new ApiError(httpStatus.BAD_REQUEST, "Property fetching failed!!!")
