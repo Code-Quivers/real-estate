@@ -34,12 +34,12 @@ const ServiceProviderPendingOrders = () => {
       <div className="mt-5 grid grid-cols-1 gap-5">
         {allRequest?.map((singleReq) => (
           <div
-            className="border flex shadow-lg border-[#acacac]   lg:gap-3 xl:gap-6 "
+            className="border lg:flex  shadow-lg border-[#acacac]   lg:gap-3 xl:gap-6 "
             key={Math.random()}
           >
             <div className="border max-md:w-full  border-[#acacac]">
               <Image
-                className="w-full md:w-[260px] lg:w-[300px] xl:w-[500px] h-full lg:h-[180px] object-cover object-left"
+                className="w-full md:w-full lg:w-[300px] xl:w-[500px] h-full lg:h-[180px] object-cover object-left"
                 src={singleReq.image}
                 alt="photo"
               />
