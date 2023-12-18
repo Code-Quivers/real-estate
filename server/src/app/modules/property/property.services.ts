@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 
+
 const propertyAdd = async (payload: any) => {
     const { images, data } = payload;
     const imagesPath = images.map(item => item.path)
@@ -41,13 +42,33 @@ const propertyAdd = async (payload: any) => {
     return property;
 }
 
+
+// Getting all property
 const getProperties = async () => {
     const res = await prisma.$transaction(async transactionClient => {
         const properties = await transactionClient.property.findMany()
         if (properties) {
             return properties
         } else {
-            throw new ApiError(httpStatus.BAD_REQUEST, "Prperty fetching failed!!!")
+            throw new ApiError(httpStatus.BAD_REQUEST, "Property fetching failed!!!")
+        }
+    });
+    return res;
+}
+
+
+// Getting a single property
+const getPropertyInfo = async (propertyId: string) => {
+    const res = await prisma.$transaction(async transactionClient => {
+        const propertyInfo = await transactionClient.property.findUnique({
+            where: {
+                propertyId: propertyId,
+            },
+        })
+        if (propertyInfo) {
+            return propertyInfo
+        } else {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Property fetching failed!!!")
         }
     });
     return res;
@@ -55,5 +76,6 @@ const getProperties = async () => {
 
 export const PropertyServices = {
     propertyAdd,
-    getProperties
+    getProperties,
+    getPropertyInfo,
 }

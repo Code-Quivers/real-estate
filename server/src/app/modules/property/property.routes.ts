@@ -7,6 +7,7 @@ const router = express.Router();
 
 
 router.post('/add', FileUploadHelper.uploadPropertyImages.array('files'), PropertyController.addProperty)
-router.get('/all', PropertyController.getProperties)
+router.get('/all', PropertyController.getProperties);
+router.get('/single', PropertyController.getPropertyInfo);
 
 export const PropertyRoutes = router;

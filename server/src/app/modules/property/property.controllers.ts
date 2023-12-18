@@ -27,7 +27,20 @@ const getProperties = async (req: Request, res: Response) => {
 }
 
 
+const getPropertyInfo = async (req: Request, res: Response) => {
+    const propertyId: string = req.query?.propertyId;
+    const result = await PropertyServices.getPropertyInfo(propertyId)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Properties successfully fetched!!!",
+        data: result
+    })
+}
+
+
 export const PropertyController = {
     addProperty,
     getProperties,
+    getPropertyInfo
 }
