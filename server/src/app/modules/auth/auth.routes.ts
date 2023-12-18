@@ -5,6 +5,8 @@ import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
+router.post('/user/create', AuthController.createUser);
+
 router.post(
   '/tenant/create-user',
   // auth(UserRoles.SUPERADMIN, UserRoles.TENANT),
