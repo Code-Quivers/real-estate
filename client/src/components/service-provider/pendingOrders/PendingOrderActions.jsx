@@ -1,7 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
-import ContactModal from "@/components/property-owner/maintenance-request/ContactModal";
+import ContactModal from "../../property-owner/maintenance-request/ContactModal";
 import { useState } from "react";
 
 const PendingOrderActions = () => {
