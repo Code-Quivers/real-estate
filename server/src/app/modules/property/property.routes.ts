@@ -6,6 +6,7 @@ import { FileUploadHelper } from "../../../helpers/FileUploadHelper";
 const router = express.Router();
 
 
-router.post('/add', FileUploadHelper.uploadPropertyImages.array('files') , PropertyController.addProperty)
+router.post('/add', FileUploadHelper.uploadPropertyImages.array('files'), PropertyController.addProperty)
+router.get('/all', PropertyController.getProperties)
 
 export const PropertyRoutes = router;

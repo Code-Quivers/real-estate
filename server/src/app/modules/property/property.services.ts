@@ -41,7 +41,19 @@ const propertyAdd = async (payload: any) => {
     return property;
 }
 
+const getProperties = async () => {
+    const res = await prisma.$transaction(async transactionClient => {
+        const properties = await transactionClient.property.findMany()
+        if (properties) {
+            return properties
+        } else {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Prperty fetching failed!!!")
+        }
+    });
+    return res;
+}
 
 export const PropertyServices = {
-    propertyAdd
+    propertyAdd,
+    getProperties
 }
