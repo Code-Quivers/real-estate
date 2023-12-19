@@ -7,12 +7,16 @@ import { useSearchParams } from "next/navigation";
 import TenantProfileButton from "@/components/tenant/Profile/TenantProfileButton";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantPersonalInformationEdit from "@/components/tenant/Profile/TenantPersonalInformationEdit";
+import TenantRentalHistoryEdit from "@/components/tenant/Profile/TenantRentalHistoryEdit";
+import TenantIncomeInformationEdit from "@/components/tenant/Profile/TenantIncomeInformationEdit";
+import TenantPetsInformationEdit from "@/components/tenant/Profile/TenantPetsInformationEdit";
+import TenantOtherInformationEdit from "@/components/tenant/Profile/TenantOtherInformationEdit";
 
 const TenantProfile = () => {
   const paramsName = useSearchParams().get("editing");
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-10    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       {/* profile Information */}
       <div className="grid grid-cols-5 mt-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
         <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
@@ -44,7 +48,7 @@ const TenantProfile = () => {
         </div>
       </div>
       {/* Dashboard */}
-      <div className="mt-10 grid grid-cols-5 w-full lg:mt-8 items-stretch gap-5">
+      <div className="mt-10 grid grid-cols-3 lg:grid-cols-5 w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
         {/* Personal Information */}
         <div className=" ">
           <TenantProfileButton
@@ -86,9 +90,27 @@ const TenantProfile = () => {
         </div>
       </div>
 
-      {paramsName === null && <TenantProfileInformation />}
-      {paramsName === "personal-information" && (
-        <TenantPersonalInformationEdit />
+      {paramsName === null ||
+      ![
+        "personal-information",
+        "rental-history",
+        "income-information",
+        "pets-information",
+        "other-information",
+      ].includes(paramsName) ? (
+        <TenantProfileInformation />
+      ) : (
+        <>
+          {paramsName === "personal-information" && (
+            <TenantPersonalInformationEdit />
+          )}
+          {paramsName === "rental-history" && <TenantRentalHistoryEdit />}
+          {paramsName === "income-information" && (
+            <TenantIncomeInformationEdit />
+          )}
+          {paramsName === "pets-information" && <TenantPetsInformationEdit />}
+          {paramsName === "other-information" && <TenantOtherInformationEdit />}
+        </>
       )}
     </section>
   );
