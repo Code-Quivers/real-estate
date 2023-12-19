@@ -59,7 +59,7 @@ const LoginPage = () => {
         <div className="mt-20">
           <p className="font-semibold">
             Need an Account?{" "}
-            <Link className="text-blue-800" href="/tenant-signup">
+            <Link className="text-blue-800" href="/tenant/sign-up">
               Sign Up
             </Link>
           </p>

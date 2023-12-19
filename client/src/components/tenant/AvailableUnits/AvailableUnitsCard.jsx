@@ -1,7 +1,6 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
-import { Modal, Button, Placeholder } from "rsuite";
 
 import { SelectPicker } from "rsuite";
 import Image from "next/image";
@@ -37,9 +36,9 @@ const AvailableUnitsCard = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
-      <div className="flex justify-start items-start gap-5 border-r-0 border-gray-800">
+      <div className="grid grid-cols-2 lg:flex justify-start items-start  lg:gap-5 border-r-0 border-gray-800">
         <div>
           <SelectPicker
             size="lg"
@@ -103,17 +102,25 @@ const AvailableUnitsCard = () => {
                 </h2>
                 <h2 className="text-sm">{unit.address}</h2>
               </div>
-              <div>
+              {/* <div>
                 <div className="py-2 px-5 rounded-full border-2 border-red-700">
                   <p className="text-sm text-center">9</p>
                   <hr />
                   <p className="text-sm text-center">10</p>
+                </div>
+              </div> */}
+              <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+                <div className=" flex w-full flex-col justify-center items-center">
+                  <span className="font-medium">9</span>
+                  <span className="w-[70%] border-t border-[#b6b6b6]" />
+                  <span className="font-medium">10</span>
                 </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       {/* Available units card end */}
       {/* Available units details using popup start */}
       <AvailableUnitsModal
@@ -123,7 +130,7 @@ const AvailableUnitsCard = () => {
         units={units}
       />
       {/* Available units details using popup end */}
-    </div>
+    </section>
   );
 };
 

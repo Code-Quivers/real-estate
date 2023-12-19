@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
-import AvailableUnitsModal from "../AvailableUnits/AvailableUnitsModal";
+import { useState } from "react";
 import { availableUnits } from "../AvailableUnits/AvailableUnitsCardFakeData";
+import SavedUnitsModal from "./SavedUnitModal";
 
 const SavedUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <div>
       {/* Available units card start */}
@@ -34,23 +35,24 @@ const SavedUnitsCard = () => {
                 </h2>
                 <h2 className="text-sm">{unit.address}</h2>
               </div>
-              <div>
-                <div className="py-2 px-5 rounded-full border-2 border-red-700">
-                  <p className="text-sm text-center">9</p>
-                  <hr />
-                  <p className="text-sm text-center">10</p>
+              <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+                <div className=" flex w-full flex-col justify-center items-center">
+                  <span className="font-medium">9</span>
+                  <span className="w-[70%] border-t border-[#b6b6b6]" />
+                  <span className="font-medium">10</span>
                 </div>
               </div>
             </div>
-            <AvailableUnitsModal
-              open={modalOpen}
-              setOpen={setModalOpen}
-              availableUnits={availableUnits}
-              units={units}
-            />
           </div>
         ))}
       </div>
+      {/* modal */}
+      <SavedUnitsModal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        availableUnits={availableUnits}
+        units={units}
+      />
       {/* Available units card end */}
     </div>
   );
