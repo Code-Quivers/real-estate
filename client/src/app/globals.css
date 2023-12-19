@@ -92,7 +92,6 @@ body::-webkit-scrollbar-thumb {
 /* r suit input */
 .rs-input {
   border-radius: 0px !important;
-  outline: none !important;
 }
 
 /*  r suit input number */
