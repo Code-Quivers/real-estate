@@ -88,3 +88,27 @@ body::-webkit-scrollbar-thumb {
   padding: 0px !important;
 
 }
+
+/* r suit input */
+.rs-input {
+  border-radius: 0px !important;
+  outline: none !important;
+}
+
+/*  r suit input number */
+.rs-input-group {
+  border-radius: 0px !important;
+}
+
+
+
+/* Apply styles when the Input component gains focus */
+/* .rs-input:focus {
+  border-color: #00f !important;
+  box-shadow: 0 0 5px rgba(0, 0, 255, 0.5) !important;
+}
+
+.rs-input:hover {
+  border-color: rgba(0, 0, 255, 0.445) !important;
+
+} */
