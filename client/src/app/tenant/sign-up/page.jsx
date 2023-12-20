@@ -10,8 +10,9 @@ import { useState } from "react";
 import Link from "next/link";
 import EmailFillIcon from "@rsuite/icons/EmailFill";
 import { FaLock } from "react-icons/fa";
+import { getBaseUrl } from "@/configs/envConfig";
 const style = {
-  width: "300px",
+  width: "100%",
   borderRadius: "20px !important",
   overflow: "hidden !important",
 };
@@ -24,12 +25,13 @@ const LoginPage = () => {
     setVisible(!visible);
   };
 
+  getBaseUrl();
   const handleChange2 = () => {
     setVisible2(!visible2);
   };
   return (
-    <div className="flex justify-between items-center  flex-row">
-      <div className="w-full md:w-3/5 ml-10 flex flex-col justify-center items-center">
+    <div className="lg:flex justify-between items-center   lg:flex-row">
+      <div className="w-full lg:w-3/5 ml:ml-10 flex flex-col justify-center items-center">
         <div>
           <h2 className="text-5xl md:mt-0 mt-5 mb-10 font-semibold">Sign Up</h2>
         </div>
@@ -85,12 +87,7 @@ const LoginPage = () => {
                 </InputGroup>
               </div>
               <div>
-                <InputGroup
-                  size="lg"
-                  className="border !border-[#828282]"
-                  style={style}
-                  inside
-                >
+                <InputGroup size="lg" style={style} inside>
                   <InputGroup.Addon>
                     <FaLock />
                   </InputGroup.Addon>
@@ -132,7 +129,7 @@ const LoginPage = () => {
           </p>
         </div>
       </div>
-      <div className="bg-[#29429f] w-full md:w-6/12 md:h-[100vh] flex justify-center items-center">
+      <div className="bg-[#29429f] w-full max-lg:hidden lg:w-6/12 md:h-[100vh] flex justify-center items-center">
         <Image
           objectFit="cover"
           src={tenantLoginImage}
