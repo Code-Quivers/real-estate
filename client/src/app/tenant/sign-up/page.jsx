@@ -3,14 +3,16 @@
 import tenantLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Input, InputGroup } from "rsuite";
+import { Button, Form, Input, InputGroup } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useState } from "react";
 import Link from "next/link";
 import EmailFillIcon from "@rsuite/icons/EmailFill";
 import { FaLock } from "react-icons/fa";
-import { getBaseUrl } from "@/configs/envConfig";
+import { Controller, useForm } from "react-hook-form";
+import { useTenantSignUpMutation } from "@/redux/features/auth/authApi";
+import { storeUserInfo } from "@/hooks/services/auth.service";
 const style = {
   width: "100%",
   borderRadius: "20px !important",
@@ -20,85 +22,257 @@ const style = {
 const LoginPage = () => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
+  const [tenantSignUp, { isLoading, error, isSuccess, isError, data }] =
+    useTenantSignUpMutation();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm({
+    mode: "onChange",
+  });
 
   const handleChange = () => {
     setVisible(!visible);
   };
 
-  getBaseUrl();
   const handleChange2 = () => {
     setVisible2(!visible2);
   };
+  const password = watch("password");
+
+  const handleTenantSignUp = async (user) => {
+    const tenantSignUpData = {
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      userName: user?.userName,
+      email: user?.email,
+      password: user?.password,
+    };
+    await tenantSignUp({ data: tenantSignUpData }).unwrap();
+
+    // if (res?.data?.accessToken) {
+    //   storeUserInfo({ accessToken: res?.data?.accessToken });
+    // }
+  };
+
+  console.log(data);
+
   return (
-    <div className="lg:flex justify-between items-center   lg:flex-row">
-      <div className="w-full lg:w-3/5 ml:ml-10 flex flex-col justify-center items-center">
+    <div className="grid grid-cols-1 max-lg:mt-10 lg:grid-cols-2">
+      <div className="col-span-1 flex flex-col items-center justify-center ">
         <div>
           <h2 className="text-5xl md:mt-0 mt-5 mb-10 font-semibold">Sign Up</h2>
         </div>
         {/* input forms */}
 
-        <div>
-          <form>
-            <div className="space-y-3">
+        <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto ">
+          <form onSubmit={handleSubmit(handleTenantSignUp)}>
+            <div className="space-y-6 lg:space-y-3">
+              {/* first Name */}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <AvatarIcon />
-                  </InputGroup.Addon>
-                  <Input placeholder="First Name" />
-                </InputGroup>
+                <Controller
+                  name="firstName"
+                  control={control}
+                  rules={{
+                    required: "First Name is required",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <AvatarIcon />
+                        </InputGroup.Addon>
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="First Name"
+                        />
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.firstName &&
+                            !!errors?.firstName?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.firstName?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
+              {/* last Name */}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <AvatarIcon />
-                  </InputGroup.Addon>
-                  <Input placeholder="Last Name" />
-                </InputGroup>
+                <Controller
+                  name="lastName"
+                  control={control}
+                  rules={{
+                    required: "Last Name is required",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <AvatarIcon />
+                        </InputGroup.Addon>
+                        <Input {...field} type="text" placeholder="Last Name" />
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.lastName && !!errors?.lastName?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.lastName?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
+              {/* user Name */}{" "}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <AvatarIcon />
-                  </InputGroup.Addon>
-                  <Input placeholder="Username" />
-                </InputGroup>
+                <Controller
+                  name="userName"
+                  control={control}
+                  rules={{
+                    required: "Username is required",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <AvatarIcon />
+                        </InputGroup.Addon>
+                        <Input {...field} type="text" placeholder="Username" />
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.userName && !!errors?.userName?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.userName?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
+              {/* email */}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <EmailFillIcon />
-                  </InputGroup.Addon>
-                  <Input placeholder="Email" />
-                </InputGroup>
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{
+                    required: "Email is Required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                      message: "Please provide your valid email",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <EmailFillIcon />
+                        </InputGroup.Addon>
+                        <Input {...field} type="text" placeholder="Email" />
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.email && !!errors?.email?.message) || false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.email?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
+              {/* password */}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <FaLock />
-                  </InputGroup.Addon>
-                  <Input
-                    placeholder="Password"
-                    type={visible ? "text" : "password"}
-                  />
-                  <InputGroup.Button onClick={handleChange}>
-                    {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                  </InputGroup.Button>
-                </InputGroup>
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={{
+                    required: "Password is Required",
+                    minLength: {
+                      value: 6,
+                      message: "Minimum 6 characters required for password",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <FaLock />
+                        </InputGroup.Addon>
+                        <Input
+                          {...field}
+                          type={visible ? "text" : "password"}
+                          placeholder="Password"
+                        />
+                        <InputGroup.Button onClick={handleChange}>
+                          {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                        </InputGroup.Button>
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.password && !!errors?.password?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.password?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
+              {/* confirm password */}
               <div>
-                <InputGroup size="lg" style={style} inside>
-                  <InputGroup.Addon>
-                    <FaLock />
-                  </InputGroup.Addon>
-                  <Input
-                    placeholder="Confirm Password"
-                    type={visible2 ? "text" : "password"}
-                  />
-                  <InputGroup.Button onClick={handleChange2}>
-                    {visible2 ? <EyeIcon /> : <EyeSlashIcon />}
-                  </InputGroup.Button>
-                </InputGroup>
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  rules={{
+                    required: "Confirm password must be matched",
+                    validate: (value) =>
+                      value === password || "Confirm Password did not match",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <InputGroup size="lg" style={style} inside>
+                        <InputGroup.Addon>
+                          <FaLock />
+                        </InputGroup.Addon>
+                        <Input
+                          {...field}
+                          type={visible2 ? "text" : "password"}
+                          placeholder="Confirm Password"
+                        />
+                        <InputGroup.Button onClick={handleChange2}>
+                          {visible2 ? <EyeIcon /> : <EyeSlashIcon />}
+                        </InputGroup.Button>
+                      </InputGroup>
+                      <Form.ErrorMessage
+                        show={
+                          (!!errors?.confirmPassword &&
+                            !!errors?.confirmPassword?.message) ||
+                          false
+                        }
+                        placement="topEnd"
+                      >
+                        {errors?.confirmPassword?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
             </div>
             <div className="mt-10 flex justify-center">
@@ -113,7 +287,7 @@ const LoginPage = () => {
             </div>
           </form>
         </div>
-
+        {/* login and reset buttons */}
         <div className="mt-5">
           <p className="font-semibold">
             Already have an Account?{" "}
@@ -129,9 +303,10 @@ const LoginPage = () => {
           </p>
         </div>
       </div>
-      <div className="bg-[#29429f] w-full max-lg:hidden lg:w-6/12 md:h-[100vh] flex justify-center items-center">
+      {/* right image */}
+      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
         <Image
-          objectFit="cover"
+          className="object-cover"
           src={tenantLoginImage}
           alt="Tenant Login Image"
         />

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { getAuthKey } from "@/configs/envConfig";
+import { getNewAccessToken } from "@/hooks/services/auth.service";
+import { setToLocalStorage } from "@/utils/local-storage";
 
 export const axiosInstance = axios.create();
 axiosInstance.defaults.headers.post["Content-Type"] = "application/json";
