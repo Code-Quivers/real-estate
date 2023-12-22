@@ -187,7 +187,6 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       // profileImage: payload?.profileImage,
     };
 
-
     const serviceProviderUser = await transactionClient.serviceProvider.create({
       data: serviceProviderData,
       select: {
@@ -214,7 +213,6 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
     }
 
     return serviceProviderUser;
-
   });
 
   return newUser;
