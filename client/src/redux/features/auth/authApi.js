@@ -1,14 +1,14 @@
-import { baseApi } from "../../api/baseApi";
-import { tagTypes } from "../../tag-types/tag-types";
+import { baseApi } from "@/redux/api/baseApi";
+import { tagTypes } from "@/redux/tag-types/tag-types";
 
-export const authApi = baseApi.injectEndpoints({
+export const tenantAuthApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createUser: builder.mutation({
-      query: (data) => ({
-        url: "/auth/create-user",
+    // tenant sign up
+    tenantSignUp: builder.mutation({
+      query: ({ data }) => ({
+        url: "/auth/tenant/create-user",
         method: "POST",
         data: data,
-        contentType: "multipart/form-data",
       }),
       invalidatesTags: [tagTypes.user],
     }),
@@ -24,4 +24,4 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useCreateUserMutation } = authApi;
+export const { useTenantSignUpMutation } = tenantAuthApi;

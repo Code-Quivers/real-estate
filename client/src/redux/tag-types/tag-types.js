@@ -1,5 +1,5 @@
 // Define an object with tag types
-const tagTypes = {
+export const tagTypes = {
   user: "users",
   style: "style",
 };
