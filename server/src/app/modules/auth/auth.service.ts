@@ -124,9 +124,9 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
         firstName: true,
         lastName: true,
         propertyOwnerId: true,
-        userId: true,
         user: {
           select: {
+            userId: true,
             userName: true,
             email: true,
             role: true,
@@ -193,9 +193,9 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
         firstName: true,
         lastName: true,
         serviceProviderId: true,
-        userId: true,
         user: {
           select: {
+            userId: true,
             userName: true,
             email: true,
             role: true,
@@ -237,6 +237,20 @@ const userLogin = async (
           tenantId: true,
         },
       },
+      propertyOwner: {
+        select: {
+          firstName: true,
+          lastName: true,
+          propertyOwnerId: true,
+        },
+      },
+      serviceProvider: {
+        select: {
+          firstName: true,
+          lastName: true,
+          serviceProviderId: true,
+        },
+      },
     },
   });
 
@@ -253,6 +267,8 @@ const userLogin = async (
   const {
     userId,
     tenant,
+    propertyOwner,
+    serviceProvider,
     role,
     userStatus,
     email: loggedInEmail,
@@ -263,11 +279,20 @@ const userLogin = async (
     {
       userId,
       role,
-      tenantId: tenant?.tenantId,
+      profileId:
+        tenant?.tenantId ||
+        propertyOwner?.propertyOwnerId ||
+        serviceProvider?.serviceProviderId,
       email: loggedInEmail,
       userStatus,
-      firstName: tenant?.firstName,
-      lastName: tenant?.lastName,
+      firstName:
+        tenant?.firstName ||
+        propertyOwner?.firstName ||
+        serviceProvider?.firstName,
+      lastName:
+        tenant?.lastName ||
+        propertyOwner?.lastName ||
+        serviceProvider?.lastName,
     },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
@@ -276,11 +301,20 @@ const userLogin = async (
     {
       userId,
       role,
-      tenantId: tenant?.tenantId,
+      profileId:
+        tenant?.tenantId ||
+        propertyOwner?.propertyOwnerId ||
+        serviceProvider?.serviceProviderId,
       email: loggedInEmail,
       userStatus,
-      firstName: tenant?.firstName,
-      lastName: tenant?.lastName,
+      firstName:
+        tenant?.firstName ||
+        propertyOwner?.firstName ||
+        serviceProvider?.firstName,
+      lastName:
+        tenant?.lastName ||
+        propertyOwner?.lastName ||
+        serviceProvider?.lastName,
     },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
@@ -314,13 +348,25 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
       userId,
     },
     include: {
-      profile: {
+      tenant: {
         select: {
-          role: true,
-          profileId: true,
-          profileImage: true,
           firstName: true,
           lastName: true,
+          tenantId: true,
+        },
+      },
+      propertyOwner: {
+        select: {
+          firstName: true,
+          lastName: true,
+          propertyOwnerId: true,
+        },
+      },
+      serviceProvider: {
+        select: {
+          firstName: true,
+          lastName: true,
+          serviceProviderId: true,
         },
       },
     },
@@ -328,16 +374,35 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exists!!');
   }
+
+  const {
+    tenant,
+    propertyOwner,
+    serviceProvider,
+    role,
+    userStatus,
+    email: loggedInEmail,
+  } = isUserExist;
+
   // generate new token
   const newAccessToken = jwtHelpers.createToken(
     {
-      userId: isUserExist?.userId,
-      role: isUserExist?.profile?.role,
-      profileId: isUserExist?.profile?.profileId,
-      email: isUserExist?.email,
-      profileImage: isUserExist?.profile?.profileImage,
-      firstName: isUserExist?.profile?.firstName,
-      lastName: isUserExist?.profile?.lastName,
+      userId,
+      role,
+      profileId:
+        tenant?.tenantId ||
+        propertyOwner?.propertyOwnerId ||
+        serviceProvider?.serviceProviderId,
+      email: loggedInEmail,
+      userStatus,
+      firstName:
+        tenant?.firstName ||
+        propertyOwner?.firstName ||
+        serviceProvider?.firstName,
+      lastName:
+        tenant?.lastName ||
+        propertyOwner?.lastName ||
+        serviceProvider?.lastName,
     },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
