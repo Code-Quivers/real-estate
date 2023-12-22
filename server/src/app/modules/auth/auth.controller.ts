@@ -9,22 +9,21 @@ import { createUserService } from './services/services.createUser';
 
 //! Tenant User Create
 
-const createUser =async (req:Request, res:Response) => {
+const createUser = async (req: Request, res: Response) => {
   const result = await createUserService(req.body);
-    console.log('creating user', result);
+  console.log('creating user', result);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User created successfully!',
-      data: result,
-    });
-}
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User created successfully!',
+    data: result,
+  });
+};
 
 const createNewUserForTenant = catchAsync(
   async (req: Request, res: Response) => {
     const result = await AuthService.createNewUserForTenant(req.body);
-    console.log('111111111111111111', result);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
