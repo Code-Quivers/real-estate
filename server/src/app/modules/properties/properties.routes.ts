@@ -4,8 +4,6 @@ import auth from '../../middlewares/auth';
 import { UserRoles } from '@prisma/client';
 import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
 import { PropertiesValidation } from './properties.validation';
-// import { UserRoles } from '@prisma/client';
-// import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
