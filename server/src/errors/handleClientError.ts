@@ -25,6 +25,7 @@ const handleClientError = (error: Prisma.PrismaClientKnownRequestError) => {
       ];
     }
   }
+  console.log(errors, 'from shafin 2');
 
   return {
     statusCode,
