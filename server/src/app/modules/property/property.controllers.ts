@@ -8,10 +8,13 @@ import { PropertyServices } from './property.service';
 const addProperty = async (req: Request, res: Response) => {
   const images: IUploadFile[] = req.files as any;
   const data = req.body?.data;
-  const payload = { images, data: JSON.parse(data) };
-  const result = PropertyServices.propertyAdd(payload);
+  const payload = {
+    images,
+    data: JSON.parse(data),
+    profileId: req?.user?.profileId as string,
+  };
 
-  console.log(result);
+  const result = await PropertyServices.propertyAdd(payload);
 
   sendResponse(res, {
     data: result,
@@ -21,8 +24,8 @@ const addProperty = async (req: Request, res: Response) => {
   });
 };
 
-const getProperties = async (req: Request, res: Response) => {
-  const result = await PropertyServices.getProperties();
+const getAllProperty = async (req: Request, res: Response) => {
+  const result = await PropertyServices.getAllProperty();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -32,7 +35,10 @@ const getProperties = async (req: Request, res: Response) => {
 };
 
 const getPropertyInfo = async (req: Request, res: Response) => {
-  const propertyId: string = req.query?.propertyId as string;
+  const { propertyId } = req.params;
+  console.log(req.query);
+  console.log(req.params);
+
   const result = await PropertyServices.getPropertyInfo(propertyId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -44,6 +50,6 @@ const getPropertyInfo = async (req: Request, res: Response) => {
 
 export const PropertyController = {
   addProperty,
-  getProperties,
+  getAllProperty,
   getPropertyInfo,
 };

@@ -6,6 +6,7 @@ import sendResponse from '../../../shared/sendResponse';
 import { IRefreshTokenResponse } from './auth.interface';
 import { AuthService } from './auth.service';
 import { createUserService } from './services/services.createUser';
+import ApiError from '../../../errors/ApiError';
 
 //! Tenant User Create
 
@@ -23,6 +24,7 @@ const createUser = async (req: Request, res: Response) => {
 
 const createNewUserForTenant = catchAsync(
   async (req: Request, res: Response) => {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'auth theke error dilam');
     const result = await AuthService.createNewUserForTenant(req.body);
 
     sendResponse(res, {

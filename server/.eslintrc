@@ -11,31 +11,16 @@
     "prettier"
   ],
   "rules": {
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "prefer-const": "error",
     "no-unused-expressions": "error",
     "no-undef": "error",
     "no-console": "off",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-
-    // Backend-specific rules
-    "@typescript-eslint/no-explicit-any": "warn", // Allowing the use of 'any' in backend code
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      { "argsIgnorePattern": "^_" }
-    ], // Ignoring unused variables with a leading underscore
-    "@typescript-eslint/no-non-null-assertion": "off", // Allowing the use of non-null assertions if necessary
-
-    // Prisma and Database rules
-    "@typescript-eslint/no-unsafe-assignment": "off", // Allowing potentially unsafe assignments (common in Prisma-generated code)
-    "@typescript-eslint/no-unsafe-member-access": "off", // Allowing potentially unsafe member access (common in Prisma-generated code)
-
-    // Express rules
-    "express/route-use-req-skip-allowed": "off" // Enforcing the use of 'req.skip' in middleware functions
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   "env": {
-    "browser": false,
+    "browser": true,
     "es2021": true,
     "node": true
   },
