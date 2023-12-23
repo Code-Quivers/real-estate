@@ -19,7 +19,7 @@ const createNewProperty = catchAsync(async (req: Request, res: Response) => {
   });
 });
 //! =------------
-const getAllProperty = async (req: Request, res: Response) => {
+const getAllProperty = catchAsync(async (req: Request, res: Response) => {
   const result = await PropertiesService.getAllProperty();
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -27,18 +27,20 @@ const getAllProperty = async (req: Request, res: Response) => {
     message: 'Properties successfully fetched!!!',
     data: result,
   });
-};
-const getSinglePropertyInfo = async (req: Request, res: Response) => {
-  const propertyId = req.params?.propertyId;
+});
+const getSinglePropertyInfo = catchAsync(
+  async (req: Request, res: Response) => {
+    const propertyId = req.params?.propertyId;
 
-  const result = await PropertiesService.getSinglePropertyInfo(propertyId);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Properties successfully fetched!!!',
-    data: result,
-  });
-};
+    const result = await PropertiesService.getSinglePropertyInfo(propertyId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Properties successfully fetched!!!',
+      data: result,
+    });
+  }
+);
 export const PropertiesController = {
   createNewProperty,
   getAllProperty,
