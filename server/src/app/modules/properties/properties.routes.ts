@@ -42,5 +42,16 @@ router.get(
   ),
   PropertiesController.getSinglePropertyInfo
 );
-
+// ! update property info
+router.patch(
+  '/update-property/:propertyId',
+  auth(UserRoles.PROPERTY_OWNER),
+  FileUploadHelper.uploadPropertyImages.array('files'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = PropertiesValidation.updateProperty.parse(
+      JSON.parse(req.body.data)
+    );
+    return PropertiesController.updatePropertyInfo(req, res, next);
+  }
+);
 export const PropertiesRoutes = router;

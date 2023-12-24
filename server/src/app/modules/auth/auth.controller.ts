@@ -11,7 +11,6 @@ import { createUserService } from './services/services.createUser';
 
 const createUser = async (req: Request, res: Response) => {
   const result = await createUserService(req.body);
-  console.log('creating user', result);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

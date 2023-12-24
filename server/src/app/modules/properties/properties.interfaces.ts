@@ -24,3 +24,11 @@ export type IPropertyReqPayload = {
   universities: string;
   allowedPets: string;
 };
+export type IPropertiesFilterRequest = {
+  searchTerm?: string | undefined;
+  propertyId?: string | undefined;
+  ownerId?: string | undefined;
+  // numOfBed?: number | undefined;
+  // numOfBath?: number | undefined;
+  createdAt?: string | undefined;
+};
