@@ -2,6 +2,12 @@
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'PAUSED', 'SUSPENDED');
 
 -- CreateEnum
+CREATE TYPE "ServiceType" AS ENUM ('TENANT_SCREENING', 'MAINTENANCE_AND_REPAIR', 'CLEAING', 'PEST_CONTROL', 'LAWN_CARE', 'SECURITY_AND_SAFETY', 'INSURANCE', 'INSPECTION', 'MARKETING', 'TECHNOLOGY');
+
+-- CreateEnum
+CREATE TYPE "ServiceAvailabilityEnum" AS ENUM ('LOW_PRIORITY', 'MEDIUM_PRIORITY', 'HIGH_PRIORITY', 'ALL_PRIORITIES');
+
+-- CreateEnum
 CREATE TYPE "UserRoles" AS ENUM ('SUPERADMIN', 'TENANT', 'PROPERTY_OWNER', 'SERVICE_PROVIDER');
 
 -- CreateTable
@@ -106,6 +112,21 @@ CREATE TABLE "Property" (
     CONSTRAINT "Property_pkey" PRIMARY KEY ("propertyId")
 );
 
+-- CreateTable
+CREATE TABLE "Services" (
+    "serviceId" TEXT NOT NULL,
+    "servicePriceRange" TEXT NOT NULL,
+    "serviceDescription" TEXT NOT NULL,
+    "serviceLocation" TEXT NOT NULL,
+    "serviceCancellationPolicy" TEXT NOT NULL,
+    "serviceAvailability" "ServiceAvailabilityEnum" NOT NULL,
+    "ownerId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Services_pkey" PRIMARY KEY ("serviceId")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -121,6 +142,9 @@ CREATE UNIQUE INDEX "propertyOwners_userId_key" ON "propertyOwners"("userId");
 -- CreateIndex
 CREATE UNIQUE INDEX "serviceProviders_userId_key" ON "serviceProviders"("userId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Services_ownerId_key" ON "Services"("ownerId");
+
 -- AddForeignKey
 ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -132,3 +156,6 @@ ALTER TABLE "serviceProviders" ADD CONSTRAINT "serviceProviders_userId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "propertyOwners"("propertyOwnerId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -91,44 +91,10 @@ model ServiceProvider {
   createdAt         DateTime @default(now()) @db.Timestamptz(0)
   updatedAt         DateTime @updatedAt @db.Timestamptz(0)
   user              User     @relation(fields: [userId], references: [userId])
+  Service           Service?
 
   @@map("serviceProviders")
 }
-
-enum UserStatus {
-  ACTIVE
-  PAUSED
-  SUSPENDED
-}
-
-enum UserRoles {
-  SUPERADMIN
-  TENANT
-  PROPERTY_OWNER
-  SERVICE_PROVIDER
-}
-
-//  profileId  String?    @unique
-//   profile    Profile?   @relation(fields: [profileId], references: [profileId])
-
-// model Profile {
-//   profileId       String        @id @default(auto()) // Change uuid() to auto() for the primary key
-//   firstName       String
-//   lastName        String
-//   profileImage    String?
-//   createdAt       DateTime      @default(now()) @db.Timestamptz(0)
-//   updatedAt       DateTime      @updatedAt @db.Timestamptz(0)
-//   userId          String        @unique // Add this field to associate a profile with a user
-//   user            User          @relation(fields: [userId], references: [userId])
-//   tenantId        String
-//   tenant          Tenant?       @relation(fields: [tenantId], references: [tenantId])
-//   propertyOwnerId   String
-//   propertyOwner   PropertyOwner? @relation(fields: [propertyOwnerId], references: [propertyOwnerId])
-//   serviceProviderUserId String
-//   serviceProvider ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
-
-//   @@map("profiles")
-// }
 
 model Property {
   propertyId               String        @id @default(uuid())
@@ -146,4 +112,54 @@ model Property {
   images                   String[]
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
+}
+
+model Service {
+  serviceId                 String                  @id @default(uuid())
+  servicePriceRange         String
+  serviceDescription        String
+  serviceLocation           String
+  serviceCancellationPolicy String
+  serviceAvailability       ServiceAvailabilityEnum
+  serviceType               ServiceType
+  ownerId                   String?                 @unique
+  owner                     ServiceProvider?        @relation(fields: [ownerId], references: [serviceProviderId])
+  createdAt                 DateTime                @default(now())
+  updatedAt                 DateTime                @updatedAt
+
+  @@map("Services")
+}
+
+// enums
+enum UserStatus {
+  ACTIVE
+  PAUSED
+  SUSPENDED
+}
+
+enum ServiceType {
+  TENANT_SCREENING
+  MAINTENANCE_AND_REPAIR
+  CLEAING
+  PEST_CONTROL
+  LAWN_CARE
+  SECURITY_AND_SAFETY
+  INSURANCE
+  INSPECTION
+  MARKETING
+  TECHNOLOGY
+}
+
+enum ServiceAvailabilityEnum {
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
+  ALL_PRIORITIES
+}
+
+enum UserRoles {
+  SUPERADMIN
+  TENANT
+  PROPERTY_OWNER
+  SERVICE_PROVIDER
 }
