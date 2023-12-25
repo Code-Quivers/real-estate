@@ -8,3 +8,8 @@ export type IServiceProviderUpdateRequest = {
   companyPhoneNumber?: string;
   companyEmailAddress?: string;
 };
+export type IServiceProviderFilterRequest = {
+  searchTerm?: string | undefined;
+  serviceProviderId?: string | undefined;
+  createdAt?: string | undefined;
+};
