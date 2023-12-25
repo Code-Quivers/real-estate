@@ -67,11 +67,11 @@ model Tenant {
 }
 
 model PropertyOwner {
-  propertyOwnerId String     @id @default(uuid()) // Change uuid() to auto() for the primary key
+  propertyOwnerId String     @id @default(uuid())
   firstName       String
   lastName        String
   phoneNumber     String?
-  photo           String?
+  profileImage    String?
   createdAt       DateTime   @default(now()) @db.Timestamptz(0)
   updatedAt       DateTime   @updatedAt @db.Timestamptz(0)
   userId          String     @unique

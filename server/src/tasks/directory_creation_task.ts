@@ -3,7 +3,7 @@ import { logger } from '../shared/logger';
 
 const create_required_directories = () => {
   /**
-   *   create required directories if they are not already exist during the application starup.
+   *   create required directories if they are not already exist during the application startup.
    **/
 
   // create data directory
@@ -21,19 +21,9 @@ const create_required_directories = () => {
     fs.mkdirSync('./data/uploads/users');
   }
 
-  // Create tack pack directory
-  if (!fs.existsSync('./data/uploads/tackpack')) {
-    fs.mkdirSync('./data/uploads/tackpack');
-  }
-
-  // Create styles directory
-  if (!fs.existsSync('./data/uploads/styles')) {
-    fs.mkdirSync('./data/uploads/styles');
-  }
-
-  // Create orders directory
-  if (!fs.existsSync('./data/uploads/orders')) {
-    fs.mkdirSync('./data/uploads/orders');
+  // Create property directory
+  if (!fs.existsSync('./data/uploads/property')) {
+    fs.mkdirSync('./data/uploads/property');
   }
 
   // Create backup directory where database backup file will be stored.
