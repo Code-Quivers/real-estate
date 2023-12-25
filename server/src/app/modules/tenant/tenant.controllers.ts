@@ -1,32 +1,20 @@
-import { Request, Response } from "express";
-import httpStatus from "http-status";
+import { Request, Response } from 'express';
+import httpStatus from 'http-status';
 import sendResponse from '../../../shared/sendResponse';
-import { TenantServices } from "./tenant.services";
+import { TenantServices } from './tenant.services';
+import catchAsync from '../../../shared/catchAsync';
 
+const getAllTenants = catchAsync(async (req: Request, res: Response) => {
+  const result = await TenantServices.getTenants();
 
-
-const getTenants = async (req: Request, res: Response) => {
-    const result = await TenantServices.getTenants()
-
-    if (result?.length === 0) {
-        sendResponse(res, {
-            statusCode: httpStatus.NO_CONTENT,
-            success: true,
-        });
-    }
-    else {
-        sendResponse(res, {
-            statusCode: httpStatus.CREATED,
-            success: true,
-            message: "Tenant fetching successfull",
-            data: result
-        });
-    }
-
-
-}
-
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: 'Tenants fetching successful',
+    data: result,
+  });
+});
 
 export const TenantControllers = {
-    getTenants
-}
+  getAllTenants,
+};
