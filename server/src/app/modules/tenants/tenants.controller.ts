@@ -3,9 +3,14 @@ import httpStatus from "http-status";
 import sendResponse from "../../../shared/sendResponse";
 import catchAsync from "../../../shared/catchAsync";
 import { TenantServices } from "./tenants.service";
+import pick from "../../../shared/pick";
+import { tenantsFilterableFields } from "./tenants.constants";
 // ! get all tenants
 const getAllTenants = catchAsync(async (req: Request, res: Response) => {
-  const result = await TenantServices.getTenants();
+  const filters = pick(req.query, tenantsFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await TenantServices.getAllTenants(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

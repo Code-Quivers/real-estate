@@ -1,36 +1,36 @@
-import express from 'express';
+import express from "express";
 
-import { AuthRoutes } from '../modules/auth/auth.routes';
+import { AuthRoutes } from "../modules/auth/auth.routes";
 
-import { PropertiesRoutes } from '../modules/properties/properties.routes';
-import { PropertyOwnerRouter } from '../modules/propertyOwner/propertyOwner.routes';
-import { ServiceProviderRouter } from '../modules/serviceProviders/serviceProvider.routes';
-import { TenantsRouters } from '../modules/tenants/tenants.routes';
+import { PropertiesRoutes } from "../modules/properties/properties.routes";
+import { PropertyOwnerRouter } from "../modules/propertyOwner/propertyOwner.routes";
+import { ServiceProviderRouter } from "../modules/serviceProviders/serviceProvider.routes";
+import { TenantsRouters } from "../modules/tenants/tenants.routes";
 
 const router = express.Router();
 
 const moduleRoutes = [
   {
-    path: '/auth',
+    path: "/auth",
     route: AuthRoutes,
   },
   {
-    path: '/properties',
+    path: "/properties",
     route: PropertiesRoutes,
   },
   {
-    path: '/property-owner',
+    path: "/property-owners",
     route: PropertyOwnerRouter,
   },
   {
-    path: '/service-provider',
+    path: "/service-providers",
     route: ServiceProviderRouter,
   },
   {
-    path: '/tenants',
+    path: "/tenants",
     route: TenantsRouters,
   },
 ];
 
-moduleRoutes.forEach(route => router.use(route.path, route.route));
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
 export default router;

@@ -36,3 +36,9 @@ export type ITenantUpdateRequest = {
   leavingReason?: string;
   isAnyLatePaymentReason?: string;
 };
+
+export type ITenantsFilterRequest = {
+  searchTerm?: string | undefined;
+  tenantId?: string | undefined;
+  createdAt?: string | undefined;
+};

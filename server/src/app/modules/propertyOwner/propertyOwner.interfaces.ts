@@ -4,3 +4,9 @@ export type IPropertyOwnerUpdateRequest = {
   phoneNumber?: string;
   oldProfileImagePath?: string;
 };
+
+export type IPropertyOwnerFilterRequest = {
+  searchTerm?: string | undefined;
+  propertyOwnerId?: string | undefined;
+  createdAt?: string | undefined;
+};
