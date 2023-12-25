@@ -4,6 +4,8 @@ import { AuthRoutes } from '../modules/auth/auth.routes';
 
 import { PropertiesRoutes } from '../modules/properties/properties.routes';
 import { PropertyOwnerRouter } from '../modules/propertyOwner/propertyOwner.routes';
+import { ServiceProviderRouter } from '../modules/serviceProviders/serviceProvider.routes';
+import { TenantsRouters } from '../modules/tenants/tenants.routes';
 
 const router = express.Router();
 
@@ -19,6 +21,14 @@ const moduleRoutes = [
   {
     path: '/property-owner',
     route: PropertyOwnerRouter,
+  },
+  {
+    path: '/service-provider',
+    route: ServiceProviderRouter,
+  },
+  {
+    path: '/tenants',
+    route: TenantsRouters,
   },
 ];
 

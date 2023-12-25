@@ -26,42 +26,48 @@ model User {
 }
 
 model Tenant {
-  tenantId                  String   @id @default(uuid()) // Change uuid() to auto() for the primary key
-  userId                    String   @unique
-  firstName                 String
-  lastName                  String
-  photo                     String?
-  phone                     String?
-  // dateOfBirth             DateTime?
-  socialSecurityNumber      String?
-  drivingLicenseNumber      String?
-  presentAddress            String?
-  isCriminalRecord          Boolean?
-  criminalRecordDescription String?
-  CurrentEmployer           String?
-  EmployerContactInfo       String?
-  JobTitle                  String?
-  AnnualSalary              Int?
-  OtherIncomeSource         String?
-  CurrentCreditScore        Int?
-  isSmoker                  Boolean?
-  allergies                 String?
-  isHaveOtherMember         Boolean?
-  numberOfMember            Int?
-  isPets                    Boolean?
-  typeOfPets                String?
-  isPetVacinated            Boolean?
-  isAgree                   Boolean?
-  comment                   String?
-  prevLandlordName          String?
-  prevLandlordContactInfo   String?
-  lengthOfPrevTenancy       String?
-  affordableRentAmount      Int?
-  leavingReason             String?
-  isLatePaid                Boolean?
-  createdAt                 DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt                 DateTime @updatedAt @db.Timestamptz(0)
-  user                      User     @relation(fields: [userId], references: [userId])
+  tenantId                             String    @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId                               String    @unique
+  // personal information
+  firstName                            String
+  lastName                             String
+  profileImage                         String?
+  phoneNumber                          String?
+  dateOfBirth                          DateTime?
+  presentAddress                       String?
+  socialSecurityNumber                 String?
+  drivingLicenseNumber                 String?
+  isCriminalRecord                     Boolean?
+  criminalRecordDescription            String?
+  // income information
+  CurrentEmployerOrBusinessName        String?
+  CurrentEmployerOrBusinessContactInfo String?
+  JobTitle                             String?
+  AnnualSalary                         Int?
+  OtherIncomeSource                    String?
+  CurrentCreditScore                   Int?
+  // other information
+  isSmoker                             Boolean?
+  allergies                            String?
+  isHaveOtherMember                    Boolean?
+  numberOfMember                       Int?
+  isWillingToSignLeasingAgreement      Int?
+  isAnyExtraToMention                  String?
+  // pets
+  isPets                               Boolean?
+  typeOfPets                           String?
+  isPetVaccinated                      Boolean?
+  // rental history
+  prevLandlordName                     String?
+  prevLandlordContactInfo              String?
+  lengthOfPrevTenancy                  String?
+  affordableRentAmount                 Int?
+  leavingReason                        String?
+  isAnyLatePaymentReason               String?
+  // 
+  createdAt                            DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt                            DateTime  @updatedAt @db.Timestamptz(0)
+  user                                 User      @relation(fields: [userId], references: [userId])
 
   @@map("tenants")
 }
@@ -82,16 +88,20 @@ model PropertyOwner {
 }
 
 model ServiceProvider {
-  serviceProviderId String   @id @default(uuid()) // Change uuid() to auto() for the primary key
-  firstName         String
-  lastName          String
-  photo             String?
-  phone             String?
-  userId            String   @unique
-  createdAt         DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt         DateTime @updatedAt @db.Timestamptz(0)
-  user              User     @relation(fields: [userId], references: [userId])
-  Service           Service?
+  serviceProviderId   String   @id @default(uuid()) // Change uuid() to auto() for the primary key
+  firstName           String
+  lastName            String
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  userId              String   @unique
+  createdAt           DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(0)
+  user                User     @relation(fields: [userId], references: [userId])
+  Service             Service?
 
   @@map("serviceProviders")
 }
