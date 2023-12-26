@@ -125,17 +125,17 @@ model Property {
 }
 
 model Service {
-  serviceId                 String                  @id @default(uuid())
-  servicePriceRange         String
-  serviceDescription        String
-  serviceLocation           String
-  serviceCancellationPolicy String
-  serviceAvailability       ServiceAvailabilityEnum
-  serviceType               ServiceType
-  ownerId                   String?                 @unique
-  owner                     ServiceProvider?        @relation(fields: [ownerId], references: [serviceProviderId])
-  createdAt                 DateTime                @default(now())
-  updatedAt                 DateTime                @updatedAt
+  serviceId                 String                   @id @default(uuid())
+  servicePriceRange         String?
+  serviceDescription        String?
+  serviceLocation           String?
+  serviceCancellationPolicy String?
+  serviceAvailability       ServiceAvailabilityEnum?
+  serviceType               ServiceType?
+  ownerId                   String?                  @unique
+  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId])
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
 
   @@map("Services")
 }
