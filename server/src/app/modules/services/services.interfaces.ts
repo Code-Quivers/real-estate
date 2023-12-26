@@ -1,34 +1,16 @@
-import { IUploadFile } from '../../../interfaces/file';
+import { ServiceAvailabilityEnum, ServiceType } from "@prisma/client";
 
-export type IPropertyData = {
-  numOfBed: number;
-  numOfBath: number;
-  address: string;
-  description: string;
-  maintenanceCoveredTenant: string;
-  maintenanceCoveredOwner: string;
-  schools: string;
-  universities: string;
-  allowedPets: string;
-  profileId: string;
-  images: IUploadFile[];
-};
-export type IPropertyReqPayload = {
-  numOfBed: number;
-  numOfBath: number;
-  address: string;
-  description: string;
-  maintenanceCoveredTenant: string;
-  maintenanceCoveredOwner: string;
-  schools: string;
-  universities: string;
-  allowedPets: string;
+export type IServiceUpdateRequest = {
+  servicePriceRange?: string;
+  serviceDescription?: string;
+  serviceLocation?: string;
+  serviceCancellationPolicy?: string;
+  serviceAvailability?: ServiceAvailabilityEnum;
+  serviceType?: ServiceType;
 };
 export type IPropertiesFilterRequest = {
   searchTerm?: string | undefined;
-  propertyId?: string | undefined;
+  serviceId?: string | undefined;
   ownerId?: string | undefined;
-  // numOfBed?: number | undefined;
-  // numOfBath?: number | undefined;
   createdAt?: string | undefined;
 };
