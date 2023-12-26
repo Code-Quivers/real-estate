@@ -8,7 +8,7 @@ export type IServiceUpdateRequest = {
   serviceAvailability?: ServiceAvailabilityEnum;
   serviceType?: ServiceType;
 };
-export type IPropertiesFilterRequest = {
+export type IServiceFilterRequest = {
   searchTerm?: string | undefined;
   serviceId?: string | undefined;
   ownerId?: string | undefined;
