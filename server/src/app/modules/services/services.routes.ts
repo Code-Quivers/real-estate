@@ -4,7 +4,6 @@ import auth from "../../middlewares/auth";
 import { UserRoles } from "@prisma/client";
 import validateRequest from "../../middlewares/validateRequest";
 import { ServicesValidation } from "./services.validation";
-
 const router = express.Router();
 
 // ! get all tenants
