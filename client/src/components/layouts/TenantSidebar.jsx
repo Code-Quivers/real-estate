@@ -6,11 +6,17 @@ import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { removeUserInfo } from "@/hooks/services/auth.service";
+import { getAuthKey } from "@/configs/envConfig";
 
 const TenantSidebar = () => {
   const activeLink = usePathname();
-
+  const router = useRouter();
+  const logOut = () => {
+    removeUserInfo(getAuthKey());
+    router.push("/");
+  };
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
       <Sidenav
@@ -111,12 +117,26 @@ const TenantSidebar = () => {
               }`}
               style={{
                 backgroundColor: "#29429f",
-                borderBottom: "2px solid #000",
               }}
               eventKey="7"
               icon={<GroupIcon />}
             >
               Requests
+            </Nav.Item>{" "}
+            <Nav.Item
+              onClick={logOut}
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/maintenance-requests" &&
+                "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+                borderBottom: "2px solid #000",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Log Out
             </Nav.Item>
           </Nav>
         </Sidenav.Body>

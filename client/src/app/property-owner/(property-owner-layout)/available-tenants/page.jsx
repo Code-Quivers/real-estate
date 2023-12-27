@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
 import { Popover, Whisper } from "rsuite";
@@ -7,6 +8,8 @@ import Image from "next/image";
 import { useState } from "react";
 
 import AvailableTenantsModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
+import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
+import { useDebounced } from "@/redux/hook";
 
 const PropertyOwnerServiceProviders = () => {
   const datas = [
@@ -65,8 +68,45 @@ const PropertyOwnerServiceProviders = () => {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
     },
   ];
+  const query = {};
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFactory, setSelectedFactory] = useState(undefined);
+  const [selectedItem, setSelectedItem] = useState();
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  // filter
+  query["limit"] = size;
+  query["page"] = page;
+  query["sortBy"] = sortBy;
+  query["sortOrder"] = sortOrder;
+  query["factoryId"] = selectedFactory;
+  query["itemId"] = selectedItem;
+  query["startDate"] = selectedDate.startDate;
+  query["endDate"] = selectedDate.endDate;
+  // debounce for slow search
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 300,
+  });
 
+  if (!!debouncedTerm) {
+    query["searchTerm"] = debouncedTerm;
+  }
+
+  const {
+    data: allTenantsLists,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetAllAvailableTenantsQuery({ ...query });
   //
+  console.log(allTenantsLists);
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
@@ -80,7 +120,12 @@ const PropertyOwnerServiceProviders = () => {
         {/* tenant name */}
         <div className="max-lg:col-span-3 col-span-3 w-full">
           <InputGroup size="lg" inside style={{ borderRadius: "0 !important" }}>
-            <AutoComplete placeholder="Tenant Name" size="lg" data={datas} />
+            <AutoComplete
+              onChange={(e) => setSearchTerm(e)}
+              placeholder="Tenant Name"
+              size="lg"
+              data={datas}
+            />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -94,7 +139,12 @@ const PropertyOwnerServiceProviders = () => {
             className="lg:!w-full"
             style={{ borderRadius: "0 !important" }}
           >
-            <AutoComplete placeholder="Address" size="lg" data={datas} />
+            <AutoComplete
+              onChange={(e) => console.log(e)}
+              placeholder="Address"
+              size="lg"
+              data={datas}
+            />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -118,33 +168,34 @@ const PropertyOwnerServiceProviders = () => {
 
       {/* all cards */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allRequest?.map((singleReq) => (
-          <Whisper
-            placement="bottom"
-            trigger="hover"
-            controlId="control-id-hover"
-            speaker={
-              <Popover>
-                <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
-                  <div>
-                    <Image
-                      className="w-[80px] bg-red-800 h-full object-cover     "
-                      src={singleReq?.image}
-                      alt="photo"
-                    />
-                  </div>
-                  <div className="py-2">
-                    <h3 className="text-base ">3 Bed 3 Bath</h3>
-                    <h3 className="text-base w-[80%]">
-                      3 Belair Dr, Binghamton, NY 13901
-                    </h3>
-                  </div>
-                </div>
-                <div className="h-[80px] w-full"></div>
-              </Popover>
-            }
-            key={Math.random()}
-          >
+        {allTenantsLists?.data?.data?.length &&
+          allTenantsLists?.data?.data?.map((singleReq) => (
+            // <Whisper
+            //   placement="bottom"
+            //   trigger="hover"
+            //   controlId="control-id-hover"
+            //   speaker={
+            //     <Popover>
+            //       <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
+            //         <div>
+            //           <Image
+            //             className="w-[80px] bg-red-800 h-full object-cover     "
+            //             src={singleReq?.image}
+            //             alt="photo"
+            //           />
+            //         </div>
+            //         <div className="py-2">
+            //           <h3 className="text-base ">3 Bed 3 Bath</h3>
+            //           <h3 className="text-base w-[80%]">
+            //             3 Belair Dr, Binghamton, NY 13901
+            //           </h3>
+            //         </div>
+            //       </div>
+            //       <div className="h-[80px] w-full"></div>
+            //     </Popover>
+            //   }
+            //   key={Math.random()}
+            // >
             <div
               key={Math.random()}
               onClick={() => {
@@ -162,7 +213,9 @@ const PropertyOwnerServiceProviders = () => {
               </div>
               <div className="p-3 flex justify-between w-full ">
                 <div className="space-y-0.5">
-                  <h3 className="text-sm font-medium">Tenant Name</h3>
+                  <h3 className="text-sm font-medium">
+                    {singleReq?.firstName} {singleReq?.lastName}
+                  </h3>
                   <h3 className="text-sm font-medium">Place to rent</h3>
                   <h3 className="text-sm font-medium">Rent willing to pay</h3>
                 </div>
@@ -175,8 +228,8 @@ const PropertyOwnerServiceProviders = () => {
                 </div>
               </div>
             </div>
-          </Whisper>
-        ))}
+            // </Whisper>
+          ))}
 
         <>
           <AvailableTenantsModal
