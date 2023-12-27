@@ -1,5 +1,5 @@
 import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
-import MaintenanceRequestAction from "../client/src/components/property-owner/maintenance-request/MaintenanceRequestAction";
+// import MaintenanceRequestAction from "../client/src/components/property-owner/maintenance-request/MaintenanceRequestAction";
 import Image from "next/image";
 
 const MaintenanceRequest = () => {
@@ -56,9 +56,7 @@ const MaintenanceRequest = () => {
                     {singleReq.PriorityType}
                   </h3>
                 </div>
-                <div>
-                  <MaintenanceRequestAction />
-                </div>
+                <div>{/* <MaintenanceRequestAction /> */}</div>
               </div>
             </div>
           ))}
