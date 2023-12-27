@@ -1,6 +1,6 @@
 "use client";
 
-import tenantLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
+import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
 import { Button, Form, Input, InputGroup, useToaster } from "rsuite";
@@ -11,7 +11,7 @@ import Link from "next/link";
 import EmailFillIcon from "@rsuite/icons/EmailFill";
 import { FaLock } from "react-icons/fa";
 import { Controller, useForm } from "react-hook-form";
-import { useTenantSignUpMutation } from "@/redux/features/auth/authApi";
+import { useServiceProviderSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
 
@@ -21,11 +21,13 @@ const style = {
   overflow: "hidden !important",
 };
 
-const TenantSignUp = () => {
+const ServiceProviderSignUpPage = () => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
-  const [tenantSignUp, { isLoading, error, isSuccess, isError, data }] =
-    useTenantSignUpMutation();
+  const [
+    serviceProviderSignUp,
+    { isLoading, error, isSuccess, isError, data },
+  ] = useServiceProviderSignUpMutation();
 
   const router = useRouter();
   const toaster = useToaster();
@@ -36,30 +38,23 @@ const TenantSignUp = () => {
     watch,
   } = useForm();
 
-  const handleChange = () => {
-    setVisible(!visible);
-  };
-
-  const handleChange2 = () => {
-    setVisible2(!visible2);
-  };
   const password = watch("password");
 
-  const handleTenantSignUp = async (user) => {
-    const tenantSignUpData = {
+  const handleServiceProviderSignUp = async (user) => {
+    const serviceProviderData = {
       firstName: user?.firstName,
       lastName: user?.lastName,
       userName: user?.userName,
       email: user?.email,
       password: user?.password,
     };
-    await tenantSignUp({ data: tenantSignUpData }).unwrap();
+    await serviceProviderSignUp({ data: serviceProviderData }).unwrap();
   };
 
   useEffect(() => {
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       toaster.push(SignUpSuccessMessage(), { placement: "bottomStart" });
-      router.push("/tenant/login");
+      router.push("/service-provider/login");
     }
   }, [isSuccess, isLoading, isError, error, data]);
 
@@ -71,7 +66,7 @@ const TenantSignUp = () => {
         </div>
         {/* input forms */}
         <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto ">
-          <form onSubmit={handleSubmit(handleTenantSignUp)}>
+          <form onSubmit={handleSubmit(handleServiceProviderSignUp)}>
             <div className="space-y-6 lg:space-y-3">
               {/* first Name */}
               <div>
@@ -220,7 +215,11 @@ const TenantSignUp = () => {
                           type={visible ? "text" : "password"}
                           placeholder="Password"
                         />
-                        <InputGroup.Button onClick={handleChange}>
+                        <InputGroup.Button
+                          onClick={() => {
+                            setVisible(!visible);
+                          }}
+                        >
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
@@ -258,7 +257,11 @@ const TenantSignUp = () => {
                           type={visible2 ? "text" : "password"}
                           placeholder="Confirm Password"
                         />
-                        <InputGroup.Button onClick={handleChange2}>
+                        <InputGroup.Button
+                          onClick={() => {
+                            setVisible2(!visible2);
+                          }}
+                        >
                           {visible2 ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
@@ -279,6 +282,7 @@ const TenantSignUp = () => {
             </div>
             <div className="mt-10 flex justify-center">
               <Button
+                loading={isLoading}
                 type="submit"
                 size="lg"
                 className="!rounded-full !px-8 !py-3.5 "
@@ -293,14 +297,11 @@ const TenantSignUp = () => {
         <div className="mt-5">
           <p className="font-semibold">
             Already have an Account?{" "}
-            <Link className="text-blue-800" href="/tenant-login">
+            <Link
+              className="text-blue-800 hover:underline"
+              href="/service-provider/login"
+            >
               Sign In
-            </Link>
-          </p>
-          <p className="font-semibold text-center">
-            Forgot?{" "}
-            <Link className="text-blue-800" href="#">
-              Reset
             </Link>
           </p>
         </div>
@@ -309,12 +310,12 @@ const TenantSignUp = () => {
       <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
         <Image
           className="object-cover"
-          src={tenantLoginImage}
-          alt="Tenant Login Image"
+          src={serviceProviderLoginImage}
+          alt="Service Provider Sign-Up Image"
         />
       </div>
     </div>
   );
 };
 
-export default TenantSignUp;
+export default ServiceProviderSignUpPage;

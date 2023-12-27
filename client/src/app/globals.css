@@ -32,6 +32,7 @@ body::-webkit-scrollbar-thumb {
 /* !others */
 .rs-modal-wrapper {
   display: flex;
+  position: fixed;
   align-items: center;
 }
 

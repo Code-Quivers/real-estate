@@ -1,7 +1,6 @@
 "use client";
 
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
-
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
 import { Button, Form, Input, InputGroup, toaster } from "rsuite";
@@ -43,7 +42,7 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm();
 
-  const handleTenantSignUp = async (user) => {
+  const handleServiceProviderLogin = async (user) => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
@@ -63,7 +62,7 @@ const LoginPage = () => {
         router.push("/service-provider");
     }
     if ((isSuccess && !isLoading && !isError, !error && data)) {
-      router.push("/tenant");
+      router.push("/service-provider");
       toaster.push(LoginSuccessMessage(data?.message), {
         placement: "bottomStart",
       });
@@ -91,7 +90,7 @@ const LoginPage = () => {
         <Image
           className="object-cover h-screen"
           src={tenantLoginImage}
-          alt="Tenant Login Image"
+          alt="Service Provider Login Image"
         />
       </div>
       <div className="w-full  col-span-1  ">
@@ -100,7 +99,7 @@ const LoginPage = () => {
         </div>
 
         <div className="w-[90%] lg:w-[80%] mx-auto">
-          <form onSubmit={handleSubmit(handleTenantSignUp)}>
+          <form onSubmit={handleSubmit(handleServiceProviderLogin)}>
             <div className="space-y-6 lg:space-y-3">
               <div>
                 <Controller
@@ -197,8 +196,8 @@ const LoginPage = () => {
 
         <div className="mt-20 flex justify-center">
           <p className="font-semibold">
-            Need an Account?{" "}
-            <Link className="text-blue-800" href="/tenant/sign-up">
+            Need an Account?
+            <Link className="text-blue-800" href="/service-provider/sign-up">
               Sign Up
             </Link>
           </p>

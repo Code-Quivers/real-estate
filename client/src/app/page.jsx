@@ -9,17 +9,17 @@ const HomePage = () => {
     {
       title: "Tenant",
       image: tenantImage,
-      href: "/tenant",
+      href: "/tenant/login",
     },
     {
       title: "Property Owner",
       image: propertyOwnerImage,
-      href: "/property-owner",
+      href: "/property-owner/login",
     },
     {
       title: "Service Provider",
       image: serviceProviderImage,
-      href: "/service-provider",
+      href: "/service-provider/login",
     },
   ];
   return (
