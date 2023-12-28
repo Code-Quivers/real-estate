@@ -1,4 +1,4 @@
-export const servicesFilterableFields: string[] = ["serviceId", "searchTerm", "ownerId", "createdAt"];
+export const servicesFilterableFields: string[] = ["serviceId", "searchTerm", "ownerId", "serviceType", "serviceAvailability"];
 
 export const servicesSearchableFields: string[] = ["address", "description"];
 
