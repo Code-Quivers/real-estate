@@ -20,6 +20,8 @@ router.get(
   auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
   ServiceProviderControllers.getSingleServiceProvider,
 );
+// ! getServiceProviderMyProfile
+router.get("/get-my-profile", auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER), ServiceProviderControllers.getServiceProviderMyProfile);
 
 // ! update service provider
 router.patch(

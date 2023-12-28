@@ -12,7 +12,27 @@ export const serviceProviderApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.serviceProvider],
     }),
+    getServiceProviderMyProfile: builder.query({
+      query: () => ({
+        url: "/service-providers/get-my-profile",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.serviceProvider],
+    }),
+    updateMyServiceProviderMyProfile: builder.mutation({
+      query: ({ serviceProviderId, data }) => ({
+        url: `/service-providers/update-profile/${serviceProviderId}`,
+        method: "PATCH",
+        data: data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.serviceProvider],
+    }),
   }),
 });
 
-export const { useGetAllServiceProvidersQuery } = serviceProviderApi;
+export const {
+  useGetAllServiceProvidersQuery,
+  useGetServiceProviderMyProfileQuery,
+  useUpdateMyServiceProviderMyProfileMutation,
+} = serviceProviderApi;

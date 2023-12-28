@@ -117,6 +117,32 @@ const getSingleServiceProvider = async (serviceProviderId: string): Promise<Serv
 
   return result;
 };
+// ! getServiceProviderMyProfile
+const getServiceProviderMyProfile = async (serviceProviderId: string): Promise<ServiceProvider | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const serviceProvider = await transactionClient.serviceProvider.findUnique({
+      where: {
+        serviceProviderId,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            createdAt: true,
+          },
+        },
+        Service: true,
+      },
+    });
+
+    if (!serviceProvider) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Profile Not Found!!!");
+    }
+    return serviceProvider;
+  });
+
+  return result;
+};
 
 // ! update service provider
 const UpdateServiceProvider = async (serviceProviderId: string, req: Request) => {
@@ -176,4 +202,4 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
   return result;
 };
 
-export const ServiceProviderServices = { getAllServiceProviders, getSingleServiceProvider, UpdateServiceProvider };
+export const ServiceProviderServices = { getAllServiceProviders, getSingleServiceProvider, UpdateServiceProvider, getServiceProviderMyProfile };
