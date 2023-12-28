@@ -13,9 +13,9 @@ const data = [
   "Albert",
 ].map((item) => ({ label: item, value: item }));
 
-const ServiceProviderServiceInformation = () => {
+const ServiceProviderServiceInformationEdit = () => {
   return (
-    <div className="mt-10">
+    <div className="mt-6">
       {/* title */}
       <div className="flex justify-center">
         <h2 className="font-semibold text-2xl">Service Information</h2>
@@ -78,4 +78,4 @@ const ServiceProviderServiceInformation = () => {
   );
 };
 
-export default ServiceProviderServiceInformation;
+export default ServiceProviderServiceInformationEdit;

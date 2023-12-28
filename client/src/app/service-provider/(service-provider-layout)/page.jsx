@@ -4,7 +4,8 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import ServiceProviderDashboardButton from "@/components/Shared/Button/ServiceProviderDashboardButton";
 import { useSearchParams } from "next/navigation";
-import ServiceProviderServiceInformation from "@/components/service-provider/information/ServiceProviderServiceInformation";
+import ServiceProviderProfileInformationEdit from "@/components/service-provider/information/ServiceProviderProfileInformationEdit";
+import ServiceProviderServiceInformationEdit from "@/components/service-provider/information/ServiceProviderServiceInformationEdit";
 
 const ServiceProviderProfileInformation = () => {
   const paramsName = useSearchParams().get("params");
@@ -61,38 +62,32 @@ const ServiceProviderProfileInformation = () => {
         </div>
       </div>
 
-      {paramsName === "account-information" && (
-        <div className="grid mt-10    md:grid-cols-1 md:mr-3 lg:mr-0 lg:grid-cols-8 gap-5 ">
-          <div className="col-span-4 ">
-            {/* account information */}
-            <div className=" space-y-4">
-              <div>
-                <h4 className="text-xl font-bold">Company Name</h4>
-                <p className="text-lg font-medium">PipFixes LLC</p>
-              </div>
-              <div>
-                <h4 className="text-xl font-bold">Company Address</h4>
-                <p className="text-lg font-medium">123 George St Atlanta GA</p>
-              </div>
-            </div>
+      {paramsName === null && (
+        <div className="grid grid-cols-2  gap-5 gap-x-10 mt-10">
+          <div className="space-y-2">
+            <h2 className="font-bold text-2xl">Company Name</h2>
+            <p className="text-lg font-medium">PipFixes LLC</p>
           </div>
-          <div className="col-span-4 ">
-            {/* information */}
-            <div className=" space-y-4 lg:ml-3">
-              <div>
-                <h4 className="text-xl font-bold">Company Phone</h4>
-                <p className="text-lg font-medium">123 - 532 - 2351</p>
-              </div>
-              <div>
-                <h4 className="text-xl font-bold">Company Email</h4>
-                <p className="text-lg font-medium">support@pipfixes.com</p>
-              </div>
-            </div>
+          <div className="space-y-2">
+            <h2 className="font-bold text-2xl">Company Phone</h2>
+            <p className="text-lg font-medium">123-532-2351</p>
+          </div>{" "}
+          <div className="space-y-2">
+            <h2 className="font-bold text-2xl">Company Address</h2>
+            <p className="text-lg font-medium">123 George St Atlanta GA</p>
+          </div>{" "}
+          <div className="space-y-2">
+            <h2 className="font-bold text-2xl">Company Email</h2>
+            <p className="text-lg font-medium">support@pipfixes.com</p>
           </div>
         </div>
       )}
+
+      {paramsName === "account-information" && (
+        <ServiceProviderProfileInformationEdit />
+      )}
       {paramsName === "service-information" && (
-        <ServiceProviderServiceInformation />
+        <ServiceProviderServiceInformationEdit />
       )}
     </section>
   );
