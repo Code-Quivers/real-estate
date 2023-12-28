@@ -8,7 +8,11 @@ import { ServiceProviderValidation } from "./serviceProvider.validation";
 const router = express.Router();
 
 // ! get all property owners
-router.get("/get-all-service-providers", auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER), ServiceProviderControllers.getAllServiceProviders);
+router.get(
+  "/get-all-service-providers",
+  auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
+  ServiceProviderControllers.getAllServiceProviders,
+);
 
 // ! get single service provider
 router.get(
