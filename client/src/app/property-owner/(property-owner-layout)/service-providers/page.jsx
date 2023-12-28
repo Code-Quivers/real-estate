@@ -1,27 +1,17 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Popover, SelectPicker, Whisper } from "rsuite";
+import { SelectPicker } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
 import MaintenanceServiceProviderModal from "../../../../components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
 import { useDebounced } from "@/redux/hook";
+import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
-import { useGetAllServicesQuery } from "@/redux/features/services/servicesApi";
-
+// !
 const PropertyOwnerServiceProviders = () => {
-  const data = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-  ].map((item) => ({ label: item, value: item }));
   const datas = [
     "Eugenia",
     "Bryan",
@@ -49,12 +39,18 @@ const PropertyOwnerServiceProviders = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedServiceAvailability, setSelectedServiceAvailability] =
+    useState(undefined);
+  const [selectedServiceType, setSelectedServiceType] = useState(undefined);
 
   // filter
   query["limit"] = size;
   query["page"] = page;
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
+  query["serviceAvailability"] = selectedServiceAvailability;
+  query["serviceType"] = selectedServiceType;
+
   // debounce for slow search
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -65,11 +61,11 @@ const PropertyOwnerServiceProviders = () => {
   }
 
   const {
-    data: allServicesLists,
+    data: allServiceProviderLists,
     isLoading,
     isFetching,
     isError,
-  } = useGetAllServicesQuery({ ...query });
+  } = useGetAllServiceProvidersQuery({ ...query });
 
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
@@ -81,7 +77,7 @@ const PropertyOwnerServiceProviders = () => {
         <h2 className="text-4xl ">Service Providers</h2>
       </div>
       {/* search with price section start */}
-      <div className="grid grid-cols-5 max-lg:gap-2 lg:flex w-full border  mt-5 lg:mt-10   ">
+      <div className="grid grid-cols-5 max-lg:gap-2 lg:flex w-full border  mt-5 lg:mt-10 gap-0.5   ">
         <div className="max-lg:col-span-3">
           <InputGroup
             size="lg"
@@ -90,6 +86,7 @@ const PropertyOwnerServiceProviders = () => {
             style={{ borderRadius: "0 !important" }}
           >
             <AutoComplete
+              onChange={(e) => setSearchTerm(e)}
               placeholder="Service Provider"
               size="lg"
               data={datas}
@@ -103,8 +100,10 @@ const PropertyOwnerServiceProviders = () => {
           <SelectPicker
             placement="bottomEnd"
             size="lg"
+            searchable={false}
             placeholder="Service Type"
-            data={data}
+            onChange={(value) => setSelectedServiceType(value)}
+            data={serviceTypes}
             style={{
               borderRadius: "0px !important",
               width: "210px !important",
@@ -127,9 +126,11 @@ const PropertyOwnerServiceProviders = () => {
         <div className="max-lg:col-span-2">
           <SelectPicker
             size="lg"
+            searchable={false}
+            onChange={(value) => setSelectedServiceAvailability(value)}
             placement="bottomEnd"
-            placeholder="Priority Type"
-            data={data}
+            placeholder="Priority Availability"
+            data={serviceAvailability}
             style={{
               borderRadius: "0px !important",
               width: "200px !important",
@@ -140,34 +141,7 @@ const PropertyOwnerServiceProviders = () => {
 
       {/* all cards */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allServicesLists?.data?.data?.map((singleReq) => (
-          // <Whisper
-          //   placement="top"
-          //   trigger="hover"
-          //   controlId="control-id-hover"
-          //   speaker={
-          //     <Popover>
-          //       <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
-          //         <div>
-          //           <Image
-          //             className="w-[100px] bg-red-800 h-full object-cover     "
-          //             src={singleReq?.image}
-          //             alt="photo"
-          //           />
-          //         </div>
-          //         <div className="py-2">
-          //           <h3 className="text-base ">${singleReq?.servicePrice}</h3>
-          //           <h3 className="text-base ">3 Bed 3 Bath</h3>
-          //           <h3 className="text-base w-[80%]">
-          //             3 Belair Dr, Binghamton, NY 13901
-          //           </h3>
-          //         </div>
-          //       </div>
-          //       <div className="h-[80px] w-full"></div>
-          //     </Popover>
-          //   }
-          //   key={Math.random()}
-          // >
+        {allServiceProviderLists?.data?.data?.map((singleReq) => (
           <div
             key={Math.random()}
             onClick={() => {
@@ -186,15 +160,17 @@ const PropertyOwnerServiceProviders = () => {
             <div className="p-5 flex justify-between w-full ">
               <div className="space-y-0.5">
                 <h3 className="text-base font-medium">
-                  {singleReq?.owner?.firstName} &nbsp;
-                  {singleReq?.owner?.lastName}
+                  {singleReq?.firstName} &nbsp;
+                  {singleReq?.lastName}
                 </h3>
 
                 <h3 className="text-base font-medium">
-                  Service Type : {singleReq?.serviceType ?? "Not Found"}
+                  Service Type :{" "}
+                  {singleReq?.Service?.serviceType ?? "Not Found"}
                 </h3>
                 <h3 className="text-base font-medium">
-                  Service Price : ${singleReq?.servicePriceRange ?? 1000}
+                  Service Price : $
+                  {singleReq?.Service?.servicePriceRange ?? 1000}
                 </h3>
               </div>
             </div>
@@ -206,7 +182,6 @@ const PropertyOwnerServiceProviders = () => {
               </div>
             </div>
           </div>
-          // </Whisper>
         ))}
 
         <>

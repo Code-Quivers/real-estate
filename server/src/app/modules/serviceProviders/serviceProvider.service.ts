@@ -54,14 +54,15 @@ const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, op
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allServiceProvider = await transactionClient.serviceProvider.findMany({
+      where: whereConditions,
       include: {
         user: {
           select: {
             email: true,
           },
         },
+        Service: true,
       },
-      where: whereConditions,
       skip,
       take: limit,
       orderBy:
