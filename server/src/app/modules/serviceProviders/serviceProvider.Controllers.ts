@@ -5,6 +5,7 @@ import { ServiceProviderServices } from "./serviceProvider.service";
 import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import { serviceProviderFilterableFields } from "./serviceProvider.constants";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 
 // ! get all Service Providers
 const getAllServiceProviders = catchAsync(async (req: Request, res: Response) => {
@@ -34,6 +35,18 @@ const getSingleServiceProvider = catchAsync(async (req: Request, res: Response) 
     data: result,
   });
 });
+// ! getServiceProviderMyProfile
+const getServiceProviderMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const serviceProviderId = (req.user as IRequestUser).profileId;
+  const result = await ServiceProviderServices.getSingleServiceProvider(serviceProviderId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Service Provider My Profile Information retrieved successful!",
+    data: result,
+  });
+});
 
 // ! update service provider
 const UpdateServiceProvider = catchAsync(async (req: Request, res: Response) => {
@@ -49,4 +62,4 @@ const UpdateServiceProvider = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
-export const ServiceProviderControllers = { getAllServiceProviders, getSingleServiceProvider, UpdateServiceProvider };
+export const ServiceProviderControllers = { getAllServiceProviders, getSingleServiceProvider, UpdateServiceProvider, getServiceProviderMyProfile };

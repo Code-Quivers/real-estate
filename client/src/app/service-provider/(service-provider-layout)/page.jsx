@@ -6,9 +6,14 @@ import ServiceProviderDashboardButton from "@/components/Shared/Button/ServicePr
 import { useSearchParams } from "next/navigation";
 import ServiceProviderProfileInformationEdit from "@/components/service-provider/information/ServiceProviderProfileInformationEdit";
 import ServiceProviderServiceInformationEdit from "@/components/service-provider/information/ServiceProviderServiceInformationEdit";
+import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 
 const ServiceProviderProfileInformation = () => {
   const paramsName = useSearchParams().get("params");
+
+  const { data, isLoading, isError, error } =
+    useGetServiceProviderMyProfileQuery(null);
+  const { data: myProfileData } = data || {};
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-10    2xl:px-0 ">
@@ -66,28 +71,36 @@ const ServiceProviderProfileInformation = () => {
         <div className="grid grid-cols-2  gap-5 gap-x-10 mt-10">
           <div className="space-y-2">
             <h2 className="font-bold text-2xl">Company Name</h2>
-            <p className="text-lg font-medium">PipFixes LLC</p>
+            <p className="text-lg font-medium">
+              {myProfileData?.companyName ?? "--"}
+            </p>
           </div>
           <div className="space-y-2">
             <h2 className="font-bold text-2xl">Company Phone</h2>
-            <p className="text-lg font-medium">123-532-2351</p>
-          </div>{" "}
+            <p className="text-lg font-medium">
+              {myProfileData?.companyPhoneNumber ?? "--"}
+            </p>
+          </div>
           <div className="space-y-2">
             <h2 className="font-bold text-2xl">Company Address</h2>
-            <p className="text-lg font-medium">123 George St Atlanta GA</p>
-          </div>{" "}
+            <p className="text-lg font-medium">
+              {myProfileData?.companyAddress ?? "--"}
+            </p>
+          </div>
           <div className="space-y-2">
             <h2 className="font-bold text-2xl">Company Email</h2>
-            <p className="text-lg font-medium">support@pipfixes.com</p>
+            <p className="text-lg font-medium">
+              {myProfileData?.companyEmailAddress ?? "--"}
+            </p>
           </div>
         </div>
       )}
 
       {paramsName === "account-information" && (
-        <ServiceProviderProfileInformationEdit />
+        <ServiceProviderProfileInformationEdit myProfileData={myProfileData} />
       )}
       {paramsName === "service-information" && (
-        <ServiceProviderServiceInformationEdit />
+        <ServiceProviderServiceInformationEdit myProfileData={myProfileData} />
       )}
     </section>
   );
