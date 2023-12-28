@@ -1,7 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Popover, Whisper } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
@@ -33,70 +32,34 @@ const PropertyOwnerServiceProviders = () => {
     "Hilda",
   ];
 
-  const allRequest = [
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 200,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 5200,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 400,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-  ];
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFactory, setSelectedFactory] = useState(undefined);
-  const [selectedItem, setSelectedItem] = useState();
-  const [selectedDate, setSelectedDate] = useState({
-    startDate: "",
-    endDate: "",
-  });
+  const [presentAddress, setPresentAddress] = useState("");
+
   // filter
   query["limit"] = size;
   query["page"] = page;
   query["sortBy"] = sortBy;
   query["sortOrder"] = sortOrder;
-  query["factoryId"] = selectedFactory;
-  query["itemId"] = selectedItem;
-  query["startDate"] = selectedDate.startDate;
-  query["endDate"] = selectedDate.endDate;
   // debounce for slow search
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 300,
   });
-
   if (!!debouncedTerm) {
     query["searchTerm"] = debouncedTerm;
+  }
+  const debouncedTermAddress = useDebounced({
+    searchQuery: presentAddress,
+    delay: 1000,
+  });
+
+  if (!!debouncedTermAddress) {
+    query["presentAddress"] = debouncedTermAddress;
   }
 
   const {
@@ -106,7 +69,6 @@ const PropertyOwnerServiceProviders = () => {
     isError,
   } = useGetAllAvailableTenantsQuery({ ...query });
   //
-  console.log(allTenantsLists);
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
@@ -140,7 +102,7 @@ const PropertyOwnerServiceProviders = () => {
             style={{ borderRadius: "0 !important" }}
           >
             <AutoComplete
-              onChange={(e) => console.log(e)}
+              onChange={(e) => setPresentAddress(e)}
               placeholder="Address"
               size="lg"
               data={datas}
@@ -207,7 +169,7 @@ const PropertyOwnerServiceProviders = () => {
               <div>
                 <Image
                   className="w-[80px] h-[65px] object-cover   rounded-full  "
-                  src={singleReq?.image}
+                  src={profileLogo}
                   alt="photo"
                 />
               </div>

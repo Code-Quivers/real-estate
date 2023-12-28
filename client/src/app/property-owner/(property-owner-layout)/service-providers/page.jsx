@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
 import { Popover, SelectPicker, Whisper } from "rsuite";
@@ -6,6 +7,9 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
 import MaintenanceServiceProviderModal from "../../../../components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
+import { useDebounced } from "@/redux/hook";
+import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import { useGetAllServicesQuery } from "@/redux/features/services/servicesApi";
 
 const PropertyOwnerServiceProviders = () => {
   const data = [
@@ -39,41 +43,33 @@ const PropertyOwnerServiceProviders = () => {
     "Hilda",
   ];
 
-  const allRequest = [
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 200,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 5200,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-    {
-      serviceProviderName: "Service Provider Name",
-      serviceType: "Service Type",
-      priorityType: "Priority Type",
-      servicePrice: 400,
-      image: profileLogo,
-      description:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, autem facere? Nam ab provident corrupti. Ducimus quos placeat omnis iusto iure, minus vel dolores repellat distinctio culpa, labore aut natus molestias suscipit. Possimus quis mollitia reiciendis quod nisi? Iusto quod pariatur corporis et ab maiores rem sit commodi esse at.",
-      cancellationPolicy:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat obcaecati dolor voluptate deserunt quis voluptatem nemo modi fuga temporibus dignissimos, voluptatum, placeat culpa vel, natus animi. Suscipit quis natus cum officiis quos rerum praesentium at doloremque non ipsa laudantium mollitia aspernatur provident magni ea architecto vel facere voluptates, porro vitae.",
-    },
-  ];
+  const query = {};
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // filter
+  query["limit"] = size;
+  query["page"] = page;
+  query["sortBy"] = sortBy;
+  query["sortOrder"] = sortOrder;
+  // debounce for slow search
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 300,
+  });
+  if (!!debouncedTerm) {
+    query["searchTerm"] = debouncedTerm;
+  }
+
+  const {
+    data: allServicesLists,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetAllServicesQuery({ ...query });
 
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
@@ -144,70 +140,73 @@ const PropertyOwnerServiceProviders = () => {
 
       {/* all cards */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allRequest?.map((singleReq) => (
-          <Whisper
-            placement="top"
-            trigger="hover"
-            controlId="control-id-hover"
-            speaker={
-              <Popover>
-                <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
-                  <div>
-                    <Image
-                      className="w-[100px] bg-red-800 h-full object-cover     "
-                      src={singleReq?.image}
-                      alt="photo"
-                    />
-                  </div>
-                  <div className="py-2">
-                    <h3 className="text-base ">${singleReq?.servicePrice}</h3>
-                    <h3 className="text-base ">3 Bed 3 Bath</h3>
-                    <h3 className="text-base w-[80%]">
-                      3 Belair Dr, Binghamton, NY 13901
-                    </h3>
-                  </div>
-                </div>
-                <div className="h-[80px] w-full"></div>
-              </Popover>
-            }
+        {allServicesLists?.data?.data?.map((singleReq) => (
+          // <Whisper
+          //   placement="top"
+          //   trigger="hover"
+          //   controlId="control-id-hover"
+          //   speaker={
+          //     <Popover>
+          //       <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
+          //         <div>
+          //           <Image
+          //             className="w-[100px] bg-red-800 h-full object-cover     "
+          //             src={singleReq?.image}
+          //             alt="photo"
+          //           />
+          //         </div>
+          //         <div className="py-2">
+          //           <h3 className="text-base ">${singleReq?.servicePrice}</h3>
+          //           <h3 className="text-base ">3 Bed 3 Bath</h3>
+          //           <h3 className="text-base w-[80%]">
+          //             3 Belair Dr, Binghamton, NY 13901
+          //           </h3>
+          //         </div>
+          //       </div>
+          //       <div className="h-[80px] w-full"></div>
+          //     </Popover>
+          //   }
+          //   key={Math.random()}
+          // >
+          <div
             key={Math.random()}
+            onClick={() => {
+              setSelectedService(singleReq);
+              setServiceModalActive(true);
+            }}
+            className=" col-span-1  border flex justify-between items-center px-5 border-[#acacac]  gap-2"
           >
-            <div
-              onClick={() => {
-                setSelectedService(singleReq);
-                setServiceModalActive(true);
-              }}
-              className=" col-span-1  border flex justify-between items-center px-5 border-[#acacac]  gap-2"
-            >
-              <div>
-                <Image
-                  className="w-[80px] h-[65px] object-cover   rounded-full  "
-                  src={singleReq?.image}
-                  alt="photo"
-                />
-              </div>
-              <div className="p-5 flex justify-between w-full ">
-                <div className="space-y-0.5">
-                  <h3 className="text-base font-medium">
-                    {singleReq?.serviceProviderName}
-                  </h3>
-                  <h3 className="text-base font-medium">
-                    {singleReq?.serviceType}
-                  </h3>
-                  <h3 className="text-base font-medium">
-                    Service Price : ${singleReq?.servicePrice}
-                  </h3>
-                </div>
-              </div>
-              <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[75px] h-[50px]">
-                <div className=" flex w-full flex-col justify-center items-center">
-                  <span>9</span>
-                  <span className="w-[70%] border-t border-[#b6b6b6]" />
-                  <span>10</span>
-                </div>
+            <div>
+              <Image
+                className="w-[80px] h-[65px] object-cover   rounded-full  "
+                src={profileLogo}
+                alt="Profile Photo"
+              />
+            </div>
+            <div className="p-5 flex justify-between w-full ">
+              <div className="space-y-0.5">
+                <h3 className="text-base font-medium">
+                  {singleReq?.owner?.firstName} &nbsp;
+                  {singleReq?.owner?.lastName}
+                </h3>
+
+                <h3 className="text-base font-medium">
+                  Service Type : {singleReq?.serviceType ?? "Not Found"}
+                </h3>
+                <h3 className="text-base font-medium">
+                  Service Price : ${singleReq?.servicePriceRange ?? 1000}
+                </h3>
               </div>
             </div>
-          </Whisper>
+            <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[75px] h-[50px]">
+              <div className=" flex w-full flex-col justify-center items-center">
+                <span>9</span>
+                <span className="w-[70%] border-t border-[#b6b6b6]" />
+                <span>10</span>
+              </div>
+            </div>
+          </div>
+          // </Whisper>
         ))}
 
         <>
