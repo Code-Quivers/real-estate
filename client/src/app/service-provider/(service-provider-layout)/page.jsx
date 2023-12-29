@@ -9,7 +9,7 @@ import ServiceProviderServiceInformationEdit from "@/components/service-provider
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 
 const ServiceProviderProfileInformation = () => {
-  const paramsName = useSearchParams().get("params");
+  const paramsName = useSearchParams().get("editing");
 
   const { data, isLoading, isError, error } =
     useGetServiceProviderMyProfileQuery(null);
@@ -54,7 +54,7 @@ const ServiceProviderProfileInformation = () => {
           <ServiceProviderDashboardButton
             firstTitle="Profile"
             secondTitle="Information"
-            href="/service-provider?params=account-information"
+            href="/service-provider?editing=account-information"
           />
         </div>
         {/* button */}
@@ -62,7 +62,7 @@ const ServiceProviderProfileInformation = () => {
           <ServiceProviderDashboardButton
             firstTitle="Service"
             secondTitle="Information"
-            href="/service-provider?params=service-information"
+            href="/service-provider?editing=service-information"
           />
         </div>
       </div>
