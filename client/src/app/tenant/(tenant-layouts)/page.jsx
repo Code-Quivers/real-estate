@@ -5,11 +5,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import TenantProfileButton from "@/components/tenant/Profile/TenantProfileButton";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
-import TenantPersonalInformationEdit from "@/components/tenant/Profile/TenantPersonalInformationEdit";
-import TenantRentalHistoryEdit from "@/components/tenant/Profile/TenantRentalHistoryEdit";
-import TenantIncomeInformationEdit from "@/components/tenant/Profile/TenantIncomeInformationEdit";
-import TenantPetsInformationEdit from "@/components/tenant/Profile/TenantPetsInformationEdit";
-import TenantOtherInformationEdit from "@/components/tenant/Profile/TenantOtherInformationEdit";
+import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 
 const TenantProfile = () => {
   const paramsName = useSearchParams().get("editing");
@@ -99,17 +95,7 @@ const TenantProfile = () => {
       ].includes(paramsName) ? (
         <TenantProfileInformation />
       ) : (
-        <>
-          {paramsName === "personal-information" && (
-            <TenantPersonalInformationEdit />
-          )}
-          {paramsName === "rental-history" && <TenantRentalHistoryEdit />}
-          {paramsName === "income-information" && (
-            <TenantIncomeInformationEdit />
-          )}
-          {paramsName === "pets-information" && <TenantPetsInformationEdit />}
-          {paramsName === "other-information" && <TenantOtherInformationEdit />}
-        </>
+        <TenantEditing />
       )}
     </section>
   );
