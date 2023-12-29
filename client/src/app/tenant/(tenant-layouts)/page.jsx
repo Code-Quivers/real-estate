@@ -2,7 +2,6 @@
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-
 import { useSearchParams } from "next/navigation";
 import TenantProfileButton from "@/components/tenant/Profile/TenantProfileButton";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
