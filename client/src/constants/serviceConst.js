@@ -59,5 +59,3 @@ export const serviceAvailability = [
     value: "ALL_PRIORITIES",
   },
 ].map((item) => ({ label: item.label, value: item.value }));
-
-console.log(serviceAvailability);
