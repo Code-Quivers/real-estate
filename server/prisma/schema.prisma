@@ -21,6 +21,7 @@ model User {
   tenant          Tenant?
   propertyOwner   PropertyOwner?
   serviceProvider ServiceProvider?
+  SavedItem       SavedItem[]
 
   @@map("users")
 }
@@ -140,6 +141,13 @@ model Service {
   @@map("Services")
 }
 
+model SavedItem {
+  itemId   String   @id @default(uuid())
+  itemType ItemType
+  userId   String
+  user     User     @relation(fields: [userId], references: [userId])
+}
+
 // enums
 enum UserStatus {
   ACTIVE
@@ -172,4 +180,11 @@ enum UserRoles {
   TENANT
   PROPERTY_OWNER
   SERVICE_PROVIDER
+}
+
+enum ItemType {
+  PROPERTY
+  PROPERTY_OWNER
+  SERVICE
+  TENANT
 }
