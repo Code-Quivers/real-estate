@@ -6,7 +6,11 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-router.get("/", SavedItemConrtollers.getSavedItems)
+router.get("/",
+    auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
+    SavedItemConrtollers.getSavedItems
+)
+
 router.post("/create",
     auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
     SavedItemConrtollers.createSavedItem

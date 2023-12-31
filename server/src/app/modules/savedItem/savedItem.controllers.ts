@@ -10,16 +10,21 @@ import { IRequestUser } from "../../interfaces/global.interfaces";
 
 
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
-    const searchTerm = req.query.searchTerm;
     const name = req.query?.name;
     const address = req.query?.address;
     const rent = req.query?.rent;
-    const filters = {
-        name, address, rent
-    }
+    const itemType = req.query?.itemType;
+    const filters = req.query;
+    const userId = (req.user as IRequestUser).userId;
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    let result;
+    if (itemType == 'TENANT') {
+        result = await SavedItemServices.getSavedTenants(userId, filters, options);
+    }
+    else if (itemType === 'SERVICE') {
+        result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
 
-    const result = await SavedItemServices.getSavedItems(filters, options);
+    }
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
