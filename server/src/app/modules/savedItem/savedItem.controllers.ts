@@ -4,7 +4,8 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import pick from "../../../shared/pick";
-import { savedItemServices } from "./saveItem.services";
+import { SavedItemServices } from "./savedItem.services";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 
 
 
@@ -18,7 +19,7 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
     }
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-    const result = await savedItemServices.getSavedItems(filters, options);
+    const result = await SavedItemServices.getSavedItems(filters, options);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -29,15 +30,20 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-// const createSavedItem = catchAsync(async (req: Request, res: Response) => {
-//     sendResponse(res, {
-//         statusCode: httpStatus.CREATED,
-//         success: true,
-//         message: "Service Providers retrieved successful",
-//         data: {},
-//     });
-// })
+const createSavedItem = catchAsync(async (req: Request, res: Response) => {
+    const data = req.body;
+    const userId = (req.user as IRequestUser).userId;
+    data['userId'] = userId
+    const result = await SavedItemServices.createSavedItem(data)
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message: "Service Providers retrieved successful",
+        data: result,
+    });
+})
 
 export const SavedItemConrtollers = {
-    getSavedItems
+    getSavedItems,
+    createSavedItem
 }

@@ -3,6 +3,28 @@ import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
 import { Prisma } from "@prisma/client";
+import ApiError from "../../../errors/ApiError";
+import { ISavedItem } from "./savedItem.interfaces";
+
+
+const createSavedItem = async (data: ISavedItem) => {
+    // saved the item to the SavedItem model.
+    
+    const result = await prisma.$transaction(async (transactionClient) => {
+        console.log(data)
+        const savedItem = await transactionClient.savedItem.create({
+            data: data,
+            include: {
+                user: true,
+            }
+        });
+        if (!savedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return savedItem
+    })
+    return result;
+}
 
 
 const getSavedItems = async (fitlers: any, options: IPaginationOptions) => {
@@ -61,6 +83,7 @@ const getSavedItems = async (fitlers: any, options: IPaginationOptions) => {
     return result;
 }
 
-export const savedItemServices = {
+export const SavedItemServices = {
     getSavedItems,
+    createSavedItem
 };

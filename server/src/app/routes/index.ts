@@ -7,7 +7,7 @@ import { PropertyOwnerRouter } from "../modules/propertyOwner/propertyOwner.rout
 import { ServiceProviderRouter } from "../modules/serviceProviders/serviceProvider.routes";
 import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
-import { SavedItemRouter } from "../modules/saveItem/saveItem.routes";
+import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ const moduleRoutes = [
     route: ServicesRoutes,
   },
   {
-    path: "/saved-items",
+    path: "/saved-item",
     route: SavedItemRouter,
   },
 ];
