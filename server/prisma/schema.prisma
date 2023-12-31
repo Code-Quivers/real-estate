@@ -142,10 +142,12 @@ model Service {
 }
 
 model SavedItem {
-  itemId   String   @id @default(uuid())
-  itemType ItemType
-  userId   String
-  user     User     @relation(fields: [userId], references: [userId])
+  itemId    String   @id @default(uuid())
+  itemType  ItemType
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // enums
