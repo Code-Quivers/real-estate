@@ -13,33 +13,18 @@ import { IPaginationOptions } from "../../../interfaces/pagination";
 import { propertiesRelationalFields, propertiesRelationalFieldsMapper, propertiesSearchableFields } from "./properties.constants";
 
 // ! createNewProperty
-const createNewProperty = async (profileId: string, req: Request): Promise<Property> => {
+const createNewProperty = async (profileId: string, req: Request) => {
   const images: IUploadFile[] = req.files as any;
 
   const imagesPath = images?.map((item: any) => item?.path);
 
-  const data = req?.body as IPropertyReqPayload;
+  const data = req?.body;
 
   const property = await prisma.$transaction(async (transactionClient) => {
     //
-    const propertyData = {
-      numOfBed: data?.numOfBed,
-      numOfBath: data?.numOfBath,
-      address: data?.address,
-      description: data?.description,
-      maintenanceCoveredTenant: data?.maintenanceCoveredTenant,
-      maintenanceCoveredOwner: data?.maintenanceCoveredOwner,
-      schools: data?.schools,
-      universities: data?.universities,
-      allowedPets: data?.allowedPets,
-      ownerId: profileId,
-      images: imagesPath,
-    };
-    const result = await transactionClient.property.create({
-      data: propertyData,
-      include: {
-        owner: true,
-      },
+
+    const result = await transactionClient.property.createMany({
+      data: data,
     });
     if (!result) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
@@ -48,6 +33,8 @@ const createNewProperty = async (profileId: string, req: Request): Promise<Prope
   });
   return property;
 };
+
+
 // Getting all property
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -100,8 +87,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: whereConditions,

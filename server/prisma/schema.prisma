@@ -21,13 +21,14 @@ model User {
   tenant          Tenant?
   propertyOwner   PropertyOwner?
   serviceProvider ServiceProvider?
+  SavedItem       SavedItem[]
 
   @@map("users")
 }
 
 model Tenant {
-  tenantId                             String    @id @default(uuid()) // Change uuid() to auto() for the primary key
-  userId                               String    @unique
+  tenantId                             String      @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId                               String      @unique
   // personal information
   firstName                            String
   lastName                             String
@@ -65,9 +66,10 @@ model Tenant {
   leavingReason                        String?
   isAnyLatePaymentReason               String?
   // 
-  createdAt                            DateTime  @default(now()) @db.Timestamptz(0)
-  updatedAt                            DateTime  @updatedAt @db.Timestamptz(0)
-  user                                 User      @relation(fields: [userId], references: [userId])
+  createdAt                            DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt                            DateTime    @updatedAt @db.Timestamptz(0)
+  user                                 User        @relation(fields: [userId], references: [userId])
+  SavedItem                            SavedItem[]
 
   @@map("tenants")
 }
@@ -88,7 +90,7 @@ model PropertyOwner {
 }
 
 model ServiceProvider {
-  serviceProviderId   String   @id @default(uuid()) // Change uuid() to auto() for the primary key
+  serviceProviderId   String      @id @default(uuid()) // Change uuid() to auto() for the primary key
   firstName           String
   lastName            String
   profileImage        String?
@@ -97,11 +99,12 @@ model ServiceProvider {
   companyAddress      String?
   companyPhoneNumber  String?
   companyEmailAddress String?
-  userId              String   @unique
-  createdAt           DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime @updatedAt @db.Timestamptz(0)
-  user                User     @relation(fields: [userId], references: [userId])
+  userId              String      @unique
+  createdAt           DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime    @updatedAt @db.Timestamptz(0)
+  user                User        @relation(fields: [userId], references: [userId])
   Service             Service?
+  SavedItem           SavedItem[]
 
   @@map("serviceProviders")
 }
@@ -122,11 +125,14 @@ model Property {
   images                   String[]
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
+  SavedItem                SavedItem[]
 }
 
 model Service {
   serviceId                 String                   @id @default(uuid())
-  servicePriceRange         String?
+  // servicePriceRange         String?
+  minPrice                  Float?
+  maxPrice                  Float?
   serviceDescription        String?
   serviceLocation           String?
   serviceCancellationPolicy String?
@@ -138,6 +144,21 @@ model Service {
   updatedAt                 DateTime                 @updatedAt
 
   @@map("Services")
+}
+
+model SavedItem {
+  itemId            String           @id @default(uuid())
+  itemType          ItemType
+  serviceProviderId String?          @unique
+  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
+  tenantId          String?          @unique
+  tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId])
+  propertyId        String?          @unique
+  property          Property?        @relation(fields: [propertyId], references: [propertyId])
+  userId            String
+  user              User             @relation(fields: [userId], references: [userId])
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 }
 
 // enums
@@ -172,4 +193,11 @@ enum UserRoles {
   TENANT
   PROPERTY_OWNER
   SERVICE_PROVIDER
+}
+
+enum ItemType {
+  PROPERTY
+  PROPERTY_OWNER
+  SERVICE
+  TENANT
 }
