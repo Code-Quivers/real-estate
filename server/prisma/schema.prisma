@@ -130,7 +130,9 @@ model Property {
 
 model Service {
   serviceId                 String                   @id @default(uuid())
-  servicePriceRange         String?
+  // servicePriceRange         String?
+  minPrice                  Float?
+  maxPrice                  Float?
   serviceDescription        String?
   serviceLocation           String?
   serviceCancellationPolicy String?
