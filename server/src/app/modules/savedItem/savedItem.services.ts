@@ -38,17 +38,32 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
             },
             {
                 tenant: {
-                    firstName: {
-                        contains: filters.name
-                    },
-                    presentAddress: {
-                        contains: filters.address
-                    },
-                    affordableRentAmount: {
-                        gte: filters.rent
-                    }
+                    OR: [
+                        {
+                            firstName: {
+                                contains: filters.name
+                            },
+                            presentAddress: {
+                                contains: filters.address
+                            },
+                            affordableRentAmount: {
+                                gte: filters.rent
+                            }
+                        },
+                        {
+                            lastName: {
+                                contains: filters.name
+                            },
+                            presentAddress: {
+                                contains: filters.address
+                            },
+                            affordableRentAmount: {
+                                gte: filters.rent
+                            }
+                        }
+                    ]
                 }
-            }
+            },
         ]
 
     }
@@ -64,6 +79,9 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
                     : {
                         createdAt: "desc",
                     },
+            include: {
+                tenant: true,
+            }
         });
 
         const total = await prisma.savedItem.count({
@@ -97,16 +115,38 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
             },
             {
                 serviceProvider: {
-                    firstName: {
-                        contains: filters.name
-                    },
-                    Service: {
-                        serviceType: filters.serviceType,
-                        serviceAvailability: filters.servicePriority,
-                    },
+                    OR: [
+                        {
+                            firstName: {
+                                contains: filters.name
+                            },
+                            Service: {
+                                serviceType: filters.serviceType,
+                                serviceAvailability: filters.priority,
+                                minPrice: {
+                                    gte: filters.price
+                                },
+                                maxPrice: { lte: filters.price }
 
+                            },
+                        },
+                        {
+                            lastName: {
+                                contains: filters.name
+                            },
+                            Service: {
+                                serviceType: filters.serviceType,
+                                serviceAvailability: filters.priority,
+                                minPrice: {
+                                    gte: filters.price
+                                },
+                                maxPrice: { lte: filters.price }
+
+                            },
+                        },
+                    ]
                 }
-            }
+            },
         ]
 
     }
@@ -122,6 +162,9 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
                     : {
                         createdAt: "desc",
                     },
+            include: {
+                serviceProvider: true
+            }
         });
 
         const total = await prisma.savedItem.count({

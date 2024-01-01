@@ -10,6 +10,7 @@ import { IRequestUser } from "../../interfaces/global.interfaces";
 
 
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
+    console.log(req.query)
     const name = req.query?.name;
     const address = req.query?.address;
     const rent = req.query?.rent;
@@ -18,7 +19,8 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
     const userId = (req.user as IRequestUser).userId;
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
     let result;
-    if (itemType == 'TENANT') {
+    if (itemType === 'TENANT') {
+        console.log("helloo TENANT")
         result = await SavedItemServices.getSavedTenants(userId, filters, options);
     }
     else if (itemType === 'SERVICE') {
