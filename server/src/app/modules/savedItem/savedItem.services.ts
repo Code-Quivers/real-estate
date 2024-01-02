@@ -26,6 +26,21 @@ const createSavedItem = async (data: ISavedItem) => {
     return result;
 }
 
+// Remove Saved Item
+const removeSavedItem = async (itemId: string) => {
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const removedItem = await transactionClient.savedItem.delete({
+            where: {
+                itemId: itemId
+            }
+        })
+        if (!removedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return removedItem
+    })
+    return result;
+}
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
     const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -187,5 +202,6 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
 export const SavedItemServices = {
     getSavedTenants,
     getSavedServiceProviders,
-    createSavedItem
+    createSavedItem,
+    removeSavedItem
 };

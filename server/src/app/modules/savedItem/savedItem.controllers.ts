@@ -50,7 +50,18 @@ const createSavedItem = catchAsync(async (req: Request, res: Response) => {
     });
 })
 
+const removeSavedItem = catchAsync(async (req: Request, res: Response) => {
+    const itemId = req.query?.itemId as string;
+    const result = await SavedItemServices.removeSavedItem(itemId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Saved item successfully removed!!!",
+    });
+})
+
 export const SavedItemConrtollers = {
     getSavedItems,
-    createSavedItem
+    createSavedItem,
+    removeSavedItem,
 }

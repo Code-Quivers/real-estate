@@ -16,4 +16,9 @@ router.post("/create",
     SavedItemConrtollers.createSavedItem
 )
 
+router.delete("/remove",
+    auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
+    SavedItemConrtollers.removeSavedItem
+)
+
 export const SavedItemRouter = router;
