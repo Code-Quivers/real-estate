@@ -1,6 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
+import { useSaveAllTenantMutation } from "@/redux/features/propertyOwner/saveTenantApi";
 import Image from "next/image";
 import { Modal } from "rsuite";
 
@@ -16,16 +17,16 @@ const AvailableTenantsModal = ({
     margin: 0,
   };
 
-  const saveTenantData = () => {
+  const [saveTenant] = useSaveAllTenantMutation();
+
+  const saveTenantData = async () => {
     const tenantData = {
       tenantId: modalData?.tenantId,
       itemType: "TENANT",
     };
 
-    console.log(tenantData, "tenantData");
+    await saveTenant(tenantData);
   };
-
-  console.log("modalData", modalData?.tenantId);
 
   return (
     <>
