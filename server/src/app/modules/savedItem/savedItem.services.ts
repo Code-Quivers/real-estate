@@ -99,6 +99,91 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
   return result;
 };
 
+const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+
+  const { searchTerm, ...filterData } = filters;
+
+  const andConditions = [];
+  if (searchTerm) {
+    andConditions.push({
+      OR: propertyOwnerSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => {
+        if (propertyOwnerRelationalFields.includes(key)) {
+          return {
+            [propertyOwnerRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.PropertyOwnerWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  //
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const allPropertyOwner = await transactionClient.propertyOwner.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+              createdAt: "desc",
+            },
+    });
+
+    const total = await prisma.propertyOwner.count({
+      where: whereConditions,
+    });
+    const totalPage = Math.ceil(total / limit);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: allPropertyOwner,
+    };
+  });
+
+  return result;
+};
+
+
+
+
+
+
+
+
+
 // Get the saved Service Providers
 const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -181,4 +266,5 @@ export const SavedItemServices = {
   getSavedTenants,
   getSavedServiceProviders,
   createSavedItem,
+  getAllPropertyOwners
 };
