@@ -16,6 +16,17 @@ const AvailableTenantsModal = ({
     margin: 0,
   };
 
+  const saveTenantData = () => {
+    const tenantData = {
+      tenantId: modalData?.tenantId,
+      itemType: "TENANT",
+    };
+
+    console.log(tenantData, "tenantData");
+  };
+
+  console.log("modalData", modalData?.tenantId);
+
   return (
     <>
       <Modal
@@ -73,7 +84,7 @@ const AvailableTenantsModal = ({
 
             {/* action */}
             <div className="flex justify-center gap-5 items-center mt-10">
-              <PrimaryButton title="Save" />
+              <PrimaryButton title="Save" onClickHandler={saveTenantData} />
               <PrimaryButton title="Contact" />
               <PrimaryButton title="Add" />
             </div>
