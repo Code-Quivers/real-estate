@@ -1,9 +1,11 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
+import { savedItemTenant } from "@/components/toasts/auth/authToastMessages";
 import { useSaveAllTenantMutation } from "@/redux/features/propertyOwner/saveTenantApi";
 import Image from "next/image";
-import { Modal } from "rsuite";
+import { useEffect } from "react";
+import { Modal, toaster } from "rsuite";
 
 const AvailableTenantsModal = ({
   isModalOpened,
@@ -17,7 +19,7 @@ const AvailableTenantsModal = ({
     margin: 0,
   };
 
-  const [saveTenant] = useSaveAllTenantMutation();
+  const [saveTenant, { isSuccess }] = useSaveAllTenantMutation();
 
   const saveTenantData = async () => {
     const tenantData = {
@@ -25,8 +27,17 @@ const AvailableTenantsModal = ({
       itemType: "TENANT",
     };
 
+    console.log(tenantData);
     await saveTenant(tenantData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toaster.push(savedItemTenant(), {
+        placement: "bottomStart",
+      });
+    }
+  }, [isSuccess]);
 
   return (
     <>
