@@ -4,157 +4,102 @@ import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
 import { Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
-// import { ISavedItem } from "./savedItem.interfaces";
+import { ISavedItem } from "./savedItem.interfaces";
+import { isEmptyObject } from "../../../helpers/utils";
 
-const createSavedItem = async (data: any) => {
-  // saved the item to the SavedItem model.
 
-  const result = await prisma.$transaction(async (transactionClient) => {
-    console.log(data);
-    const savedItem = await transactionClient.savedItem.create({
-      data: data,
-      include: {
-        user: true,
-      },
-    });
-    if (!savedItem) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
-    }
-    return savedItem;
-  });
-  return result;
-};
+const createSavedItem = async (data: ISavedItem) => {
+    // saved the item to the SavedItem model.
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const savedItem = await transactionClient.savedItem.create({
+            data: data,
+            include: {
+                user: true,
+            }
+        });
+        if (!savedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return savedItem
+    })
+    return result;
+}
+
+// Remove Saved Item
+const removeSavedItem = async (itemId: string) => {
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const removedItem = await transactionClient.savedItem.delete({
+            where: {
+                itemId: itemId
+            }
+        })
+        if (!removedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return removedItem
+    })
+    return result;
+}
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
-  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { name, address, rent } = filters;
+    const orCondition: any[] = [];
+    if (name) {
+        orCondition.push({ firstName: { contains: name } })
+        orCondition.push({ lastName: { contains: name } })
+    }
+    const tenantFilteringCondition: any = {}
+    if (orCondition.length == 2) {
+        tenantFilteringCondition.OR = orCondition
+    }
+    if (address) {
+        tenantFilteringCondition.presentAddress = { contains: filters.address };
+    }
+    if (rent) {
+        tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
+    }
 
-  const whereConditions: Prisma.SavedItemWhereInput = {
-    AND: [
-      {
-        userId: userId,
-        itemType: "TENANT",
-      },
-      {
-        tenant: {
-          OR: [
-            {
-              firstName: {
-                contains: filters.name,
-              },
-              presentAddress: {
-                contains: filters.address,
-              },
-              affordableRentAmount: {
-                gte: filters.rent,
-              },
-            },
-            {
-              lastName: {
-                contains: filters.name,
-              },
-              presentAddress: {
-                contains: filters.address,
-              },
-              affordableRentAmount: {
-                gte: filters.rent,
-              },
-            },
-          ],
-        },
-      },
-    ],
-  };
-  //
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const savedItems = await transactionClient.savedItem.findMany({
-      where: whereConditions,
-      skip,
-      take: limit,
-      orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
-            },
-      include: {
-        tenant: true,
-      },
-    });
-
-    const total = await prisma.savedItem.count({
-      where: whereConditions,
-    });
-    const totalPage = Math.ceil(total / limit);
-    return {
-      meta: {
-        page,
-        limit,
-        total,
-        totalPage,
-      },
-      data: savedItems,
+    const whereConditions: Prisma.SavedItemWhereInput = {
+        AND: [
+            { userId, itemType: "TENANT" },
+            ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : []),
+        ],
     };
-  });
 
-  return result;
-};
+    //
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const savedItems = await transactionClient.savedItem.findMany({
+            where: whereConditions,
+            skip,
+            take: limit,
+            orderBy:
+                options.sortBy && options.sortOrder
+                    ? { [options.sortBy]: options.sortOrder }
+                    : {
+                        createdAt: "desc",
+                    },
+            include: {
+                tenant: true,
+            }
+        });
 
-const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
-  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+        const total = await prisma.savedItem.count({
+            where: whereConditions,
+        });
+        const totalPage = Math.ceil(total / limit);
 
-  const { searchTerm, ...filterData } = filters;
-
-  const andConditions = [];
-  if (searchTerm) {
-    andConditions.push({
-      OR: propertyOwnerSearchableFields.map((field: any) => ({
-        [field]: {
-          contains: searchTerm,
-          mode: "insensitive",
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filterData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filterData).map((key) => {
-        if (propertyOwnerRelationalFields.includes(key)) {
-          return {
-            [propertyOwnerRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
-            },
-          };
-        } else {
-          return {
-            [key]: {
-              equals: (filterData as any)[key],
-            },
-          };
+        if (!savedItems) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
         }
-      }),
-    });
-  }
-
-  const whereConditions: Prisma.PropertyOwnerWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
-  //
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const allPropertyOwner = await transactionClient.propertyOwner.findMany({
-      include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
-      where: whereConditions,
-      skip,
-      take: limit,
-      orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
+        
+        return {
+            meta: {
+                page,
+                limit,
+                total,
+                totalPage,
             },
     });
 
@@ -175,12 +120,6 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
 
   return result;
 };
-
-
-
-
-
-
 
 
 
@@ -263,8 +202,8 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   return result;
 };
 export const SavedItemServices = {
-  getSavedTenants,
-  getSavedServiceProviders,
-  createSavedItem,
-  getAllPropertyOwners
+    getSavedTenants,
+    getSavedServiceProviders,
+    createSavedItem,
+    removeSavedItem
 };

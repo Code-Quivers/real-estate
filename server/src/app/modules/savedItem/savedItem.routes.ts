@@ -9,4 +9,10 @@ router.get("/", auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles
 
 router.post("/create", auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER), SavedItemConrtollers.createSavedItem);
 
+router.delete("/remove",
+    auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
+    SavedItemConrtollers.removeSavedItem
+)
+
 export const SavedItemRouter = router;
+

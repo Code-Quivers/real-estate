@@ -6,40 +6,35 @@ import sendResponse from "../../../shared/sendResponse";
 import pick from "../../../shared/pick";
 import { SavedItemServices } from "./savedItem.services";
 import { IRequestUser } from "../../interfaces/global.interfaces";
-import { savedItemFilterableFields } from "./savedItems.constant";
+import ApiError from "../../../errors/ApiError";
 
-// const getSavedItems = catchAsync(async (req: Request, res: Response) => {
-//   const itemType = req.query?.itemType;
-//   const filters = req.query;
-//   const userId = (req.user as IRequestUser).userId;
-//   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-//   let result;
-//   if (itemType === "TENANT") {
-//     result = await SavedItemServices.getSavedTenants(userId, filters, options);
-//   } else if (itemType === "SERVICE") {
-//     result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
-//   }
+const getSavedItems = catchAsync(async (req: Request, res: Response) => {
+    const itemType = req.query?.itemType;
+    const filters = req.query;
+    const userId = (req.user as IRequestUser).userId;
+    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    let result;
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: "Service Providers retrieved successful",
-//     data: result,
-//   });
-// });
+    switch (itemType) {
+        case 'TENANT':
+            result = await SavedItemServices.getSavedTenants(userId, filters, options);
+            break;
+        case 'SERVICE':
+            result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
+            break;
+        case undefined:
+            throw new ApiError(httpStatus.BAD_REQUEST, "itemType required!!!");
+        default:
+            throw new ApiError(httpStatus.BAD_REQUEST, `Provided itemType '${itemType}' not supported!!!`);
+    }
 
-const getAllSavedItems = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, savedItemFilterableFields);
-  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Service Providers retrieved successful",
+        data: result,
+    });
 
-  const result = await SavedItemServices.getSavedServiceProviders(filters, options);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Saved Items retrieved successful",
-    data: result,
-  });
 });
 
 const createSavedItem = catchAsync(async (req: Request, res: Response) => {
@@ -55,7 +50,19 @@ const createSavedItem = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const removeSavedItem = catchAsync(async (req: Request, res: Response) => {
+    const itemId = req.query?.itemId as string;
+    const result = await SavedItemServices.removeSavedItem(itemId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Saved item successfully removed!!!",
+    });
+})
+
 export const SavedItemConrtollers = {
-  createSavedItem,
-  getAllSavedItems,
-};
+    getSavedItems,
+    createSavedItem,
+    removeSavedItem,
+}
+
