@@ -6,26 +6,28 @@ import sendResponse from "../../../shared/sendResponse";
 import pick from "../../../shared/pick";
 import { SavedItemServices } from "./savedItem.services";
 import { IRequestUser } from "../../interfaces/global.interfaces";
+import ApiError from "../../../errors/ApiError";
 
 
 
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
-    console.log(req.query)
-    const name = req.query?.name;
-    const address = req.query?.address;
-    const rent = req.query?.rent;
     const itemType = req.query?.itemType;
     const filters = req.query;
     const userId = (req.user as IRequestUser).userId;
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
     let result;
-    if (itemType === 'TENANT') {
-        console.log("helloo TENANT")
-        result = await SavedItemServices.getSavedTenants(userId, filters, options);
-    }
-    else if (itemType === 'SERVICE') {
-        result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
 
+    switch (itemType) {
+        case 'TENANT':
+            result = await SavedItemServices.getSavedTenants(userId, filters, options);
+            break;
+        case 'SERVICE':
+            result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
+            break;
+        case undefined:
+            throw new ApiError(httpStatus.BAD_REQUEST, "itemType required!!!");
+        default:
+            throw new ApiError(httpStatus.BAD_REQUEST, `Provided itemType '${itemType}' not supported!!!`);
     }
 
     sendResponse(res, {
