@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   propertyList: [
     {
-      id: 1,
+      id: Date.now(),
       numOfBed: 0,
       numOfBath: 0,
       address: "",
@@ -27,7 +27,7 @@ const propertyListSlice = createSlice({
         propertyList: [
           ...state.propertyList,
           {
-            id: state.propertyList.length + 1,
+            id: Date.now(),
             numOfBed: 0,
             numOfBath: 0,
             address: "",
@@ -42,8 +42,17 @@ const propertyListSlice = createSlice({
         ],
       };
     },
+    removeProperty: (state, action) => {
+      const propertyIdToRemove = action.payload;
+      return {
+        ...state,
+        propertyList: state.propertyList.filter(
+          (property) => property.id !== propertyIdToRemove,
+        ),
+      };
+    },
     updateProperty: (state, action) => {
-      const { propertyId, field, value, photos } = action.payload;
+      const { propertyId, field, value } = action.payload;
 
       // Find the index of the property with the given propertyId
       const propertyIndex = state.propertyList.findIndex(
@@ -55,13 +64,13 @@ const propertyListSlice = createSlice({
         state.propertyList[propertyIndex] = {
           ...state.propertyList[propertyIndex],
           [field]: value,
-          photos: photos || [], // Set photos to the provided array or an empty array
         };
       }
     },
   },
 });
 
-export const { addNewProperty, updateProperty } = propertyListSlice.actions;
+export const { addNewProperty, updateProperty, removeProperty } =
+  propertyListSlice.actions;
 
 export default propertyListSlice.reducer;
