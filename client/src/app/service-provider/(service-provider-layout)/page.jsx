@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import ServiceProviderProfileInformationEdit from "@/components/service-provider/information/ServiceProviderProfileInformationEdit";
 import ServiceProviderServiceInformationEdit from "@/components/service-provider/information/ServiceProviderServiceInformationEdit";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const ServiceProviderProfileInformation = () => {
   const paramsName = useSearchParams().get("editing");
@@ -22,8 +23,14 @@ const ServiceProviderProfileInformation = () => {
         <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
           <div className="border shadow-lg rounded-full">
             <Image
-              src={profileLogo}
-              className="max-md:w-[80px] md:w-[150px]  select-none"
+              width={200}
+              height={200}
+              src={
+                myProfileData?.profileImage
+                  ? ` ${fileUrlKey()}/${myProfileData?.profileImage}`
+                  : profileLogo
+              }
+              className="max-md:w-[80px] rounded-full md:w-[150px]  select-none"
               alt="Profile Image"
             />
           </div>

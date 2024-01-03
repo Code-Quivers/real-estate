@@ -19,6 +19,9 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   } = useForm();
 
   const handleUpdateServiceInformation = async (data) => {
+    if (data?.minPrice) data["minPrice"] = parseFloat(data?.minPrice);
+    if (data?.maxPrice) data["maxPrice"] = parseFloat(data?.maxPrice);
+
     const res = await updateServiceInformation({ data });
     if (res?.data?.success === true) router.push("/service-provider");
   };
@@ -51,7 +54,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                         value: item.value,
                       })) ?? []
                     }
-                    style={{ width: 224 }}
+                    className="!w-full"
                   />
                 </div>
               </div>
@@ -73,18 +76,29 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
               </div>
             </div>
             {/* Service Price Range */}
-            <div>
-              <div className="space-y-1">
-                <label className="text-lg   font-medium">
-                  Service Price Range
-                </label>
-                <InputNumber
-                  defaultValue={
-                    myProfileData?.Service?.servicePriceRange ?? undefined
-                  }
-                  onChange={(value) => setValue("servicePriceRange", value)}
-                  min={0}
-                />
+            <div className="">
+              <h4> Service Price Range</h4>
+              <div className="flex items-center gap-3">
+                <div className="space-y-1 w-full">
+                  <label className="text-lg   font-medium">Min Price</label>
+                  <InputNumber
+                    defaultValue={
+                      parseFloat(myProfileData?.Service?.minPrice) ?? undefined
+                    }
+                    onChange={(value) => setValue("minPrice", value)}
+                    min={0}
+                  />
+                </div>
+                <div className="space-y-1  w-full">
+                  <label className="text-lg   font-medium">Max Price</label>
+                  <InputNumber
+                    defaultValue={
+                      parseFloat(myProfileData?.Service?.maxPrice) ?? undefined
+                    }
+                    onChange={(value) => setValue("maxPrice", value)}
+                    min={0}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -92,7 +106,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
           <div className="col-span-2 space-y-5">
             {/* Service Availability */}
             <div>
-              <div className="space-y-1">
+              <div className="space-y-1 max-lg:w-full">
                 <label className="text-lg font-medium">
                   Service Availability
                 </label>
@@ -104,7 +118,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                     onChange={(value) => setValue("serviceAvailability", value)}
                     data={serviceAvailability}
                     searchable={false}
-                    style={{ width: 224 }}
+                    className="!w-full"
                   />
                 </div>
               </div>
@@ -130,7 +144,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
               <div className="space-y-1">
                 <label className="text-lg   font-medium">
                   Service Cancellation Policy
-                </label>{" "}
+                </label>
                 <Input
                   defaultValue={
                     myProfileData?.Service?.serviceCancellationPolicy ??

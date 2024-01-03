@@ -4,6 +4,7 @@ import { useUpdateServiceProviderMyProfileMutation } from "@/redux/features/serv
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Form, Input } from "rsuite";
+import ServiceProviderProfilePhotoUpload from "./ServiceProviderProfilePhotoUpload";
 
 const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
@@ -19,15 +20,21 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
 
   const handleUpdateProfileInformation = async (data) => {
     const formData = new FormData();
-    const updatedProfileData = JSON.stringify(data);
+    const obj = {
+      ...data,
+      oldFilePath: undefined,
+    };
+
+    const updatedProfileData = JSON.stringify(obj);
+    if (data?.file?.blobFile) obj["oldFilePath"] = myProfileData?.profileImage;
+    if (data?.file?.blobFile) formData.append("file", data?.file?.blobFile);
     formData.append("data", updatedProfileData);
 
     const res = await updateMyServiceProviderMyProfile({
       serviceProviderId: myProfileData?.serviceProviderId,
       data: formData,
     });
-    if (res?.data?.success === true)
-      router.push("/service-provider?params=service-information");
+    if (res?.data?.success === true) router.push("/service-provider");
   };
   return (
     <div className="mt-6">
@@ -123,6 +130,19 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               )}
             />
           </div>
+          <div className="col-span-2 space-y-5 pb-20">
+            <label className="text-lg   font-medium">Profile Image</label>
+            <Controller
+              name="file"
+              control={control}
+              render={({ field }) => (
+                <ServiceProviderProfilePhotoUpload
+                  defaultImage={myProfileData?.profileImage}
+                  field={field}
+                />
+              )}
+            />
+          </div>
         </div>
         <div className="mt-10 flex justify-end">
           <Button
@@ -134,7 +154,7 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
             size="lg"
             appearance="default"
           >
-            NEXT
+            SAVE
           </Button>
         </div>
       </form>
