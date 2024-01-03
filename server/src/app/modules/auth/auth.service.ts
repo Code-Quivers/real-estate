@@ -1,30 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import bcrypt from 'bcrypt';
-import httpStatus from 'http-status';
-import { Secret } from 'jsonwebtoken';
-import config from '../../../config';
-import ApiError from '../../../errors/ApiError';
-import { jwtHelpers } from '../../../helpers/jwtHelpers';
-import prisma from '../../../shared/prisma';
-import {
-  ILoginUserResponse,
-  IRefreshTokenResponse,
-  IUserCreate,
-  IUserLogin,
-} from './auth.interface';
-import { UserRoles, UserStatus } from '@prisma/client';
-import { userFindUnique } from './auth.utils';
+import bcrypt from "bcrypt";
+import httpStatus from "http-status";
+import { Secret } from "jsonwebtoken";
+import config from "../../../config";
+import ApiError from "../../../errors/ApiError";
+import { jwtHelpers } from "../../../helpers/jwtHelpers";
+import prisma from "../../../shared/prisma";
+import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
+import { UserRoles, UserStatus } from "@prisma/client";
+import { userFindUnique } from "./auth.utils";
 
 //! Tenant User Create
 
 const createNewUserForTenant = async (payload: IUserCreate) => {
   const { password, email, userName } = payload;
-  const hashedPassword = await bcrypt.hash(
-    password,
-    Number(config.bcrypt_salt_rounds)
-  );
+  const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
-  const newUser = await prisma.$transaction(async transactionClient => {
+  const newUser = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -38,7 +30,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
     });
 
     if (!createdUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, "User creation failed");
     }
 
     const tenantData: any = {
@@ -71,7 +63,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
     });
 
     if (!tenantUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Tenant creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant creation failed");
     }
 
     return tenantUser;
@@ -84,13 +76,10 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
 
 const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
   const { password, email, userName } = payload;
-  const hashedPassword = await bcrypt.hash(
-    password,
-    Number(config.bcrypt_salt_rounds)
-  );
+  const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
   // transaction start
-  const newUser = await prisma.$transaction(async transactionClient => {
+  const newUser = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -104,7 +93,7 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
     });
 
     if (!createdUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, "User creation failed");
     }
 
     const propertyOwnerData: any = {
@@ -124,9 +113,9 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
         firstName: true,
         lastName: true,
         propertyOwnerId: true,
-        userId: true,
         user: {
           select: {
+            userId: true,
             userName: true,
             email: true,
             role: true,
@@ -137,10 +126,7 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
     });
 
     if (!propertyOwnerUser) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        'Property Owner creation failed'
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner creation failed");
     }
 
     return propertyOwnerUser;
@@ -153,13 +139,10 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
 
 const createNewUserForServiceProvider = async (payload: IUserCreate) => {
   const { password, email, userName } = payload;
-  const hashedPassword = await bcrypt.hash(
-    password,
-    Number(config.bcrypt_salt_rounds)
-  );
+  const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
   // transaction start
-  const newUser = await prisma.$transaction(async transactionClient => {
+  const newUser = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -173,7 +156,7 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
     });
 
     if (!createdUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'User creation failed');
+      throw new ApiError(httpStatus.BAD_REQUEST, "User creation failed");
     }
 
     const serviceProviderData: any = {
@@ -187,16 +170,15 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       // profileImage: payload?.profileImage,
     };
 
-
     const serviceProviderUser = await transactionClient.serviceProvider.create({
       data: serviceProviderData,
       select: {
         firstName: true,
         lastName: true,
         serviceProviderId: true,
-        userId: true,
         user: {
           select: {
+            userId: true,
             userName: true,
             email: true,
             role: true,
@@ -207,29 +189,22 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
     });
 
     if (!serviceProviderUser) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        'Service Provider creation failed'
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider creation failed");
     }
 
     return serviceProviderUser;
-
   });
 
   return newUser;
 };
 
 //login
-const userLogin = async (
-  loginData: IUserLogin
-): Promise<ILoginUserResponse> => {
-  const { email, password, userName } = loginData;
+const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => {
+  const { emailOrUsername, password } = loginData;
 
-  const isUserExist = await prisma.user.findUnique({
+  const isUserExist = await prisma.user.findFirst({
     where: {
-      email,
-      userName,
+      OR: [{ email: { contains: emailOrUsername, mode: "insensitive" } }, { userName: { contains: emailOrUsername, mode: "insensitive" } }],
     },
     include: {
       tenant: {
@@ -239,53 +214,61 @@ const userLogin = async (
           tenantId: true,
         },
       },
+      propertyOwner: {
+        select: {
+          firstName: true,
+          lastName: true,
+          propertyOwnerId: true,
+        },
+      },
+      serviceProvider: {
+        select: {
+          firstName: true,
+          lastName: true,
+          serviceProviderId: true,
+        },
+      },
     },
   });
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User not found !!');
+    throw new ApiError(httpStatus.BAD_REQUEST, "User not found !!");
   }
 
   const isPasswordValid = await bcrypt.compare(password, isUserExist?.password);
 
   if (isUserExist && !isPasswordValid) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect !!');
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Password is incorrect !!");
   }
 
-  const {
-    userId,
-    tenant,
-    role,
-    userStatus,
-    email: loggedInEmail,
-  } = isUserExist;
+  const { userId, tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;
 
   // create access token & refresh token
   const accessToken = jwtHelpers.createToken(
     {
       userId,
       role,
-      tenantId: tenant?.tenantId,
+      profileId: tenant?.tenantId || propertyOwner?.propertyOwnerId || serviceProvider?.serviceProviderId,
       email: loggedInEmail,
       userStatus,
-      firstName: tenant?.firstName,
-      lastName: tenant?.lastName,
+      firstName: tenant?.firstName || propertyOwner?.firstName || serviceProvider?.firstName,
+      lastName: tenant?.lastName || propertyOwner?.lastName || serviceProvider?.lastName,
     },
     config.jwt.secret as Secret,
-    config.jwt.expires_in as string
+    config.jwt.expires_in as string,
   );
   const refreshToken = jwtHelpers.createToken(
     {
       userId,
       role,
-      tenantId: tenant?.tenantId,
+      profileId: tenant?.tenantId || propertyOwner?.propertyOwnerId || serviceProvider?.serviceProviderId,
       email: loggedInEmail,
       userStatus,
-      firstName: tenant?.firstName,
-      lastName: tenant?.lastName,
+      firstName: tenant?.firstName || propertyOwner?.firstName || serviceProvider?.firstName,
+      lastName: tenant?.lastName || propertyOwner?.lastName || serviceProvider?.lastName,
     },
     config.jwt.refresh_secret as Secret,
-    config.jwt.refresh_expires_in as string
+    config.jwt.refresh_expires_in as string,
   );
 
   return {
@@ -299,13 +282,10 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   // ! verify token
   let verifiedToken = null;
   try {
-    verifiedToken = jwtHelpers.verifyToken(
-      token,
-      config.jwt.refresh_secret as Secret
-    );
+    verifiedToken = jwtHelpers.verifyToken(token, config.jwt.refresh_secret as Secret);
   } catch (error) {
     // err
-    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
+    throw new ApiError(httpStatus.FORBIDDEN, "Invalid Refresh Token");
   }
   //! if user not exist
   // !checking deleted user's refresh token
@@ -316,33 +296,48 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
       userId,
     },
     include: {
-      profile: {
+      tenant: {
         select: {
-          role: true,
-          profileId: true,
-          profileImage: true,
           firstName: true,
           lastName: true,
+          tenantId: true,
+        },
+      },
+      propertyOwner: {
+        select: {
+          firstName: true,
+          lastName: true,
+          propertyOwnerId: true,
+        },
+      },
+      serviceProvider: {
+        select: {
+          firstName: true,
+          lastName: true,
+          serviceProviderId: true,
         },
       },
     },
   });
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exists!!');
+    throw new ApiError(httpStatus.NOT_FOUND, "User does not exists!!");
   }
+
+  const { tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;
+
   // generate new token
   const newAccessToken = jwtHelpers.createToken(
     {
-      userId: isUserExist?.userId,
-      role: isUserExist?.profile?.role,
-      profileId: isUserExist?.profile?.profileId,
-      email: isUserExist?.email,
-      profileImage: isUserExist?.profile?.profileImage,
-      firstName: isUserExist?.profile?.firstName,
-      lastName: isUserExist?.profile?.lastName,
+      userId,
+      role,
+      profileId: tenant?.tenantId || propertyOwner?.propertyOwnerId || serviceProvider?.serviceProviderId,
+      email: loggedInEmail,
+      userStatus,
+      firstName: tenant?.firstName || propertyOwner?.firstName || serviceProvider?.firstName,
+      lastName: tenant?.lastName || propertyOwner?.lastName || serviceProvider?.lastName,
     },
     config.jwt.secret as Secret,
-    config.jwt.expires_in as string
+    config.jwt.expires_in as string,
   );
 
   return {

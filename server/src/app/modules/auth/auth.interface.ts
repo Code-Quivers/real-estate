@@ -1,4 +1,4 @@
-import { UserRoles, UserStatus } from '@prisma/client';
+import { UserRoles, UserStatus } from "@prisma/client";
 export type IUserCreate = {
   firstName: string;
   lastName: string;
@@ -29,7 +29,7 @@ export type IUserResponse = {
 };
 
 export type IUserLogin = {
-  email: string;
+  emailOrUsername: string;
   password: string;
   userName: string;
 };

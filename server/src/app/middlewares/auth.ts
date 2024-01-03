@@ -27,16 +27,25 @@ const auth = (...requiredRoles: string[]) => {
         const isUserExist = await prisma.user.findUnique({
           where: {
             userId: verifiedUser?.userId,
-            profile: {
-              profileId: verifiedUser?.profileId,
-            },
           },
           select: {
             email: true,
             userId: true,
-            profile: {
+            role: true,
+            userStatus: true,
+            tenant: {
               select: {
-                profileId: true,
+                tenantId: true,
+              },
+            },
+            propertyOwner: {
+              select: {
+                propertyOwnerId: true,
+              },
+            },
+            serviceProvider: {
+              select: {
+                serviceProviderId: true,
               },
             },
           },
@@ -50,7 +59,18 @@ const auth = (...requiredRoles: string[]) => {
           );
         }
 
-        req.user = verifiedUser; // Include user role and ID
+        const loggedInUserDetails = {
+          email: isUserExist?.email,
+          userId: isUserExist?.userId,
+          role: isUserExist?.role,
+          userStatus: isUserExist?.userStatus,
+          profileId:
+            isUserExist?.tenant?.tenantId ||
+            isUserExist?.propertyOwner?.propertyOwnerId ||
+            isUserExist?.serviceProvider?.serviceProviderId,
+        };
+
+        req.user = loggedInUserDetails;
 
         if (
           requiredRoles.length &&

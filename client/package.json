@@ -11,15 +11,21 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
+    "axios": "^1.6.2",
+    "jwt-decode": "^4.0.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.49.2",
     "react-icons": "^4.12.0",
-    "rsuite": "^5.47.0"
+    "react-redux": "^9.0.4",
+    "rsuite": "^5.47.0",
+    "sharp": "^0.33.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-next": "^0.0.0",

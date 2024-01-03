@@ -1,15 +1,23 @@
 "use client";
 
-import { Sidenav, Nav } from "rsuite";
+import { Sidenav, Nav, Button } from "rsuite";
 import DashboardIcon from "@rsuite/icons/Dashboard";
 import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { removeUserInfo } from "@/hooks/services/auth.service";
+import { getAuthKey } from "@/configs/envConfig";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
+  const router = useRouter();
+
+  const logOut = () => {
+    removeUserInfo(getAuthKey());
+    router.push("/");
+  };
 
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
@@ -47,8 +55,12 @@ const PropertyOwnerSidebar = () => {
             </Nav.Item>
             <Nav.Item
               eventKey="2"
-              active
-              className="hover:!bg-[#1b3697]"
+              as={Link}
+              href="/property-owner/available-tenants"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/available-tenants" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -70,9 +82,14 @@ const PropertyOwnerSidebar = () => {
               Saved Tenants
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/unit-information"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/unit-information" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
-              className="hover:!bg-[#1b3697]"
               icon={<GroupIcon />}
             >
               Unit Information
@@ -107,7 +124,12 @@ const PropertyOwnerSidebar = () => {
               Service Providers
             </Nav.Item>
             <Nav.Item
-              className="hover:!bg-[#1b3697]"
+              as={Link}
+              href="/property-owner/saved-service-providers"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/saved-service-providers" &&
+                "!bg-[#1b3697]"
+              }`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="8"
               icon={<GroupIcon />}
@@ -123,12 +145,26 @@ const PropertyOwnerSidebar = () => {
               }`}
               style={{
                 backgroundColor: "#29429f",
-                borderBottom: "2px solid #000",
               }}
               eventKey="9"
               icon={<GroupIcon />}
             >
               Maintenance Request
+            </Nav.Item>
+            <Nav.Item
+              onClick={logOut}
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/maintenance-requests" &&
+                "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+                borderBottom: "2px solid #000",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Log Out
             </Nav.Item>
           </Nav>
         </Sidenav.Body>

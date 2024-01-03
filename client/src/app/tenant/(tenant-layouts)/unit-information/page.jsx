@@ -4,7 +4,7 @@ import unitInfoImage from "@/assets/tenant/AustralianHousing-scaled.webp";
 
 const page = () => {
   return (
-    <div>
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
       <h2 className="text-2xl mb-5 text-center">Unit Information</h2>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 border">
         <div>
@@ -26,11 +26,11 @@ const page = () => {
                 </h2>
                 <h2 className="text-sm">3 Belair Br, Binghamton, NY 13901</h2>
               </div>
-              <div>
-                <div className="py-2 px-5 rounded-full border-2 border-red-700">
-                  <p className="text-sm text-center">9</p>
-                  <hr />
-                  <p className="text-sm text-center">10</p>
+              <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+                <div className=" flex w-full flex-col justify-center items-center">
+                  <span className="font-medium">9</span>
+                  <span className="w-[70%] border-t border-[#b6b6b6]" />
+                  <span className="font-medium">10</span>
                 </div>
               </div>
             </div>
