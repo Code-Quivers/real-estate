@@ -198,7 +198,7 @@ const LoginPage = () => {
           <p className="font-semibold">
             Need an Account?
             <Link className="text-blue-800" href="/service-provider/sign-up">
-              Sign Up
+              Sign In
             </Link>
           </p>
         </div>
