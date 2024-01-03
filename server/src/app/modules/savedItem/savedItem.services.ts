@@ -5,13 +5,13 @@ import prisma from "../../../shared/prisma";
 import { Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 import { ISavedItem } from "./savedItem.interfaces";
+import { isEmptyObject } from "../../../helpers/utils";
 
 
 const createSavedItem = async (data: ISavedItem) => {
     // saved the item to the SavedItem model.
 
     const result = await prisma.$transaction(async (transactionClient) => {
-        console.log(data)
         const savedItem = await transactionClient.savedItem.create({
             data: data,
             include: {
@@ -26,47 +26,48 @@ const createSavedItem = async (data: ISavedItem) => {
     return result;
 }
 
+// Remove Saved Item
+const removeSavedItem = async (itemId: string) => {
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const removedItem = await transactionClient.savedItem.delete({
+            where: {
+                itemId: itemId
+            }
+        })
+        if (!removedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return removedItem
+    })
+    return result;
+}
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
     const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { name, address, rent } = filters;
+    const orCondition: any[] = [];
+    if (name) {
+        orCondition.push({ firstName: { contains: name } })
+        orCondition.push({ lastName: { contains: name } })
+    }
+    const tenantFilteringCondition: any = {}
+    if (orCondition.length == 2) {
+        tenantFilteringCondition.OR = orCondition
+    }
+    if (address) {
+        tenantFilteringCondition.presentAddress = { contains: filters.address };
+    }
+    if (rent) {
+        tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
+    }
 
     const whereConditions: Prisma.SavedItemWhereInput = {
         AND: [
-            {
-                userId: userId,
-                itemType: "TENANT"
-            },
-            {
-                tenant: {
-                    OR: [
-                        {
-                            firstName: {
-                                contains: filters.name
-                            },
-                            presentAddress: {
-                                contains: filters.address
-                            },
-                            affordableRentAmount: {
-                                gte: filters.rent
-                            }
-                        },
-                        {
-                            lastName: {
-                                contains: filters.name
-                            },
-                            presentAddress: {
-                                contains: filters.address
-                            },
-                            affordableRentAmount: {
-                                gte: filters.rent
-                            }
-                        }
-                    ]
-                }
-            },
-        ]
+            { userId, itemType: "TENANT" },
+            ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : []),
+        ],
+    };
 
-    }
     //
     const result = await prisma.$transaction(async (transactionClient) => {
         const savedItems = await transactionClient.savedItem.findMany({
@@ -88,6 +89,11 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
             where: whereConditions,
         });
         const totalPage = Math.ceil(total / limit);
+
+        if (!savedItems) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
+        }
+        
         return {
             meta: {
                 page,
@@ -187,5 +193,6 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
 export const SavedItemServices = {
     getSavedTenants,
     getSavedServiceProviders,
-    createSavedItem
+    createSavedItem,
+    removeSavedItem
 };
