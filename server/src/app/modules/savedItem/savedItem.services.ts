@@ -5,15 +5,19 @@ import prisma from "../../../shared/prisma";
 import { Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 <<<<<<< HEAD
+<<<<<<< HEAD
 // import { ISavedItem } from "./savedItem.interfaces";
 =======
 import { ISavedItem } from "./savedItem.interfaces";
 import { isEmptyObject } from "../../../helpers/utils";
 >>>>>>> 5544faa6ca0b6e4d1dbac7797bda9889bb9a69ae
+=======
+import { ISavedItem } from "./savedItem.interfaces";
+import { isEmptyObject } from "../../../helpers/utils";
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
 
-const createSavedItem = async (data: any) => {
-  // saved the item to the SavedItem model.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const result = await prisma.$transaction(async (transactionClient) => {
     console.log(data);
@@ -82,6 +86,8 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
           : {
               createdAt: "desc",
 =======
+=======
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
 const createSavedItem = async (data: ISavedItem) => {
     // saved the item to the SavedItem model.
 
@@ -174,6 +180,7 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
                 limit,
                 total,
                 totalPage,
+<<<<<<< HEAD
 >>>>>>> 5544faa6ca0b6e4d1dbac7797bda9889bb9a69ae
             },
       include: {
@@ -255,6 +262,8 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
           ? { [options.sortBy]: options.sortOrder }
           : {
               createdAt: "desc",
+=======
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
             },
     });
 
@@ -275,12 +284,6 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
 
   return result;
 };
-
-
-
-
-
-
 
 
 
@@ -346,6 +349,9 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
     const total = await prisma.savedItem.count({
       where: whereConditions,
     });
@@ -364,6 +370,7 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   return result;
 };
 export const SavedItemServices = {
+<<<<<<< HEAD
   getSavedTenants,
   getSavedServiceProviders,
   createSavedItem,
@@ -372,9 +379,14 @@ export const SavedItemServices = {
     return result;
 }
 export const SavedItemServices = {
+=======
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
     getSavedTenants,
     getSavedServiceProviders,
     createSavedItem,
     removeSavedItem
+<<<<<<< HEAD
 >>>>>>> 5544faa6ca0b6e4d1dbac7797bda9889bb9a69ae
+=======
+>>>>>>> 26643d1011163c529f23529b7af5a8de461a8739
 };

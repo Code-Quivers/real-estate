@@ -99,9 +99,6 @@ const createOrUpdateService = async (profileId: string, payload: IServiceUpdateR
         ownerId: profileId,
         ...newServiceData,
       },
-      include: {
-        owner: true,
-      },
     });
     if (!property) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Service Update Failed !");
