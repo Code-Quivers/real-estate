@@ -18,6 +18,9 @@ const createSavedItem = async (data: any) => {
         user: true,
       },
     });
+
+    console.log("savedItem..............", savedItem);
+
     if (!savedItem) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
     }
@@ -41,7 +44,6 @@ const removeSavedItem = async (itemId: string) => {
   });
   return result;
 };
-
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
