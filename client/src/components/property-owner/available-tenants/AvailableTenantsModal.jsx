@@ -1,6 +1,7 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
+import { useSaveAllTenantMutation } from "@/redux/features/propertyOwner/saveTenantApi";
 import Image from "next/image";
 import { Modal } from "rsuite";
 
@@ -14,6 +15,17 @@ const AvailableTenantsModal = ({
   const modalBodyStyle = {
     padding: 0,
     margin: 0,
+  };
+
+  const [saveTenant] = useSaveAllTenantMutation();
+
+  const saveTenantData = async () => {
+    const tenantData = {
+      tenantId: modalData?.tenantId,
+      itemType: "TENANT",
+    };
+
+    await saveTenant(tenantData);
   };
 
   return (
@@ -73,7 +85,7 @@ const AvailableTenantsModal = ({
 
             {/* action */}
             <div className="flex justify-center gap-5 items-center mt-10">
-              <PrimaryButton title="Save" />
+              <PrimaryButton title="Save" onClickHandler={saveTenantData} />
               <PrimaryButton title="Contact" />
               <PrimaryButton title="Add" />
             </div>

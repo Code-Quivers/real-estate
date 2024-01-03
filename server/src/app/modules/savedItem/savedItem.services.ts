@@ -101,95 +101,106 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
                 total,
                 totalPage,
             },
-            data: savedItems,
-        };
     });
 
-    return result;
-}
+    const total = await prisma.propertyOwner.count({
+      where: whereConditions,
+    });
+    const totalPage = Math.ceil(total / limit);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: allPropertyOwner,
+    };
+  });
+
+  return result;
+};
+
 
 
 // Get the saved Service Providers
 const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
-    const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
-    const whereConditions: Prisma.SavedItemWhereInput = {
-        AND: [
+  const whereConditions: Prisma.SavedItemWhereInput = {
+    AND: [
+      {
+        userId: userId,
+        itemType: "SERVICE",
+      },
+      {
+        serviceProvider: {
+          OR: [
             {
-                userId: userId,
-                itemType: "SERVICE"
+              firstName: {
+                contains: filters.name,
+              },
+              Service: {
+                serviceType: filters.serviceType,
+                serviceAvailability: filters.priority,
+                minPrice: {
+                  gte: filters.price,
+                },
+                maxPrice: { lte: filters.price },
+              },
             },
             {
-                serviceProvider: {
-                    OR: [
-                        {
-                            firstName: {
-                                contains: filters.name
-                            },
-                            Service: {
-                                serviceType: filters.serviceType,
-                                serviceAvailability: filters.priority,
-                                minPrice: {
-                                    gte: filters.price
-                                },
-                                maxPrice: { lte: filters.price }
-
-                            },
-                        },
-                        {
-                            lastName: {
-                                contains: filters.name
-                            },
-                            Service: {
-                                serviceType: filters.serviceType,
-                                serviceAvailability: filters.priority,
-                                minPrice: {
-                                    gte: filters.price
-                                },
-                                maxPrice: { lte: filters.price }
-
-                            },
-                        },
-                    ]
-                }
+              lastName: {
+                contains: filters.name,
+              },
+              Service: {
+                serviceType: filters.serviceType,
+                serviceAvailability: filters.priority,
+                minPrice: {
+                  gte: filters.price,
+                },
+                maxPrice: { lte: filters.price },
+              },
             },
-        ]
-
-    }
-    //
-    const result = await prisma.$transaction(async (transactionClient) => {
-        const savedItems = await transactionClient.savedItem.findMany({
-            where: whereConditions,
-            skip,
-            take: limit,
-            orderBy:
-                options.sortBy && options.sortOrder
-                    ? { [options.sortBy]: options.sortOrder }
-                    : {
-                        createdAt: "desc",
-                    },
-            include: {
-                serviceProvider: true
-            }
-        });
-
-        const total = await prisma.savedItem.count({
-            where: whereConditions,
-        });
-        const totalPage = Math.ceil(total / limit);
-        return {
-            meta: {
-                page,
-                limit,
-                total,
-                totalPage,
+          ],
+        },
+      },
+    ],
+  };
+  //
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const savedItems = await transactionClient.savedItem.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+              createdAt: "desc",
             },
-            data: savedItems,
-        };
+      include: {
+        serviceProvider: true,
+      },
     });
 
-    return result;
-}
+    const total = await prisma.savedItem.count({
+      where: whereConditions,
+    });
+    const totalPage = Math.ceil(total / limit);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: savedItems,
+    };
+  });
+
+  return result;
+};
 export const SavedItemServices = {
     getSavedTenants,
     getSavedServiceProviders,

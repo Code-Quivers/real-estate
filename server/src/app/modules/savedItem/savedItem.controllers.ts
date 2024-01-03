@@ -8,8 +8,6 @@ import { SavedItemServices } from "./savedItem.services";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 import ApiError from "../../../errors/ApiError";
 
-
-
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
     const itemType = req.query?.itemType;
     const filters = req.query;
@@ -36,21 +34,21 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
         message: "Service Providers retrieved successful",
         data: result,
     });
+
 });
 
-
 const createSavedItem = catchAsync(async (req: Request, res: Response) => {
-    const data = req.body;
-    const userId = (req.user as IRequestUser).userId;
-    data['userId'] = userId
-    const result = await SavedItemServices.createSavedItem(data)
-    sendResponse(res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: "Service Providers retrieved successful",
-        data: result,
-    });
-})
+  const data = req.body;
+  const userId = (req.user as IRequestUser).userId;
+  data["userId"] = userId;
+  const result = await SavedItemServices.createSavedItem(data);
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Service Providers retrieved successful",
+    data: result,
+  });
+});
 
 const removeSavedItem = catchAsync(async (req: Request, res: Response) => {
     const itemId = req.query?.itemId as string;
@@ -67,3 +65,4 @@ export const SavedItemConrtollers = {
     createSavedItem,
     removeSavedItem,
 }
+
