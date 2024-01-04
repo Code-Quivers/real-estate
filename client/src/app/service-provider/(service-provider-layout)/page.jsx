@@ -7,9 +7,10 @@ import { useSearchParams } from "next/navigation";
 import ServiceProviderProfileInformationEdit from "@/components/service-provider/information/ServiceProviderProfileInformationEdit";
 import ServiceProviderServiceInformationEdit from "@/components/service-provider/information/ServiceProviderServiceInformationEdit";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const ServiceProviderProfileInformation = () => {
-  const paramsName = useSearchParams().get("params");
+  const paramsName = useSearchParams().get("editing");
 
   const { data, isLoading, isError, error } =
     useGetServiceProviderMyProfileQuery(null);
@@ -22,8 +23,14 @@ const ServiceProviderProfileInformation = () => {
         <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
           <div className="border shadow-lg rounded-full">
             <Image
-              src={profileLogo}
-              className="max-md:w-[80px] md:w-[150px]  select-none"
+              width={200}
+              height={200}
+              src={
+                myProfileData?.profileImage
+                  ? ` ${fileUrlKey()}/${myProfileData?.profileImage}`
+                  : profileLogo
+              }
+              className="max-md:w-[80px] rounded-full md:w-[150px]  select-none"
               alt="Profile Image"
             />
           </div>
@@ -54,7 +61,7 @@ const ServiceProviderProfileInformation = () => {
           <ServiceProviderDashboardButton
             firstTitle="Profile"
             secondTitle="Information"
-            href="/service-provider?params=account-information"
+            href="/service-provider?editing=account-information"
           />
         </div>
         {/* button */}
@@ -62,7 +69,7 @@ const ServiceProviderProfileInformation = () => {
           <ServiceProviderDashboardButton
             firstTitle="Service"
             secondTitle="Information"
-            href="/service-provider?params=service-information"
+            href="/service-provider?editing=service-information"
           />
         </div>
       </div>

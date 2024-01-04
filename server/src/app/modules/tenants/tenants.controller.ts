@@ -5,6 +5,7 @@ import catchAsync from "../../../shared/catchAsync";
 import { TenantServices } from "./tenants.service";
 import pick from "../../../shared/pick";
 import { tenantsFilterableFields } from "./tenants.constants";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 // ! get all tenants
 const getAllTenants = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, tenantsFilterableFields);
@@ -31,6 +32,18 @@ const getSingleTenant = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! get  tenant my profile
+const getTenantMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = (req.user as IRequestUser).profileId;
+  const result = await TenantServices.getSingleTenant(tenantId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Tenant my profile retrieved Successful",
+    data: result,
+  });
+});
 // ! update tenant profile
 const updateTenantProfile = catchAsync(async (req: Request, res: Response) => {
   const tenantId = req.params?.tenantId;
@@ -47,5 +60,6 @@ const updateTenantProfile = catchAsync(async (req: Request, res: Response) => {
 export const TenantsControllers = {
   getAllTenants,
   updateTenantProfile,
+  getTenantMyProfile,
   getSingleTenant,
 };

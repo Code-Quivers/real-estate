@@ -2,13 +2,16 @@
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'PAUSED', 'SUSPENDED');
 
 -- CreateEnum
-CREATE TYPE "ServiceType" AS ENUM ('TENANT_SCREENING', 'MAINTENANCE_AND_REPAIR', 'CLEAING', 'PEST_CONTROL', 'LAWN_CARE', 'SECURITY_AND_SAFETY', 'INSURANCE', 'INSPECTION', 'MARKETING', 'TECHNOLOGY');
+CREATE TYPE "ServiceType" AS ENUM ('TENANT_SCREENING', 'MAINTENANCE_AND_REPAIR', 'CLEANING', 'PEST_CONTROL', 'LAWN_CARE', 'SECURITY_AND_SAFETY', 'INSURANCE', 'INSPECTION', 'MARKETING', 'TECHNOLOGY');
 
 -- CreateEnum
 CREATE TYPE "ServiceAvailabilityEnum" AS ENUM ('LOW_PRIORITY', 'MEDIUM_PRIORITY', 'HIGH_PRIORITY', 'ALL_PRIORITIES');
 
 -- CreateEnum
 CREATE TYPE "UserRoles" AS ENUM ('SUPERADMIN', 'TENANT', 'PROPERTY_OWNER', 'SERVICE_PROVIDER');
+
+-- CreateEnum
+CREATE TYPE "ItemType" AS ENUM ('PROPERTY', 'PROPERTY_OWNER', 'SERVICE', 'TENANT');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -30,34 +33,35 @@ CREATE TABLE "tenants" (
     "userId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "photo" TEXT,
-    "phone" TEXT,
+    "profileImage" TEXT,
+    "dateOfBirth" TIMESTAMP(3),
     "socialSecurityNumber" TEXT,
-    "drivingLicenseNumber" TEXT,
     "presentAddress" TEXT,
+    "phoneNumber" TEXT,
+    "drivingLicenseNumber" TEXT,
     "isCriminalRecord" BOOLEAN,
     "criminalRecordDescription" TEXT,
-    "CurrentEmployer" TEXT,
-    "EmployerContactInfo" TEXT,
-    "JobTitle" TEXT,
-    "AnnualSalary" INTEGER,
-    "OtherIncomeSource" TEXT,
-    "CurrentCreditScore" INTEGER,
-    "isSmoker" BOOLEAN,
-    "allergies" TEXT,
-    "isHaveOtherMember" BOOLEAN,
-    "numberOfMember" INTEGER,
-    "isPets" BOOLEAN,
-    "typeOfPets" TEXT,
-    "isPetVacinated" BOOLEAN,
-    "isAgree" BOOLEAN,
-    "comment" TEXT,
     "prevLandlordName" TEXT,
     "prevLandlordContactInfo" TEXT,
     "lengthOfPrevTenancy" TEXT,
     "affordableRentAmount" INTEGER,
     "leavingReason" TEXT,
-    "isLatePaid" BOOLEAN,
+    "isAnyLatePaymentReason" TEXT,
+    "CurrentEmployerOrBusinessName" TEXT,
+    "CurrentEmployerOrBusinessContactInfo" TEXT,
+    "JobTitle" TEXT,
+    "AnnualSalary" INTEGER,
+    "OtherIncomeSource" TEXT,
+    "CurrentCreditScore" INTEGER,
+    "isPets" BOOLEAN,
+    "typeOfPets" TEXT,
+    "isPetVaccinated" BOOLEAN,
+    "isSmoker" BOOLEAN,
+    "allergies" TEXT,
+    "isHaveOtherMember" BOOLEAN,
+    "numberOfMember" INTEGER,
+    "isWillingToSignLeasingAgreement" BOOLEAN,
+    "isAnyExtraToMention" TEXT,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
 
@@ -70,7 +74,7 @@ CREATE TABLE "propertyOwners" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "phoneNumber" TEXT,
-    "photo" TEXT,
+    "profileImage" TEXT,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
     "userId" TEXT NOT NULL,
@@ -83,8 +87,12 @@ CREATE TABLE "serviceProviders" (
     "serviceProviderId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "photo" TEXT,
-    "phone" TEXT,
+    "profileImage" TEXT,
+    "phoneNumber" TEXT,
+    "companyName" TEXT,
+    "companyAddress" TEXT,
+    "companyPhoneNumber" TEXT,
+    "companyEmailAddress" TEXT,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
@@ -115,16 +123,32 @@ CREATE TABLE "Property" (
 -- CreateTable
 CREATE TABLE "Services" (
     "serviceId" TEXT NOT NULL,
-    "servicePriceRange" TEXT NOT NULL,
-    "serviceDescription" TEXT NOT NULL,
-    "serviceLocation" TEXT NOT NULL,
-    "serviceCancellationPolicy" TEXT NOT NULL,
-    "serviceAvailability" "ServiceAvailabilityEnum" NOT NULL,
+    "minPrice" DOUBLE PRECISION,
+    "maxPrice" DOUBLE PRECISION,
+    "serviceDescription" TEXT,
+    "serviceLocation" TEXT,
+    "serviceCancellationPolicy" TEXT,
+    "serviceAvailability" "ServiceAvailabilityEnum",
+    "serviceType" "ServiceType",
     "ownerId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Services_pkey" PRIMARY KEY ("serviceId")
+);
+
+-- CreateTable
+CREATE TABLE "SavedItem" (
+    "itemId" TEXT NOT NULL,
+    "itemType" "ItemType" NOT NULL,
+    "serviceProviderId" TEXT,
+    "tenantId" TEXT,
+    "propertyId" TEXT,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "SavedItem_pkey" PRIMARY KEY ("itemId")
 );
 
 -- CreateIndex
@@ -145,6 +169,15 @@ CREATE UNIQUE INDEX "serviceProviders_userId_key" ON "serviceProviders"("userId"
 -- CreateIndex
 CREATE UNIQUE INDEX "Services_ownerId_key" ON "Services"("ownerId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "SavedItem_serviceProviderId_key" ON "SavedItem"("serviceProviderId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SavedItem_tenantId_key" ON "SavedItem"("tenantId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SavedItem_propertyId_key" ON "SavedItem"("propertyId");
+
 -- AddForeignKey
 ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -159,3 +192,15 @@ ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("owne
 
 -- AddForeignKey
 ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_serviceProviderId_fkey" FOREIGN KEY ("serviceProviderId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("tenantId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

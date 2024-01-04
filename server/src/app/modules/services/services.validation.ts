@@ -18,9 +18,14 @@ const createOrUpdateService = z.object({
         invalid_type_error: "Service Cancellation Policy must be in String",
       })
       .optional(),
-    servicePriceRange: z
-      .string({
-        invalid_type_error: "Service Price Range must be in String",
+    minPrice: z
+      .number({
+        invalid_type_error: "Min Price must be in Integer",
+      })
+      .optional(),
+    maxPrice: z
+      .number({
+        invalid_type_error: "Max Price must be in Integer",
       })
       .optional(),
     serviceAvailability: z

@@ -188,7 +188,7 @@ const PropertyOwnerLoginPage = () => {
                 className="!rounded-full !px-8 !py-3.5 "
                 appearance="default"
               >
-                Sign Up
+                Sign In
               </Button>
             </div>
           </form>

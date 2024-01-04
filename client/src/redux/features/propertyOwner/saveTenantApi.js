@@ -1,21 +1,23 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { tagTypes } from "@/redux/tag-types/tag-types";
 
+const SAVE_ITEM = "saved-item";
+
 export const servicesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // get all services
-    getAllServices: builder.query({
+    getAllSavedItems: builder.query({
       query: (arg) => ({
-        url: "/services/get-all-services",
+        url: `${SAVE_ITEM}`,
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.services],
+      providesTags: [tagTypes.services, tagTypes.items],
     }),
-    updateServiceInformation: builder.mutation({
+    saveAllTenant: builder.mutation({
       query: ({ data }) => ({
-        url: `/services/create-or-update-service`,
-        method: "PUT",
+        url: `${SAVE_ITEM}/create`,
+        method: "POST",
         data: data,
       }),
       invalidatesTags: [
@@ -23,10 +25,11 @@ export const servicesApi = baseApi.injectEndpoints({
         tagTypes.serviceProvider,
         tagTypes.user,
         tagTypes.tenant,
+        tagTypes.items
       ],
     }),
   }),
 });
 
-export const { useGetAllServicesQuery, useUpdateServiceInformationMutation } =
+export const { useGetAllSavedItemsQuery, useSaveAllTenantMutation } =
   servicesApi;

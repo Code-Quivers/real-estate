@@ -37,7 +37,6 @@ const getSingleService = catchAsync(async (req: Request, res: Response) => {
 });
 // ! create or update
 const createOrUpdateService = catchAsync(async (req: Request, res: Response) => {
-  //
   const profileId = (req.user as IRequestUser).profileId;
 
   const result = await ServicesService.createOrUpdateService(profileId, req.body);
