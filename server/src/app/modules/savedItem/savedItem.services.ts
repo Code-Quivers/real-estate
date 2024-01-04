@@ -9,186 +9,179 @@ import ApiError from "../../../errors/ApiError";
 import { isEmptyObject } from "../../../helpers/utils";
 
 const createSavedItem = async (data: any) => {
-  // saved the item to the SavedItem model.
+    // saved the item to the SavedItem model.
 
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const savedItem = await transactionClient.savedItem.create({
-      data: data,
-      include: {
-        user: true,
-      },
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const savedItem = await transactionClient.savedItem.create({
+            data: data,
+            include: {
+                user: true,
+            },
+        });
+        if (!savedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return savedItem;
     });
-    if (!savedItem) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
-    }
-    return savedItem;
-  });
-  return result;
+    return result;
 };
 
 // Remove Saved Item
 const removeSavedItem = async (itemId: string) => {
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const removedItem = await transactionClient.savedItem.delete({
-      where: {
-        itemId: itemId,
-      },
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const removedItem = await transactionClient.savedItem.delete({
+            where: {
+                itemId: itemId,
+            },
+        });
+        if (!removedItem) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+        }
+        return removedItem;
     });
-    if (!removedItem) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
-    }
-    return removedItem;
-  });
-  return result;
+    return result;
 };
 
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
-  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  const { name, address, rent } = filters;
-  const orCondition: any[] = [];
-  if (name) {
-    orCondition.push({ firstName: { contains: name } });
-    orCondition.push({ lastName: { contains: name } });
-  }
-  const tenantFilteringCondition: any = {};
-  if (orCondition.length == 2) {
-    tenantFilteringCondition.OR = orCondition;
-  }
-  if (address) {
-    tenantFilteringCondition.presentAddress = { contains: filters.address };
-  }
-  if (rent) {
-    tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
-  }
-
-  const whereConditions: Prisma.SavedItemWhereInput = {
-    AND: [{ userId, itemType: "TENANT" }, ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : [])],
-  };
-
-  //
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const savedItems = await transactionClient.savedItem.findMany({
-      where: whereConditions,
-      skip,
-      take: limit,
-      orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
-            },
-      include: {
-        tenant: true,
-      },
-    });
-
-    const total = await prisma.savedItem.count({
-      where: whereConditions,
-    });
-    const totalPage = Math.ceil(total / limit);
-
-    if (!savedItems) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
+    const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { name, address, rent } = filters;
+    const orCondition: any[] = [];
+    if (name) {
+        orCondition.push({ firstName: { contains: name } });
+        orCondition.push({ lastName: { contains: name } });
+    }
+    const tenantFilteringCondition: any = {};
+    if (orCondition.length == 2) {
+        tenantFilteringCondition.OR = orCondition;
+    }
+    if (address) {
+        tenantFilteringCondition.presentAddress = { contains: filters.address };
+    }
+    if (rent) {
+        tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
     }
 
-    return {
-      meta: {
-        page,
-        limit,
-        total,
-        totalPage,
-      },
-      data: savedItems,
+    const whereConditions: Prisma.SavedItemWhereInput = {
+        AND: [{ userId, itemType: "TENANT" }, ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : [])],
     };
-  });
 
-  return result;
+    //
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const savedItems = await transactionClient.savedItem.findMany({
+            where: whereConditions,
+            skip,
+            take: limit,
+            orderBy:
+                options.sortBy && options.sortOrder
+                    ? { [options.sortBy]: options.sortOrder }
+                    : {
+                        createdAt: "desc",
+                    },
+            include: {
+                tenant: true,
+            },
+        });
+
+        const total = await prisma.savedItem.count({
+            where: whereConditions,
+        });
+        const totalPage = Math.ceil(total / limit);
+
+        if (!savedItems) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
+        }
+
+        return {
+            meta: {
+                page,
+                limit,
+                total,
+                totalPage,
+            },
+            data: savedItems,
+        };
+    });
+
+    return result;
 };
 
 // Get the saved Service Providers
-
 const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
-  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+    const { name, serviceType, priority, price } = filters;
+    const orCondition: any[] = [];
+    if (name) {
+        orCondition.push({ firstName: { contains: name } })
+        orCondition.push({ lastName: { contains: name } })
+    }
+    const serviceProviderFilterCondition: any = {}
+    if (orCondition.length == 2) {
+        serviceProviderFilterCondition.OR = orCondition
+    }
+    const sreviceFilterCondition: any = {}
 
-  const whereConditions: Prisma.SavedItemWhereInput = {
-    AND: [
-      {
+    if (serviceType) {
+        sreviceFilterCondition.serviceType = serviceType;
+    }
+    if (priority) {
+        sreviceFilterCondition.serviceAvailability = priority;
+    }
+    if (price) {
+        sreviceFilterCondition.minPrice = { gte: price };
+        sreviceFilterCondition.maxPrice = { lte: price };
+    }
+    if (!isEmptyObject(sreviceFilterCondition)) {
+        serviceProviderFilterCondition.Service = sreviceFilterCondition;
+    }
+
+    const andCondition = []
+    andCondition.push({
         userId: userId,
-        itemType: "SERVICE",
-      },
-      {
-        serviceProvider: {
-          OR: [
-            {
-              firstName: {
-                contains: filters.name,
-              },
-              Service: {
-                serviceType: filters.serviceType,
-                serviceAvailability: filters.priority,
-                minPrice: {
-                  gte: filters.price,
-                },
-                maxPrice: { lte: filters.price },
-              },
+        itemType: "SERVICE"
+    })
+    if (!isEmptyObject(serviceProviderFilterCondition)) {
+        andCondition.push({ serviceProvider: serviceProviderFilterCondition })
+    }
+
+    const whereConditions: Prisma.SavedItemWhereInput = { AND: andCondition }
+    //
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const savedItems = await transactionClient.savedItem.findMany({
+            where: whereConditions,
+            skip,
+            take: limit,
+            orderBy:
+                options.sortBy && options.sortOrder
+                    ? { [options.sortBy]: options.sortOrder }
+                    : {
+                        createdAt: "desc",
+                    },
+            include: {
+                serviceProvider: true
+            }
+        });
+        const total = await prisma.savedItem.count({
+            where: whereConditions,
+        });
+        const totalPage = Math.ceil(total / limit);
+        return {
+            meta: {
+                page,
+                limit,
+                total,
+                totalPage,
             },
-            {
-              lastName: {
-                contains: filters.name,
-              },
-              Service: {
-                serviceType: filters.serviceType,
-                serviceAvailability: filters.priority,
-                minPrice: {
-                  gte: filters.price,
-                },
-                maxPrice: { lte: filters.price },
-              },
-            },
-          ],
-        },
-      },
-    ],
-  };
-  //
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const savedItems = await transactionClient.savedItem.findMany({
-      where: whereConditions,
-      skip,
-      take: limit,
-      orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
-            },
-      include: {
-        serviceProvider: true,
-      },
+            data: savedItems,
+        };
     });
 
-    const total = await prisma.savedItem.count({
-      where: whereConditions,
-    });
-    const totalPage = Math.ceil(total / limit);
-    return {
-      meta: {
-        page,
-        limit,
-        total,
-        totalPage,
-      },
-      data: savedItems,
-    };
-  });
-
-  return result;
+    return result;
 };
 
 export const SavedItemServices = {
-  getSavedTenants,
-  getSavedServiceProviders,
-  createSavedItem,
-  removeSavedItem,
+    getSavedTenants,
+    getSavedServiceProviders,
+    createSavedItem,
+    removeSavedItem,
 };
