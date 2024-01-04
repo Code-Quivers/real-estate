@@ -1,23 +1,102 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
 import TenantIncomeInformationEdit from "./TenantIncomeInformationEdit";
 import TenantOtherInformationEdit from "./TenantOtherInformationEdit";
 import TenantPersonalInformationEdit from "./TenantPersonalInformationEdit";
 import TenantPetsInformationEdit from "./TenantPetsInformationEdit";
 import TenantRentalHistoryEdit from "./TenantRentalHistoryEdit";
+import { Button } from "rsuite";
+import { useState } from "react";
+import { fileUrlKey } from "@/configs/envConfig";
+import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 
-const TenantEditing = () => {
-  const paramsName = useSearchParams().get("editing");
+const TenantEditing = ({ setTabActive, tabActive, defaultImage }) => {
+  const [fileValue, setFileValue] = useState([]);
+  const [imagePreview, setImagePreview] = useState(
+    fileValue?.length
+      ? null
+      : defaultImage
+        ? `${fileUrlKey()}/${defaultImage}`
+        : null,
+  );
+  const [updateTenantProfile, { isError, isLoading, isSuccess, error }] =
+    useUpdateTenantProfileMutation();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const handleUpdateTenant = async (data) => {
+    const formData = new FormData();
+    const obj = {
+      ...data,
+      oldFilepath: undefined,
+    };
+    delete obj.file;
+    const updatedProfileData = JSON.stringify(obj);
+    // if (data?.file?.blobFile) obj["oldFilePath"] = myProfileData?.profileImage;
+    if (data?.file?.blobFile) formData.append("file", data?.file?.blobFile);
+    formData.append("data", updatedProfileData);
+
+    const res = await updateTenantProfile({
+      tenantId: "tenantId",
+      data: formData,
+    });
+    console.log(res);
+  };
 
   return (
     <div>
-      {paramsName === "personal-information" && (
-        <TenantPersonalInformationEdit />
-      )}
-      {paramsName === "rental-history" && <TenantRentalHistoryEdit />}
-      {paramsName === "income-information" && <TenantIncomeInformationEdit />}
-      {paramsName === "pets-information" && <TenantPetsInformationEdit />}
-      {paramsName === "other-information" && <TenantOtherInformationEdit />}
+      <form onSubmit={handleSubmit(handleUpdateTenant)}>
+        {tabActive === 2 && (
+          <TenantPersonalInformationEdit
+            setFileValue={setFileValue}
+            fileValue={fileValue}
+            imagePreview={imagePreview}
+            setImagePreview={setImagePreview}
+            control={control}
+          />
+        )}
+        {tabActive === 3 && <TenantRentalHistoryEdit control={control} />}
+        {tabActive === 4 && <TenantIncomeInformationEdit control={control} />}
+        {tabActive === 5 && <TenantPetsInformationEdit control={control} />}
+        {tabActive === 6 && <TenantOtherInformationEdit control={control} />}
+
+        <div className="my-10">
+          <div className=" flex justify-end gap-5 items-center">
+            {tabActive >= 3 && tabActive <= 6 && (
+              <Button
+                type="button"
+                onClick={() => setTabActive(tabActive - 1)}
+                size="lg"
+                className="!bg-[#29429f]  hover:!bg-gray-800 !px-12 !rounded-2xl !py-4 !text-white"
+              >
+                BACK
+              </Button>
+            )}
+            {tabActive >= 2 && tabActive <= 5 && (
+              <Button
+                type="button"
+                onClick={() => setTabActive(tabActive + 1)}
+                size="lg"
+                className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
+              >
+                Next
+              </Button>
+            )}
+            {tabActive === 6 && (
+              <Button
+                size="lg"
+                type="submit"
+                className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
+              >
+                SAVE
+              </Button>
+            )}
+          </div>
+        </div>
+      </form>
     </div>
   );
 };

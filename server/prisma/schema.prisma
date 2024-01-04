@@ -33,31 +33,13 @@ model Tenant {
   firstName                            String
   lastName                             String
   profileImage                         String?
-  phoneNumber                          String?
   dateOfBirth                          DateTime?
-  presentAddress                       String?
   socialSecurityNumber                 String?
+  presentAddress                       String?
+  phoneNumber                          String?
   drivingLicenseNumber                 String?
   isCriminalRecord                     Boolean?
   criminalRecordDescription            String?
-  // income information
-  CurrentEmployerOrBusinessName        String?
-  CurrentEmployerOrBusinessContactInfo String?
-  JobTitle                             String?
-  AnnualSalary                         Int?
-  OtherIncomeSource                    String?
-  CurrentCreditScore                   Int?
-  // other information
-  isSmoker                             Boolean?
-  allergies                            String?
-  isHaveOtherMember                    Boolean?
-  numberOfMember                       Int?
-  isWillingToSignLeasingAgreement      Int?
-  isAnyExtraToMention                  String?
-  // pets
-  isPets                               Boolean?
-  typeOfPets                           String?
-  isPetVaccinated                      Boolean?
   // rental history
   prevLandlordName                     String?
   prevLandlordContactInfo              String?
@@ -65,6 +47,24 @@ model Tenant {
   affordableRentAmount                 Int?
   leavingReason                        String?
   isAnyLatePaymentReason               String?
+  // income information
+  CurrentEmployerOrBusinessName        String?
+  CurrentEmployerOrBusinessContactInfo String?
+  JobTitle                             String?
+  AnnualSalary                         Int?
+  OtherIncomeSource                    String?
+  CurrentCreditScore                   Int?
+  // pets
+  isPets                               Boolean?
+  typeOfPets                           String?
+  isPetVaccinated                      Boolean?
+  // other information
+  isSmoker                             Boolean?
+  allergies                            String?
+  isHaveOtherMember                    Boolean?
+  numberOfMember                       Int?
+  isWillingToSignLeasingAgreement      Boolean?
+  isAnyExtraToMention                  String?
   // 
   createdAt                            DateTime    @default(now()) @db.Timestamptz(0)
   updatedAt                            DateTime    @updatedAt @db.Timestamptz(0)

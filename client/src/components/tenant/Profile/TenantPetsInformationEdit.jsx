@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Input } from "rsuite";
+import { Controller } from "react-hook-form";
+import { Input, Radio, RadioGroup } from "rsuite";
 
-const TenantPetsInformationEdit = () => {
+const TenantPetsInformationEdit = ({ control }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -14,40 +15,55 @@ const TenantPetsInformationEdit = () => {
         {/* left ----------------------------- */}
         <div className="col-span-2 space-y-5">
           {/* do you have any pets */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Do you have any pets?</label>
-            <Input placeholder="" type="text" />
+            <Controller
+              name="isPets"
+              control={control}
+              render={({ field }) => (
+                <div className="select-none  rs-form-control-wrapper ">
+                  <RadioGroup appearance="picker" {...field} inline>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </RadioGroup>
+                </div>
+              )}
+            />
           </div>
-
           {/* if yes, what type of pets? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               if yes, what type of pets?
             </label>
-            <div className="w-full">
-              <Input placeholder="" type="text" />
-            </div>
+            <Controller
+              name="typeOfPets"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
         </div>
         {/* right ---------------------------------*/}
         <div className="col-span-2 space-y-5">
           {/* Are you pets up-do-date vaccinations? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
-              Are you pets up-do-date vaccinations?
+              Are your pets up-do-date vaccinations?
             </label>
-            <Input as="textarea" rows={5} />
+            <Controller
+              name="isPetVaccinated"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
         </div>
-      </div>
-
-      <div className="mt-5 flex justify-end">
-        <Button
-          size="lg"
-          className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );
