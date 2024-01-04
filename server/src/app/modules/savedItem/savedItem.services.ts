@@ -93,7 +93,7 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
         if (!savedItems) {
             throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
         }
-        
+
         return {
             meta: {
                 page,
@@ -112,50 +112,43 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
 // Get the saved Service Providers
 const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
     const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-
-    const whereConditions: Prisma.SavedItemWhereInput = {
-        AND: [
-            {
-                userId: userId,
-                itemType: "SERVICE"
-            },
-            {
-                serviceProvider: {
-                    OR: [
-                        {
-                            firstName: {
-                                contains: filters.name
-                            },
-                            Service: {
-                                serviceType: filters.serviceType,
-                                serviceAvailability: filters.priority,
-                                minPrice: {
-                                    gte: filters.price
-                                },
-                                maxPrice: { lte: filters.price }
-
-                            },
-                        },
-                        {
-                            lastName: {
-                                contains: filters.name
-                            },
-                            Service: {
-                                serviceType: filters.serviceType,
-                                serviceAvailability: filters.priority,
-                                minPrice: {
-                                    gte: filters.price
-                                },
-                                maxPrice: { lte: filters.price }
-
-                            },
-                        },
-                    ]
-                }
-            },
-        ]
-
+    const { name, serviceType, priority, price } = filters;
+    const orCondition: any[] = [];
+    if (name) {
+        orCondition.push({ firstName: { contains: name } })
+        orCondition.push({ lastName: { contains: name } })
     }
+    const serviceProviderFilterCondition: any = {}
+    if (orCondition.length == 2) {
+        serviceProviderFilterCondition.OR = orCondition
+    }
+    const sreviceFilterCondition: any = {}
+
+    if (serviceType) {
+        sreviceFilterCondition.serviceType = serviceType;
+    }
+    if (priority) {
+        sreviceFilterCondition.serviceAvailability = priority;
+    }
+    if (price) {
+        sreviceFilterCondition.minPrice = { gte: price };
+        sreviceFilterCondition.maxPrice = { lte: price };
+    }
+    if (!isEmptyObject(sreviceFilterCondition)) {
+        serviceProviderFilterCondition.Service = sreviceFilterCondition;
+    }
+
+    const andCondition = []
+    andCondition.push({
+        userId: userId,
+        itemType: "SERVICE"
+    })
+    if (!isEmptyObject(serviceProviderFilterCondition)) {
+        andCondition.push({serviceProvider:serviceProviderFilterCondition})
+    }
+    console.log(andCondition)
+
+    const whereConditions: Prisma.SavedItemWhereInput = { AND: andCondition }
     //
     const result = await prisma.$transaction(async (transactionClient) => {
         const savedItems = await transactionClient.savedItem.findMany({
