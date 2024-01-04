@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Input } from "rsuite";
+import { Controller } from "react-hook-form";
+import { Input, InputNumber } from "rsuite";
 
-const TenantIncomeInformationEdit = () => {
+const TenantIncomeInformationEdit = ({ control }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -14,60 +15,95 @@ const TenantIncomeInformationEdit = () => {
         {/* left ----------------------------- */}
         <div className="col-span-2 space-y-5">
           {/* Current Employer/Business Name */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Current Employer/Business Name
             </label>
-            <Input placeholder="" type="text" />
+            <Controller
+              name="CurrentEmployerOrBusinessName"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
-
           {/* Current Employer/Business Contact Info */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Current Employer/Business Contact Info
             </label>
-            <div className="w-full">
-              <Input placeholder="" type="text" />
-            </div>
+            <Controller
+              name="CurrentEmployerOrBusinessContactInfo"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
           {/* Job Title */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Job Title</label>
-            <Input type="text" />
+            <Controller
+              name="JobTitle"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
           {/* Annual Salary */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Annual Salary</label>
-            <Input type="text" />
+            <Controller
+              name="AnnualSalary"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
 
           {/* next button */}
         </div>
         {/* right ---------------------------------*/}
         <div className="col-span-2 space-y-5">
-          {/* Other Source of income*/}
-          <div>
+          {/* Other Source of income*/}{" "}
+          <div className="w-full">
             <label className="text-sm font-medium">
               Other Source of income
             </label>
-            <Input type="text" />
+            <Controller
+              name="OtherIncomeSource"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input className="!w-full" {...field} type="text" />
+                </div>
+              )}
+            />
           </div>
-
-          {/* Current Credit Score */}
-          <div>
+          {/* Current Credit Score */}{" "}
+          <div className="w-full">
             <label className="text-sm font-medium">Current Credit Score</label>
-            <Input type="text" />
+            <Controller
+              name="CurrentCreditScore"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <InputNumber className="!w-full" {...field} />
+                </div>
+              )}
+            />
           </div>
         </div>
-      </div>
-
-      <div className=" max-lg:mt-5 flex justify-end">
-        <Button
-          size="lg"
-          className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );

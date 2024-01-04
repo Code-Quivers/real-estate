@@ -1,8 +1,17 @@
 "use client";
 
-import { Button, Input } from "rsuite";
+import { Controller } from "react-hook-form";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  RadioGroup,
+} from "rsuite";
 
-const TenantOtherInformationEdit = () => {
+const TenantOtherInformationEdit = ({ control }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -14,64 +23,108 @@ const TenantOtherInformationEdit = () => {
         {/* left ----------------------------- */}
         <div className="col-span-2 space-y-5">
           {/* Are you a smoker? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Are you a smoker?</label>
-            <Input placeholder="" type="text" />
+            <Controller
+              name="isSmoker"
+              control={control}
+              render={({ field }) => (
+                <div className="select-none  rs-form-control-wrapper ">
+                  <RadioGroup appearance="picker" {...field} inline>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </RadioGroup>
+                </div>
+              )}
+            />
           </div>
 
           {/* Do you have any allergies? */}
-          <div>
+
+          <div className="w-full">
             <label className="text-sm font-medium">
               Do you have any allergies?
             </label>
-            <div className="w-full">
-              <Input placeholder="" type="text" />
-            </div>
+            <Controller
+              name="allergies"
+              control={control}
+              render={({ field }) => (
+                <div className="  rs-form-control-wrapper ">
+                  <Input {...field} className="!w-full" type="text" />
+                </div>
+              )}
+            />
           </div>
+
           {/* Do you have any one living with you? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Do you have any one living with you?
             </label>
-            <Input type="text" />
+            <Controller
+              name="isHaveOtherMember"
+              control={control}
+              render={({ field }) => (
+                <div className="  rs-form-control-wrapper ">
+                  <Input {...field} className="!w-full" type="text" />
+                </div>
+              )}
+            />
           </div>
+
           {/* If so, how many people? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               If so, how many people?
             </label>
-            <Input type="text" />
+            <Controller
+              name="numberOfMember"
+              control={control}
+              render={({ field }) => (
+                <div className="  rs-form-control-wrapper ">
+                  <InputNumber {...field} className="!w-full" min={0} />
+                </div>
+              )}
+            />
           </div>
-
-          {/* next button */}
         </div>
         {/* right ---------------------------------*/}
         <div className="col-span-2 space-y-5">
           {/* Are you willing to sign a leasing agreement?*/}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Are you willing to sign a leasing agreement?
             </label>
-            <Input type="text" />
+            <Controller
+              name="isWillingToSignLeasingAgreement"
+              control={control}
+              render={({ field }) => (
+                <div className="select-none  rs-form-control-wrapper ">
+                  <RadioGroup appearance="picker" {...field} inline>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </RadioGroup>
+                </div>
+              )}
+            />
           </div>
 
           {/* Any thing extra you want to mention? */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Any thing extra you want to mention?
             </label>
-            <Input type="text" />
+            <Controller
+              name="isAnyExtraToMention"
+              control={control}
+              render={({ field }) => (
+                <div className="  rs-form-control-wrapper ">
+                  <Input {...field} className="!w-full" type="text" />
+                </div>
+              )}
+            />
           </div>
         </div>
-      </div>
-
-      <div className=" max-lg:mt-5 flex justify-end">
-        <Button
-          size="lg"
-          className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );
