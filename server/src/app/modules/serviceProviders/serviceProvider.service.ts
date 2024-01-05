@@ -148,7 +148,7 @@ const getServiceProviderMyProfile = async (serviceProviderId: string): Promise<S
 const UpdateServiceProvider = async (serviceProviderId: string, req: Request) => {
   const profileImage: IUploadFile = req.file as any;
   // const profileImagePath = profileImage?.path?.substring(13);
-  console.log(profileImage?.path);
+
   const profileImagePath = profileImage?.path?.substring(13);
 
   const { firstName, lastName, phoneNumber, oldProfileImagePath, companyAddress, companyEmailAddress, companyName, companyPhoneNumber } = req.body as IServiceProviderUpdateRequest;

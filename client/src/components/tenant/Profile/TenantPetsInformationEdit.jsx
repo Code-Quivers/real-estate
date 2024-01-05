@@ -1,9 +1,10 @@
 "use client";
 
+import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 import { Controller } from "react-hook-form";
-import { Input, Radio, RadioGroup } from "rsuite";
+import { Input, SelectPicker } from "rsuite";
 
-const TenantPetsInformationEdit = ({ control }) => {
+const TenantPetsInformationEdit = ({ control, responseData }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -17,7 +18,7 @@ const TenantPetsInformationEdit = ({ control }) => {
           {/* do you have any pets */}
           <div className="w-full">
             <label className="text-sm font-medium">Do you have any pets?</label>
-            <Controller
+            {/* <Controller
               name="isPets"
               control={control}
               render={({ field }) => (
@@ -26,6 +27,24 @@ const TenantPetsInformationEdit = ({ control }) => {
                     <Radio value={true}>Yes</Radio>
                     <Radio value={false}>No</Radio>
                   </RadioGroup>
+                </div>
+              )}
+            /> */}{" "}
+            <Controller
+              name="isPets"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(responseData?.isPets)}
+                    data={[
+                      { label: "Yes", value: "true" },
+                      { label: "No", value: "false" },
+                    ]}
+                    className="!w-full"
+                  />
                 </div>
               )}
             />
@@ -40,7 +59,12 @@ const TenantPetsInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.typeOfPets}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -58,7 +82,13 @@ const TenantPetsInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(responseData?.isPetVaccinated)}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
                 </div>
               )}
             />

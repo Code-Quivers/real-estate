@@ -118,7 +118,8 @@ const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
 const updateTenantProfile = async (tenantId: string, req: Request) => {
   const profileImage: IUploadFile = req.file as any;
   // const profileImagePath = profileImage?.path?.substring(13);
-  const profileImagePath = profileImage?.path;
+  // const profileImagePath = profileImage?.path;
+  const profileImagePath = profileImage?.path?.substring(13);
 
   const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } = req.body as ITenantUpdateRequest;
 
@@ -130,6 +131,8 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     profileImage: profileImagePath,
     ...updates,
   };
+
+  console.log(tenantReqData);
 
   //! deleting old  Image
   if (profileImagePath) deleteOldImage(oldProfileImagePath, profileImagePath);

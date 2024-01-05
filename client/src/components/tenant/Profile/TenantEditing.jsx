@@ -9,8 +9,15 @@ import { Button } from "rsuite";
 import { useState } from "react";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
+import { convertToBoolean, convertToNumber } from "@/utils/tenantEditUtils";
 
-const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId }) => {
+const TenantEditing = ({
+  setTabActive,
+  tabActive,
+  defaultImage,
+  tenantId,
+  data: responseData,
+}) => {
   const [fileValue, setFileValue] = useState([]);
   const [imagePreview, setImagePreview] = useState(
     fileValue?.length
@@ -28,19 +35,42 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId }) => {
   } = useForm();
 
   const handleUpdateTenant = async (updateData) => {
-    const formData = new FormData();
-
-    const { numberOfMember, ...allData } = updateData;
+    const {
+      numberOfMember,
+      dateOfBirth,
+      isCriminalRecord,
+      affordableRentAmount,
+      AnnualSalary,
+      CurrentCreditScore,
+      isPets,
+      isPetVaccinated,
+      isHaveOtherMember,
+      isSmoker,
+      isWillingToSignLeasingAgreement,
+      ...allData
+    } = updateData;
 
     const obj = {
       ...allData,
+      numberOfMember: convertToNumber(numberOfMember),
+      dateOfBirth: dateOfBirth?.toISOString(),
+      affordableRentAmount: convertToNumber(affordableRentAmount),
+      AnnualSalary: convertToNumber(AnnualSalary),
+      CurrentCreditScore: convertToNumber(CurrentCreditScore),
+      isCriminalRecord: convertToBoolean(isCriminalRecord),
+      isPets: convertToBoolean(isPets),
+      isPetVaccinated: convertToBoolean(isPetVaccinated),
+      isHaveOtherMember: convertToBoolean(isHaveOtherMember),
+      isSmoker: convertToBoolean(isSmoker),
+      isWillingToSignLeasingAgreement: convertToBoolean(
+        isWillingToSignLeasingAgreement,
+      ),
     };
 
-    if (numberOfMember) obj["numberOfMember"] = Number(numberOfMember);
-    console.log(obj);
+    // creating form data
+    const formData = new FormData();
 
-    console.log(allData);
-
+    // deleting file from obj
     delete obj.file;
     const updatedProfileData = JSON.stringify(obj);
     if (updateData?.file?.blobFile) obj["oldFilePath"] = defaultImage;
@@ -66,12 +96,33 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId }) => {
             imagePreview={imagePreview}
             setImagePreview={setImagePreview}
             control={control}
+            responseData={responseData}
           />
         )}
-        {tabActive === 3 && <TenantRentalHistoryEdit control={control} />}
-        {tabActive === 4 && <TenantIncomeInformationEdit control={control} />}
-        {tabActive === 5 && <TenantPetsInformationEdit control={control} />}
-        {tabActive === 6 && <TenantOtherInformationEdit control={control} />}
+        {tabActive === 3 && (
+          <TenantRentalHistoryEdit
+            responseData={responseData}
+            control={control}
+          />
+        )}
+        {tabActive === 4 && (
+          <TenantIncomeInformationEdit
+            responseData={responseData}
+            control={control}
+          />
+        )}
+        {tabActive === 5 && (
+          <TenantPetsInformationEdit
+            responseData={responseData}
+            control={control}
+          />
+        )}
+        {tabActive === 6 && (
+          <TenantOtherInformationEdit
+            responseData={responseData}
+            control={control}
+          />
+        )}
 
         <div className="my-10">
           <div className=" flex justify-end gap-5 items-center">

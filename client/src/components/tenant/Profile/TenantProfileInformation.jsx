@@ -1,4 +1,7 @@
 "use client";
+
+import moment from "moment";
+
 const TenantProfileInformation = ({ data }) => {
   return (
     <div className="grid grid-cols-7 mt-10">
@@ -11,7 +14,9 @@ const TenantProfileInformation = ({ data }) => {
         </div>
         <div>
           <h2 className="font-semibold text-lg">Date Of Birth</h2>
-          <p className="font-medium">{data?.dateOfBirth ?? "--"}</p>
+          <p className="font-medium">
+            {moment(data?.dateOfBirth).format("MMMM Do YYYY") ?? "--"}
+          </p>
         </div>
         <div>
           <h2 className="font-semibold text-lg">Social Security Number</h2>

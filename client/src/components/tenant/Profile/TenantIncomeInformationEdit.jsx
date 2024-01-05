@@ -3,7 +3,7 @@
 import { Controller } from "react-hook-form";
 import { Input, InputNumber } from "rsuite";
 
-const TenantIncomeInformationEdit = ({ control }) => {
+const TenantIncomeInformationEdit = ({ control, responseData }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -24,7 +24,12 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.CurrentEmployerOrBusinessName}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -39,7 +44,14 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={
+                      responseData?.CurrentEmployerOrBusinessContactInfo
+                    }
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -52,7 +64,12 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.JobTitle}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -65,7 +82,13 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.AnnualSalary}
+                    min={0}
+                  />
                 </div>
               )}
             />
@@ -85,7 +108,12 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.OtherIncomeSource}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -98,7 +126,11 @@ const TenantIncomeInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" {...field} />
+                  <InputNumber
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.CurrentCreditScore}
+                  />
                 </div>
               )}
             />

@@ -7,6 +7,7 @@ import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
 import { Button } from "rsuite";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
@@ -26,8 +27,15 @@ const TenantProfile = () => {
         <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
           <div className="border shadow-lg rounded-full">
             <Image
-              src={data?.profileImage ?? profileLogo}
-              className="max-md:w-[80px] md:w-[150px]  select-none"
+              height={150}
+              width={150}
+              // ${fileUrlKey()}/${defaultImage}
+              src={
+                data?.profileImage
+                  ? `${fileUrlKey()}/${data?.profileImage}`
+                  : profileLogo
+              }
+              className="max-md:w-[80px] md:w-[150px]  rounded-full select-none"
               alt="Profile Image"
             />
           </div>

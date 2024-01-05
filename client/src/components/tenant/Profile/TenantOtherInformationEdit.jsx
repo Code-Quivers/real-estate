@@ -1,17 +1,10 @@
 "use client";
 
+import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 import { Controller } from "react-hook-form";
-import {
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  RadioGroup,
-} from "rsuite";
+import { Input, InputNumber, Radio, RadioGroup, SelectPicker } from "rsuite";
 
-const TenantOtherInformationEdit = ({ control }) => {
+const TenantOtherInformationEdit = ({ control, responseData }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -30,15 +23,13 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="select-none  rs-form-control-wrapper ">
-                  <RadioGroup
-                    appearance="default"
-                    color="blue"
+                  <SelectPicker
                     {...field}
-                    inline
-                  >
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </RadioGroup>
+                    searchable={false}
+                    defaultValue={String(responseData?.isSmoker)}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
                 </div>
               )}
             />
@@ -55,7 +46,12 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    className="!w-full"
+                    defaultValue={responseData?.allergies}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -71,10 +67,13 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="select-none  rs-form-control-wrapper ">
-                  <RadioGroup appearance="default" {...field} inline>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </RadioGroup>
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(responseData?.isSmoker)}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
                 </div>
               )}
             />
@@ -90,7 +89,12 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <InputNumber {...field} className="!w-full" min={0} />
+                  <InputNumber
+                    {...field}
+                    className="!w-full"
+                    defaultValue={responseData?.numberOfMember}
+                    min={0}
+                  />
                 </div>
               )}
             />
@@ -108,10 +112,15 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="select-none  rs-form-control-wrapper ">
-                  <RadioGroup appearance="default" {...field} inline>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </RadioGroup>
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(
+                      responseData?.isWillingToSignLeasingAgreement,
+                    )}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
                 </div>
               )}
             />
@@ -127,7 +136,12 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.isAnyExtraToMention}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
