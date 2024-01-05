@@ -10,7 +10,7 @@ import { useState } from "react";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 
-const TenantEditing = ({ setTabActive, tabActive, defaultImage }) => {
+const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId }) => {
   const [fileValue, setFileValue] = useState([]);
   const [imagePreview, setImagePreview] = useState(
     fileValue?.length
@@ -27,23 +27,33 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage }) => {
     formState: { errors },
   } = useForm();
 
-  const handleUpdateTenant = async (data) => {
+  const handleUpdateTenant = async (updateData) => {
     const formData = new FormData();
+
+    const { numberOfMember, ...allData } = updateData;
+
     const obj = {
-      ...data,
-      oldFilepath: undefined,
+      ...allData,
     };
+
+    if (numberOfMember) obj["numberOfMember"] = Number(numberOfMember);
+    console.log(obj);
+
+    console.log(allData);
+
     delete obj.file;
     const updatedProfileData = JSON.stringify(obj);
-    // if (data?.file?.blobFile) obj["oldFilePath"] = myProfileData?.profileImage;
-    if (data?.file?.blobFile) formData.append("file", data?.file?.blobFile);
+    if (updateData?.file?.blobFile) obj["oldFilePath"] = defaultImage;
+    if (updateData?.file?.blobFile)
+      formData.append("file", updateData?.file?.blobFile);
     formData.append("data", updatedProfileData);
 
     const res = await updateTenantProfile({
-      tenantId: "tenantId",
+      tenantId,
       data: formData,
     });
-    console.log(res);
+
+    if (res?.data?.success === true) setTabActive(1);
   };
 
   return (

@@ -97,8 +97,8 @@ const updateTenantProfile = z.object({
     })
     .optional(),
   isWillingToSignLeasingAgreement: z
-    .number({
-      invalid_type_error: "isWillingToSignLeasingAgreement must be in Integer",
+    .boolean({
+      invalid_type_error: "isWillingToSignLeasingAgreement must be True or False",
     })
     .optional(),
   isAnyExtraToMention: z
