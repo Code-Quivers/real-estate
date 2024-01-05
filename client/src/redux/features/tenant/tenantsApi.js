@@ -20,8 +20,8 @@ export const tenantsApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.tenant],
     }),
     updateTenantProfile: builder.mutation({
-      query: ({ serviceProviderId, data }) => ({
-        url: `/tenants/update-profile/${serviceProviderId}`,
+      query: ({ data, tenantId }) => ({
+        url: `/tenants/update-profile/${tenantId}`,
         method: "PATCH",
         data: data,
         contentType: "multipart/form-data",

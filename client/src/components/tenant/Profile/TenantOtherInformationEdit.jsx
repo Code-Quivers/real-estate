@@ -30,7 +30,12 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="select-none  rs-form-control-wrapper ">
-                  <RadioGroup appearance="picker" {...field} inline>
+                  <RadioGroup
+                    appearance="default"
+                    color="blue"
+                    {...field}
+                    inline
+                  >
                     <Radio value={true}>Yes</Radio>
                     <Radio value={false}>No</Radio>
                   </RadioGroup>
@@ -65,8 +70,11 @@ const TenantOtherInformationEdit = ({ control }) => {
               name="isHaveOtherMember"
               control={control}
               render={({ field }) => (
-                <div className="  rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                <div className="select-none  rs-form-control-wrapper ">
+                  <RadioGroup appearance="default" {...field} inline>
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                  </RadioGroup>
                 </div>
               )}
             />
@@ -100,7 +108,7 @@ const TenantOtherInformationEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="select-none  rs-form-control-wrapper ">
-                  <RadioGroup appearance="picker" {...field} inline>
+                  <RadioGroup appearance="default" {...field} inline>
                     <Radio value={true}>Yes</Radio>
                     <Radio value={false}>No</Radio>
                   </RadioGroup>

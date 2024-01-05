@@ -120,7 +120,13 @@ const TenantProfile = () => {
 
       {tabActive === 1 && <TenantProfileInformation data={data} />}
       {tabActive !== 1 && (
-        <TenantEditing setTabActive={setTabActive} tabActive={tabActive} />
+        <TenantEditing
+          setTabActive={setTabActive}
+          tabActive={tabActive}
+          data={data}
+          tenantId={data?.tenantId}
+          defaultImage={data?.profileImage}
+        />
       )}
     </section>
   );
