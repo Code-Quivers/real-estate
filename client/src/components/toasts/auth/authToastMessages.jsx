@@ -36,3 +36,15 @@ export const LoginErrorMessage = (message) => {
     </Notification>
   );
 };
+
+export const savedItemTenant = () => {
+  return (
+    <Notification type="success" header="success" closable>
+      <div>
+        <p className="text-lg font-semibold mb-2">
+          {"Tenant Saved Successfully"}
+        </p>
+      </div>
+    </Notification>
+  );
+};

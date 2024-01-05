@@ -1,8 +1,10 @@
 "use client";
 
 import { Controller } from "react-hook-form";
-import { DatePicker, Input } from "rsuite";
+import { DatePicker, Input, SelectPicker } from "rsuite";
 import TenantPersonalProfileUpload from "./TenantPersonalPhotoUpload";
+import moment from "moment";
+import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 
 const TenantPersonalInformationEdit = ({
   control,
@@ -10,6 +12,7 @@ const TenantPersonalInformationEdit = ({
   fileValue,
   imagePreview,
   setImagePreview,
+  responseData,
 }) => {
   return (
     <div className="mt-10 pb-10">
@@ -29,14 +32,11 @@ const TenantPersonalInformationEdit = ({
               <Controller
                 name="firstName"
                 control={control}
-                rules={{
-                  required: "First Name is Required",
-                }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
                     <Input
                       {...field}
-                      placeholder="First Name"
+                      defaultValue={responseData?.firstName}
                       className="!w-full"
                       type="text"
                     />
@@ -58,7 +58,7 @@ const TenantPersonalInformationEdit = ({
                     <Input
                       className="!w-full"
                       {...field}
-                      placeholder="Last Name"
+                      defaultValue={responseData?.lastName}
                       type="text"
                     />
                   </div>
@@ -72,14 +72,21 @@ const TenantPersonalInformationEdit = ({
             <div className="w-full">
               <label className="text-sm font-medium">Date of Birth</label>
               <Controller
-                name="birthDate"
+                name="dateOfBirth"
                 control={control}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
                     <div className="w-full">
                       <DatePicker
-                        editable={false}
                         {...field}
+                        editable={false}
+                        defaultValue={
+                          responseData?.dateOfBirth &&
+                          moment(responseData?.dateOfBirth)?.toDate()
+                        }
+                        shouldDisableDate={(date) =>
+                          moment(date).isAfter(moment(), "day")
+                        }
                         size="md"
                         className="w-full"
                       />
@@ -99,7 +106,12 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.socialSecurityNumber}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -112,7 +124,12 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.drivingLicenseNumber}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -147,7 +164,12 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.presentAddress}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -161,7 +183,12 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.phoneNumber}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -172,10 +199,21 @@ const TenantPersonalInformationEdit = ({
             <label className="text-sm font-medium">Email Address</label>
             <Controller
               name="email"
+              rules={{
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Please provide your valid email",
+                },
+              }}
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} className="!w-full" type="text" />
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.user?.email}
+                    className="!w-full"
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -186,7 +224,22 @@ const TenantPersonalInformationEdit = ({
             <label className="text-sm font-medium">
               Do you have a criminal record?
             </label>
-            <Input type="text" />
+
+            <Controller
+              name="isCriminalRecord"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(responseData?.isCriminalRecord)}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
+                </div>
+              )}
+            />
           </div>
           {/* if yes , describe in details */}
           <div className="w-full">
@@ -199,6 +252,7 @@ const TenantPersonalInformationEdit = ({
                   <Input
                     as="textarea"
                     {...field}
+                    defaultValue={responseData?.criminalRecordDescription}
                     rows={6}
                     className="!w-full"
                   />

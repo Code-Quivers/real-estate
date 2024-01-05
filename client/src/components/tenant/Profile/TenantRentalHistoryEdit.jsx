@@ -3,7 +3,7 @@
 import { Controller } from "react-hook-form";
 import { Input, InputNumber } from "rsuite";
 
-const TenantRentalHistoryEdit = ({ control }) => {
+const TenantRentalHistoryEdit = ({ control, responseData }) => {
   return (
     <div className="mt-10  ">
       {/* title */}
@@ -24,7 +24,12 @@ const TenantRentalHistoryEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.prevLandlordName}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -39,7 +44,12 @@ const TenantRentalHistoryEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.prevLandlordContactInfo}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -54,7 +64,12 @@ const TenantRentalHistoryEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input className="!w-full" {...field} type="text" />
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.lengthOfPrevTenancy}
+                    type="text"
+                  />
                 </div>
               )}
             />
@@ -69,7 +84,13 @@ const TenantRentalHistoryEdit = ({ control }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" {...field} min={0} />
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.affordableRentAmount}
+                    min={0}
+                  />
                 </div>
               )}
             />
@@ -91,6 +112,7 @@ const TenantRentalHistoryEdit = ({ control }) => {
                     className="!w-full"
                     rows={5}
                     {...field}
+                    defaultValue={responseData?.leavingReason}
                     type="text"
                   />
                 </div>
@@ -113,6 +135,7 @@ const TenantRentalHistoryEdit = ({ control }) => {
                     className="!w-full"
                     rows={5}
                     {...field}
+                    defaultValue={responseData?.isAnyLatePaymentReason}
                     type="text"
                   />
                 </div>
