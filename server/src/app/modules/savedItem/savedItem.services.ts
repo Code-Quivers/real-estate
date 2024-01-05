@@ -23,7 +23,19 @@ const createSavedItem = async (data: any) => {
         }
         return savedItem;
     });
+<<<<<<< HEAD
     return result;
+=======
+
+    console.log("savedItem..............", savedItem);
+
+    if (!savedItem) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
+    }
+    return savedItem;
+  });
+  return result;
+>>>>>>> bed99cbecb4dc833ab5bf77695da82dfa3b10d0d
 };
 
 // Remove Saved Item
@@ -41,7 +53,6 @@ const removeSavedItem = async (itemId: string) => {
     });
     return result;
 };
-
 
 const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
     const { limit, page, skip } = paginationHelpers.calculatePagination(options);

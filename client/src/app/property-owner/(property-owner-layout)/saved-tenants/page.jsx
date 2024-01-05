@@ -1,27 +1,23 @@
+"use client";
+
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-extra-boolean-cast */
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/saveTenantApi";
+import { useDebounced } from "@/redux/hook";
 import Image from "next/image";
+import { useState } from "react";
 
 const PropertyOwnerSavedTenants = () => {
-  const allRequest = [
-    {
-      tenantName: "Tenant name",
-      placeToRent: "Place to rend",
-      rentWillingToPay: "Rent willing to pay",
-      image: profileLogo,
-    },
-    {
-      tenantName: "Tenant name",
-      placeToRent: "Place to rend",
-      rentWillingToPay: "Rent willing to pay",
-      image: profileLogo,
-    },
-    {
-      tenantName: "Tenant name",
-      placeToRent: "Place to rend",
-      rentWillingToPay: "Rent willing to pay",
-      image: profileLogo,
-    },
-  ];
+  const query = {};
+
+  const [itemType, setItemType] = useState("TENANT");
+
+  query["itemType"] = itemType;
+
+  const { data } = useGetAllSavedItemsQuery({ ...query });
+
+  console.log("data", data);
 
   return (
     <>
@@ -31,7 +27,7 @@ const PropertyOwnerSavedTenants = () => {
         </div>
         {/* saved tenants */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {allRequest?.map((singleReq) => (
+          {data?.data?.data?.map((singleReq) => (
             <div
               className=" col-span-1  border flex justify-between items-center px-5 border-[#acacac]  gap-2"
               key={Math.random()}
@@ -46,13 +42,14 @@ const PropertyOwnerSavedTenants = () => {
               <div className="p-5 flex justify-between w-full ">
                 <div className="space-y-1">
                   <h3 className="text-lg font-medium">
-                    {singleReq.tenantName}
+                    <span>{singleReq?.tenant?.firstName}</span>{" "}
+                    <span>{singleReq?.tenant?.lastName}</span>
                   </h3>
                   <h3 className="text-lg font-medium">
                     {singleReq.placeToRent}
                   </h3>
                   <h3 className="text-lg font-medium">
-                    {singleReq.rentWillingToPay}
+                    {singleReq.tenant?.affordableRentAmount}
                   </h3>
                 </div>
               </div>
