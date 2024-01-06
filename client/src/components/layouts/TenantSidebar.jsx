@@ -8,9 +8,19 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
-import { getAuthKey } from "@/configs/envConfig";
+import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
+import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 
 const TenantSidebar = () => {
+  const {
+    data: dataResponse,
+    isError,
+    isLoading,
+    error,
+  } = useGetTenantMyProfileQuery();
+
+  const { data } = dataResponse || {};
+
   const activeLink = usePathname();
   const router = useRouter();
   const logOut = () => {
@@ -27,11 +37,20 @@ const TenantSidebar = () => {
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
-              src={profileLogo}
+              width={120}
+              height={120}
+              src={
+                data?.profileImage
+                  ? `${fileUrlKey()}/${data?.profileImage}`
+                  : profileLogo
+              }
+              // src={profileLogo}
               alt="Profile Picture"
-              className=" object-center select-none h-[120px] w-[120px]"
+              className=" object-cover rounded-full  select-none h-[120px] w-[120px]"
             />
-            <h2 className="text-white ">Shafinur Islam</h2>
+            <h2 className="text-white ">
+              {data?.firstName} {data?.lastName}
+            </h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>

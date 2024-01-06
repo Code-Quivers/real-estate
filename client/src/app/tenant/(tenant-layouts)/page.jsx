@@ -29,13 +29,12 @@ const TenantProfile = () => {
             <Image
               height={150}
               width={150}
-              // ${fileUrlKey()}/${defaultImage}
               src={
                 data?.profileImage
                   ? `${fileUrlKey()}/${data?.profileImage}`
                   : profileLogo
               }
-              className="max-md:w-[80px] md:w-[150px]  rounded-full select-none"
+              className="max-md:w-[80px] md:w-[150px] md:h-[150px]  rounded-full object-cover select-none"
               alt="Profile Image"
             />
           </div>
