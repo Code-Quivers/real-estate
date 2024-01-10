@@ -19,6 +19,8 @@ const createNewProperty = async (profileId: string, req: Request) => {
   const imagesPath = images?.map((item: any) => item?.path);
 
   const data = req?.body;
+  console.log(data)
+  const toSavedToDb = data.map(obj => obj.ownerId = profileId)
 
   const property = await prisma.$transaction(async (transactionClient) => {
     //
