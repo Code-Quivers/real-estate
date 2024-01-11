@@ -3,12 +3,23 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/saveTenantApi";
-import { useDebounced } from "@/redux/hook";
+import { fileUrlKey } from "@/configs/envConfig";
+import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useState } from "react";
+import { Modal, Progress } from "rsuite";
+import { CgClose } from "react-icons/cg";
+import RemoveFromAvailableTenantsModal from "@/components/property-owner/available-tenants/RemoveFromAvailableTenantsModal";
 
 const PropertyOwnerSavedTenants = () => {
+  const [open, setOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+
+  const handleOpen = (selectData) => {
+    setModalData(selectData);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   const query = {};
 
   const [itemType, setItemType] = useState("TENANT");
@@ -16,8 +27,6 @@ const PropertyOwnerSavedTenants = () => {
   query["itemType"] = itemType;
 
   const { data } = useGetAllSavedItemsQuery({ ...query });
-
-  console.log("data", data);
 
   return (
     <>
@@ -27,43 +36,64 @@ const PropertyOwnerSavedTenants = () => {
         </div>
         {/* saved tenants */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {data?.data?.data?.map((singleReq) => (
-            <div
-              className=" col-span-1  border flex justify-between items-center px-5 border-[#acacac]  gap-2"
-              key={Math.random()}
-            >
-              <div>
-                <Image
-                  className="w-[80px] h-[65px] object-cover object-left  rounded-full  "
-                  src={singleReq.image}
-                  alt="photo"
-                />
-              </div>
-              <div className="p-5 flex justify-between w-full ">
-                <div className="space-y-1">
-                  <h3 className="text-lg font-medium">
-                    <span>{singleReq?.tenant?.firstName}</span>{" "}
-                    <span>{singleReq?.tenant?.lastName}</span>
-                  </h3>
-                  <h3 className="text-lg font-medium">
-                    {singleReq.placeToRent}
-                  </h3>
-                  <h3 className="text-lg font-medium">
-                    {singleReq.tenant?.affordableRentAmount}
-                  </h3>
+          {data?.data?.data?.length
+            ? data?.data?.data?.map((singleReq) => (
+                <div key={Math.random()} className="col-span-1 relative">
+                  <div className="   border grid grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
+                    <div className=" col-span-1">
+                      <Image
+                        height={80}
+                        width={80}
+                        className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
+                        src={`${fileUrlKey()}/${
+                          singleReq?.tenant?.profileImage
+                        }`}
+                        alt="photo"
+                      />
+                    </div>
+                    <div className="col-span-4 p-5   flex justify-between w-full ">
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-medium">
+                          <span>{singleReq?.tenant?.firstName}</span>{" "}
+                          <span>{singleReq?.tenant?.lastName}</span>
+                        </h3>
+                        <h3 className="text-sm font-medium">
+                          {"singleReq.placeToRent"}
+                        </h3>
+                        <h3 className="text-sm font-medium">
+                          {"singleReq.tenant?.affordable"}
+                        </h3>
+                      </div>
+                      <div>
+                        <div style={{ width: 80 }}>
+                          <Progress.Circle percent={20} strokeColor="green" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* remove  */}
+                  <div className="absolute top-0 right-0">
+                    <button
+                      onClick={() => handleOpen(singleReq)}
+                      className="hover:bg-black p-1 rounded-tr-lg  hover:text-white"
+                    >
+                      <CgClose size={20} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className=" outline outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[70px] h-[50px]">
-                <div className=" flex w-full flex-col justify-center items-center">
-                  <span>9</span>
-                  <span className="w-[70%] border-t border-[#b6b6b6]" />
-                  <span>10</span>
-                </div>
-              </div>
-            </div>
-          ))}
+              ))
+            : "No data"}
         </div>
       </section>
+      {/* delete modal */}
+      <Modal open={open} size="xs" backdrop="static" onClose={handleClose}>
+        <Modal.Body>
+          <RemoveFromAvailableTenantsModal
+            handleClose={handleClose}
+            modalData={modalData}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
