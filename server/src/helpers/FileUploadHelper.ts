@@ -1,5 +1,6 @@
 import multer from 'multer';
 import path from 'path';
+import express, { NextFunction, Request, Response } from "express";
 
 const propertyStorage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -43,8 +44,26 @@ const uploadUpdatedUserImage = multer({
 });
 const uploadPropertyImages = multer({ storage: propertyStorage });
 
+type fieldType={
+  name: string,
+  maxCount: number
+}
+// const uploadPropertyImages = multer({ storage: propertyStorage });
+const uploadPropertyImages2 = (req: Request, res: Response, next: NextFunction) => {
+  const keys = Object.keys([]);
+  const fields: fieldType[] | any = []
+  keys.forEach(item => {
+    fields.append({ name: item, maxCount: 8 })
+  })
+  const upload = multer({ storage: propertyStorage })
+  const cpUpload = upload.fields(fields)
+
+  return cpUpload
+}
+
 export const FileUploadHelper = {
   uploadProfileImage,
   uploadPropertyImages,
   uploadUpdatedUserImage,
+  uploadPropertyImages2,
 };

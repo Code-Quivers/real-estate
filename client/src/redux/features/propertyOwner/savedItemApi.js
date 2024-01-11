@@ -15,7 +15,7 @@ export const savedItemApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.services, tagTypes.items],
     }),
 
-    saveAllTenant: builder.mutation({
+    saveItem: builder.mutation({
       query: (data) => ({
         url: `${SAVE_ITEM}/create`,
         method: "POST",
@@ -41,6 +41,6 @@ export const savedItemApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllSavedItemsQuery,
-  useSaveAllTenantMutation,
+  useSaveItemMutation,
   useRemoveFromSavedItemMutation,
 } = savedItemApi;

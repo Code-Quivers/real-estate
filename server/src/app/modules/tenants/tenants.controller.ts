@@ -48,8 +48,6 @@ const getTenantMyProfile = catchAsync(async (req: Request, res: Response) => {
 const updateTenantProfile = catchAsync(async (req: Request, res: Response) => {
   const tenantId = req.params?.tenantId;
 
-  console.log(JSON.stringify(req.params));
-
   const result = await TenantServices.updateTenantProfile(tenantId, req);
 
   sendResponse(res, {

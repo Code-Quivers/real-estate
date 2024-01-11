@@ -2,7 +2,7 @@
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
 import { savedItemTenant } from "@/components/toasts/auth/authToastMessages";
-import { useSaveAllTenantMutation } from "@/redux/features/propertyOwner/savedItemApi";
+import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
 import { Modal, toaster } from "rsuite";
@@ -19,7 +19,7 @@ const AvailableTenantsModal = ({
     margin: 0,
   };
 
-  const [saveTenant, { isSuccess }] = useSaveAllTenantMutation();
+  const [saveItem, { isSuccess }] = useSaveItemMutation();
 
   const saveTenantData = async () => {
     const tenantData = {
@@ -27,8 +27,7 @@ const AvailableTenantsModal = ({
       itemType: "TENANT",
     };
 
-    console.log(tenantData);
-    await saveTenant(tenantData);
+    await saveItem(tenantData);
   };
 
   useEffect(() => {

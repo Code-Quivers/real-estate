@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+
 const createProperty = z.object({
   numOfBed: z.number({
     invalid_type_error: 'Number of Bed must be in Integer',
@@ -86,7 +87,10 @@ const updateProperty = z.object({
     .optional(),
 });
 
+const propertyBananu = z.array(createProperty)
+
 export const PropertiesValidation = {
   createProperty,
   updateProperty,
+  propertyBananu
 };
