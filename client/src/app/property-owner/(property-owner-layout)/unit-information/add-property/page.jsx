@@ -6,6 +6,7 @@ import {
   removeProperty,
   updateProperty,
 } from "@/redux/features/propertyOwner/addPropertySlice";
+
 import { useAppSelector } from "@/redux/hook";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
@@ -15,14 +16,13 @@ import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
 
 import { useState } from "react";
+import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
 
-const TenantPetsInformationEdit = () => {
+const AddProperty = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalValue, setModalValue] = useState("");
   const dispatch = useDispatch();
-  const propertyList = useAppSelector(
-    (state) => state?.propertyList?.propertyList,
-  );
+  const propertyList = useAppSelector((state) => state?.propertyList);
 
   const handleInputChange = (propertyId, field, value) => {
     dispatch(updateProperty({ propertyId, field, value }));
@@ -30,6 +30,25 @@ const TenantPetsInformationEdit = () => {
   const handleClose = () => {
     setIsOpenModal(false);
     setModalValue("");
+  };
+
+  const [addProperties, { isLoading, isError, isSuccess, error }] =
+    useAddPropertiesMutation();
+
+  const handleCreateProperty = async () => {
+    // creating form data
+    const formData = new FormData();
+
+    // deleting file from obj
+    // delete obj.file;
+    const newPropertyList = JSON.stringify(propertyList?.propertyList);
+    formData.append("data", newPropertyList);
+
+    formData.append("files", propertyList?.files);
+
+    await addProperties({
+      data: formData,
+    });
   };
 
   return (
@@ -68,7 +87,7 @@ const TenantPetsInformationEdit = () => {
           </div>
 
           <div className="grid grid-cols-1  gap-10 mt-5">
-            {propertyList?.map((property, idx) => (
+            {propertyList?.propertyList?.map((property, idx) => (
               <div key={property.id}>
                 <div className="pb-2 flex justify-between items-center">
                   <h3 className="font-semibold">Property {idx + 1}</h3>
@@ -308,7 +327,7 @@ const TenantPetsInformationEdit = () => {
               </div>
             ))}
           </div>
-
+          {/* button */}
           <div className="mt-10 border w-full flex  flex-col items-center justify-center py-5">
             <div>
               <button
@@ -332,10 +351,12 @@ const TenantPetsInformationEdit = () => {
 
           <div className="mt-10 flex justify-end">
             <Button
+              loading={isLoading}
+              onClick={handleCreateProperty}
               size="lg"
               className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
             >
-              Next
+              Click
             </Button>
           </div>
         </div>
@@ -387,4 +408,4 @@ const TenantPetsInformationEdit = () => {
   );
 };
 
-export default TenantPetsInformationEdit;
+export default AddProperty;
