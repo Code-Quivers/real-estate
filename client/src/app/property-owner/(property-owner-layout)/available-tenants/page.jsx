@@ -132,32 +132,6 @@ const PropertyOwnerServiceProviders = () => {
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
         {allTenantsLists?.data?.data?.length &&
           allTenantsLists?.data?.data?.map((singleReq) => (
-            // <Whisper
-            //   placement="bottom"
-            //   trigger="hover"
-            //   controlId="control-id-hover"
-            //   speaker={
-            //     <Popover>
-            //       <div className="flex gap-2 border rounded-2xl overflow-hidden shadow items-stretch">
-            //         <div>
-            //           <Image
-            //             className="w-[80px] bg-red-800 h-full object-cover     "
-            //             src={singleReq?.image}
-            //             alt="photo"
-            //           />
-            //         </div>
-            //         <div className="py-2">
-            //           <h3 className="text-base ">3 Bed 3 Bath</h3>
-            //           <h3 className="text-base w-[80%]">
-            //             3 Belair Dr, Binghamton, NY 13901
-            //           </h3>
-            //         </div>
-            //       </div>
-            //       <div className="h-[80px] w-full"></div>
-            //     </Popover>
-            //   }
-            //   key={Math.random()}
-            // >
             <div
               key={Math.random()}
               onClick={() => {

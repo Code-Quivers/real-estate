@@ -132,8 +132,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     ...updates,
   };
 
-  console.log(tenantReqData);
-
   //! deleting old  Image
   if (profileImagePath) deleteOldImage(oldProfileImagePath, profileImagePath);
 

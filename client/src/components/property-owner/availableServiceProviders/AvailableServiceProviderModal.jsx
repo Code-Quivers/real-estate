@@ -1,10 +1,13 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
+import { savedItemServiceProvider } from "@/components/toasts/auth/authToastMessages";
+import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
-import { Modal } from "rsuite";
+import { useEffect } from "react";
+import { Button, Modal, toaster } from "rsuite";
 
-const MaintenanceServiceProviderModal = ({
+const AvailableServiceProviderModal = ({
   isModalOpened,
   setModalOpened,
   modalData,
@@ -16,12 +19,54 @@ const MaintenanceServiceProviderModal = ({
     margin: 0,
   };
 
+  const [saveServiceProvider, { isSuccess, isLoading, isError, error, reset }] =
+    useSaveItemMutation();
+
+  const handleSaveServiceProvider = async () => {
+    const serviceProviderData = {
+      serviceProviderId: modalData?.serviceProviderId,
+      itemType: "SERVICE",
+    };
+
+    await saveServiceProvider(serviceProviderData);
+  };
+
+  useEffect(() => {
+    if (isSuccess && !isLoading && !isError && !error) {
+      toaster.push(
+        savedItemServiceProvider({
+          type: "success",
+          message: "Service Provider Saved Successfully",
+          header: "success",
+        }),
+        {
+          placement: "bottomStart",
+        },
+      );
+      handleClose();
+      reset();
+    }
+    if (!isSuccess && !isLoading && isError && error) {
+      toaster.push(
+        savedItemServiceProvider({
+          type: "error",
+          message: error?.message || "Something went wrong!",
+          header: "error",
+        }),
+        {
+          placement: "bottomStart",
+        },
+      );
+
+      reset();
+    }
+  }, [isSuccess, isLoading, isError, error, handleClose, reset, toaster]);
+
   return (
     <>
       <Modal
-        overflow={false}
         size="lg"
-        className=""
+        overflow={false}
         open={isModalOpened}
         onClose={handleClose}
       >
@@ -75,7 +120,7 @@ const MaintenanceServiceProviderModal = ({
               <div className="col-span-1">
                 <h4 className="text-lg font-medium">Description</h4>
                 <p className="text-sm text-justify ">
-                  {modalData?.description}
+                  {modalData?.Service?.serviceDescription}
                 </p>
               </div>
               <div className="col-span-1">
@@ -87,7 +132,16 @@ const MaintenanceServiceProviderModal = ({
             </div>
             {/* action */}
             <div className="flex justify-center gap-5 items-center mt-10">
-              <PrimaryButton title="Save" />
+              <Button
+                onClick={handleSaveServiceProvider}
+                loading={isLoading}
+                type={"button"}
+                className={`!px-12 !py-3 !bg-[#29429f] !text-white !rounded-none `}
+                size="lg"
+                appearance="default"
+              >
+                Save
+              </Button>
               <PrimaryButton title="Contact" />
               <PrimaryButton title="Add" />
             </div>
@@ -98,4 +152,4 @@ const MaintenanceServiceProviderModal = ({
   );
 };
 
-export default MaintenanceServiceProviderModal;
+export default AvailableServiceProviderModal;

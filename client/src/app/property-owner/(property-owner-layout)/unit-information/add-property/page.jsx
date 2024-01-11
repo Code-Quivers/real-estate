@@ -53,7 +53,7 @@ const AddProperty = () => {
 
   return (
     <>
-      <section className="max-w-[1050px] bg-white max-lg:px-3 pb-20 mx-auto mb-5 mt-6 2xl:mx-auto lg:px-5 2xl:px-0">
+      <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="  w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">

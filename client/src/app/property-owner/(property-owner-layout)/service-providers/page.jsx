@@ -6,10 +6,10 @@ import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
-import MaintenanceServiceProviderModal from "../../../../components/property-owner/maintenance-request/MaintenanceServiceProviderModal";
 import { useDebounced } from "@/redux/hook";
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import AvailableServiceProviderModal from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderModal";
 // !
 const PropertyOwnerServiceProviders = () => {
   const datas = [
@@ -141,51 +141,53 @@ const PropertyOwnerServiceProviders = () => {
 
       {/* all cards */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allServiceProviderLists?.data?.data?.map((singleReq) => (
-          <div
-            key={Math.random()}
-            onClick={() => {
-              setSelectedService(singleReq);
-              setServiceModalActive(true);
-            }}
-            className=" col-span-1  border flex justify-between items-center px-5 border-[#acacac]  gap-2"
-          >
-            <div>
-              <Image
-                className="w-[80px] h-[65px] object-cover   rounded-full  "
-                src={profileLogo}
-                alt="Profile Photo"
-              />
-            </div>
-            <div className="p-5 flex justify-between w-full ">
-              <div className="space-y-0.5">
-                <h3 className="text-base font-medium">
-                  {singleReq?.firstName} &nbsp;
-                  {singleReq?.lastName}
-                </h3>
+        {allServiceProviderLists?.data?.data?.length
+          ? allServiceProviderLists?.data?.data?.map((singleReq) => (
+              <div
+                key={Math.random()}
+                onClick={() => {
+                  setSelectedService(singleReq);
+                  setServiceModalActive(true);
+                }}
+                className=" col-span-1  border flex shadow-lg rounded-lg justify-between items-center px-5 border-[#acacac]  gap-2"
+              >
+                <div>
+                  <Image
+                    className="w-[80px] h-[65px] object-cover   rounded-full  "
+                    src={profileLogo}
+                    alt="Profile Photo"
+                  />
+                </div>
+                <div className="p-5 flex justify-between w-full ">
+                  <div className="space-y-0.5">
+                    <h3 className="text-base font-medium">
+                      {singleReq?.firstName} &nbsp;
+                      {singleReq?.lastName}
+                    </h3>
 
-                <h3 className="text-base font-medium">
-                  Service Type :{" "}
-                  {singleReq?.Service?.serviceType ?? "Not Found"}
-                </h3>
-                <h3 className="text-base font-medium">
-                  Service Price : $
-                  {singleReq?.Service?.servicePriceRange ?? 1000}
-                </h3>
+                    <h3 className="text-base font-medium">
+                      Service Type :{" "}
+                      {singleReq?.Service?.serviceType ?? "Not Found"}
+                    </h3>
+                    <h3 className="text-base font-medium">
+                      Service Price : $
+                      {singleReq?.Service?.servicePriceRange ?? 1000}
+                    </h3>
+                  </div>
+                </div>
+                <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[75px] h-[50px]">
+                  <div className=" flex w-full flex-col justify-center items-center">
+                    <span>9</span>
+                    <span className="w-[70%] border-t border-[#b6b6b6]" />
+                    <span>10</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[75px] h-[50px]">
-              <div className=" flex w-full flex-col justify-center items-center">
-                <span>9</span>
-                <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span>10</span>
-              </div>
-            </div>
-          </div>
-        ))}
+            ))
+          : "No data"}
 
         <>
-          <MaintenanceServiceProviderModal
+          <AvailableServiceProviderModal
             isModalOpened={serviceModalActive}
             setModalOpened={setServiceModalActive}
             modalData={selectedService}

@@ -57,7 +57,7 @@ const UpdateServiceProvider = catchAsync(async (req: Request, res: Response) => 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Property owner created or update successful!",
+    message: "Service Provider  updated successful!",
     data: result,
   });
 });
