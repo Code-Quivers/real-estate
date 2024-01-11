@@ -7,8 +7,8 @@ import { PropertiesValidation } from "./properties.validation";
 
 const router = express.Router();
 
-router.post("/create", auth(UserRoles.PROPERTY_OWNER), FileUploadHelper.uploadPropertyImages.array("files"), (req: Request, res: Response, next: NextFunction) => {
-  req.body = PropertiesValidation.createProperty.parse(JSON.parse(req.body.data));
+router.post("/create", auth(UserRoles.PROPERTY_OWNER), FileUploadHelper.uploadPropertyImages2, (req: Request, res: Response, next: NextFunction) => {
+  req.body = PropertiesValidation.propertyBananu.parse(JSON.parse(req.body.data));
   return PropertiesController.createNewProperty(req, res, next);
 });
 // get all property
