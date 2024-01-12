@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidenav, Nav, Button } from "rsuite";
+import { Sidenav, Nav } from "rsuite";
 import DashboardIcon from "@rsuite/icons/Dashboard";
 import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
@@ -103,6 +103,8 @@ const PropertyOwnerSidebar = () => {
               Documents
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/messages"
               style={{ backgroundColor: "#29429f" }}
               eventKey="6"
               className="hover:!bg-[#1b3697]"
