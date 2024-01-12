@@ -38,7 +38,6 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
 
 const createSavedItem = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
-  console.log("data", data);
   const userId = (req.user as IRequestUser).userId;
   data["userId"] = userId;
   const result = await SavedItemServices.createSavedItem(data);
