@@ -61,6 +61,7 @@ const TenantProfile = () => {
         </div>
       </div>
       {/* Dashboard */}
+
       <div className="mt-10 grid grid-cols-3 lg:grid-cols-5 w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
         {/* Personal Information */}
         <div className=" ">
@@ -125,7 +126,9 @@ const TenantProfile = () => {
         </div>
       </div>
 
-      {tabActive === 1 && <TenantProfileInformation data={data} />}
+      {tabActive === 1 && (
+        <TenantProfileInformation setTabActive={setTabActive} data={data} />
+      )}
       {tabActive !== 1 && (
         <TenantEditing
           setTabActive={setTabActive}
