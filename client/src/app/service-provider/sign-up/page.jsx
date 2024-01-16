@@ -3,7 +3,14 @@
 import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, useToaster } from "rsuite";
+import {
+  Button,
+  Form,
+  Input,
+  InputGroup,
+  Notification,
+  useToaster,
+} from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -53,7 +60,19 @@ const ServiceProviderSignUpPage = () => {
 
   useEffect(() => {
     if ((isSuccess && !isLoading && !isError, !error && data)) {
-      toaster.push(SignUpSuccessMessage(), { placement: "bottomStart" });
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">
+              Congratulations! You have successfully signed up as a Service
+              Provider.
+            </p>
+            <hr className="border-t border-gray-300 my-4" />
+            <p>Your account is now ready to use.</p>
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
       router.push("/service-provider/login");
     }
   }, [isSuccess, isLoading, isError, error, data]);

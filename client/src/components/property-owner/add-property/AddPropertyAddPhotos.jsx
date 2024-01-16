@@ -14,41 +14,40 @@ const AddPropertyAddPhotos = ({ property }) => {
 
   const handleChangeImages = (files) => {
     if (files.length > 0) {
-      const latestFile = files[files.length - 1];
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
-      if (
-        latestFile.blobFile?.size &&
-        latestFile.blobFile?.size <= fileSizeLimit
-      ) {
-        const file = latestFile;
-        const reader = new FileReader();
-        // !
-        const validBlobFiles = [];
-
-        files?.forEach((filetype) => {
-          if (
+      const validBlobFiles = files
+        .filter(
+          (filetype) =>
             filetype?.blobFile?.size &&
-            filetype?.blobFile?.size <= fileSizeLimit
-          ) {
-            validBlobFiles.push(filetype?.blobFile);
-          } else {
-            toaster.push("File size exceeds 1MB.");
-          }
+            filetype?.blobFile?.size <= fileSizeLimit,
+        )
+        .map((filetype) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(filetype.blobFile);
+
+          return new Promise((resolve, reject) => {
+            reader.onloadend = () => {
+              resolve(reader.result);
+            };
+
+            reader.onerror = reject;
+          });
         });
 
-        dispatch(
-          updateProperty({
-            propertyId: property.id, // Assuming property.id is available in your props
-            field: "images",
-            value: validBlobFiles,
-          }),
-        );
-
-        reader.readAsDataURL(file.blobFile);
-      } else {
-        toaster.push("File size exceeds 1MB.");
-      }
+      Promise.all(validBlobFiles)
+        .then((base64Strings) => {
+          dispatch(
+            updateProperty({
+              propertyId: property.id,
+              field: "images",
+              value: base64Strings,
+            }),
+          );
+        })
+        .catch((error) => {
+          toaster.push("Error converting file to base64.");
+        });
     } else {
       //
     }
@@ -72,15 +71,7 @@ const AddPropertyAddPhotos = ({ property }) => {
       onChange={handleChangeImages}
       onRemove={(file) => handleRemove(file)}
       accept="image/*"
-      onSuccess={(response, file) => {
-        toaster.push(<Message type="success">Uploaded successfully</Message>);
-        console.log(response);
-      }}
-      onError={() => {
-        setFileList([]);
-        setUploading(false);
-        toaster.push(<Message type="error">Upload failed</Message>);
-      }}
+      action=""
     >
       <div className="flex border-4 items-center justify-center">
         <button>
