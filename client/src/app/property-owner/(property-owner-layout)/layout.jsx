@@ -1,5 +1,6 @@
 import PropertyOwnerSidebar from "@/components/layouts/PropertyOwnerSidebar";
 import PropertyOwnerProvider from "@/components/layouts/propertyOwner/PropertyOwnerProvider";
+import ServiceProviderNavbar from "@/components/layouts/serviceProvider/ServiceProviderNavbar";
 
 const PropertyOwnerLayout = ({ children }) => {
   return (
@@ -11,7 +12,15 @@ const PropertyOwnerLayout = ({ children }) => {
         >
           <PropertyOwnerSidebar />
         </div>
-        <div className="col-span-6 border lg:col-span-7 ">{children}</div>
+        <div className="col-span-6 border lg:col-span-7 ">
+          <div>
+            {/* mobile navbar */}
+            <div className="md:hidden">
+              <ServiceProviderNavbar />
+            </div>
+            <div>{children}</div>
+          </div>
+        </div>
       </div>
     </PropertyOwnerProvider>
   );

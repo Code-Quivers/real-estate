@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Drawer, Button, Placeholder, IconButton } from "rsuite";
+import { Drawer, Placeholder, IconButton } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 
