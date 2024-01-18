@@ -6,7 +6,6 @@ const PropertyOwnerLayout = ({ children }) => {
   return (
     <ServiceProviderLayoutProvider>
       <section>
-        <ServiceProviderNavbar />
         <div className="md:grid md:grid-cols-9 bg-[#f6f7f8]  ">
           <div
             className="max-md:hidden
@@ -14,7 +13,15 @@ const PropertyOwnerLayout = ({ children }) => {
           >
             <ServiceProviderSidebar />
           </div>
-          <div className="col-span-6 border lg:col-span-7 ">{children}</div>
+          <div className="col-span-6 border lg:col-span-7 ">
+            <div>
+              {/* mobile navbar */}
+              <div className="md:hidden">
+                <ServiceProviderNavbar />
+              </div>
+              {children}
+            </div>
+          </div>
         </div>
       </section>
     </ServiceProviderLayoutProvider>

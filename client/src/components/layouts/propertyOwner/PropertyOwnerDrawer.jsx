@@ -2,16 +2,16 @@
 import { useState } from "react";
 import { Drawer, Placeholder, IconButton } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 
-const ServiceProviderNavbar = () => {
+const PropertyOwnerDrawer = () => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
-  const { data } = useGetServiceProviderMyProfileQuery(null);
+  const { data } = useGetPropertyOwnerMyProfileQuery(null);
   const { data: myProfileData } = data || {};
   return (
     <div>
@@ -55,4 +55,4 @@ const ServiceProviderNavbar = () => {
   );
 };
 
-export default ServiceProviderNavbar;
+export default PropertyOwnerDrawer;

@@ -19,12 +19,12 @@ const ServiceProviderProfileInformation = () => {
   const { data: myProfileData } = data || {};
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-10    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-3    2xl:px-0 ">
       {/* profile Information */}
 
       <div className="grid grid-cols-5 mt-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
-        <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
-          <div className="border shadow-lg rounded-full">
+        <div className="col-span-5 md:col-span-4 flex max-md:flex-col   justify-start max-md:gap-2  md:justify-start md:items-center md:gap-3 ">
+          <div className="md:border md:shadow-lg md:rounded-full">
             <Image
               width={200}
               height={200}
@@ -33,13 +33,16 @@ const ServiceProviderProfileInformation = () => {
                   ? ` ${fileUrlKey()}/${myProfileData?.profileImage}`
                   : profileLogo
               }
-              className="max-md:w-[80px] rounded-lg md:w-[150px]  select-none"
+              className="  rounded-lg md:w-[150px]  select-none"
               alt="Profile Image"
             />
           </div>
-          <div>
+          <div className="max-md:border max-md:p-3 max-md:shadow-lg max-md:space-y-3">
             <h4 className="text-lg font-medium">
-              Company Name : {`${myProfileData?.companyName ?? "--"}`}
+              Company Name :{" "}
+              <span className="max-md:block">
+                {`${myProfileData?.companyName ?? "--"}`}
+              </span>
             </h4>
             <h4 className="text-lg font-medium">
               Company Email Address : {myProfileData?.user?.email ?? "--"}
@@ -51,7 +54,7 @@ const ServiceProviderProfileInformation = () => {
         </div>
         {/* score */}
         <div>
-          <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
+          <div className=" max-md:mt-5 col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
             <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
               <div className=" flex w-full flex-col justify-center items-center">
@@ -100,7 +103,7 @@ const ServiceProviderProfileInformation = () => {
                 </button>
               </Link>
             </div>
-            <div className="grid p-5 border-t grid-cols-2  gap-5 gap-x-10 ">
+            <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Name</h2>
                 <p className="text-lg font-medium">

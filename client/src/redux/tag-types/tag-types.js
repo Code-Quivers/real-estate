@@ -5,13 +5,15 @@ export const tagTypes = {
   serviceProvider: "serviceProvider",
   services: "services",
   items: "items",
+  properties: "properties",
+  propertyOwner: "propertyOwner",
 };
 
-// Create an array containing the values of the properties in the tagTypes object
 export const tagTypesList = [
   tagTypes.user,
   tagTypes.tenant,
   tagTypes.serviceProvider,
   tagTypes.services,
   tagTypes.items,
+  tagTypes.propertyOwner,
 ];

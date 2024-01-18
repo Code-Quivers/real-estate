@@ -43,7 +43,9 @@ const ServiceProviderSidebar = () => {
               className="max-md:w-[70px] max-md:h-[70px] rounded-full md:w-[130px] md:h-[130px] object-cover  select-none"
               alt="Profile Image"
             />
-            <h2 className="mt-5 text-white ">{myProfileData?.companyName}</h2>
+            <h2 className="mt-5 text-white ">
+              {myProfileData?.companyName ?? "--"}
+            </h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>

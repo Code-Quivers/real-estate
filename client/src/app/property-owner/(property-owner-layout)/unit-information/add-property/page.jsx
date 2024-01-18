@@ -31,7 +31,6 @@ const AddProperty = () => {
     setIsOpenModal(false);
     setModalValue("");
   };
-
   const [addProperties, { isLoading, isError, isSuccess, error }] =
     useAddPropertiesMutation();
 

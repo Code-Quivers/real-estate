@@ -8,11 +8,23 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
-import { getAuthKey } from "@/configs/envConfig";
+import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
+import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
+
+  const {
+    data: dataResponse,
+    isError,
+    isLoading,
+    error,
+  } = useGetPropertyOwnerMyProfileQuery();
+
+  const { data: myProfileData } = dataResponse || {};
+
+  // console.log(data);
 
   const logOut = () => {
     removeUserInfo(getAuthKey());
@@ -29,11 +41,20 @@ const PropertyOwnerSidebar = () => {
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
-              src={profileLogo}
-              alt="Profile Picture"
-              className=" object-center select-none h-[120px] w-[120px]"
+              width={120}
+              height={120}
+              src={
+                myProfileData?.profileImage
+                  ? `${fileUrlKey()}/${myProfileData?.profileImage}`
+                  : profileLogo
+              }
+              className="w-[120px] h-[120px] object-cover rounded-full select-none"
+              alt="Profile Image"
             />
-            <h2 className="text-white ">Shafinur Islam</h2>
+            <h2 className="text-white mt-3 ">
+              {myProfileData?.firstName ?? "--"}{" "}
+              {myProfileData?.lastName ?? "--"}
+            </h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>
