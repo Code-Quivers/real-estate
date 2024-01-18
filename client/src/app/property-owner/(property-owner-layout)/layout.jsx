@@ -1,6 +1,6 @@
 import PropertyOwnerSidebar from "@/components/layouts/PropertyOwnerSidebar";
+import PropertyOwnerDrawer from "@/components/layouts/propertyOwner/PropertyOwnerDrawer";
 import PropertyOwnerProvider from "@/components/layouts/propertyOwner/PropertyOwnerProvider";
-import ServiceProviderNavbar from "@/components/layouts/serviceProvider/ServiceProviderNavbar";
 
 const PropertyOwnerLayout = ({ children }) => {
   return (
@@ -16,7 +16,7 @@ const PropertyOwnerLayout = ({ children }) => {
           <div>
             {/* mobile navbar */}
             <div className="md:hidden">
-              <ServiceProviderNavbar />
+              <PropertyOwnerDrawer />
             </div>
             <div>{children}</div>
           </div>

@@ -15,6 +15,8 @@ router.get(
   auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
   PropertyOwnerControllers.getSinglePropertyOwner,
 );
+// ! get property owner  my profile
+router.get("/get-my-profile", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getPropertyOwnerMyProfile);
 
 // ! update property owner
 router.patch(

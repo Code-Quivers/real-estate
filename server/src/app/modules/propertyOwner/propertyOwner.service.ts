@@ -98,6 +98,7 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<Property
         propertyOwnerId,
       },
       include: {
+        _count: true,
         user: {
           select: {
             email: true,
@@ -125,8 +126,8 @@ const UpdatePropertyOwner = async (
   // payload: IPropertyOwner
 ) => {
   const profileImage: IUploadFile = req.file as any;
-  // const profileImagePath = profileImage?.path?.substring(13);
-  const profileImagePath = profileImage?.path;
+  const profileImagePath = profileImage?.path?.substring(13);
+  // const profileImagePath = profileImage?.path;
 
   const { firstName, lastName, phoneNumber, oldProfileImagePath } = req.body as IPropertyOwnerUpdateRequest;
 
