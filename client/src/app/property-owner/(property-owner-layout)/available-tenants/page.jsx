@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { AutoComplete, InputGroup } from "rsuite";
+import { AutoComplete, Input, InputGroup, InputNumber, Loader } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,56 +11,27 @@ import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsA
 import { useDebounced } from "@/redux/hook";
 
 const PropertyOwnerServiceProviders = () => {
-  const datas = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-    "Louisa",
-    "Lester",
-    "Lola",
-    "Lydia",
-    "Hal",
-    "Hannah",
-    "Harriet",
-    "Hattie",
-    "Hazel",
-    "Hilda",
-  ];
-
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [sortBy, setSortBy] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [presentAddress, setPresentAddress] = useState("");
 
   // filter
   query["limit"] = size;
   query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
   // debounce for slow search
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 300,
   });
-  if (!!debouncedTerm) {
-    query["searchTerm"] = debouncedTerm;
-  }
+  if (!!debouncedTerm) query["searchTerm"] = debouncedTerm;
+
   const debouncedTermAddress = useDebounced({
     searchQuery: presentAddress,
-    delay: 1000,
+    delay: 300,
   });
-
-  if (!!debouncedTermAddress) {
-    query["presentAddress"] = debouncedTermAddress;
-  }
+  if (!!debouncedTermAddress) query["presentAddress"] = debouncedTermAddress;
 
   const {
     data: allTenantsLists,
@@ -78,15 +49,20 @@ const PropertyOwnerServiceProviders = () => {
         <h2 className="text-3xl ">Available Tenants</h2>
       </div>
       {/* search with price section start */}
-      <div className="grid grid-cols-7 gap-0.5 max-lg:gap-2 lg:flex w-full   mt-5 lg:mt-5   ">
+      <div className="grid lg:grid-cols-7 gap-0.5 max-lg:gap-2 lg:flex w-full   mt-5 lg:mt-5   ">
         {/* tenant name */}
         <div className="max-lg:col-span-3 col-span-3 w-full">
-          <InputGroup size="lg" inside style={{ borderRadius: "0 !important" }}>
-            <AutoComplete
+          <InputGroup
+            size="lg"
+            inside
+            className=" !w-full"
+            style={{ borderRadius: "0 !important" }}
+          >
+            <Input
+              className=" !w-full"
               onChange={(e) => setSearchTerm(e)}
               placeholder="Tenant Name"
               size="lg"
-              data={datas}
             />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
@@ -94,18 +70,18 @@ const PropertyOwnerServiceProviders = () => {
           </InputGroup>
         </div>
         {/* address */}
-        <div className="max-lg:col-span-2 col-span-2 w-full">
+        <div className=" md:col-span-2 w-full">
           <InputGroup
             size="lg"
             inside
-            className="lg:!w-full"
+            className=" !w-full"
             style={{ borderRadius: "0 !important" }}
           >
-            <AutoComplete
+            <Input
+              className=" !w-full"
               onChange={(e) => setPresentAddress(e)}
               placeholder="Address"
               size="lg"
-              data={datas}
             />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
@@ -113,14 +89,14 @@ const PropertyOwnerServiceProviders = () => {
           </InputGroup>
         </div>
         {/* rent */}
-        <div className="max-lg:col-span-2 col-span-2  w-full ">
+        <div className=" md:col-span-2  w-full ">
           <InputGroup
             size="lg"
             inside
             className="lg:!w-full "
             style={{ borderRadius: "0 !important" }}
           >
-            <AutoComplete placeholder="Rent" size="lg" data={datas} />
+            <Input placeholder="Rent" size="lg" />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -129,8 +105,13 @@ const PropertyOwnerServiceProviders = () => {
       </div>
 
       {/* all cards */}
+      {isLoading && (
+        <div className="flex justify-center py-10">
+          <Loader size="lg" content="Getting Available Tenants..." />
+        </div>
+      )}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allTenantsLists?.data?.data?.length &&
+        {!isLoading && allTenantsLists?.data?.data?.length ? (
           allTenantsLists?.data?.data?.map((singleReq) => (
             <div
               key={Math.random()}
@@ -165,7 +146,12 @@ const PropertyOwnerServiceProviders = () => {
               </div>
             </div>
             // </Whisper>
-          ))}
+          ))
+        ) : (
+          <div className="flex justify-center items-center pt-12  pb-8">
+            <p>No Available Tenants...</p>
+          </div>
+        )}
 
         <>
           <AvailableTenantsModal

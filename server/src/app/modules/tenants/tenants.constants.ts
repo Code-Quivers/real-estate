@@ -1,4 +1,4 @@
-export const tenantsFilterableFields: string[] = ["propertyOwnerId", "searchTerm"];
+export const tenantsFilterableFields: string[] = ["propertyOwnerId", "searchTerm", "presentAddress"];
 
 export const tenantsSearchableFields: string[] = ["firstName", "lastName", "phoneNumber"];
 
