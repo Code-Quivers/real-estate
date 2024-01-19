@@ -48,6 +48,17 @@ export const savedItemTenant = () => {
     </Notification>
   );
 };
+export const savedItemTenantFailed = (message) => {
+  return (
+    <Notification type="error" header="error" closable>
+      <div>
+        <p className="text-lg font-semibold mb-2">
+          {message ?? "Tenant Saving Failed !"}
+        </p>
+      </div>
+    </Notification>
+  );
+};
 export const savedItemServiceProvider = ({ type, header, message }) => {
   return (
     <Notification type={type} header={header} closable>

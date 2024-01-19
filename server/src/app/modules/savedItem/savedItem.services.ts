@@ -1,22 +1,48 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
-import { Prisma } from "@prisma/client";
+import { ItemType, Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 // import { ISavedItem } from "./savedItem.interfaces";
 import { isEmptyObject } from "../../../helpers/utils";
 
-const createSavedItem = async (data: any) => {
+export type ICreateSavedItem = {
+  tenantId?: string;
+  itemType: ItemType;
+  userId: string;
+  serviceProviderId?: string;
+};
+
+const createSavedItem = async (data: ICreateSavedItem) => {
   // saved the item to the SavedItem model.
 
   const result = await prisma.$transaction(async (transactionClient) => {
+    if (data?.itemType === "TENANT") {
+      const isExistTenantItem = await transactionClient.savedItem.findFirst({
+        where: {
+          itemType: data?.itemType,
+          tenantId: data?.tenantId,
+        },
+      });
+
+      if (isExistTenantItem) throw new ApiError(httpStatus.CONFLICT, "Tenant already saved!!");
+    }
+    if (data?.itemType === "SERVICE") {
+      const isExistTenantItem = await transactionClient.savedItem.findFirst({
+        where: {
+          itemType: data?.itemType,
+          serviceProviderId: data?.serviceProviderId,
+        },
+      });
+
+      if (isExistTenantItem) throw new ApiError(httpStatus.CONFLICT, "Service Provider already saved!!");
+    }
+
     const savedItem = await transactionClient.savedItem.create({
       data: data,
-      include: {
-        user: true,
-      },
     });
     if (!savedItem) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
@@ -89,7 +115,7 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
     const totalPage = Math.ceil(total / limit);
 
     if (!savedItems) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retrieved saved items!!!");
     }
 
     return {
@@ -119,20 +145,20 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   if (orCondition.length == 2) {
     serviceProviderFilterCondition.OR = orCondition;
   }
-  const sreviceFilterCondition: any = {};
+  const serviceFilterCondition: any = {};
 
   if (serviceType) {
-    sreviceFilterCondition.serviceType = serviceType;
+    serviceFilterCondition.serviceType = serviceType;
   }
   if (priority) {
-    sreviceFilterCondition.serviceAvailability = priority;
+    serviceFilterCondition.serviceAvailability = priority;
   }
   if (price) {
-    sreviceFilterCondition.minPrice = { gte: price };
-    sreviceFilterCondition.maxPrice = { lte: price };
+    serviceFilterCondition.minPrice = { gte: price };
+    serviceFilterCondition.maxPrice = { lte: price };
   }
-  if (!isEmptyObject(sreviceFilterCondition)) {
-    serviceProviderFilterCondition.Service = sreviceFilterCondition;
+  if (!isEmptyObject(serviceFilterCondition)) {
+    serviceProviderFilterCondition.Service = serviceFilterCondition;
   }
 
   const andCondition = [];
@@ -143,7 +169,7 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   if (!isEmptyObject(serviceProviderFilterCondition)) {
     andCondition.push({ serviceProvider: serviceProviderFilterCondition });
   }
-
+  // @ts-ignore
   const whereConditions: Prisma.SavedItemWhereInput = { AND: andCondition };
   //
   const result = await prisma.$transaction(async (transactionClient) => {

@@ -1,11 +1,16 @@
 "use client";
 
 import PrimaryButton from "@/components/Shared/Button/PrimaryButton";
-import { savedItemTenant } from "@/components/toasts/auth/authToastMessages";
+import {
+  savedItemTenant,
+  savedItemTenantFailed,
+} from "@/components/toasts/auth/authToastMessages";
+import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Modal, toaster } from "rsuite";
+import { Modal, Progress, toaster } from "rsuite";
+import profileLogo from "@/assets/propertyOwner/profilePic.png";
 
 const AvailableTenantsModal = ({
   isModalOpened,
@@ -19,7 +24,7 @@ const AvailableTenantsModal = ({
     margin: 0,
   };
 
-  const [saveItem, { isSuccess }] = useSaveItemMutation();
+  const [saveItem, { isSuccess, isError, error }] = useSaveItemMutation();
 
   const saveTenantData = async () => {
     const tenantData = {
@@ -36,7 +41,12 @@ const AvailableTenantsModal = ({
         placement: "bottomStart",
       });
     }
-  }, [isSuccess]);
+    if (isError && !isSuccess && error) {
+      toaster.push(savedItemTenantFailed(error?.message), {
+        placement: "bottomStart",
+      });
+    }
+  }, [isSuccess, isSuccess, error]);
 
   return (
     <>
@@ -53,42 +63,34 @@ const AvailableTenantsModal = ({
         >
           <div className="p-5">
             {/* top items */}
-
-            <div className="flex  justify-between items-center ">
-              <div className="flex items-center w-full">
-                <div className="flex gap-5">
-                  <div className="  flex w-full justify-center">
-                    <Image
-                      className="w-[120px] ring-2 ring-[#545454] border-black shadow-2xl  h-[120px] object-cover   rounded-full  "
-                      src={modalData?.image}
-                      alt="photo"
-                    />
-                  </div>
-                  <div className="flex justify-between w-full ">
-                    <div className="space-y-0.5">
-                      <h3 className="text-sm font-medium">
-                        {modalData?.serviceProviderName}
-                      </h3>
-                      <h3 className="text-sm font-medium">
-                        {modalData?.serviceType}
-                      </h3>
-                      <h3 className="text-sm font-medium">
-                        {modalData?.priorityType}
-                      </h3>
-                      <h3 className="text-sm font-medium">
-                        Service Price : ${modalData?.servicePrice}
-                      </h3>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-5">
+              <div className="col-span-4 flex items-center gap-5 ">
+                <div className="">
+                  <Image
+                    className="w-[120px] ring-2 ring-[#545454] border-black shadow-2xl  h-[120px] object-cover   rounded-full  "
+                    src={
+                      modalData?.image
+                        ? `${fileUrlKey()}/${modalData?.image}`
+                        : profileLogo
+                    }
+                    alt="photo"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <h3>
+                    Tenant Name : {modalData?.firstName} {modalData?.lastName}
+                  </h3>
+                  <h3>Place to rent : -- ?? </h3>
+                  <h3>
+                    Rent willing to pay :{" "}
+                    {modalData?.affordableRentAmount ?? "--"}
+                  </h3>
                 </div>
               </div>
-              <div className="mr-3">
-                <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[60px] h-[60px]">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span>9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span>10</span>
-                  </div>
+              <div className="col-span-1">
+                {" "}
+                <div style={{ width: 120, marginTop: 10 }}>
+                  <Progress.Circle percent="40" strokeColor="green" />
                 </div>
               </div>
             </div>
