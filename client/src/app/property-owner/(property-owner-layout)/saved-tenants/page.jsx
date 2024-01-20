@@ -7,7 +7,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useState } from "react";
-import { Modal, Progress } from "rsuite";
+import { Loader, Modal, Progress } from "rsuite";
 import { CgClose } from "react-icons/cg";
 import RemoveFromAvailableTenantsModal from "@/components/property-owner/available-tenants/RemoveFromSavedTenantsModal";
 
@@ -26,7 +26,7 @@ const PropertyOwnerSavedTenants = () => {
 
   query["itemType"] = itemType;
 
-  const { data } = useGetAllSavedItemsQuery({ ...query });
+  const { data, isLoading } = useGetAllSavedItemsQuery({ ...query });
 
   return (
     <>
@@ -35,19 +35,28 @@ const PropertyOwnerSavedTenants = () => {
           <h2 className="text-4xl font-medium">Saved Tenants</h2>
         </div>
         {/* saved tenants */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {data?.data?.data?.length
+        {isLoading && (
+          <div className="py-5 flex justify-center">
+            <Loader size="lg" />
+          </div>
+        )}
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {!isLoading && data?.data?.data?.length
             ? data?.data?.data?.map((singleReq) => (
                 <div key={Math.random()} className="col-span-1 relative">
-                  <div className="   border grid grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
+                  <div className="   border lg:grid lg:grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
                     <div className=" col-span-1">
                       <Image
                         height={80}
                         width={80}
                         className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
-                        src={`${fileUrlKey()}/${
+                        src={
                           singleReq?.tenant?.profileImage
-                        }`}
+                            ? `${fileUrlKey()}/${
+                                singleReq?.tenant?.profileImage
+                              }`
+                            : profileLogo
+                        }
                         alt="photo"
                       />
                     </div>

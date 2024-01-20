@@ -141,9 +141,9 @@ CREATE TABLE "Services" (
 CREATE TABLE "SavedItem" (
     "itemId" TEXT NOT NULL,
     "itemType" "ItemType" NOT NULL,
-    "serviceProviderId" TEXT,
-    "tenantId" TEXT,
-    "propertyId" TEXT,
+    "serviceProviderId" TEXT NOT NULL,
+    "tenantId" TEXT NOT NULL,
+    "propertyId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -169,15 +169,6 @@ CREATE UNIQUE INDEX "serviceProviders_userId_key" ON "serviceProviders"("userId"
 -- CreateIndex
 CREATE UNIQUE INDEX "Services_ownerId_key" ON "Services"("ownerId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_serviceProviderId_key" ON "SavedItem"("serviceProviderId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_tenantId_key" ON "SavedItem"("tenantId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_propertyId_key" ON "SavedItem"("propertyId");
-
 -- AddForeignKey
 ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -194,13 +185,13 @@ ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("owne
 ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_serviceProviderId_fkey" FOREIGN KEY ("serviceProviderId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_serviceProviderId_fkey" FOREIGN KEY ("serviceProviderId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("tenantId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("tenantId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("propertyId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

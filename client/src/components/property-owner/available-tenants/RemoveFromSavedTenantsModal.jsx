@@ -1,5 +1,6 @@
 "use client";
 
+import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
@@ -54,7 +55,11 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
               height={70}
               className="rounded-full"
               width={70}
-              src={`${fileUrlKey()}/${modalData?.tenant?.profileImage}`}
+              src={
+                modalData?.tenant?.profileImage
+                  ? `${fileUrlKey()}/${modalData?.tenant?.profileImage}`
+                  : profileLogo
+              }
             />
             <h2>
               {modalData?.tenant?.firstName} {modalData?.tenant?.lastName}
