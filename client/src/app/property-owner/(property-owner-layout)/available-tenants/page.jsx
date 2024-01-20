@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { AutoComplete, Input, InputGroup, InputNumber, Loader } from "rsuite";
+import { Input, InputGroup, InputNumber, Loader } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
@@ -16,17 +16,24 @@ const PropertyOwnerServiceProviders = () => {
   const [size, setSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [presentAddress, setPresentAddress] = useState("");
+  const [rentAmount, setRentAmount] = useState("");
 
   // filter
   query["limit"] = size;
   query["page"] = page;
-  // debounce for slow search
+  // ! debounce for slow search
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 300,
   });
   if (!!debouncedTerm) query["searchTerm"] = debouncedTerm;
-
+  // ! rent amount
+  const debouncedTermRent = useDebounced({
+    searchQuery: rentAmount,
+    delay: 300,
+  });
+  if (!!debouncedTermRent) query["rent"] = debouncedTermRent;
+  // ! address
   const debouncedTermAddress = useDebounced({
     searchQuery: presentAddress,
     delay: 300,
@@ -96,7 +103,11 @@ const PropertyOwnerServiceProviders = () => {
             className="lg:!w-full "
             style={{ borderRadius: "0 !important" }}
           >
-            <Input placeholder="Rent" size="lg" />
+            <InputNumber
+              onChange={(e) => setRentAmount(e)}
+              placeholder="Rent"
+              size="lg"
+            />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
             </InputGroup.Addon>

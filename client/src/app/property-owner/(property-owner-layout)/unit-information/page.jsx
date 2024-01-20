@@ -4,6 +4,7 @@ import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { IconButton } from "rsuite";
 import { FaPencilAlt, FaPlus } from "react-icons/fa";
+import Link from "next/link";
 
 const PropertyOwnerUnitInformation = () => {
   return (
@@ -51,11 +52,17 @@ const PropertyOwnerUnitInformation = () => {
         </div>
         {/* other */}
         <div className="grid grid-cols-12 items-end gap-5">
-          <div className="col-span-12 lg:col-span-5 h-[180px] flex justify-center flex-col items-center  border border-[#707070]">
-            <span className="border border-[#707070] rounded-full p-3">
-              <FaPlus color="#333333" size={40} />
-            </span>
-            <p>Add New House</p>
+          <div className="col-span-12 lg:col-span-5 ">
+            <Link
+              className="h-[180px] flex justify-center flex-col items-center  border border-[#707070] hover:bg-[#707070]
+              hover:text-white group"
+              href="/property-owner/unit-information/add-property"
+            >
+              <span className="border border-[#707070] group-hover:border-white rounded-full p-3">
+                <FaPlus size={40} />
+              </span>
+              <p>Add New House</p>
+            </Link>
           </div>
           <div className="col-span-12 lg:col-span-5 flex justify-between  ">
             <div className="space-y-3 w-full">

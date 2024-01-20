@@ -7,9 +7,10 @@ import pick from "../../../shared/pick";
 import { SavedItemServices } from "./savedItem.services";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 import ApiError from "../../../errors/ApiError";
+import { ItemType } from "@prisma/client";
 
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
-  const itemType = req.query?.itemType;
+  const itemType = req.query?.itemType as ItemType;
   const filters = req.query;
   const userId = (req.user as IRequestUser).userId;
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);

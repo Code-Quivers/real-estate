@@ -148,11 +148,11 @@ model Service {
 model SavedItem {
   itemId            String           @id @default(uuid())
   itemType          ItemType
-  serviceProviderId String?          @unique
+  serviceProviderId String?
   serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
-  tenantId          String?          @unique
+  tenantId          String?
   tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId])
-  propertyId        String?          @unique
+  propertyId        String?
   property          Property?        @relation(fields: [propertyId], references: [propertyId])
   userId            String
   user              User             @relation(fields: [userId], references: [userId])

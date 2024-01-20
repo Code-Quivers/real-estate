@@ -4,17 +4,11 @@ import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
-import { ItemType, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 // import { ISavedItem } from "./savedItem.interfaces";
 import { isEmptyObject } from "../../../helpers/utils";
-
-export type ICreateSavedItem = {
-  tenantId?: string;
-  itemType: ItemType;
-  userId: string;
-  serviceProviderId?: string;
-};
+import { ICreateSavedItem } from "./savedItem.interfaces";
 
 const createSavedItem = async (data: ICreateSavedItem) => {
   // saved the item to the SavedItem model.
@@ -25,16 +19,26 @@ const createSavedItem = async (data: ICreateSavedItem) => {
         where: {
           itemType: data?.itemType,
           tenantId: data?.tenantId,
+          userId: data?.userId,
         },
       });
 
       if (isExistTenantItem) throw new ApiError(httpStatus.CONFLICT, "Tenant already saved!!");
+
+      const isExistTenant = await transactionClient.tenant.findFirst({
+        where: {
+          tenantId: data?.tenantId,
+        },
+      });
+
+      if (!isExistTenant) throw new ApiError(httpStatus.CONFLICT, "Tenant Not Exist!!");
     }
     if (data?.itemType === "SERVICE") {
       const isExistTenantItem = await transactionClient.savedItem.findFirst({
         where: {
           itemType: data?.itemType,
           serviceProviderId: data?.serviceProviderId,
+          userId: data?.userId,
         },
       });
 
@@ -78,15 +82,11 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
     orCondition.push({ lastName: { contains: name } });
   }
   const tenantFilteringCondition: any = {};
-  if (orCondition.length == 2) {
-    tenantFilteringCondition.OR = orCondition;
-  }
-  if (address) {
-    tenantFilteringCondition.presentAddress = { contains: filters.address };
-  }
-  if (rent) {
-    tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
-  }
+  if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
+
+  if (address) tenantFilteringCondition.presentAddress = { contains: filters.address };
+
+  if (rent) tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
 
   const whereConditions: Prisma.SavedItemWhereInput = {
     AND: [{ userId, itemType: "TENANT" }, ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : [])],
