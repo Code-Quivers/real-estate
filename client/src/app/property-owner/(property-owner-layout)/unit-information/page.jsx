@@ -13,26 +13,36 @@ const PropertyOwnerUnitInformation = () => {
         <h2 className="text-3xl  ">Unit Information</h2>
       </div>
       {/* main section */}
-      <div className="w-full border  md:p-3 lg:p-8 mt-5 space-y-8 border-[#707070]">
+      <div className="w-full lg:border  md:p-3 lg:p-8 mt-5 space-y-8 border-[#707070]">
         {/* top section */}
         <div className="grid grid-cols-12 items-end gap-5">
-          <div className="md:col-span-12 lg:col-span-5  border border-[#707070]">
+          <div className="col-span-12 md:col-span-12 lg:col-span-5  border border-[#707070]">
             <Image
               src={apartmentPhoto}
-              className="object-cover h-[220px] object-center"
+              className="object-cover lg:h-[220px] object-center"
               alt=""
             />
           </div>
-          <div className="col-span-12 lg:col-span-7 flex  justify-between  ">
-            <div className="space-y-3 max-lg:w-full ">
-              <div className="space-y-3">
-                <h3 className="text-lg font-medium">$1200</h3>
-                <h3 className="text-lg font-medium">3 Beds 3 Baths</h3>
-                <h3 className="text-lg font-medium">
-                  3 Belair Dr, Binghamton, NY 13901
-                </h3>
+          <div className="col-span-12 lg:col-span-7   justify-between  ">
+            <div className="space-y-3   max-lg:w-full ">
+              <div className="flex justify-between">
+                <div className="space-y-3">
+                  <h3 className="text-lg font-medium">$1200</h3>
+                  <h3 className="text-lg font-medium">3 Beds 3 Baths</h3>
+                  <h3 className="text-lg font-medium">
+                    3 Belair Dr, Binghamton, NY 13901
+                  </h3>
+                </div>
+                <div>
+                  <IconButton
+                    icon={<FaPencilAlt size={30} color="#030303" />}
+                    appearance="subtle"
+                    circle
+                  />
+                </div>
               </div>
-              <div className="border border-[#707070] flex gap-3 items-center w-full  lg:w-[400px]">
+
+              <div className="border border-[#707070] flex gap-3 items-center w-full   lg:w-[400px]">
                 <Image
                   className="w-[80px] h-[80px] object-cover     "
                   src={profileLogo}
@@ -40,13 +50,6 @@ const PropertyOwnerUnitInformation = () => {
                 />
                 <h3>Tenant Name</h3>
               </div>
-            </div>
-            <div>
-              <IconButton
-                icon={<FaPencilAlt size={30} color="#030303" />}
-                appearance="subtle"
-                circle
-              />
             </div>
           </div>
         </div>
@@ -66,11 +69,17 @@ const PropertyOwnerUnitInformation = () => {
           </div>
           <div className="col-span-12 lg:col-span-5 flex justify-between  ">
             <div className="space-y-3 w-full">
-              <div className="border border-[#707070] flex max-lg:justify-center gap-3 items-center  w-full lg:w-[400px] px-3 py-2">
-                <span className="border border-[#707070] rounded-full p-3">
-                  <FaPlus color="#333333" size={30} />
-                </span>
-                <p className="font-medium">Add New Tenant Name</p>
+              <div className=" ">
+                <Link
+                  className="h-[60px] flex gap-5 px-2  items-center  border border-[#707070] hover:bg-[#707070]
+              hover:text-white group"
+                  href="/property-owner/available-tenants"
+                >
+                  <span className="border border-[#707070] group-hover:border-white rounded-full p-2">
+                    <FaPlus size={25} />
+                  </span>
+                  <p className="font-medium">Add New Tenant Name</p>
+                </Link>
               </div>
             </div>
           </div>
