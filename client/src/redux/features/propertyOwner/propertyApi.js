@@ -5,7 +5,7 @@ export const propertyApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     addProperties: builder.mutation({
       query: ({ data }) => ({
-        url: `/properties/properties/create`,
+        url: `/properties/create`,
         method: "POST",
         data: data,
         contentType: "multipart/form-data",

@@ -40,7 +40,7 @@ const AddPropertyAddPhotos = ({ property }) => {
           dispatch(
             updateProperty({
               propertyId: property.id,
-              field: "images",
+              field: "files",
               value: base64Strings,
             }),
           );

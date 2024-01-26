@@ -103,6 +103,10 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<Property
           select: {
             email: true,
             createdAt: true,
+            userName: true,
+            _count: true,
+            role: true,
+            userStatus: true,
           },
         },
         Property: true,
