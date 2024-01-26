@@ -161,6 +161,34 @@ const PropertyOwnerSidebar = () => {
             </Nav.Item>
             <Nav.Item
               as={Link}
+              href="/property-owner/reports"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/reports" && "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Reports
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/settings"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/settings" && "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Settings
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
               href="/property-owner/maintenance-requests"
               className={`hover:!bg-[#1b3697] ${
                 activeLink === "/property-owner/maintenance-requests" &&

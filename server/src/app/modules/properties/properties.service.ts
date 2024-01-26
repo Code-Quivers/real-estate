@@ -18,24 +18,25 @@ const createNewProperty = async (profileId: string, req: Request) => {
 
   const imagesPath = images?.map((item: any) => item?.path);
 
-  const data = req?.body;
-  console.log(data)
-  const toSavedToDb = data.map(obj => obj.ownerId = profileId)
+  const data = req.files;
+  console.log(req);
+  return { name: data };
+  // console.log(data, images);
+  // const toSavedToDb = data.map((obj) => (obj.ownerId = profileId));
 
-  const property = await prisma.$transaction(async (transactionClient) => {
-    //
+  // const property = await prisma.$transaction(async (transactionClient) => {
+  //   //
 
-    const result = await transactionClient.property.createMany({
-      data: data,
-    });
-    if (!result) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
-    }
-    return result;
-  });
-  return property;
+  //   const result = await transactionClient.property.createMany({
+  //     data: data,
+  //   });
+  //   if (!result) {
+  //     throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
+  //   }
+  //   return result;
+  // });
+  // return property;
 };
-
 
 // Getting all property
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
@@ -89,8 +90,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
     const total = await prisma.property.count({
       where: whereConditions,

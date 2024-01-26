@@ -38,12 +38,18 @@ const AddProperty = () => {
     // creating form data
     const formData = new FormData();
 
-    // deleting file from obj
-    // delete obj.file;
-    const newPropertyList = JSON.stringify(propertyList?.propertyList);
+    const allFiles = (propertyList?.propertyList || [])?.flatMap(
+      (property) => property?.files || [],
+    );
+
+    const propertiesWithoutFiles = (propertyList?.propertyList || []).map(
+      ({ files, ...propertyWithoutFiles }) => propertyWithoutFiles,
+    );
+    const newPropertyList = JSON.stringify(propertiesWithoutFiles);
+
     formData.append("data", newPropertyList);
 
-    formData.append("files", propertyList?.files);
+    formData.append("files", allFiles);
 
     await addProperties({
       data: formData,

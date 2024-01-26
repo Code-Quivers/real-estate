@@ -11,13 +11,11 @@ const initialProperty = {
   schools: "",
   universities: "",
   allowedPets: "",
+  files: [],
 };
 
 const initialState = {
   propertyList: [initialProperty],
-  files: {
-    [`images-${initialProperty.id}`]: [],
-  },
 };
 
 const propertyListSlice = createSlice({
@@ -36,42 +34,37 @@ const propertyListSlice = createSlice({
         schools: "",
         universities: "",
         allowedPets: "",
+        files: [],
       };
 
-      // Use Immer to update the state
       state.propertyList.push(newProperty);
-      state.files[`images-${newProperty.id}`] = [];
-
-      // No need to return a new state object; Immer handles it
     },
 
     removeProperty: (state, action) => {
       const propertyIdToRemove = action.payload;
 
-      // Remove the property from propertyList
       state.propertyList = state.propertyList.filter(
         (property) => property.id !== propertyIdToRemove,
       );
-
-      // Remove the corresponding entry in the files object
-      delete state.files[`images-${propertyIdToRemove}`];
-
-      // No need to return a new state object; Immer handles it
     },
 
     updateProperty: (state, action) => {
       const { propertyId, field, value } = action.payload;
 
-      // Find the index of the property with the given propertyId
       const propertyIndex = state.propertyList.findIndex(
         (property) => property.id === propertyId,
       );
 
-      // If the property is found, update the specified field with the new value
       if (propertyIndex !== -1) {
-        if (field === "images") {
-          state.files[`images-${propertyId}`] = value;
+        if (field === "files") {
+          // If the field is "files", update the files array directly
+          const uniqueFileName = `${propertyId}-${value}`;
+          state.propertyList[propertyIndex][field] = [
+            ...state.propertyList[propertyIndex][field],
+            uniqueFileName,
+          ];
         } else {
+          // Otherwise, update the specified field with the new value
           state.propertyList[propertyIndex] = {
             ...state.propertyList[propertyIndex],
             [field]: value,

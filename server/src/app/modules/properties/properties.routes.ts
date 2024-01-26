@@ -4,10 +4,11 @@ import auth from "../../middlewares/auth";
 import { UserRoles } from "@prisma/client";
 import { FileUploadHelper } from "../../../helpers/FileUploadHelper";
 import { PropertiesValidation } from "./properties.validation";
+import { PropertyFileUploadHelper } from "../../../helpers/PropertyFileUploadHelper";
 
 const router = express.Router();
 
-router.post("/create", auth(UserRoles.PROPERTY_OWNER), FileUploadHelper.uploadPropertyImages2, (req: Request, res: Response, next: NextFunction) => {
+router.post("/create", auth(UserRoles.PROPERTY_OWNER), PropertyFileUploadHelper.uploadPropertyImages.array("files", 20), (req: Request, res: Response, next: NextFunction) => {
   req.body = PropertiesValidation.propertyBananu.parse(JSON.parse(req.body.data));
   return PropertiesController.createNewProperty(req, res, next);
 });
