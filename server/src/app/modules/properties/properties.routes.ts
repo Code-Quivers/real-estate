@@ -8,7 +8,7 @@ import { PropertyFileUploadHelper } from "../../../helpers/PropertyFileUploadHel
 
 const router = express.Router();
 
-router.post("/create", auth(UserRoles.PROPERTY_OWNER), PropertyFileUploadHelper.uploadPropertyImages.array("files", 20), (req: Request, res: Response, next: NextFunction) => {
+router.post("/create", auth(UserRoles.PROPERTY_OWNER), PropertyFileUploadHelper.uploadPropertyImages.array("files"), (req: Request, res: Response, next: NextFunction) => {
   req.body = PropertiesValidation.propertyBananu.parse(JSON.parse(req.body.data));
   return PropertiesController.createNewProperty(req, res, next);
 });

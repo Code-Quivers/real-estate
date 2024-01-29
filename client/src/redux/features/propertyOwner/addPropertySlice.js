@@ -47,7 +47,6 @@ const propertyListSlice = createSlice({
         (property) => property.id !== propertyIdToRemove,
       );
     },
-
     updateProperty: (state, action) => {
       const { propertyId, field, value } = action.payload;
 
@@ -58,10 +57,25 @@ const propertyListSlice = createSlice({
       if (propertyIndex !== -1) {
         if (field === "files") {
           // If the field is "files", update the files array directly
-          const uniqueFileName = `${propertyId}-${value}`;
+          const existingFiles = state.propertyList[propertyIndex][field];
+
+          // Modify the file names by adding propertyId
+          const modifiedFiles = value?.map((file) => {
+            const modifiedFile = new File(
+              [file],
+              `${propertyId}_${file.name}`,
+              {
+                type: file.type,
+                lastModified: file.lastModified,
+              },
+            );
+
+            return modifiedFile;
+          });
+
           state.propertyList[propertyIndex][field] = [
-            ...state.propertyList[propertyIndex][field],
-            uniqueFileName,
+            ...existingFiles,
+            ...modifiedFiles,
           ];
         } else {
           // Otherwise, update the specified field with the new value
