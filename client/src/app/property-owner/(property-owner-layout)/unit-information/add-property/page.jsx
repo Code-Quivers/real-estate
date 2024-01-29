@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
@@ -45,11 +46,17 @@ const AddProperty = () => {
     const propertiesWithoutFiles = (propertyList?.propertyList || []).map(
       ({ files, ...propertyWithoutFiles }) => propertyWithoutFiles,
     );
+
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
 
     formData.append("data", newPropertyList);
 
-    formData.append("files", allFiles);
+    // Append all files with the same key "files"
+    allFiles.forEach((file, index) => {
+      formData.append("files", file, file.name);
+    });
+
+    console.log("files", allFiles);
 
     await addProperties({
       data: formData,

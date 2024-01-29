@@ -8,8 +8,6 @@ import { propertiesFilterableFields } from "./properties.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 
 const createNewProperty = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body);
-  //
   const profileId = (req.user as IRequestUser).profileId;
 
   const result = await PropertiesService.createNewProperty(profileId, req);

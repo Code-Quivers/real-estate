@@ -16,10 +16,12 @@ import { propertiesRelationalFields, propertiesRelationalFieldsMapper, propertie
 const createNewProperty = async (profileId: string, req: Request) => {
   const images: IUploadFile[] = req.files as any;
 
-  const imagesPath = images?.map((item: any) => item?.path);
+  const imagesPath = images?.map((item: any) => item?.path?.substring(13));
+
+  console.log("images", images);
+  console.log("imagesPath", imagesPath);
 
   const data = req.files;
-  console.log(req);
   return { name: data };
   // console.log(data, images);
   // const toSavedToDb = data.map((obj) => (obj.ownerId = profileId));

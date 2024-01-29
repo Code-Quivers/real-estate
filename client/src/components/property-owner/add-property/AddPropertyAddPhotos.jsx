@@ -1,5 +1,5 @@
 "use client";
-import { Uploader, Message, Loader, useToaster } from "rsuite";
+import { Uploader, Loader, useToaster } from "rsuite";
 import { VscDeviceCamera } from "react-icons/vsc";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -22,32 +22,15 @@ const AddPropertyAddPhotos = ({ property }) => {
             filetype?.blobFile?.size &&
             filetype?.blobFile?.size <= fileSizeLimit,
         )
-        .map((filetype) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(filetype.blobFile);
+        .map((filetype) => filetype.blobFile);
 
-          return new Promise((resolve, reject) => {
-            reader.onloadend = () => {
-              resolve(reader.result);
-            };
-
-            reader.onerror = reject;
-          });
-        });
-
-      Promise.all(validBlobFiles)
-        .then((base64Strings) => {
-          dispatch(
-            updateProperty({
-              propertyId: property.id,
-              field: "files",
-              value: base64Strings,
-            }),
-          );
-        })
-        .catch((error) => {
-          toaster.push("Error converting file to base64.");
-        });
+      dispatch(
+        updateProperty({
+          propertyId: property.id,
+          field: "files",
+          value: validBlobFiles,
+        }),
+      );
     } else {
       //
     }
@@ -55,9 +38,7 @@ const AddPropertyAddPhotos = ({ property }) => {
 
   const handleRemove = (file) => {
     const updatedFileList = fileList.filter((item) => item !== file);
-    console.log(updatedFileList);
-
-    // setFileList(updatedFileList);
+    setFileList(updatedFileList);
   };
 
   const showUploadButton = fileList.length === 0;
