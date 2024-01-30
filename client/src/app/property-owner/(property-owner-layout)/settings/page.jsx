@@ -1,5 +1,5 @@
 "use client";
-import PropertyOwnerProfileEdit from "@/components/property-owner/profile/PropertyOwnerProfileEdit";
+import PropertyOwnerProfileEditModal from "@/components/property-owner/profile/PropertyOwnerProfileEditModal";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -93,7 +93,7 @@ const PropertyOwnerSettingPage = () => {
       {/* profile editing modal */}
 
       <>
-        <PropertyOwnerProfileEdit
+        <PropertyOwnerProfileEditModal
           open={open}
           myProfileData={data?.data}
           handleClose={handleClose}
