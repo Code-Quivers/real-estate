@@ -15,8 +15,20 @@ import { propertiesRelationalFields, propertiesRelationalFieldsMapper, propertie
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
   const images: IUploadFile[] = req.files as any;
-
-  const imagesPath = images?.map((item: any) => item?.path?.substring(13));
+  console.log('-----------------------------')
+  console.log(images.length)
+  const imagesPath: { [key: string]: string[] } = {};
+  images.forEach((item: IUploadFile) => {
+    const propId: string = item.originalname.split('_')[0];
+    // Check if the property ID already exists in the imagesPath object
+    if (!imagesPath[propId]) {
+      imagesPath[propId] = [`property/${item.originalname}`];
+    } else {
+      // If the ID already exists, push the new value to the array
+      imagesPath[propId].push(`property/${item.originalname}`);
+    }
+  });
+  // const imagesPath = images?.map((item: any) => item?.path?.substring(13));
 
   console.log("images", images);
   console.log("imagesPath", imagesPath);
