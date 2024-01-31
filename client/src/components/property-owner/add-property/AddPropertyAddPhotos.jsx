@@ -1,16 +1,21 @@
 "use client";
 import { Uploader, Loader, useToaster } from "rsuite";
 import { VscDeviceCamera } from "react-icons/vsc";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { updateProperty } from "@/redux/features/propertyOwner/addPropertySlice";
+import { useAppSelector } from "@/redux/hook";
 
 const AddPropertyAddPhotos = ({ property }) => {
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState([]);
-
   const dispatch = useDispatch();
+  // Fetch files from Redux state when the component mounts
+  const { propertyList } = useAppSelector((state) => state?.propertyList);
+
+  const [fileList, setFileList] = useState(
+    propertyList?.find((single) => single?.id === property?.id)?.files || [],
+  );
 
   const handleChangeImages = (files) => {
     if (files.length > 0) {
@@ -24,21 +29,37 @@ const AddPropertyAddPhotos = ({ property }) => {
         )
         .map((filetype) => filetype.blobFile);
 
-      dispatch(
-        updateProperty({
-          propertyId: property.id,
-          field: "files",
-          value: validBlobFiles,
-        }),
-      );
-    } else {
-      //
+      if (validBlobFiles.length > 0) {
+        // Dispatch only the latest (last) valid file to the Redux store
+        const latestValidFile = validBlobFiles[validBlobFiles.length - 1];
+        dispatch(
+          updateProperty({
+            propertyId: property.id,
+            field: "files",
+            value: [latestValidFile],
+          }),
+        );
+      }
     }
   };
 
   const handleRemove = (file) => {
-    const updatedFileList = fileList.filter((item) => item !== file);
-    setFileList(updatedFileList);
+    // Check if the file is being removed
+    if (fileList.includes(file)) {
+      const updatedFileList = fileList.filter((item) => item !== file);
+
+      // Update the local state with the filtered file list
+      setFileList(updatedFileList);
+
+      // Dispatch the updated file list to the Redux store
+      dispatch(
+        updateProperty({
+          propertyId: property.id,
+          field: "files",
+          value: updatedFileList,
+        }),
+      );
+    }
   };
 
   const showUploadButton = fileList.length === 0;
@@ -50,7 +71,7 @@ const AddPropertyAddPhotos = ({ property }) => {
       listType="picture"
       autoUpload={false}
       onChange={handleChangeImages}
-      onRemove={(file) => handleRemove(file)}
+      onRemove={handleRemove}
       accept="image/*"
       action=""
     >
