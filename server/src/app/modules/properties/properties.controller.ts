@@ -7,18 +7,22 @@ import pick from "../../../shared/pick";
 import { propertiesFilterableFields } from "./properties.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 
+
+
 const createNewProperty = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
 
   const result = await PropertiesService.createNewProperty(profileId, req);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
     message: "Property created Successfully",
     data: result,
   });
 });
+
+
 //! get all properties =------------
 const getAllProperty = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertiesFilterableFields);

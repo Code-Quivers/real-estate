@@ -1,6 +1,7 @@
 import { IUploadFile } from '../../../interfaces/file';
 
 export type IPropertyData = {
+  ownerId: string;
   numOfBed: number;
   numOfBath: number;
   address: string;
@@ -11,7 +12,7 @@ export type IPropertyData = {
   universities: string;
   allowedPets: string;
   profileId: string;
-  images: IUploadFile[];
+  images: string[];
 };
 export type IPropertyReqPayload = {
   numOfBed: number;

@@ -7,50 +7,58 @@ import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
-import { IPropertiesFilterRequest, IPropertyReqPayload } from "./properties.interfaces";
+import { IPropertiesFilterRequest, IPropertyData, IPropertyReqPayload } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { propertiesRelationalFields, propertiesRelationalFieldsMapper, propertiesSearchableFields } from "./properties.constants";
+import { any } from "zod";
+
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
-  const images: IUploadFile[] = req.files as any;
-  console.log('-----------------------------')
-  console.log(images.length)
-  const imagesPath: { [key: string]: string[] } = {};
-  images.forEach((item: IUploadFile) => {
-    const propId: string = item.originalname.split('_')[0];
-    // Check if the property ID already exists in the imagesPath object
-    if (!imagesPath[propId]) {
-      imagesPath[propId] = [`property/${item.originalname}`];
-    } else {
-      // If the ID already exists, push the new value to the array
-      imagesPath[propId].push(`property/${item.originalname}`);
-    }
+  // Ensure req.files and req.body exist and have correct types
+  const images: IUploadFile[] = (req.files as any) || [];
+  const data: any[] = req?.body || [];
+
+  // Use meaningful variable names
+  const imagesPath: { [key: number]: string[] } = {};
+  // Process images
+  images.forEach((image: IUploadFile) => {
+    const propId: number = parseInt(image.originalname.split('_')[0]);
+
+    // Use the logical nullish assignment operator to handle undefined case
+    imagesPath[propId] ??= [];
+    imagesPath[propId].push(`property/${image.originalname}`);
   });
-  // const imagesPath = images?.map((item: any) => item?.path?.substring(13));
 
-  console.log("images", images);
-  console.log("imagesPath", imagesPath);
+  // Process property info
+  const propertyInfo: IPropertyData[] = data.map((item: any) => {
+    const propId: number = item.id;
+    const imagesForId: string[] = imagesPath[propId] || []; // Handle case when no images found for property id
+    return {
+      ...item, // Spread the properties of item
+      images: imagesForId,
+      ownerId: profileId // Assuming profileId is defined somewhere
+    };
+  });
 
-  const data = req.files;
-  return { name: data };
-  // console.log(data, images);
-  // const toSavedToDb = data.map((obj) => (obj.ownerId = profileId));
+  // Remove the 'id' property from each item in propertyInfo
+  propertyInfo.forEach((item: any) => {
+    delete item['id'];
+  });
 
-  // const property = await prisma.$transaction(async (transactionClient) => {
-  //   //
-
-  //   const result = await transactionClient.property.createMany({
-  //     data: data,
-  //   });
-  //   if (!result) {
-  //     throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
-  //   }
-  //   return result;
-  // });
-  // return property;
+  const property = await prisma.$transaction(async (transactionClient) => {
+    const result = await transactionClient.property.createMany({
+      data: propertyInfo,
+    });
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
+    }
+    return result;
+  });
+  return property;
 };
+
 
 // Getting all property
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
@@ -104,8 +112,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: whereConditions,
