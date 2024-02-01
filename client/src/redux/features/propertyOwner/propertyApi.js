@@ -12,7 +12,15 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties],
     }),
+    getAllAvailableUnits: builder.query({
+      query: () => ({
+        url: `/properties/all`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const { useAddPropertiesMutation } = propertyApi;
+export const { useAddPropertiesMutation, useGetAllAvailableUnitsQuery } =
+  propertyApi;

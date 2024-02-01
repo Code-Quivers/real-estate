@@ -1,11 +1,14 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
-import { useState } from "react";
-
-import { SelectPicker } from "rsuite";
+import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import { Input, InputGroup, SelectPicker } from "rsuite";
 import Image from "next/image";
 import { availableUnits } from "./AvailableUnitsCardFakeData";
 import AvailableUnitsModal from "./AvailableUnitsModal";
+import { FiSearch } from "react-icons/fi";
+import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import { fileUrlKey } from "@/configs/envConfig";
+import { useState } from "react";
 
 // Search Location data
 const data = [
@@ -19,11 +22,6 @@ const data = [
 ].map((item) => ({ label: item, value: item }));
 
 // Price data
-const pricePicker = {
-  width: 224,
-  display: "block",
-  marginBottom: 10,
-};
 
 // sorting data
 const datas = ["Newest", "Oldest"].map((item) => ({
@@ -35,42 +33,46 @@ const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);
 
+  const { data: allAvailableUnitsRes, isLoading } =
+    useGetAllAvailableUnitsQuery();
+
   return (
     <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
       <div className="grid grid-cols-2 lg:flex justify-start items-start  lg:gap-5 border-r-0 border-gray-800">
-        <div>
-          <SelectPicker
-            size="lg"
-            placeholder="Search location"
-            data={data}
-            style={pricePicker}
-          />
+        <div className="w-full">
+          <InputGroup size="lg" inside>
+            <Input placeholder="Search Location" size="lg" />
+            <InputGroup.Button>
+              <FiSearch />
+            </InputGroup.Button>
+          </InputGroup>
         </div>
-        <div>
+        <div className="w-full">
           <SelectPicker
+            className="!w-full"
             size="lg"
             placeholder="Price"
             data={data}
-            style={pricePicker}
           />
         </div>
-        <div>
+        <div className="w-full">
           <SelectPicker
             size="lg"
             placeholder="More"
             data={data}
-            style={pricePicker}
+            className="!w-full"
           />
         </div>
       </div>
       {/* search with price section end */}
 
       {/* sort area start */}
-      <div className="text-end">
+      <div className="text-end mt-5">
         <SelectPicker
           color="blue"
           label="Sort"
+          searchable={false}
           data={datas}
           style={{ width: 224 }}
         />
@@ -79,7 +81,7 @@ const AvailableUnitsCard = () => {
 
       {/* Available units card start */}
       <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-        {availableUnits.map((unit) => (
+        {allAvailableUnitsRes?.data?.map((unit) => (
           <div
             onClick={() => {
               setOpen(true);
@@ -89,18 +91,26 @@ const AvailableUnitsCard = () => {
             className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
           >
             <Image
-              width="full"
-              objectFit="cover"
-              src={unit.image}
+              width={300}
+              height={300}
+              className="w-full h-[280px] object-center object-cover"
+              src={
+                unit?.images?.length
+                  ? `${fileUrlKey()}/${unit?.images[0]}`
+                  : profileLogo
+              }
               alt="Tenant avialable units"
             />
-            <div className="flex justify-between items-start mt-2 px-2.5 py-1">
+            <div className="flex w-full justify-between items-start mt-2 px-2.5 py-1">
               <div>
-                <h2 className="text-sm">{unit.price}</h2>
+                <h2 className="text-sm">$1200</h2>
                 <h2 className="text-sm">
-                  <span>{unit.bed}</span> <span>{unit.bath}</span>
+                  <span>{unit?.numOfBed ?? "0"} Bed </span>
+                  <span>{unit?.numOfBath ?? "0"} Bath</span>
                 </h2>
-                <h2 className="text-sm">{unit.address}</h2>
+                <h2 className="text-sm">
+                  {unit?.address ? unit?.address : "--"}
+                </h2>
               </div>
               {/* <div>
                 <div className="py-2 px-5 rounded-full border-2 border-red-700">
