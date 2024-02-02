@@ -112,3 +112,22 @@ body::-webkit-scrollbar-thumb {
   border-color: rgba(0, 0, 255, 0.445) !important;
 
 } */
+
+
+/* scrollbar hide modal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 2px !important;
+  /* Adjust the width as needed */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #0252dd !important;
+  /* Adjust the color as needed */
+  border-radius: 4px;
+  /* Adjust the border radius as needed */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #cbd5e0;
+  /* Adjust the background color as needed */
+}

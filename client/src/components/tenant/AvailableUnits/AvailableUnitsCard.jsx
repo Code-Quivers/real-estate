@@ -93,13 +93,13 @@ const AvailableUnitsCard = () => {
             <Image
               width={300}
               height={300}
-              className="w-full h-[280px] object-center object-cover"
+              className="w-full h-[250px] object-center object-cover"
               src={
                 unit?.images?.length
                   ? `${fileUrlKey()}/${unit?.images[0]}`
                   : profileLogo
               }
-              alt="Tenant avialable units"
+              alt="Tenant available units"
             />
             <div className="flex w-full justify-between items-start mt-2 px-2.5 py-1">
               <div>
