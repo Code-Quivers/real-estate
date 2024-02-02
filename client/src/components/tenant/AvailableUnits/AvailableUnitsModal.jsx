@@ -134,7 +134,7 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                   </button>
                 </div>
                 {/* contents */}
-                <div className=" p-5 w-full block">
+                <div className=" px-2.5 py-5 w-full block">
                   <div
                     className={openTab === 1 ? "block" : "hidden"}
                     id="link1"
@@ -171,25 +171,23 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                     className={openTab === 2 ? "block" : "hidden"}
                     id="link2"
                   >
-                    <div className="flex justify-start items-start">
-                      <div className="w-2/4">
-                        <h2 className="text-center  font-semibold text-lg">
+                    <div className="grid grid-cols-2   ">
+                      <div className="col-span-1 border-r mr-3    p-1">
+                        <h2 className="text-center font-semibold text-lg">
                           Maintenance covered by Tenant
                         </h2>
-                        <ul>
-                          <li className="text-sm">
-                            {units?.maintenanceCoveredTenant
-                              ? units?.maintenanceCoveredTenant
-                              : "--"}
-                          </li>
-                        </ul>
+                        <p className="mt-5 whitespace-pre-line">
+                          {units?.maintenanceCoveredTenant
+                            ? units?.maintenanceCoveredTenant
+                            : "--"}
+                        </p>
                       </div>
-                      <div className="inline-block h-[250px] min-h-[1em] w-0.5 self-stretch bg-neutral-300 "></div>
-                      <div className="w-2/4 pl-3">
+
+                      <div className="col-span-1 p-1">
                         <h2 className="text-center font-semibold text-lg">
                           Maintenance covered by Property Owner
                         </h2>
-                        <p className="whitespace-pre-line">
+                        <p className="mt-5 whitespace-pre-line">
                           {units?.maintenanceCoveredOwner
                             ? units?.maintenanceCoveredOwner
                             : "--"}
