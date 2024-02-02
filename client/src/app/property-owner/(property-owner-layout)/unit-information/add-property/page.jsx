@@ -19,6 +19,8 @@ import { PiWarningBold } from "react-icons/pi";
 import { useState } from "react";
 import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
 
+import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
+
 const AddProperty = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalValue, setModalValue] = useState("");
@@ -121,7 +123,7 @@ const AddProperty = () => {
                     {/*   */}
                     <div className="grid grid-cols-12 gap-10">
                       {/* add photos */}
-                      <div className="col-span-5">
+                      <div className="col-span-4">
                         <div>
                           <label className="text-sm font-medium">
                             Add Photos
@@ -132,7 +134,7 @@ const AddProperty = () => {
                         </div>
                       </div>
                       {/* number of beds and number of baths */}
-                      <div className="col-span-3">
+                      <div className="col-span-2">
                         {/* number of beds */}
                         <div>
                           <label className="text-sm font-medium">
@@ -169,7 +171,7 @@ const AddProperty = () => {
                         </div>
                       </div>
                       {/* address and description */}
-                      <div className="col-span-4">
+                      <div className="col-span-6">
                         {/* address */}
                         <div>
                           <label className="text-sm font-medium">Address</label>
@@ -182,11 +184,18 @@ const AddProperty = () => {
                           />
                         </div>
                         {/* description */}
-                        <div>
+                        <div className="h-[200px]">
                           <label className="text-sm font-medium">
                             Description
                           </label>
-                          <Input
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.description}
+                            handleInputChange={handleInputChange}
+                            field="description"
+                          />
+
+                          {/* <Input
                             as="textarea"
                             rows={6}
                             value={property.description}
@@ -197,7 +206,7 @@ const AddProperty = () => {
                                 value,
                               )
                             }
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -268,7 +277,7 @@ const AddProperty = () => {
                           <label className="text-sm font-medium">
                             What are the schools next to your house?
                           </label>
-                          <Input
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -276,6 +285,12 @@ const AddProperty = () => {
                             onChange={(value) =>
                               handleInputChange(property.id, "schools", value)
                             }
+                          /> */}
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.schools}
+                            handleInputChange={handleInputChange}
+                            field="schools"
                           />
                         </div>
                       </div>
@@ -285,7 +300,7 @@ const AddProperty = () => {
                           <label className="text-sm font-medium">
                             What are the universities next to your house?
                           </label>
-                          <Input
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -297,11 +312,18 @@ const AddProperty = () => {
                                 value,
                               )
                             }
+                          /> */}
+
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.universities}
+                            handleInputChange={handleInputChange}
+                            field="universities"
                           />
                         </div>
                       </div>
                     </div>
-                  </div>{" "}
+                  </div>
                   <hr />
                   {/* Pets --------------------------------- */}
                   <div>
@@ -316,7 +338,14 @@ const AddProperty = () => {
                           <label className="text-sm font-medium">
                             What pets do you allow in your house?
                           </label>
-                          <Input
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.allowedPets}
+                            handleInputChange={handleInputChange}
+                            field="allowedPets"
+                          />
+
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -328,7 +357,7 @@ const AddProperty = () => {
                                 value,
                               )
                             }
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
