@@ -1,70 +1,20 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Button, Modal } from "rsuite";
+import { Modal } from "rsuite";
 import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
-import Link from "next/link";
 import { fileUrlKey } from "@/configs/envConfig";
 
 const AvailableUnitsModal = ({ open, setOpen, units }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
 
-  const description = [
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-    "hat they cannot foresee the pain and trouble that are bound to ensue",
-  ];
-
-  const byTenant = [
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-  ];
-
-  const byPowner = [
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-    "Keep the property clean and sanitary",
-  ];
-
-  const schools = [
-    {
-      schoolNearBy: [
-        "Keep the property clean and sanitary",
-        "Keep the property clean and sanitary",
-        "Keep the property clean and sanitary",
-      ],
-    },
-    {
-      universityNearBy: [
-        "hat they cannot foresee the pain and",
-        "hat they cannot foresee the pain and",
-        "hat they cannot foresee the pain and",
-      ],
-    },
-  ];
-
-  const pets = ["Dogs", "Cats", "Birds"];
-
-  console.log(units);
-
   return (
     <div>
       <Modal size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
           <div className="grid grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
-            <div className="col-span-2 w-full  overflow-y-scroll max-h-[550px]  custom-scrollbar">
+            <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
               {units?.images?.length
                 ? units?.images?.map((photo) => (
                     <div
@@ -73,43 +23,7 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                     >
                       <div className=" ">
                         <Image
-                          className="h-40    w-full object-center object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
-                      <div className=" ">
-                        <Image
-                          className="h-40    w-full object-center object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
-                      <div className=" ">
-                        <Image
-                          className="h-40    w-full object-center object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
-                      <div className=" ">
-                        <Image
-                          className="h-40    w-full object-center object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
-                      <div className=" ">
-                        <Image
-                          className="h-40    w-full object-center object-cover"
+                          className="h-[200px]    w-full object-center object-cover"
                           height={300}
                           width={300}
                           src={`${fileUrlKey()}/${photo}`}
@@ -120,8 +34,8 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                   ))
                 : ""}
             </div>
-            <div className="col-span-3 w-full ">
-              <div className="flex p-5  justify-between items-center">
+            <div className="col-span-3 w-full overflow-y-scroll max-h-[70vh]  custom-scrollbar ">
+              <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
                 <div>
                   <h2>Logo</h2>
                 </div>
@@ -234,6 +148,21 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                       <ul key={Math.random()} className="list-disc pl-5">
                         <li className="text-sm">
                           {units?.description ? units?.description : "--"}
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Explicabo adipisci, et rem doloribus esse nisi,
+                          vero nesciunt non commodi ratione veniam quidem
+                          repellat mollitia fugiat harum dicta! Odio
+                          perspiciatis sapiente fugiat aperiam laboriosam rem.
+                          Dignissimos nihil consectetur rem quaerat vero id
+                          sapiente quod consequatur impedit optio, quisquam modi
+                          numquam maiores eveniet accusamus beatae. Doloribus
+                          laudantium modi nesciunt accusamus, minima dolore in
+                          illo qui incidunt labore? Qui, eligendi. Dignissimos
+                          nulla eos delectus eveniet placeat dolore fugiat
+                          tempora sed nostrum sunt temporibus molestiae
+                          consequatur velit porro officia tempore eligendi,
+                          veniam inventore distinctio nisi. Magnam praesentium
+                          maxime, alias quam odit cumque deserunt atque!
                         </li>
                       </ul>
                     </div>

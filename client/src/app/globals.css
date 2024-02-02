@@ -131,3 +131,21 @@ body::-webkit-scrollbar-thumb {
   background-color: #cbd5e0;
   /* Adjust the background color as needed */
 }
+
+
+/* add property text editor */
+.ql-editor {
+  background: white !important;
+  border-radius: 0 !important;
+
+}
+
+.app .ql-container {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: #fefcfc;
+}
+
+.app .ql-editor {
+  min-height: 10rem;
+}
