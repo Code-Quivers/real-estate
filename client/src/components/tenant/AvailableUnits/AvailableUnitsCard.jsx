@@ -9,6 +9,8 @@ import { FiSearch } from "react-icons/fi";
 import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 // Search Location data
 const data = [
@@ -35,7 +37,6 @@ const AvailableUnitsCard = () => {
 
   const { data: allAvailableUnitsRes, isLoading } =
     useGetAllAvailableUnitsQuery();
-
   return (
     <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}

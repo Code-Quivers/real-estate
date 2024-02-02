@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 "use client";
 import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
@@ -15,10 +14,8 @@ import { useDispatch } from "react-redux";
 import { Button, Input, InputNumber, Modal } from "rsuite";
 import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
-
 import { useState } from "react";
 import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
-
 import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
 
 const AddProperty = () => {

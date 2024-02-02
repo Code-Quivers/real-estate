@@ -1,8 +1,9 @@
 "use client";
 
+import "react-quill/dist/quill.snow.css"; // Import Snow theme CSS (base theme)
+import "react-quill/dist/quill.bubble.css"; // Import Bubble theme CSS
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 
 const modules = {
   toolbar: [
@@ -10,7 +11,6 @@ const modules = {
     [{ size: ["small", true, "large", "huge"] }],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ align: [] }],
-    ["list", "bullet", "indent", "size"],
   ],
 };
 
@@ -31,16 +31,16 @@ const MyComponent = ({ propertyId, value, handleInputChange, field }) => {
     () => dynamic(() => import("react-quill"), { ssr: false }),
     [],
   );
-
   return (
     <div className="relative">
       <ReactQuill
         style={{ backgroundColor: "white", borderRadius: "0" }}
-        className="w-full h-32 max-h-[150px] !rounded-none focus:outline-none"
+        className="w-full h-32 !rounded-none focus:outline-none"
         value={value}
         onChange={(e) => handleInputChange(propertyId, field, e)}
         modules={modules}
         formats={formats}
+        theme="bubble" // Set the theme to "bubble"
       />
     </div>
   );
