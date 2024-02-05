@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "rsuite";
 import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
 import { fileUrlKey } from "@/configs/envConfig";
+import "react-quill/dist/quill.bubble.css";
 
 const AvailableUnitsModal = ({ open, setOpen, units }) => {
   const handleClose = () => setOpen(false);
@@ -145,26 +146,18 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                         Description
                       </h2>
 
-                      <ul key={Math.random()} className="list-disc pl-5">
-                        <li className="text-sm">
-                          {units?.description ? units?.description : "--"}
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Explicabo adipisci, et rem doloribus esse nisi,
-                          vero nesciunt non commodi ratione veniam quidem
-                          repellat mollitia fugiat harum dicta! Odio
-                          perspiciatis sapiente fugiat aperiam laboriosam rem.
-                          Dignissimos nihil consectetur rem quaerat vero id
-                          sapiente quod consequatur impedit optio, quisquam modi
-                          numquam maiores eveniet accusamus beatae. Doloribus
-                          laudantium modi nesciunt accusamus, minima dolore in
-                          illo qui incidunt labore? Qui, eligendi. Dignissimos
-                          nulla eos delectus eveniet placeat dolore fugiat
-                          tempora sed nostrum sunt temporibus molestiae
-                          consequatur velit porro officia tempore eligendi,
-                          veniam inventore distinctio nisi. Magnam praesentium
-                          maxime, alias quam odit cumque deserunt atque!
-                        </li>
-                      </ul>
+                      <div className="ql-editor">
+                        {units?.description ? (
+                          <div
+                            className="whitespace-pre-wrap"
+                            dangerouslySetInnerHTML={{
+                              __html: units.description,
+                            }}
+                          />
+                        ) : (
+                          <p>--</p>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div
@@ -203,15 +196,18 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                       <h2 className="text-base font-bold capitalize">
                         Schools near by
                       </h2>
-                      <div className="pb-2">
-                        <div className="py-3">
-                          {/* {schools[0].schoolNearBy?.map((list) => (
-                                <ul key={Math.random()}>
-                                  <li className="text-sm">- {list}</li>
-                                </ul>
-                              ))} */}
-
-                          <p>{units?.schools ? units?.schools : "--"}</p>
+                      <div className="">
+                        <div className="ql-editor">
+                          {units?.schools ? (
+                            <div
+                              className="whitespace-pre-wrap"
+                              dangerouslySetInnerHTML={{
+                                __html: units?.schools,
+                              }}
+                            />
+                          ) : (
+                            <p>--</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -219,17 +215,17 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                       <h2 className="text-base font-bold capitalize">
                         Universities near by
                       </h2>
-                      <div className="pb-2">
-                        <div className="py-3">
-                          {/* {schools[1].universityNearBy?.map((list) => (
-                                <ul key={Math.random()}>
-                                  <li className="text-sm">- {list}</li>
-                                </ul>
-                              ))} */}
-                          <p>
-                            {units?.universities ? units?.universities : "--"}
-                          </p>
-                        </div>
+                      <div className="">
+                        {units?.universities ? (
+                          <div
+                            className="whitespace-pre-wrap"
+                            dangerouslySetInnerHTML={{
+                              __html: units?.universities,
+                            }}
+                          />
+                        ) : (
+                          <p>--</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -240,10 +236,17 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                     <h2 className="text-base font-bold capitalize">
                       Pets Allowed
                     </h2>
-                    <div className="pb-2">
-                      <div className="py-3">
-                        <p>{units?.pets ? units?.pets : "--"}</p>
-                      </div>
+                    <div className="">
+                      {units?.pets ? (
+                        <div
+                          className="whitespace-pre-wrap"
+                          dangerouslySetInnerHTML={{
+                            __html: units?.pets,
+                          }}
+                        />
+                      ) : (
+                        <p>--</p>
+                      )}
                     </div>
                   </div>
                 </div>

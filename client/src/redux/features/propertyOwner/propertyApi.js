@@ -13,9 +13,10 @@ export const propertyApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.properties],
     }),
     getAllAvailableUnits: builder.query({
-      query: () => ({
+      query: (arg) => ({
         url: `/properties/all`,
         method: "GET",
+        params: arg,
       }),
       providesTags: [tagTypes.properties],
     }),

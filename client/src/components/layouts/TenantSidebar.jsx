@@ -141,7 +141,21 @@ const TenantSidebar = () => {
               icon={<GroupIcon />}
             >
               Requests
-            </Nav.Item>{" "}
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
+              href="/tenant/settings"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/tenant/settings" && "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="7"
+              icon={<GroupIcon />}
+            >
+              Settings
+            </Nav.Item>
             <Nav.Item
               onClick={logOut}
               className={`hover:!bg-[#1b3697] ${

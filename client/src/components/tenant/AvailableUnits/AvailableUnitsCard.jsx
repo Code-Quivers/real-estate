@@ -9,8 +9,7 @@ import { FiSearch } from "react-icons/fi";
 import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { sortingPicker } from "@/constants/selectPicker.const";
 
 // Search Location data
 const data = [
@@ -25,18 +24,21 @@ const data = [
 
 // Price data
 
-// sorting data
-const datas = ["Newest", "Oldest"].map((item) => ({
-  label: item,
-  value: item,
-}));
-
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);
-
+  const query = {};
+  // const [page, setPage] = useState(1);
+  // const [size, setSize] = useState(10);
+  // const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  //
+  query["searchTerm"] = searchTerm;
+  query["sortOrder"] = sortOrder;
+  //
   const { data: allAvailableUnitsRes, isLoading } =
-    useGetAllAvailableUnitsQuery();
+    useGetAllAvailableUnitsQuery({ ...query });
   return (
     <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
@@ -73,8 +75,9 @@ const AvailableUnitsCard = () => {
         <SelectPicker
           color="blue"
           label="Sort"
+          onChange={(value) => setSortOrder(value)}
           searchable={false}
-          data={datas}
+          data={sortingPicker}
           style={{ width: 224 }}
         />
       </div>
