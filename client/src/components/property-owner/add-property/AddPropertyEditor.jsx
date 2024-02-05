@@ -35,7 +35,7 @@ const MyComponent = ({ propertyId, value, handleInputChange, field }) => {
     <div className="relative">
       <ReactQuill
         style={{ backgroundColor: "white", borderRadius: "0" }}
-        className="w-full h-32 !rounded-none focus:outline-none"
+        className="w-full h-32 !rounded-none focus:outline-none !border"
         value={value}
         onChange={(e) => handleInputChange(propertyId, field, e)}
         modules={modules}

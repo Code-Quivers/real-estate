@@ -159,11 +159,7 @@ const LoginPage = () => {
                           type={visible ? "text" : "password"}
                           placeholder="Password"
                         />
-                        <InputGroup.Button
-                          onClick={() => {
-                            setVisible(!visible);
-                          }}
-                        >
+                        <InputGroup.Button onClick={() => setVisible(!visible)}>
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
@@ -189,7 +185,7 @@ const LoginPage = () => {
                 className="!rounded-full !px-8 !py-3.5 "
                 appearance="default"
               >
-                Sign Up
+                Sign In
               </Button>
             </div>
           </form>

@@ -39,6 +39,8 @@ axiosInstance.interceptors.response.use(
     if (error?.response?.status === 403 && !config?.sent) {
       config.sent = true;
       const response = await getNewAccessToken();
+      console.log("Response--------", response);
+
       const accessToken = response?.data?.accessToken;
       config.headers["Authorization"] = accessToken;
       setToLocalStorage(getAuthKey(), accessToken);
