@@ -12,11 +12,11 @@ import { userFindUnique } from "./auth.utils";
 
 //! Tenant User Create
 
-const createNewUserForTenant = async (payload: IUserCreate) => {
+const createNewUserForTenant = async (payload: IUserCreate) :Promise<ILoginUserResponse>=> {
   const { password, email, userName } = payload;
   const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
-  const newUser = await prisma.$transaction(async (transactionClient) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -57,6 +57,7 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
             email: true,
             role: true,
             userStatus: true,
+            userId:true
           },
         },
       },
@@ -66,20 +67,52 @@ const createNewUserForTenant = async (payload: IUserCreate) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant creation failed");
     }
 
-    return tenantUser;
+
+    const {tenantId,user} = tenantUser
+    
+    // ! getting log in information
+    const accessToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  tenantId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.secret as Secret,
+      config.jwt.expires_in as string,
+    );
+    const refreshToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  tenantId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.refresh_secret as Secret,
+      config.jwt.refresh_expires_in as string,
+    );
+  
+    return {
+      accessToken,
+      refreshToken,
+    };
+    
+ 
   });
 
-  return newUser;
+  return result;
 };
 
 //! Property Owner User Create
 
-const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
+const createNewUserForPropertyOwner = async (payload: IUserCreate) :Promise<ILoginUserResponse>=> {
   const { password, email, userName } = payload;
   const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
   // transaction start
-  const newUser = await prisma.$transaction(async (transactionClient) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -129,20 +162,54 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner creation failed");
     }
 
-    return propertyOwnerUser;
+    // ! getting log in information
+    const {propertyOwnerId,user} = propertyOwnerUser
+    
+    const accessToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  propertyOwnerId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.secret as Secret,
+      config.jwt.expires_in as string,
+    );
+    const refreshToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  propertyOwnerId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.refresh_secret as Secret,
+      config.jwt.refresh_expires_in as string,
+    );
+  
+    return {
+      accessToken,
+      refreshToken,
+    };
+    
+    
+    
+    
+     
   });
 
-  return newUser;
+  return result;
 };
 
 //! Service Provider User Create
 
-const createNewUserForServiceProvider = async (payload: IUserCreate) => {
+const createNewUserForServiceProvider = async (payload: IUserCreate) :Promise<ILoginUserResponse> => {
   const { password, email, userName } = payload;
   const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
 
   // transaction start
-  const newUser = await prisma.$transaction(async (transactionClient) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
     await userFindUnique(userName, email, transactionClient);
 
     const createdUser = await transactionClient.user.create({
@@ -192,10 +259,44 @@ const createNewUserForServiceProvider = async (payload: IUserCreate) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider creation failed");
     }
 
-    return serviceProviderUser;
+
+    const {serviceProviderId,user} = serviceProviderUser
+    
+    // ! getting log in information
+    const accessToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  serviceProviderId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.secret as Secret,
+      config.jwt.expires_in as string,
+    );
+    const refreshToken = jwtHelpers.createToken(
+      {
+        userId :user?.userId,
+        email:user?.email,
+        role:user?.role,
+        profileId:  serviceProviderId ,
+        userStatus:user?.userStatus,
+      },
+      config.jwt.refresh_secret as Secret,
+      config.jwt.refresh_expires_in as string,
+    );
+  
+    return {
+      accessToken,
+      refreshToken,
+    };
+    
+    
+    
+     
   });
 
-  return newUser;
+  return result;
 };
 
 //login

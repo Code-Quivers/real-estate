@@ -196,8 +196,11 @@ const PropertyOwnerLoginPage = () => {
 
         <div className="mt-20 flex justify-center">
           <p className="font-semibold">
-            Need an Account?
-            <Link className="text-blue-800" href="/property-owner/sign-up">
+            Need an Account?{" "}
+            <Link
+              className="text-blue-800 hover:underline"
+              href="/property-owner/sign-up"
+            >
               Sign Up
             </Link>
           </p>

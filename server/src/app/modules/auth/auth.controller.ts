@@ -23,11 +23,24 @@ const createUser = async (req: Request, res: Response) => {
 const createNewUserForTenant = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.createNewUserForTenant(req.body);
 
+  
+  const { accessToken,refreshToken } = result;
+  // set refresh token into cookie
+
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Tenant created successfully!",
-    data: result,
+    data: {
+      accessToken
+    },
   });
 });
 
@@ -35,12 +48,25 @@ const createNewUserForTenant = catchAsync(async (req: Request, res: Response) =>
 
 const createNewUserForPropertyOwner = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.createNewUserForPropertyOwner(req.body);
+  
+  
+  const { accessToken,refreshToken } = result;
+  // set refresh token into cookie
+
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Property Owner created successfully!",
-    data: result,
+    data: {
+      accessToken,
+    },
   });
 });
 
@@ -48,11 +74,24 @@ const createNewUserForPropertyOwner = catchAsync(async (req: Request, res: Respo
 
 const createNewUserForServiceProvider = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.createNewUserForServiceProvider(req.body);
+  
+  const { accessToken,refreshToken } = result;
+  // set refresh token into cookie
+
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Service Provider Created successfully!",
-    data: result,
+    data: {
+      accessToken
+    },
   });
 });
 
