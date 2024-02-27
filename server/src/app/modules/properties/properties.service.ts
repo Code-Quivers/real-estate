@@ -7,12 +7,19 @@ import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
-import { IPropertiesFilterRequest, IPropertyData, IPropertyReqPayload } from "./properties.interfaces";
+import {
+  IPropertiesFilterRequest,
+  IPropertyData,
+  IPropertyReqPayload,
+} from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
-import { propertiesRelationalFields, propertiesRelationalFieldsMapper, propertiesSearchableFields } from "./properties.constants";
+import {
+  propertiesRelationalFields,
+  propertiesRelationalFieldsMapper,
+  propertiesSearchableFields,
+} from "./properties.constants";
 import { any } from "zod";
-
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -24,7 +31,7 @@ const createNewProperty = async (profileId: string, req: Request) => {
   const imagesPath: { [key: number]: string[] } = {};
   // Process images
   images.forEach((image: IUploadFile) => {
-    const propId: number = parseInt(image.originalname.split('_')[0]);
+    const propId: number = parseInt(image.originalname.split("_")[0]);
 
     // Use the logical nullish assignment operator to handle undefined case
     imagesPath[propId] ??= [];
@@ -38,13 +45,13 @@ const createNewProperty = async (profileId: string, req: Request) => {
     return {
       ...item, // Spread the properties of item
       images: imagesForId,
-      ownerId: profileId // Assuming profileId is defined somewhere
+      ownerId: profileId, // Assuming profileId is defined somewhere
     };
   });
 
   // Remove the 'id' property from each item in propertyInfo
   propertyInfo.forEach((item: any) => {
-    delete item['id'];
+    delete item["id"];
   });
 
   const property = await prisma.$transaction(async (transactionClient) => {
@@ -59,9 +66,11 @@ const createNewProperty = async (profileId: string, req: Request) => {
   return property;
 };
 
-
 // Getting all property
-const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
+const getAllProperty = async (
+  filters: IPropertiesFilterRequest,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -98,7 +107,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
     });
   }
 
-  const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.PropertyWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
@@ -112,8 +122,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
     const total = await prisma.property.count({
       where: whereConditions,
@@ -134,7 +144,9 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   return result;
 };
 //! get single property info
-const getSinglePropertyInfo = async (propertyId: string): Promise<Property | null> => {
+const getSinglePropertyInfo = async (
+  propertyId: string,
+): Promise<Property | null> => {
   const res = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findUnique({
       where: {
@@ -154,20 +166,36 @@ const getSinglePropertyInfo = async (propertyId: string): Promise<Property | nul
   return res;
 };
 // ! update property info
-const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Property> => {
+const updatePropertyInfo = async (
+  propertyId: string,
+  req: Request,
+): Promise<Property> => {
   const images: IUploadFile[] = req.files as any;
 
   const imagesPath = images?.map((item: any) => item?.path);
 
-  const { address, allowedPets, description, maintenanceCoveredOwner, maintenanceCoveredTenant, numOfBath, numOfBed, schools, universities } = req?.body as IPropertyReqPayload;
+  const {
+    address,
+    allowedPets,
+    description,
+    maintenanceCoveredOwner,
+    maintenanceCoveredTenant,
+    numOfBath,
+    numOfBed,
+    schools,
+    universities,
+  } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedPropertyData: Partial<Property> = {};
 
     if (address) updatedPropertyData["address"] = address;
     if (description) updatedPropertyData["description"] = description;
-    if (maintenanceCoveredTenant) updatedPropertyData["maintenanceCoveredTenant"] = maintenanceCoveredTenant;
-    if (maintenanceCoveredOwner) updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
+    if (maintenanceCoveredTenant)
+      updatedPropertyData["maintenanceCoveredTenant"] =
+        maintenanceCoveredTenant;
+    if (maintenanceCoveredOwner)
+      updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
     if (schools) updatedPropertyData["schools"] = schools;
     if (universities) updatedPropertyData["universities"] = universities;
     if (allowedPets) updatedPropertyData["allowedPets"] = allowedPets;

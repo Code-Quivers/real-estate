@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import process from 'child_process';
+import process from "child_process";
 
-import config from '../config';
-import { errorLogger, logger } from '../shared/logger';
+import config from "../config";
+import { errorLogger, logger } from "../shared/logger";
 
-const cron = require('node-cron');
-const fs = require('fs');
-const path = require('path');
+const cron = require("node-cron");
+const fs = require("fs");
+const path = require("path");
 
 const backupDatabase = () => {
   const todayDate = new Date().toISOString().slice(0, 10);
@@ -31,10 +31,10 @@ const backupDatabase = () => {
       }
     });
   } catch (err) {
-    errorLogger.error('Database Backup Error:' + err);
+    errorLogger.error("Database Backup Error:" + err);
   }
 };
 
-const dbBackupTask = cron.schedule('*/10 * * * * *', backupDatabase);
+const dbBackupTask = cron.schedule("*/10 * * * * *", backupDatabase);
 
 export default dbBackupTask;

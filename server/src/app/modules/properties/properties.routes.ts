@@ -8,23 +8,56 @@ import { PropertyFileUploadHelper } from "../../../helpers/PropertyFileUploadHel
 
 const router = express.Router();
 
-router.post("/create", auth(UserRoles.PROPERTY_OWNER), PropertyFileUploadHelper.uploadPropertyImages.array("files"), (req: Request, res: Response, next: NextFunction) => {
-  req.body = PropertiesValidation.propertyBananu.parse(JSON.parse(req.body.data));
-  return PropertiesController.createNewProperty(req, res, next);
-});
+router.post(
+  "/create",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertyFileUploadHelper.uploadPropertyImages.array("files"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = PropertiesValidation.propertyCreate.parse(
+      JSON.parse(req.body.data),
+    );
+    return PropertiesController.createNewProperty(req, res, next);
+  },
+);
 // get all property
-router.get("/all", auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN, UserRoles.TENANT), PropertiesController.getAllProperty);
+router.get(
+  "/all",
+  auth(
+    UserRoles.PROPERTY_OWNER,
+    UserRoles.SERVICE_PROVIDER,
+    UserRoles.SUPERADMIN,
+    UserRoles.TENANT,
+  ),
+  PropertiesController.getAllProperty,
+);
 
 // get single property info
 
-router.get("/single/:propertyId", auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN, UserRoles.TENANT), PropertiesController.getSinglePropertyInfo);
+router.get(
+  "/single/:propertyId",
+  auth(
+    UserRoles.PROPERTY_OWNER,
+    UserRoles.SERVICE_PROVIDER,
+    UserRoles.SUPERADMIN,
+    UserRoles.TENANT,
+  ),
+  PropertiesController.getSinglePropertyInfo,
+);
+// ! get property owner properties
+router.get(
+  "/single/:propertyId",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertiesController.getPropertyOwnerAllProperty,
+);
 // ! update property info
 router.patch(
   "/update-property/:propertyId",
   auth(UserRoles.PROPERTY_OWNER),
   FileUploadHelper.uploadPropertyImages.array("files"),
   (req: Request, res: Response, next: NextFunction) => {
-    req.body = PropertiesValidation.updateProperty.parse(JSON.parse(req.body.data));
+    req.body = PropertiesValidation.updateProperty.parse(
+      JSON.parse(req.body.data),
+    );
     return PropertiesController.updatePropertyInfo(req, res, next);
   },
 );

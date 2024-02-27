@@ -18,15 +18,26 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
 
   switch (itemType) {
     case "TENANT":
-      result = await SavedItemServices.getSavedTenants(userId, filters, options);
+      result = await SavedItemServices.getSavedTenants(
+        userId,
+        filters,
+        options,
+      );
       break;
     case "SERVICE":
-      result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
+      result = await SavedItemServices.getSavedServiceProviders(
+        userId,
+        filters,
+        options,
+      );
       break;
     case undefined:
       throw new ApiError(httpStatus.BAD_REQUEST, "itemType required!!!");
     default:
-      throw new ApiError(httpStatus.BAD_REQUEST, `Provided itemType '${itemType}' not supported!!!`);
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        `Provided itemType '${itemType}' not supported!!!`,
+      );
   }
 
   sendResponse(res, {

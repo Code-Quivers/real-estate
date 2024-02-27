@@ -23,7 +23,8 @@ const createSavedItem = async (data: ICreateSavedItem) => {
         },
       });
 
-      if (isExistTenantItem) throw new ApiError(httpStatus.CONFLICT, "Tenant already saved!!");
+      if (isExistTenantItem)
+        throw new ApiError(httpStatus.CONFLICT, "Tenant already saved!!");
 
       const isExistTenant = await transactionClient.tenant.findFirst({
         where: {
@@ -31,7 +32,8 @@ const createSavedItem = async (data: ICreateSavedItem) => {
         },
       });
 
-      if (!isExistTenant) throw new ApiError(httpStatus.CONFLICT, "Tenant Not Exist!!");
+      if (!isExistTenant)
+        throw new ApiError(httpStatus.CONFLICT, "Tenant Not Exist!!");
     }
     if (data?.itemType === "SERVICE") {
       const isExistTenantItem = await transactionClient.savedItem.findFirst({
@@ -42,7 +44,11 @@ const createSavedItem = async (data: ICreateSavedItem) => {
         },
       });
 
-      if (isExistTenantItem) throw new ApiError(httpStatus.CONFLICT, "Service Provider already saved!!");
+      if (isExistTenantItem)
+        throw new ApiError(
+          httpStatus.CONFLICT,
+          "Service Provider already saved!!",
+        );
     }
 
     const savedItem = await transactionClient.savedItem.create({
@@ -73,7 +79,11 @@ const removeSavedItem = async (itemId: string) => {
   return result;
 };
 
-const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
+const getSavedTenants = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { name, address, rent } = filters;
   const orCondition: any[] = [];
@@ -84,12 +94,19 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
   const tenantFilteringCondition: any = {};
   if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
 
-  if (address) tenantFilteringCondition.presentAddress = { contains: filters.address };
+  if (address)
+    tenantFilteringCondition.presentAddress = { contains: filters.address };
 
-  if (rent) tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
+  if (rent)
+    tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
 
   const whereConditions: Prisma.SavedItemWhereInput = {
-    AND: [{ userId, itemType: "TENANT" }, ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : [])],
+    AND: [
+      { userId, itemType: "TENANT" },
+      ...(!isEmptyObject(tenantFilteringCondition)
+        ? [{ tenant: tenantFilteringCondition }]
+        : []),
+    ],
   };
 
   //
@@ -115,7 +132,10 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
     const totalPage = Math.ceil(total / limit);
 
     if (!savedItems) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retrieved saved items!!!");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Failed to retrieved saved items!!!",
+      );
     }
 
     return {
@@ -133,7 +153,11 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
 };
 
 // Get the saved Service Providers
-const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
+const getSavedServiceProviders = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { name, serviceType, priority, price } = filters;
   const orCondition: any[] = [];

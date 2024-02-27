@@ -4,16 +4,26 @@ import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
-import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
+import {
+  ITenantUpdateRequest,
+  ITenantsFilterRequest,
+} from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
 import { updateTenantData } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
-import { tenantsRelationalFields, tenantsRelationalFieldsMapper, tenantsSearchableFields } from "./tenants.constants";
+import {
+  tenantsRelationalFields,
+  tenantsRelationalFieldsMapper,
+  tenantsSearchableFields,
+} from "./tenants.constants";
 
 // ! get all tenants
-const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
+const getAllTenants = async (
+  filters: ITenantsFilterRequest,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -50,7 +60,8 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
     });
   }
 
-  const whereConditions: Prisma.TenantWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.TenantWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allTenants = await transactionClient.tenant.findMany({
@@ -121,7 +132,14 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   // const profileImagePath = profileImage?.path;
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } = req.body as ITenantUpdateRequest;
+  const {
+    oldProfileImagePath,
+    AnnualSalary,
+    CurrentCreditScore,
+    affordableRentAmount,
+    numberOfMember,
+    ...updates
+  } = req.body as ITenantUpdateRequest;
 
   const tenantReqData = {
     AnnualSalary: Number(AnnualSalary),
@@ -143,10 +161,12 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
       },
     });
 
-    if (!isTenantProfileExists) throw new ApiError(httpStatus.NOT_FOUND, "Tenant Profile Not Found!");
+    if (!isTenantProfileExists)
+      throw new ApiError(httpStatus.NOT_FOUND, "Tenant Profile Not Found!");
 
     // updated data from request
-    const newTenantData: Partial<ITenantUpdateRequest> = updateTenantData(tenantReqData);
+    const newTenantData: Partial<ITenantUpdateRequest> =
+      updateTenantData(tenantReqData);
 
     // ! updating
     const res = await transactionClient.tenant.update({
@@ -157,7 +177,10 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     });
 
     if (!res) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Updating Failed !");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Tenant Profile Updating Failed !",
+      );
     }
 
     return res;

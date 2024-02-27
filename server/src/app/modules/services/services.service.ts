@@ -4,14 +4,24 @@ import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { Prisma, Service } from "@prisma/client";
-import { IServiceFilterRequest, IServiceUpdateRequest } from "./services.interfaces";
+import {
+  IServiceFilterRequest,
+  IServiceUpdateRequest,
+} from "./services.interfaces";
 import { updateServiceData } from "./services.utils";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
-import { servicesRelationalFields, servicesRelationalFieldsMapper, servicesSearchableFields } from "./services.constants";
+import {
+  servicesRelationalFields,
+  servicesRelationalFieldsMapper,
+  servicesSearchableFields,
+} from "./services.constants";
 
 // ! get all services
-const getAllServices = async (filters: IServiceFilterRequest, options: IPaginationOptions) => {
+const getAllServices = async (
+  filters: IServiceFilterRequest,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -48,7 +58,8 @@ const getAllServices = async (filters: IServiceFilterRequest, options: IPaginati
     });
   }
 
-  const whereConditions: Prisma.ServiceWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.ServiceWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allServices = await transactionClient.service.findMany({
@@ -84,7 +95,10 @@ const getAllServices = async (filters: IServiceFilterRequest, options: IPaginati
   return result;
 };
 // ! createOrUpdateService
-const createOrUpdateService = async (profileId: string, payload: IServiceUpdateRequest): Promise<Service> => {
+const createOrUpdateService = async (
+  profileId: string,
+  payload: IServiceUpdateRequest,
+): Promise<Service> => {
   // updated data from request
   const newServiceData: Partial<Service> = updateServiceData(payload);
 
@@ -131,4 +145,8 @@ const getSingleService = async (serviceId: string): Promise<Service> => {
   return result;
 };
 
-export const ServicesService = { getAllServices, createOrUpdateService, getSingleService };
+export const ServicesService = {
+  getAllServices,
+  createOrUpdateService,
+  getSingleService,
+};

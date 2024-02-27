@@ -44,10 +44,10 @@ const updateProperty = z.object({
   allowedPets: z.string({}).optional(),
 });
 
-const propertyBananu = z.array(createProperty);
+const propertyCreate = z.array(createProperty);
 
 export const PropertiesValidation = {
   createProperty,
   updateProperty,
-  propertyBananu,
+  propertyCreate,
 };

@@ -1,3 +1,3 @@
 export const isEmptyObject = (obj: any): boolean => {
-    return Object.keys(obj).length === 0;
-}
+  return Object.keys(obj).length === 0;
+};
