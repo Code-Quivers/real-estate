@@ -77,7 +77,7 @@ const PropertyOwnerSignUpPage = () => {
         </Notification>,
         { placement: "bottomStart" },
       );
-      // router.push("/property-owner/login");
+      router.push("/property-owner");
     }
     if (!isSuccess && !isLoading && isError && error) {
       toaster.push(

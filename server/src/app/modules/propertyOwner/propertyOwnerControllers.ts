@@ -37,7 +37,7 @@ const getSinglePropertyOwner = catchAsync(async (req: Request, res: Response) =>
   });
 });
 
-// ! get  tenant my profile
+// ! get  property owner my profile
 const getPropertyOwnerMyProfile = catchAsync(async (req: Request, res: Response) => {
   const propertyOwnerId = (req.user as IRequestUser).profileId;
   const result = await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);

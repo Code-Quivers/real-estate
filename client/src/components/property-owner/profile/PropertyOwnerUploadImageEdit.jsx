@@ -1,5 +1,5 @@
 import { Uploader, Message, Loader, useToaster } from "rsuite";
-import AvatarIcon from "@rsuite/icons/legacy/Avatar";
+import { LuUploadCloud } from "react-icons/lu";
 import { useState } from "react";
 import { fileUrlKey } from "@/configs/envConfig";
 import { RiDeleteBin5Fill } from "react-icons/ri";
@@ -69,9 +69,17 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
     clearImagePreview();
     // Additional logic for file removal if needed
   };
-
+  const formatFileSize = (size) => {
+    if (size < 1024) {
+      return `${size} B`;
+    } else if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(2)} KB`;
+    } else {
+      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    }
+  };
   return (
-    <div>
+    <div className="lg:flex gap-10 items-center">
       <div>
         <Uploader
           fileListVisible={false}
@@ -91,10 +99,11 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
                 />
               </div>
             ) : (
-              <div className="!border hover:border-black focus-within:scale-105 rounded-full overflow-hidden  ">
-                <AvatarIcon
+              <div className="!border hover:border-[#545454] focus-within:scale-105 rounded-full overflow-hidden flex justify-center  ">
+                <LuUploadCloud
+                  color="#545454"
                   style={{
-                    width: 200,
+                    width: 100,
                     height: 200,
                     cursor: "pointer",
                   }}
@@ -108,7 +117,12 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
       <div className="mt-10">
         {fileValue?.length > 0 && (
           <div className=" flex justify-between gap-5 items-center">
-            <p className="text-wrap">{fileValue[0]?.blobFile?.name}</p>
+            <p className="text-wrap ">
+              {fileValue[0]?.blobFile?.name} -{" "}
+              <span className="font-medium">
+                {formatFileSize(fileValue[0]?.blobFile?.size)}
+              </span>
+            </p>
             <button
               onClick={handleRemoveFile}
               className="text-[#f14e4e] hover:text-red-600"

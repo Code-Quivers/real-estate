@@ -3,7 +3,14 @@
 import tenantLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, useToaster } from "rsuite";
+import {
+  Button,
+  Form,
+  Input,
+  InputGroup,
+  Notification,
+  useToaster,
+} from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -14,6 +21,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTenantSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
+import { storeUserInfo } from "@/hooks/services/auth.service";
 
 const style = {
   width: "100%",
@@ -53,13 +61,31 @@ const TenantSignUp = () => {
       email: user?.email,
       password: user?.password,
     };
-    await tenantSignUp({ data: tenantSignUpData }).unwrap();
+    const res = await tenantSignUp({ data: tenantSignUpData }).unwrap();
+
+    if (res?.data?.accessToken) {
+      storeUserInfo({ accessToken: res?.data?.accessToken });
+    }
   };
 
   useEffect(() => {
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       toaster.push(SignUpSuccessMessage(), { placement: "bottomStart" });
-      router.push("/tenant/login");
+      router.push("/tenant");
+    }
+    if ((!isSuccess && !isLoading && isError, error)) {
+      toaster.push(
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">
+              {error?.message || "Something went wrong !"}
+            </p>
+            {/* <hr className="border-t border-gray-300 my-4" />
+            <p>Your account is now ready to use.</p> */}
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
     }
   }, [isSuccess, isLoading, isError, error, data]);
 

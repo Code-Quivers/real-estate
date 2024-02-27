@@ -16,6 +16,11 @@ const updatePropertyOwner = z.object({
       invalid_type_error: 'Phone Number must be in String',
     })
     .optional(),
+  password: z
+    .string({
+      invalid_type_error: 'Password must be in String',
+    })
+    .optional(),
 });
 
 export const PropertyOwnerValidation = {

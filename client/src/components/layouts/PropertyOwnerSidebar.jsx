@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidenav, Nav } from "rsuite";
+import { Sidenav, Nav, useToaster, Message } from "rsuite";
 import DashboardIcon from "@rsuite/icons/Dashboard";
 import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
+import { useEffect } from "react";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
@@ -19,6 +20,7 @@ const PropertyOwnerSidebar = () => {
     data: dataResponse,
     isError,
     isLoading,
+    isSuccess,
     error,
   } = useGetPropertyOwnerMyProfileQuery();
 
@@ -30,6 +32,21 @@ const PropertyOwnerSidebar = () => {
     removeUserInfo(getAuthKey());
     router.push("/");
   };
+  const toaster = useToaster();
+
+  useEffect(() => {
+    if (!isLoading && isError && !isSuccess) {
+      toaster.push(
+        <Message centered showIcon type="error" closable>
+          {error?.message || "Something went wrong. Please Login Again"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, toaster]);
 
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">

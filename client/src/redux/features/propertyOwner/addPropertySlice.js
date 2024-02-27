@@ -4,6 +4,7 @@ const initialProperty = {
   id: Date.now(),
   numOfBed: 0,
   numOfBath: 0,
+  monthlyRent: 1,
   address: "",
   description: "",
   maintenanceCoveredTenant: "",
@@ -27,6 +28,7 @@ const propertyListSlice = createSlice({
         id: Date.now(),
         numOfBed: 0,
         numOfBath: 0,
+        monthlyRent: 1,
         address: "",
         description: "",
         maintenanceCoveredTenant: "",
@@ -86,10 +88,19 @@ const propertyListSlice = createSlice({
         }
       }
     },
+    // ! Reset all state
+    resetPropertyList: (state, action) => {
+      // Reset propertyList to contain only the initialProperty
+      state.propertyList = [initialProperty];
+    },
   },
 });
 
-export const { addNewProperty, updateProperty, removeProperty } =
-  propertyListSlice.actions;
+export const {
+  addNewProperty,
+  updateProperty,
+  removeProperty,
+  resetPropertyList,
+} = propertyListSlice.actions;
 
 export default propertyListSlice.reducer;

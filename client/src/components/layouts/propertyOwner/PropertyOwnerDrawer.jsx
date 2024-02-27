@@ -4,13 +4,14 @@ import { Drawer, IconButton, Nav, Sidenav } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
-import Image from "next/image";
 import GroupIcon from "@rsuite/icons/legacy/Group";
 import DashboardIcon from "@rsuite/icons/Dashboard";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import { PiArrowLeftBold } from "react-icons/pi";
+import Image from "next/image";
 const PropertyOwnerDrawer = () => {
   const [open, setOpen] = useState(false);
 
@@ -53,30 +54,74 @@ const PropertyOwnerDrawer = () => {
           </p>
         </div>
       </div>
-      <div className="border-4 border-black">
+      <div>
         <Drawer
-          size="xs"
           placement="left"
           open={open}
           onClose={() => setOpen(false)}
+          closeButton={false}
+          dialogAs="div"
+          className="max-w-xs"
         >
-          <Drawer.Header style={{ backgroundColor: "#29429f" }}>
+          {/* <Drawer.Header style={{ backgroundColor: "#29429f" }}>
             <Drawer.Title className="!text-white">
               <span className="text-white text-xl font-semibold">Menu</span>
             </Drawer.Title>
-          </Drawer.Header>
+          </Drawer.Header> */}
           <Drawer.Body style={{ padding: 0, backgroundColor: "#29429f" }}>
             <div className=" ">
               <Sidenav expanded={true} appearance="inverse">
                 <Sidenav.Body>
-                  <Nav appearance="subtle" className="divide-y-2 divide-black">
+                  <div
+                    className="
+                    bg-[#29429f] p-5
+                  
+                  "
+                  >
+                    <div className="flex justify-between  items-center">
+                      <h3 className="text-white text-2xl font-semibold">
+                        Menu
+                      </h3>
+                      <button
+                        onClick={() => setOpen(false)}
+                        // border-transparent hover:
+                      >
+                        <PiArrowLeftBold size={25} />
+                      </button>
+                    </div>
+                    {/* profile details */}
+                    <div>
+                      <div className="bg-[#29429f] flex flex-col   justify-center items-center">
+                        <Image
+                          width={100}
+                          height={100}
+                          src={
+                            myProfileData?.profileImage
+                              ? `${fileUrlKey()}/${myProfileData?.profileImage}`
+                              : profileLogo
+                          }
+                          className="w-[100px] h-[100px] object-cover rounded-full select-none"
+                          alt="Profile Image"
+                        />
+                        <h2 className="text-white mt-3 ">
+                          {myProfileData?.firstName ?? "--"}{" "}
+                          {myProfileData?.lastName ?? "--"}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Nav
+                    appearance="subtle"
+                    className="divide-y-2 border-t-2 border-black divide-black"
+                  >
                     <Nav.Item
                       as={Link}
                       href="/property-owner"
                       eventKey="1"
                       icon={<DashboardIcon />}
                       className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner" && "!bg-[#1b3697]"
+                        activeLink === "/property-owner" && "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
@@ -91,7 +136,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/available-tenants"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/available-tenants" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
@@ -105,7 +150,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/saved-tenants"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/saved-tenants" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="3"
@@ -118,7 +163,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/unit-information"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/unit-information" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="4"
@@ -149,7 +194,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/service-providers"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/service-providers" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="7"
@@ -163,7 +208,7 @@ const PropertyOwnerDrawer = () => {
                       className={`hover:!bg-[#1b3697] ${
                         activeLink ===
                           "/property-owner/saved-service-providers" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="8"
@@ -176,7 +221,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/reports"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/reports" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
@@ -191,7 +236,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/settings"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/settings" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
@@ -206,7 +251,7 @@ const PropertyOwnerDrawer = () => {
                       href="/property-owner/maintenance-requests"
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/maintenance-requests" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
@@ -220,7 +265,7 @@ const PropertyOwnerDrawer = () => {
                       onClick={logOut}
                       className={`hover:!bg-[#1b3697] ${
                         activeLink === "/property-owner/maintenance-requests" &&
-                        "!bg-[#1b3697]"
+                        "!bg-[#17318f]"
                       }`}
                       style={{
                         backgroundColor: "#29429f",
