@@ -1,4 +1,4 @@
-import { IUploadFile } from '../../../interfaces/file';
+import { IUploadFile } from "../../../interfaces/file";
 
 export type IPropertyData = {
   ownerId: string;

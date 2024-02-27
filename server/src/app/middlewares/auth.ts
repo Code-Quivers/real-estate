@@ -12,11 +12,17 @@ const auth = (...requiredRoles: string[]) => {
       const token = req.headers.authorization;
 
       if (!token) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, "You are not an authorized user");
+        throw new ApiError(
+          httpStatus.UNAUTHORIZED,
+          "You are not an authorized user",
+        );
       }
 
       try {
-        const verifiedUser: JwtPayload = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
+        const verifiedUser: JwtPayload = jwtHelpers.verifyToken(
+          token,
+          config.jwt.secret as Secret,
+        );
 
         const isUserExist = await prisma.user.findUnique({
           where: {
@@ -47,7 +53,10 @@ const auth = (...requiredRoles: string[]) => {
 
         // If the user doesn't exist, they are not a valid user.
         if (!isUserExist) {
-          throw new ApiError(httpStatus.UNAUTHORIZED, "You are not a valid user");
+          throw new ApiError(
+            httpStatus.UNAUTHORIZED,
+            "You are not a valid user",
+          );
         }
 
         const loggedInUserDetails = {
@@ -55,14 +64,23 @@ const auth = (...requiredRoles: string[]) => {
           userId: isUserExist?.userId,
           role: isUserExist?.role,
           userStatus: isUserExist?.userStatus,
-          profileId: isUserExist?.tenant?.tenantId || isUserExist?.propertyOwner?.propertyOwnerId || isUserExist?.serviceProvider?.serviceProviderId,
+          profileId:
+            isUserExist?.tenant?.tenantId ||
+            isUserExist?.propertyOwner?.propertyOwnerId ||
+            isUserExist?.serviceProvider?.serviceProviderId,
         };
 
         req.user = loggedInUserDetails;
 
-        if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
+        if (
+          requiredRoles.length &&
+          !requiredRoles.includes(verifiedUser.role)
+        ) {
           const rolesString = requiredRoles.join(", ");
-          throw new ApiError(httpStatus.FORBIDDEN, `Access Forbidden. Required role(s): ${rolesString}`);
+          throw new ApiError(
+            httpStatus.FORBIDDEN,
+            `Access Forbidden. Required role(s): ${rolesString}`,
+          );
         }
 
         next();

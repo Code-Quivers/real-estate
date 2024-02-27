@@ -1,3 +1,4 @@
+"use client";
 import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
 import Image from "next/image";
 
