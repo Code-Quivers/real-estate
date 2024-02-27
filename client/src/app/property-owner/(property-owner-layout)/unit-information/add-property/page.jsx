@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
 import {
   addNewProperty,
   removeProperty,
+  resetPropertyList,
   updateProperty,
 } from "@/redux/features/propertyOwner/addPropertySlice";
 
@@ -11,19 +13,22 @@ import { useAppSelector } from "@/redux/hook";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Button, Input, InputNumber, Modal } from "rsuite";
+import { Button, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
 import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
 import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
+import { useRouter } from "next/navigation";
 
 const AddProperty = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalValue, setModalValue] = useState("");
   const dispatch = useDispatch();
   const propertyList = useAppSelector((state) => state?.propertyList);
-
+  const toaster = useToaster();
+  const router = useRouter();
+  // !
   const handleInputChange = (propertyId, field, value) => {
     dispatch(updateProperty({ propertyId, field, value }));
   };
@@ -31,25 +36,22 @@ const AddProperty = () => {
     setIsOpenModal(false);
     setModalValue("");
   };
-  const [addProperties, { isLoading, isError, isSuccess, error }] =
-    useAddPropertiesMutation();
+  const [
+    addProperties,
+    { isLoading, isError, isSuccess, error, reset: resetReq, data },
+  ] = useAddPropertiesMutation();
 
   const handleCreateProperty = async () => {
     // creating form data
     const formData = new FormData();
-
     const allFiles = (propertyList?.propertyList || [])?.flatMap(
       (property) => property?.files || [],
     );
-
     const propertiesWithoutFiles = (propertyList?.propertyList || []).map(
       ({ files, ...propertyWithoutFiles }) => propertyWithoutFiles,
     );
-
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
-
     formData.append("data", newPropertyList);
-
     // Append all files with the same key "files"
     allFiles?.forEach((file, index) => {
       formData.append("files", file, file.name);
@@ -59,6 +61,33 @@ const AddProperty = () => {
       data: formData,
     });
   };
+  useEffect(() => {
+    if (!isLoading && !isError && isSuccess && !error) {
+      toaster.push(
+        <Message centered showIcon type="success" closable>
+          {data?.message || "Successfully Created"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+      dispatch(resetPropertyList());
+      router.back();
+      resetReq();
+    }
+    if (!isLoading && isError && !isSuccess) {
+      toaster.push(
+        <Message centered showIcon type="error" closable>
+          {error?.message || "Failed to Created"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, router, resetReq, toaster]);
 
   return (
     <>
@@ -118,9 +147,9 @@ const AddProperty = () => {
                       <h3 className="font-bold">Property Profile</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
                       {/* add photos */}
-                      <div className="col-span-4">
+                      <div className="col-span-1 md:col-span-4  ">
                         <div>
                           <label className="text-sm font-medium">
                             Add Photos
@@ -131,7 +160,7 @@ const AddProperty = () => {
                         </div>
                       </div>
                       {/* number of beds and number of baths */}
-                      <div className="col-span-2">
+                      <div className="col-span-1 md:col-span-2 space-y-2  ">
                         {/* number of beds */}
                         <div>
                           <label className="text-sm font-medium">
@@ -166,9 +195,26 @@ const AddProperty = () => {
                             }
                           />
                         </div>
+                        {/* Price of Property */}
+                        <div>
+                          <label className="text-sm font-medium">
+                            Monthly Rent $
+                          </label>
+                          <InputNumber
+                            min={1}
+                            value={property.monthlyRent}
+                            onChange={(value) =>
+                              handleInputChange(
+                                property.id,
+                                "monthlyRent",
+                                parseInt(value),
+                              )
+                            }
+                          />
+                        </div>
                       </div>
                       {/* address and description */}
-                      <div className="col-span-6">
+                      <div className="col-span-1 md:col-span-6">
                         {/* address */}
                         <div>
                           <label className="text-sm font-medium">Address</label>
@@ -215,7 +261,7 @@ const AddProperty = () => {
                       <h3 className="font-bold">Maintenance</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* maintenance covered by tenant */}
                       <div className="col-span-6">
                         <div>
@@ -267,7 +313,7 @@ const AddProperty = () => {
                       <h3 className="font-bold">Schools</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* What are the schools next to your house? */}
                       <div className="col-span-6">
                         <div>
@@ -328,7 +374,7 @@ const AddProperty = () => {
                       <h3 className="font-bold">Pets</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* What pets do you allow in your house?*/}
                       <div className="col-span-6">
                         <div>

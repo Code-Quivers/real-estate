@@ -11,6 +11,9 @@ import { Prisma, PropertyOwner } from "@prisma/client";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { propertyOwnerRelationalFields, propertyOwnerRelationalFieldsMapper, propertyOwnerSearchableFields } from "./propertyOwner.constants";
+import bcrypt from 'bcrypt'
+import config from "../../../config";
+
 
 // ! get all property owners
 const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
@@ -133,7 +136,7 @@ const UpdatePropertyOwner = async (
   const profileImagePath = profileImage?.path?.substring(13);
   // const profileImagePath = profileImage?.path;
 
-  const { firstName, lastName, phoneNumber, oldProfileImagePath } = req.body as IPropertyOwnerUpdateRequest;
+  const { firstName, lastName, phoneNumber, oldProfileImagePath ,password} = req.body as IPropertyOwnerUpdateRequest;
 
   // deleting old style Image
   const oldFilePaths = "uploads/" + oldProfileImagePath;
@@ -164,17 +167,44 @@ const UpdatePropertyOwner = async (
     if (phoneNumber) updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
     if (profileImagePath) updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
 
+    // ! if password
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
     // ! updating
     const res = await transactionClient.propertyOwner.update({
       where: {
         propertyOwnerId,
       },
       data: updatedPropertyOwnerProfileData,
-    });
-
+    }); 
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Updating Failed !");
     }
+    
+    if(password){
+      const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+        await transactionClient.user.update({
+      where:{
+          userId :res?.userId
+        },
+      data:{
+          password :hashedPassword
+        }})
+     
+      
+      }
+    
+    
+    
+    
 
     return res;
   });
