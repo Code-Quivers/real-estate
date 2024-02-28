@@ -22,6 +22,9 @@ module.exports = {
       borderRadius: {
         "4xl": "2rem",
       },
+      colors: {
+        primary: "#29429f",
+      },
     },
   },
   plugins: [],

@@ -34,13 +34,19 @@ const getAllProperty = catchAsync(async (req: Request, res: Response) => {
     data: result.data,
   });
 });
-
+// ! -get property owner my all properties
 const getPropertyOwnerAllProperty = catchAsync(
   async (req: Request, res: Response) => {
     const filters = pick(req.query, propertiesFilterableFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-    const result = await PropertiesService.getAllProperty(filters, options);
+    const profileId = (req.user as IRequestUser).profileId;
+
+    const result = await PropertiesService.getPropertyOwnerAllProperty(
+      profileId,
+      filters,
+      options,
+    );
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
