@@ -20,8 +20,19 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties],
     }),
+    getMyAllUnits: builder.query({
+      query: (arg) => ({
+        url: `/properties/get-my-properties`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const { useAddPropertiesMutation, useGetAllAvailableUnitsQuery } =
-  propertyApi;
+export const {
+  useAddPropertiesMutation,
+  useGetAllAvailableUnitsQuery,
+  useGetMyAllUnitsQuery,
+} = propertyApi;

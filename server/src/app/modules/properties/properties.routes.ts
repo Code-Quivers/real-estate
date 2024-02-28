@@ -43,9 +43,9 @@ router.get(
   ),
   PropertiesController.getSinglePropertyInfo,
 );
-// ! get property owner properties
+// ! -get property owner my all properties
 router.get(
-  "/single/:propertyId",
+  "/get-my-properties",
   auth(UserRoles.PROPERTY_OWNER),
   PropertiesController.getPropertyOwnerAllProperty,
 );
