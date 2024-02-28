@@ -13,6 +13,7 @@ export type IPropertyData = {
   allowedPets: string;
   profileId: string;
   images: string[];
+  monthlyRend: number;
 };
 export type IPropertyReqPayload = {
   numOfBed: number;

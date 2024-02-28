@@ -50,6 +50,7 @@ const AddProperty = () => {
     const propertiesWithoutFiles = (propertyList?.propertyList || []).map(
       ({ files, ...propertyWithoutFiles }) => propertyWithoutFiles,
     );
+
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
     formData.append("data", newPropertyList);
     // Append all files with the same key "files"
@@ -57,9 +58,11 @@ const AddProperty = () => {
       formData.append("files", file, file.name);
     });
 
-    await addProperties({
-      data: formData,
-    });
+    console.log(allFiles);
+
+    // await addProperties({
+    //   data: formData,
+    // });
   };
   useEffect(() => {
     if (!isLoading && !isError && isSuccess && !error) {
@@ -149,7 +152,7 @@ const AddProperty = () => {
                     {/*   */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
                       {/* add photos */}
-                      <div className="col-span-1 md:col-span-4  ">
+                      <div className="col-span-1 md:col-span-6  ">
                         <div>
                           <label className="text-sm font-medium">
                             Add Photos
@@ -159,60 +162,7 @@ const AddProperty = () => {
                           </div>
                         </div>
                       </div>
-                      {/* number of beds and number of baths */}
-                      <div className="col-span-1 md:col-span-2 space-y-2  ">
-                        {/* number of beds */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Number of Beds
-                          </label>
-                          <InputNumber
-                            min={0}
-                            value={property.numOfBed}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "numOfBed",
-                                parseInt(value),
-                              )
-                            }
-                          />
-                        </div>
-                        {/* number of baths */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Number of Baths
-                          </label>
-                          <InputNumber
-                            min={0}
-                            value={property.numOfBath}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "numOfBath",
-                                parseInt(value),
-                              )
-                            }
-                          />
-                        </div>
-                        {/* Price of Property */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Monthly Rent $
-                          </label>
-                          <InputNumber
-                            min={1}
-                            value={property.monthlyRent}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "monthlyRent",
-                                parseInt(value),
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
+
                       {/* address and description */}
                       <div className="col-span-1 md:col-span-6">
                         {/* address */}
@@ -250,6 +200,62 @@ const AddProperty = () => {
                               )
                             }
                           /> */}
+                        </div>
+                      </div>
+                      <div className="col-span-1 lg:col-span-12">
+                        {/* number of beds and number of baths */}
+                        <div className="lg:flex lg:gap-10 max-lg:space-y-3  ">
+                          {/* number of beds */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">
+                              Number of Beds
+                            </label>
+                            <InputNumber
+                              min={0}
+                              value={property.numOfBed}
+                              onChange={(value) =>
+                                handleInputChange(
+                                  property.id,
+                                  "numOfBed",
+                                  parseInt(value),
+                                )
+                              }
+                            />
+                          </div>
+                          {/* number of baths */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">
+                              Number of Baths
+                            </label>
+                            <InputNumber
+                              min={0}
+                              value={property.numOfBath}
+                              onChange={(value) =>
+                                handleInputChange(
+                                  property.id,
+                                  "numOfBath",
+                                  parseInt(value),
+                                )
+                              }
+                            />
+                          </div>
+                          {/* Price of Property */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">
+                              Monthly Rent $
+                            </label>
+                            <InputNumber
+                              min={1}
+                              value={property.monthlyRent}
+                              onChange={(value) =>
+                                handleInputChange(
+                                  property.id,
+                                  "monthlyRent",
+                                  parseInt(value),
+                                )
+                              }
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

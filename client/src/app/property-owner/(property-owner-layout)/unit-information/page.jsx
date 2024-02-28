@@ -3,10 +3,11 @@ import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
 import Image from "next/image";
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { IconButton } from "rsuite";
+import { IconButton, Placeholder } from "rsuite";
 import { FaPencilAlt, FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const PropertyOwnerUnitInformation = () => {
   const { data, isLoading, isSuccess, isError } = useGetMyAllUnitsQuery();
@@ -35,19 +36,30 @@ const PropertyOwnerUnitInformation = () => {
               <div className="grid grid-cols-12 items-end gap-5">
                 <div className="col-span-12  md:col-span-12 lg:col-span-6  border border-[#707070]">
                   <Image
-                    src={apartmentPhoto}
-                    className="object-cover object-center"
+                    width={500}
+                    height={200}
+                    src={
+                      singleProperty?.images?.length
+                        ? `${fileUrlKey()}/${singleProperty?.images[0]}`
+                        : apartmentPhoto
+                    }
+                    className="!w-full !h-[300px] object-cover object-center"
                     alt=""
                   />
                 </div>
                 {/* unit info */}
-                <div className="col-span-12 lg:col-span-6   space-y-3  flex border justify-between border-black  p-5    w-full    ">
-                  <div className="flex justify-between">
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-medium">$1200</h3>
-                      <h3 className="text-lg font-medium">3 Beds 3 Baths</h3>
+                <div className="col-span-12 lg:col-span-6   space-y-3  flex border justify-between border-black      w-full    ">
+                  <div className="flex  justify-between w-full">
+                    <div className="space-y-3 p-5 w-full">
                       <h3 className="text-lg font-medium">
-                        3 Belair Dr, Binghamton, NY 13901
+                        $ {singleProperty?.monthlyRent}
+                      </h3>
+                      <h3 className="text-lg font-medium">
+                        {singleProperty?.numOfBed} Beds{" "}
+                        {singleProperty?.numOfBath} Baths
+                      </h3>
+                      <h3 className="text-lg font-medium">
+                        {singleProperty?.address}
                       </h3>
                     </div>
                     <div>
@@ -72,8 +84,18 @@ const PropertyOwnerUnitInformation = () => {
                         </h3>
                       </div>
                       <div className="flex gap-2 items-center">
-                        <button>Add</button>
-                        <button>Update</button>
+                        <Link
+                          href="/"
+                          className=" border border-transparent bg-primary text-white px-2 py-1"
+                        >
+                          Add
+                        </Link>
+                        <Link
+                          href="/"
+                          className="  border border-primary hover:border-primary/80 hover:text-white hover:bg-primary/80 text-primary px-2 py-1"
+                        >
+                          Update
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -121,6 +143,30 @@ const PropertyOwnerUnitInformation = () => {
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className=" mt-10 gap-y-5 flex flex-col">
+            <div>
+              <Placeholder.Graph active height={150} />
+            </div>
+            <div>
+              <Placeholder.Graph active height={150} />
+            </div>
+            <div>
+              <Placeholder.Graph active height={150} />
+            </div>
+            <div>
+              <Placeholder.Graph active height={150} />
+            </div>
+          </div>
+        )}
+
+        {!isLoading && data?.data?.length < 1 && (
+          <div className="flex justify-center min-h-[60vh] items-center">
+            <h2 className="text-3xl font-semibold text-rose-400">
+              No Unit Found{" "}
+            </h2>
+          </div>
+        )}
       </div>
     </section>
   );

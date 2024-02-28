@@ -66,7 +66,6 @@ const AddPropertyAddPhotos = ({ property }) => {
 
   return (
     <Uploader
-      draggable={true}
       fileList={fileList}
       listType="picture"
       autoUpload={false}
@@ -75,8 +74,8 @@ const AddPropertyAddPhotos = ({ property }) => {
       accept="image/*"
       action=""
     >
-      <div className="flex border-4 items-center justify-center">
-        <button>
+      <div className="flex  border-4 items-center justify-center">
+        <button className=" ">
           {uploading && <Loader backdrop center />}
           {!uploading && showUploadButton && (
             <span className="flex justify-center items-center">

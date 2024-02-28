@@ -115,6 +115,7 @@ model Property {
   ownerId                  String
   numOfBed                 Int           @default(1)
   numOfBath                Int           @default(1)
+  monthlyRent              Int           @default(1)
   address                  String
   description              String
   maintenanceCoveredTenant String
