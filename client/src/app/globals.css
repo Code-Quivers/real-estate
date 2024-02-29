@@ -84,7 +84,7 @@ body::-webkit-scrollbar-thumb {
 /* pop over */
 .rs-popover {
 
-  border-radius: 15px !important;
+  /* border-radius: 10px !important; */
 
   padding: 0px !important;
 

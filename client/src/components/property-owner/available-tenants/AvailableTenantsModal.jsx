@@ -88,11 +88,11 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
                 placement="bottomStart"
                 trigger="click"
                 speaker={
-                  <Popover as="div" className="p-5 h-[400px] w-[370px] overflow-y-auto mb-5" arrow={false}>
-                    <div className="p-5 space-y-2">
+                  <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                    <div className="p-3 space-y-2">
                       {unitRes?.data?.map((singleUnit) => (
                         <div key={Math.random()}>
-                          <AvailableUnitListPopover singleUnit={singleUnit} />
+                          <AvailableUnitListPopover singleUnit={singleUnit} tenantId={modalData?.tenantId} />
                         </div>
                       ))}
                     </div>
