@@ -30,11 +30,11 @@ body::-webkit-scrollbar-thumb {
 
 
 /* !others */
-.rs-modal-wrapper {
+/* .rs-modal-wrapper {
   display: flex;
   position: fixed;
   align-items: center;
-}
+} */
 
 .rs-picker-toggle {
 
