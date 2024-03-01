@@ -7,7 +7,9 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
+    "prettier/@typescript-eslint",
+    "eslint-config-prettier"
   ],
   "rules": {
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -17,8 +19,6 @@
     "no-console": "off",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "indent": "off", // Disable the indent rule
-    // Add other Prettier rules as needed
     "trailingComma": "all",
     "semi": "warn",
     "tabWidth": 2,
@@ -27,11 +27,12 @@
   },
   "env": {
     "node": true,
-    "es2021": true
-    // Adjust environments as needed
+    "es2021": true,
+    "browser": true
   },
   "globals": {
-    "process": "readonly"
-    // Add other global variables as needed
+    "process": "readonly",
+    "Prisma": "readonly",
+    "express": "readonly"
   }
 }

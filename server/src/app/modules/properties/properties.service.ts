@@ -189,6 +189,7 @@ const getPropertyOwnerAllProperty = async (
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
+        Tenant: true,
       },
       where: {
         ...whereConditions,
@@ -196,6 +197,7 @@ const getPropertyOwnerAllProperty = async (
           propertyOwnerId: profileId,
         },
       },
+
       skip,
       take: limit,
       orderBy:
@@ -310,21 +312,65 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
     });
 
     if (!isOwner) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, "You are not owner of this property or this property does not exist");
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        "You are not the owner of this property or this property does not exist",
+      );
     }
 
-    //
-
-    const res = await transactionClient.property.update({
+    // check if already assigned to other property
+    const isAlreadyAssigned = await transactionClient.tenant.findUnique({
       where: {
+        tenantId,
         propertyId,
       },
-      data: {},
     });
 
-    //
+    if (isAlreadyAssigned) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant is already assigned to this property");
+    }
+
+    const isPropertyBooked = await prisma.property.findUnique({
+      where: {
+        propertyId,
+        Tenant: {
+          isNot: null,
+        },
+      },
+    });
+
+    if (isPropertyBooked) {
+      throw new ApiError(httpStatus.CONFLICT, "Property is Already Booked");
+    }
+
+    // update logic
+    const res = await transactionClient.tenant.update({
+      where: {
+        tenantId, // use tenantId here for the update
+      },
+      data: {
+        property: {
+          connect: {
+            propertyId,
+          },
+        },
+      },
+      select: {
+        tenantId: true,
+        property: true,
+      },
+    });
+
+    if (!res) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Assign Failed");
+    }
+
+    return res;
   });
+
+  return result;
 };
+
 export const PropertiesService = {
   createNewProperty,
   getAllProperty,

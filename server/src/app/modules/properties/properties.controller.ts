@@ -82,6 +82,8 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
 
+  console.log("shafin----------------", req.body);
+
   const result = await PropertiesService.assignTenantToProperty(profileId, req.body);
 
   sendResponse(res, {
