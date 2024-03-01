@@ -34,3 +34,8 @@ export type IPropertiesFilterRequest = {
   // numOfBath?: number | undefined;
   createdAt?: string | undefined;
 };
+
+export type IAssignTenantToProperty = {
+  tenantId: string;
+  propertyId: string;
+};

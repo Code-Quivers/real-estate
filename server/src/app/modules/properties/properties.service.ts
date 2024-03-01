@@ -8,6 +8,7 @@ import prisma from "../../../shared/prisma";
 import { Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
 import {
+  IAssignTenantToProperty,
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
@@ -65,11 +66,8 @@ const createNewProperty = async (profileId: string, req: Request) => {
   return property;
 };
 
-// Getting all property
-const getAllProperty = async (
-  filters: IPropertiesFilterRequest,
-  options: IPaginationOptions,
-) => {
+// ! Getting all property
+const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -106,8 +104,7 @@ const getAllProperty = async (
     });
   }
 
-  const whereConditions: Prisma.PropertyWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
@@ -186,8 +183,7 @@ const getPropertyOwnerAllProperty = async (
     });
   }
 
-  const whereConditions: Prisma.PropertyWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
@@ -234,9 +230,7 @@ const getPropertyOwnerAllProperty = async (
 };
 
 //! get single property info
-const getSinglePropertyInfo = async (
-  propertyId: string,
-): Promise<Property | null> => {
+const getSinglePropertyInfo = async (propertyId: string): Promise<Property | null> => {
   const res = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findUnique({
       where: {
@@ -256,10 +250,7 @@ const getSinglePropertyInfo = async (
   return res;
 };
 // ! update property info
-const updatePropertyInfo = async (
-  propertyId: string,
-  req: Request,
-): Promise<Property> => {
+const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Property> => {
   const images: IUploadFile[] = req.files as any;
 
   const imagesPath = images?.map((item: any) => item?.path);
@@ -281,11 +272,8 @@ const updatePropertyInfo = async (
 
     if (address) updatedPropertyData["address"] = address;
     if (description) updatedPropertyData["description"] = description;
-    if (maintenanceCoveredTenant)
-      updatedPropertyData["maintenanceCoveredTenant"] =
-        maintenanceCoveredTenant;
-    if (maintenanceCoveredOwner)
-      updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
+    if (maintenanceCoveredTenant) updatedPropertyData["maintenanceCoveredTenant"] = maintenanceCoveredTenant;
+    if (maintenanceCoveredOwner) updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
     if (schools) updatedPropertyData["schools"] = schools;
     if (universities) updatedPropertyData["universities"] = universities;
     if (allowedPets) updatedPropertyData["allowedPets"] = allowedPets;
@@ -307,10 +295,41 @@ const updatePropertyInfo = async (
   });
   return result;
 };
+
+// ! assign tenant user to property or unit
+const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
+  const { propertyId, tenantId } = payload;
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // check if owner or not
+    const isOwner = await transactionClient.property.findUnique({
+      where: {
+        propertyId,
+        ownerId: profileId,
+      },
+    });
+
+    if (!isOwner) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, "You are not owner of this property or this property does not exist");
+    }
+
+    //
+
+    const res = await transactionClient.property.update({
+      where: {
+        propertyId,
+      },
+      data: {},
+    });
+
+    //
+  });
+};
 export const PropertiesService = {
   createNewProperty,
   getAllProperty,
   getSinglePropertyInfo,
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
+  assignTenantToProperty,
 };

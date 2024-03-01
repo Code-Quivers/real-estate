@@ -5,7 +5,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Modal, Popover, Progress, Whisper, toaster } from "rsuite";
+import { Button, Modal, Popover, Progress, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import AvailableUnitListPopover from "./AvailableUnitListPopover";
@@ -13,7 +13,7 @@ import AvailableUnitListPopover from "./AvailableUnitListPopover";
 const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
 
-  const [saveItem, { isSuccess, isError, error }] = useSaveItemMutation();
+  const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
 
   const saveTenantData = async () => {
     const tenantData = {
@@ -25,12 +25,12 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !isError && !isLoading) {
       toaster.push(savedItemTenant(), {
         placement: "bottomStart",
       });
     }
-    if (isError && !isSuccess && error) {
+    if (isError && !isSuccess && error && !isLoading) {
       toaster.push(savedItemTenantFailed(error?.message), {
         placement: "bottomStart",
       });
@@ -60,7 +60,7 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
                     height={120}
                     className="w-[120px] ring-2 ring-[#545454] border-black shadow-2xl  h-[120px] object-cover   rounded-full  "
                     src={modalData?.profileImage ? `${fileUrlKey()}/${modalData?.profileImage}` : profileLogo}
-                    alt="photo"
+                    alt="Tenant Photo"
                   />
                 </div>
                 <div className="space-y-3">
@@ -73,16 +73,20 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
               </div>
               <div className="col-span-1">
                 <div style={{ width: 120, marginTop: 10 }}>
-                  <Progress.Circle percent="40" strokeColor="green" />
+                  <Progress.Circle percent="80" strokeColor="green" />
                 </div>
               </div>
             </div>
 
             {/* action */}
             <div className="flex justify-center gap-5  mx-auto max-w-md mt-10">
-              <button onClick={() => saveTenantData()} className="bg-primary w-full text-white px-2 py-1 ">
+              <Button
+                loading={isLoading}
+                onClick={() => saveTenantData()}
+                className="!bg-primary w-full !text-white !px-2 !py-1 !text-base !rounded-none "
+              >
                 Save
-              </button>
+              </Button>
               <button className="bg-primary text-white px-2 py-2  w-full">Contact</button>
               <Whisper
                 placement="bottomStart"
@@ -90,11 +94,13 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
                 speaker={
                   <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
                     <div className="p-3 space-y-2">
-                      {unitRes?.data?.map((singleUnit) => (
-                        <div key={Math.random()}>
-                          <AvailableUnitListPopover singleUnit={singleUnit} tenantId={modalData?.tenantId} />
-                        </div>
-                      ))}
+                      {unitRes?.data?.length > 0
+                        ? unitRes?.data?.map((singleUnit) => (
+                            <div key={Math.random()}>
+                              <AvailableUnitListPopover singleUnit={singleUnit} tenantId={modalData?.tenantId} />
+                            </div>
+                          ))
+                        : "No Unit Found"}
                     </div>
                   </Popover>
                 }

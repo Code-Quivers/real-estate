@@ -18,7 +18,7 @@ const AvailableUnitListPopover = ({ singleUnit, tenantId }) => {
         <Image
           width={120}
           height={120}
-          className="w-[120px]  p-1 object-cover rounded-xl"
+          className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
           src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
           alt="photo"
         />
