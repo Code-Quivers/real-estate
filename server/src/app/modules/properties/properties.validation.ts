@@ -46,8 +46,22 @@ const updateProperty = z.object({
 
 const propertyCreate = z.array(createProperty);
 
+// ! assign tenant user
+
+const assignTenant = z.object({
+  body: z.object({
+    tenantId: z.string({
+      required_error: "Tenant Id is Required",
+    }),
+    propertyId: z.string({
+      required_error: "Property Id is Required",
+    }),
+  }),
+});
+
 export const PropertiesValidation = {
   createProperty,
   updateProperty,
   propertyCreate,
+  assignTenant,
 };

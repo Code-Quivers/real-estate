@@ -5,6 +5,7 @@ import { UserRoles } from "@prisma/client";
 import { FileUploadHelper } from "../../../helpers/FileUploadHelper";
 import { PropertiesValidation } from "./properties.validation";
 import { PropertyFileUploadHelper } from "../../../helpers/PropertyFileUploadHelper";
+import validateRequest from "../../middlewares/validateRequest";
 
 const router = express.Router();
 
@@ -61,4 +62,14 @@ router.patch(
     return PropertiesController.updatePropertyInfo(req, res, next);
   },
 );
+
+// ! assign tenant user to property or unit
+
+router.post(
+  "/assign-tenant-to-property",
+  auth(UserRoles.PROPERTY_OWNER),
+  validateRequest(PropertiesValidation.assignTenant),
+  PropertiesController.assignTenantToProperty,
+);
+
 export const PropertiesRoutes = router;
