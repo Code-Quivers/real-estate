@@ -131,6 +131,7 @@ model Property {
   updatedAt                DateTime      @updatedAt
   SavedItem                SavedItem[]
   Tenant                   Tenant?
+  isRented                 Boolean       @default(false)
 }
 
 model Service {

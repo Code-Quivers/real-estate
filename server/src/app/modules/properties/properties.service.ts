@@ -361,6 +361,17 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
       },
     });
 
+    if (res) {
+      await transactionClient.property.update({
+        where: {
+          propertyId,
+        },
+        data: {
+          isRented: true,
+        },
+      });
+    }
+
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Assign Failed");
     }
