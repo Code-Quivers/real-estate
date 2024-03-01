@@ -1,18 +1,10 @@
 "use client";
+import Link from "next/link";
 import { FaRegEye } from "react-icons/fa";
 import { FcDownload } from "react-icons/fc";
 import { Button, IconButton, SelectPicker } from "rsuite";
 
-const data = [
-  "Eugenia",
-  "Bryan",
-  "Linda",
-  "Nancy",
-  "Lloyd",
-  "Alice",
-  "Julia",
-  "Albert",
-].map((item) => ({ label: item, value: item }));
+const data = ["Eugenia", "Bryan", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
 const PropertyOwnerReportPage = () => {
   const reports = [
     {
@@ -51,38 +43,17 @@ const PropertyOwnerReportPage = () => {
       <div>
         <div className="flex gap-1">
           <div>
-            <SelectPicker
-              size="lg"
-              data={data}
-              searchable={false}
-              style={{ width: 224 }}
-              placeholder="Select without search"
-            />
+            <SelectPicker size="lg" data={data} searchable={false} style={{ width: 224 }} placeholder="Select without search" />
           </div>
           <div>
-            <SelectPicker
-              size="lg"
-              data={data}
-              searchable={false}
-              style={{ width: 224 }}
-              placeholder="Select without search"
-            />
+            <SelectPicker size="lg" data={data} searchable={false} style={{ width: 224 }} placeholder="Select without search" />
           </div>
           <div>
-            <SelectPicker
-              size="lg"
-              data={data}
-              searchable={false}
-              style={{ width: 224 }}
-              placeholder="Select without search"
-            />
+            <SelectPicker size="lg" data={data} searchable={false} style={{ width: 224 }} placeholder="Select without search" />
           </div>
         </div>
         <div className="mt-7">
-          <Button
-            className="!bg-[#29429f] !text-white !px-10 !py-3 !rounded-full"
-            size="lg"
-          >
+          <Button className="!bg-[#29429f] !text-white !px-10 !py-3 !rounded-full" size="lg">
             Add Report
           </Button>
         </div>
@@ -92,28 +63,18 @@ const PropertyOwnerReportPage = () => {
         {reports?.map((report, idx) => (
           <div
             key={Math.random()}
-            className={`flex justify-between hover:bg-black/5 p-5 ${
-              idx !== reports?.length - 1 && "border-b border-[#949494]"
-            }`}
+            className={`flex justify-between hover:bg-black/5 p-5 ${idx !== reports?.length - 1 && "border-b border-[#949494]"}`}
           >
             <div>
               <h2>{report?.title}</h2>
               <p>{report?.createdAt}</p>
             </div>
             <div className="flex gap-1">
+              <Link href="/property-owner/reports/statement">
+                <IconButton className="hover:!bg-black/10" circle icon={<FaRegEye className="text-[#1565c0]" size={20} />} />
+              </Link>
               <div>
-                <IconButton
-                  className="hover:!bg-black/10"
-                  circle
-                  icon={<FaRegEye className="text-[#1565c0] " size={20} />}
-                />
-              </div>
-              <div>
-                <IconButton
-                  className="hover:!bg-black/10"
-                  circle
-                  icon={<FcDownload size={20} />}
-                />
+                <IconButton className="hover:!bg-black/10" circle icon={<FcDownload size={20} />} />
               </div>
             </div>
           </div>
