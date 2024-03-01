@@ -2,13 +2,54 @@
 
 import { fileUrlKey } from "@/configs/envConfig";
 import Image from "next/image";
-
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import { useAssignTenantToPropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
+import { useEffect } from "react";
+import { Notification, useToaster } from "rsuite";
+// !
 const AvailableUnitListPopover = ({ singleUnit, tenantId }) => {
-  const handleAddTenantToProperty = (propertyId) => {
-    console.log(propertyId);
-    console.log(tenantId);
+  const [assignTenantToProperty, { data, isLoading, isSuccess, isError, error, reset }] = useAssignTenantToPropertyMutation();
+  const toaster = useToaster();
+
+  const handleAddTenantToProperty = async (propertyId) => {
+    const assignData = {
+      propertyId,
+      tenantId,
+    };
+
+    await assignTenantToProperty({
+      data: assignData,
+    });
   };
+
+  useEffect(() => {
+    if (!isLoading && !isError && isSuccess && !error) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{data?.message ?? "Successfully Assigned"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      reset();
+    }
+    if (!isLoading && isError && !isSuccess && error) {
+      toaster.push(
+        <Notification type="error" header="Failed" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{error?.message ?? "Failed to Assigned"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, toaster]);
+
   return (
     <button
       onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}

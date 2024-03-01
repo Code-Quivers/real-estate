@@ -26,13 +26,17 @@ export const propertyApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.properties],
+      providesTags: [tagTypes.properties, tagTypes.tenant],
+    }),
+    assignTenantToProperty: builder.mutation({
+      query: ({ data }) => ({
+        url: `/properties/assign-tenant-to-property`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
   }),
 });
 
-export const {
-  useAddPropertiesMutation,
-  useGetAllAvailableUnitsQuery,
-  useGetMyAllUnitsQuery,
-} = propertyApi;
+export const { useAddPropertiesMutation, useGetAllAvailableUnitsQuery, useGetMyAllUnitsQuery, useAssignTenantToPropertyMutation } = propertyApi;
