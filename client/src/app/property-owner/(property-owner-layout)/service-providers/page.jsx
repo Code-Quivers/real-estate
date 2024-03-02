@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Progress, SelectPicker } from "rsuite";
+import { Pagination, Progress, SelectPicker } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
@@ -12,7 +12,7 @@ import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider
 import AvailableServiceProviderModal from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderModal";
 import { fileUrlKey } from "@/configs/envConfig";
 // !
-const PropertyOwnerServiceProviders = () => {
+const AvailableServiceProviders = () => {
   const datas = [
     "Eugenia",
     "Bryan",
@@ -120,9 +120,10 @@ const PropertyOwnerServiceProviders = () => {
       </div>
 
       {/* all cards */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {allServiceProviderLists?.data?.data?.length
-          ? allServiceProviderLists?.data?.data?.map((singleReq) => (
+      <div>
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {allServiceProviderLists?.data?.data?.length > 0 &&
+            allServiceProviderLists?.data?.data?.map((singleReq) => (
               <div
                 key={Math.random()}
                 onClick={() => {
@@ -164,15 +165,32 @@ const PropertyOwnerServiceProviders = () => {
                   </div>
                 </div>
               </div>
-            ))
-          : "No data"}
-
+            ))}
+        </div>
         <>
           <AvailableServiceProviderModal isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
         </>
+      </div>
+      {/* pagination */}
+      <div className="mt-20 py-10 rounded-lg">
+        <Pagination
+          total={allServiceProviderLists?.data?.meta?.total}
+          prev
+          next
+          ellipsis
+          boundaryLinks
+          maxButtons={1}
+          size="md"
+          layout={["total", "-", "limit", "|", "pager", "skip"]}
+          limitOptions={[10, 20, 30, 50]}
+          limit={size}
+          onChangeLimit={(limitChange) => setSize(limitChange)}
+          activePage={page}
+          onChangePage={setPage}
+        />
       </div>
     </section>
   );
 };
 
-export default PropertyOwnerServiceProviders;
+export default AvailableServiceProviders;
