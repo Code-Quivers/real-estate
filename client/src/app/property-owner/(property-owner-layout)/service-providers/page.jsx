@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { SelectPicker } from "rsuite";
+import { Progress, SelectPicker } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { useDebounced } from "@/redux/hook";
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 import AvailableServiceProviderModal from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderModal";
+import { fileUrlKey } from "@/configs/envConfig";
 // !
 const PropertyOwnerServiceProviders = () => {
   const datas = [
@@ -39,8 +40,7 @@ const PropertyOwnerServiceProviders = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedServiceAvailability, setSelectedServiceAvailability] =
-    useState(undefined);
+  const [selectedServiceAvailability, setSelectedServiceAvailability] = useState(undefined);
   const [selectedServiceType, setSelectedServiceType] = useState(undefined);
 
   // filter
@@ -60,12 +60,7 @@ const PropertyOwnerServiceProviders = () => {
     query["searchTerm"] = debouncedTerm;
   }
 
-  const {
-    data: allServiceProviderLists,
-    isLoading,
-    isFetching,
-    isError,
-  } = useGetAllServiceProvidersQuery({ ...query });
+  const { data: allServiceProviderLists, isLoading, isFetching, isError } = useGetAllServiceProvidersQuery({ ...query });
 
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
@@ -79,18 +74,8 @@ const PropertyOwnerServiceProviders = () => {
       {/* search with price section start */}
       <div className="grid grid-cols-5 max-lg:gap-2 lg:flex w-full border  mt-5 lg:mt-10 gap-0.5   ">
         <div className="max-lg:col-span-3">
-          <InputGroup
-            size="lg"
-            inside
-            className="lg:!w-[400px]"
-            style={{ borderRadius: "0 !important" }}
-          >
-            <AutoComplete
-              onChange={(e) => setSearchTerm(e)}
-              placeholder="Service Provider"
-              size="lg"
-              data={datas}
-            />
+          <InputGroup size="lg" inside className="lg:!w-[400px]" style={{ borderRadius: "0 !important" }}>
+            <AutoComplete onChange={(e) => setSearchTerm(e)} placeholder="Service Provider" size="lg" data={datas} />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -111,12 +96,7 @@ const PropertyOwnerServiceProviders = () => {
           />
         </div>
         <div className="max-lg:col-span-3">
-          <InputGroup
-            size="lg"
-            inside
-            className="max-lg:!w-full lg:!w-[200px] rounded-none"
-            style={{ borderRadius: "0 !important" }}
-          >
+          <InputGroup size="lg" inside className="max-lg:!w-full lg:!w-[200px] rounded-none" style={{ borderRadius: "0 !important" }}>
             <AutoComplete size="lg" placeholder="Price" data={datas} />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
               <FaSearch size={20} />
@@ -149,37 +129,38 @@ const PropertyOwnerServiceProviders = () => {
                   setSelectedService(singleReq);
                   setServiceModalActive(true);
                 }}
-                className=" col-span-1  border flex shadow-lg rounded-lg justify-between items-center px-5 border-[#acacac]  gap-2"
+                className=" col-span-1  border flex shadow-lg rounded-lg justify-between items-center p-3 border-[#acacac]  gap-2"
               >
                 <div>
                   <Image
-                    className="w-[80px] h-[65px] object-cover   rounded-full  "
-                    src={profileLogo}
+                    width={100}
+                    height={200}
+                    className="w-[135px] object-cover rounded-lg h-[100px]"
+                    src={singleReq?.profileImage ? `${fileUrlKey()}/${singleReq?.profileImage}` : profileLogo}
                     alt="Profile Photo"
                   />
                 </div>
-                <div className="p-5 flex justify-between w-full ">
+                <div className=" flex justify-between w-full ">
                   <div className="space-y-0.5">
                     <h3 className="text-base font-medium">
                       {singleReq?.firstName} &nbsp;
                       {singleReq?.lastName}
                     </h3>
 
-                    <h3 className="text-base font-medium">
-                      Service Type :{" "}
-                      {singleReq?.Service?.serviceType ?? "Not Found"}
-                    </h3>
-                    <h3 className="text-base font-medium">
-                      Service Price : $
-                      {singleReq?.Service?.servicePriceRange ?? 1000}
-                    </h3>
+                    <h3 className="text-base font-medium">Service Type : {singleReq?.Service?.serviceType ?? "Not Found"}</h3>
+                    <h3 className="text-base font-medium">Service Price : ${singleReq?.Service?.servicePriceRange ?? 1000}</h3>
                   </div>
                 </div>
-                <div className=" outline outline-[6px] outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[75px] h-[50px]">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span>9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span>10</span>
+                {/* progress */}
+                <div>
+                  {" "}
+                  <div
+                    style={{
+                      width: 90,
+                      display: "inline-block",
+                    }}
+                  >
+                    <Progress.Circle percent={30} strokeColor="green" />
                   </div>
                 </div>
               </div>
@@ -187,11 +168,7 @@ const PropertyOwnerServiceProviders = () => {
           : "No data"}
 
         <>
-          <AvailableServiceProviderModal
-            isModalOpened={serviceModalActive}
-            setModalOpened={setServiceModalActive}
-            modalData={selectedService}
-          />
+          <AvailableServiceProviderModal isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
         </>
       </div>
     </section>
