@@ -16,21 +16,24 @@ const modules = {
 
 const formats = ["bold", "italic", "underline", "strike", "indent", "list", "bullet", "size", "align"];
 
-const MyComponent = ({ propertyId, value, handleInputChange, field }) => {
+const EditPropertyEditor = ({ defaultValue, field }) => {
   const ReactQuill = useMemo(() => dynamic(() => import("react-quill"), { ssr: false }), []);
+
+  // Convert HTML to Delta
+
   return (
     <div className="relative">
       <ReactQuill
+        {...field}
+        defaultValue={defaultValue}
         style={{ backgroundColor: "white", borderRadius: "0" }}
-        className="w-full h-32 !rounded-none focus:outline-none !border"
-        value={value}
-        onChange={(e) => handleInputChange(propertyId, field, e)}
+        className="w-full h-20 !rounded-none focus:outline-none !border"
         modules={modules}
         formats={formats}
-        theme="bubble" // Set the theme to "bubble"
+        theme="bubble"
       />
     </div>
   );
 };
 
-export default MyComponent;
+export default EditPropertyEditor;

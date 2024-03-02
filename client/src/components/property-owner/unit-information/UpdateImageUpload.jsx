@@ -49,7 +49,6 @@ const UpdateImageUpload = ({ control, setValue, images }) => {
       setDefaultFileList(updatedSelectedFiles);
     }
   };
-  console.log(defaultFileList);
   const handleChangeImages = (files) => {
     if (files.length > 0) {
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
@@ -88,14 +87,14 @@ const UpdateImageUpload = ({ control, setValue, images }) => {
           {...field}
           onRemove={handleRemove}
           defaultFileList={defaultFileList}
-          listType="picture-text"
+          listType="picture"
           autoUpload={false}
           onChange={handleChangeImages}
           accept="image/*"
           action=""
         >
           <div className="flex items-center justify-center">
-            <Button>Select files...</Button>
+            <Button>Select</Button>
           </div>
         </Uploader>
       )}
