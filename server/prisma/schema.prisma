@@ -41,26 +41,6 @@ model PropertyOwner {
   @@map("propertyOwners")
 }
 
-model ServiceProvider {
-  serviceProviderId   String      @id @default(uuid()) // Change uuid() to auto() for the primary key
-  firstName           String
-  lastName            String
-  profileImage        String?
-  phoneNumber         String?
-  companyName         String?
-  companyAddress      String?
-  companyPhoneNumber  String?
-  companyEmailAddress String?
-  userId              String      @unique
-  createdAt           DateTime    @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime    @updatedAt @db.Timestamptz(0)
-  user                User        @relation(fields: [userId], references: [userId])
-  Service             Service?
-  SavedItem           SavedItem[]
-
-  @@map("serviceProviders")
-}
-
 model Tenant {
   tenantId                             String      @id @default(uuid()) // Change uuid() to auto() for the primary key
   userId                               String      @unique
@@ -110,6 +90,26 @@ model Tenant {
   property                             Property?   @relation(fields: [propertyId], references: [propertyId])
 
   @@map("tenants")
+}
+
+model ServiceProvider {
+  serviceProviderId   String      @id @default(uuid()) // Change uuid() to auto() for the primary key
+  firstName           String
+  lastName            String
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  userId              String      @unique
+  createdAt           DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime    @updatedAt @db.Timestamptz(0)
+  user                User        @relation(fields: [userId], references: [userId])
+  Service             Service?
+  SavedItem           SavedItem[]
+
+  @@map("serviceProviders")
 }
 
 model Property {
