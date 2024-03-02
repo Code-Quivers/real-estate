@@ -93,7 +93,7 @@ model Tenant {
 }
 
 model ServiceProvider {
-  serviceProviderId   String      @id @default(uuid()) // Change uuid() to auto() for the primary key
+  serviceProviderId   String      @id @default(uuid())
   firstName           String
   lastName            String
   profileImage        String?
@@ -108,17 +108,18 @@ model ServiceProvider {
   user                User        @relation(fields: [userId], references: [userId])
   Service             Service?
   SavedItem           SavedItem[]
+  properties          Property[]  @relation("ServiceProvidersOnProperties")
 
   @@map("serviceProviders")
 }
 
 model Property {
-  propertyId               String        @id @default(uuid())
-  owner                    PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId])
+  propertyId               String            @id @default(uuid())
+  owner                    PropertyOwner     @relation(fields: [ownerId], references: [propertyOwnerId])
   ownerId                  String
-  numOfBed                 Int           @default(1)
-  numOfBath                Int           @default(1)
-  monthlyRent              Int           @default(1)
+  numOfBed                 Int               @default(1)
+  numOfBath                Int               @default(1)
+  monthlyRent              Int               @default(1)
   address                  String
   description              String
   maintenanceCoveredTenant String
@@ -127,11 +128,14 @@ model Property {
   universities             String
   allowedPets              String
   images                   String[]
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
   SavedItem                SavedItem[]
   Tenant                   Tenant?
-  isRented                 Boolean       @default(false)
+  isRented                 Boolean           @default(false)
+  serviceProviders         ServiceProvider[] @relation("ServiceProvidersOnProperties")
+
+  @@map("properties")
 }
 
 model Service {
