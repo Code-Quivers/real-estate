@@ -116,7 +116,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
               </div>
               <div className="col-span-1">
                 <h4 className="text-lg font-medium">Cancellation Policy</h4>
-                <p className="text-sm text-justify ">{modalData?.cancellationPolicy}</p>
+                <p className="text-sm text-justify ">{modalData?.Service?.serviceCancellationPolicy}</p>
               </div>
             </div>
             {/* action */}
