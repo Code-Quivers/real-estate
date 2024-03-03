@@ -39,3 +39,7 @@ export type IAssignTenantToProperty = {
   tenantId: string;
   propertyId: string;
 };
+export type IAssignServiceProviderToProperty = {
+  serviceProviderId: string;
+  propertyId: string;
+};

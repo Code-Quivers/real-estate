@@ -3,12 +3,12 @@
 import { fileUrlKey } from "@/configs/envConfig";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { useAssignTenantToPropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
+import { useAssignServiceProviderToPropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
 import { useEffect } from "react";
 import { Notification, useToaster } from "rsuite";
 // !
 const AvailableServiceProviderPopover = ({ singleUnit, serviceProviderId }) => {
-  const [assignTenantToProperty, { data, isLoading, isSuccess, isError, error, reset }] = useAssignTenantToPropertyMutation();
+  const [assignServiceProviderToProperty, { data, isLoading, isSuccess, isError, error, reset }] = useAssignServiceProviderToPropertyMutation();
   const toaster = useToaster();
 
   const handleAddTenantToProperty = async (propertyId) => {
@@ -17,13 +17,23 @@ const AvailableServiceProviderPopover = ({ singleUnit, serviceProviderId }) => {
       serviceProviderId,
     };
 
-    await assignTenantToProperty({
+    await assignServiceProviderToProperty({
       data: assignData,
     });
   };
   // ! ------
+  // console.log("isSuccess", isSuccess);
+  // console.log("data", data);
+  // console.log("error", error);
   useEffect(() => {
-    if (!isLoading && !isError && isSuccess && !error) {
+    console.log("isLoading", isLoading);
+    console.log("isError", isError);
+    console.log("isSuccess", isSuccess);
+    console.log("data", data);
+    console.log("error", error);
+    if (!isLoading && !isError && isSuccess && data) {
+      console.log("Hello", data);
+
       toaster.push(
         <Notification type="success" header="success" closable>
           <div>
@@ -34,7 +44,6 @@ const AvailableServiceProviderPopover = ({ singleUnit, serviceProviderId }) => {
           placement: "bottomStart",
         },
       );
-      reset();
     }
     if (!isLoading && isError && !isSuccess && error) {
       toaster.push(
@@ -47,8 +56,9 @@ const AvailableServiceProviderPopover = ({ singleUnit, serviceProviderId }) => {
           placement: "bottomStart",
         },
       );
+      reset();
     }
-  }, [isLoading, isError, isSuccess, error, toaster]);
+  }, [isLoading, isError, isSuccess, error, toaster, data]);
 
   return (
     <button

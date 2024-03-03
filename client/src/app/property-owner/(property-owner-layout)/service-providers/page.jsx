@@ -167,6 +167,13 @@ const AvailableServiceProviders = () => {
               </div>
             ))}
         </div>
+
+        {/* if no data */}
+        {!isLoading && !allServiceProviderLists?.data?.data?.length > 0 && (
+          <div className="flex justify-center items-center min-h-[50vh] ">
+            <h2 className="text-3xl font-semibold text-rose-500">No Service Providers Found !</h2>
+          </div>
+        )}
         <>
           <AvailableServiceProviderModal isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
         </>

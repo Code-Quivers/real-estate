@@ -36,7 +36,21 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
+    assignServiceProviderToProperty: builder.mutation({
+      query: ({ data }) => ({
+        url: `/properties/assign-service-provider-to-property`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.serviceProvider],
+    }),
   }),
 });
 
-export const { useAddPropertiesMutation, useGetAllAvailableUnitsQuery, useGetMyAllUnitsQuery, useAssignTenantToPropertyMutation } = propertyApi;
+export const {
+  useAddPropertiesMutation,
+  useGetAllAvailableUnitsQuery,
+  useGetMyAllUnitsQuery,
+  useAssignTenantToPropertyMutation,
+  useAssignServiceProviderToPropertyMutation,
+} = propertyApi;
