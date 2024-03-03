@@ -82,14 +82,27 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
 
-  console.log("shafin----------------", req.body);
-
   const result = await PropertiesService.assignTenantToProperty(profileId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Property created Successfully",
+    message: "Tenant Assigned Successfully",
+    data: result,
+  });
+});
+
+// ! assign Service Provider to property or unit
+
+const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await PropertiesService.assignServiceProviderToProperty(profileId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Service Provider Assigned Successfully",
     data: result,
   });
 });
@@ -101,4 +114,5 @@ export const PropertiesController = {
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
+  assignServiceProviderToProperty,
 };

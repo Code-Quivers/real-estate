@@ -127,19 +127,70 @@ const PropertyOwnerUnitInformation = () => {
                 <div className="border      rounded-xl min-h-[200px] p-5 lg:col-span-5 ">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="text-lg font-semibold">Service Provider Information</h3>
+                      <h3 className="text-lg font-semibold">Service Provider Information | Total {singleProperty?.serviceProviders?.length}</h3>
                     </div>
+                    {/* action */}
                     <div className="flex gap-2 items-center">
-                      <Link href="/" className=" border border-transparent bg-primary text-white flex items-center gap-2 px-2 py-1">
+                      <Link
+                        href="/property-owner/service-providers"
+                        className=" border border-transparent bg-primary text-white rounded-full flex items-center gap-1 px-3 py-1"
+                      >
                         <FaPlus /> Add Service Provider
                       </Link>
-                      <Link
-                        href="/"
-                        className="  border border-primary hover:border-primary/80 hover:text-white hover:bg-primary/80 text-primary px-2 py-1"
+                      <button
+                        type="button"
+                        className=" rounded-full border border-primary hover:border-primary/80 hover:text-white hover:bg-primary/80 text-primary px-2 py-1"
                       >
                         Update
-                      </Link>
+                      </button>
                     </div>
+                  </div>
+                  {/* all service Providers */}
+                  <div className="">
+                    {singleProperty?.serviceProviders?.length > 0 &&
+                      singleProperty?.serviceProviders?.map((serviceProvider) => (
+                        <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
+                          <div className=" ">
+                            <Image
+                              width={150}
+                              height={150}
+                              src={serviceProvider?.profileImage ? `${fileUrlKey()}/${serviceProvider?.profileImage}` : apartmentPhoto}
+                              className=" rounded-xl  object-cover "
+                              alt=""
+                            />
+                          </div>
+                          <div className="  w-full lg:grid max-lg:space-y-3 lg:grid-cols-2 justify-between gap-2 lg:divide-x-2  ">
+                            {/* information */}
+                            <div className="  w-full">
+                              <h4>
+                                Name : {serviceProvider?.firstName} {serviceProvider?.lastName}
+                              </h4>
+                              <h4>Email : {serviceProvider?.user?.email}</h4>
+                              <h4>Company Name : {serviceProvider?.companyName}</h4>
+                              <h4>Company Email : {serviceProvider?.companyEmailAddress}</h4>
+                              <h4>Company Address : {serviceProvider?.companyAddress}</h4>
+                            </div>
+                            {/* Service details */}
+                            <div className="lg:pl-2 w-full">
+                              <h4 className="flex justify-between">
+                                <span>Service Type</span>-<span>{serviceProvider?.Service?.serviceType}</span>
+                              </h4>
+                              <h4 className="flex justify-between">
+                                <span>Service Availability</span>-<span>{serviceProvider?.Service?.serviceAvailability}</span>
+                              </h4>
+                              <h4 className="flex justify-between">
+                                <span>Service Location</span>-<span>{serviceProvider?.Service?.serviceLocation}</span>
+                              </h4>
+                              <h4 className="flex justify-between">
+                                <span>Service Range</span>-
+                                <span>
+                                  ${serviceProvider?.Service?.minPrice} - ${serviceProvider?.Service?.maxPrice}
+                                </span>
+                              </h4>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>

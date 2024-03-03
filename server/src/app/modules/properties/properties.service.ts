@@ -8,6 +8,7 @@ import prisma from "../../../shared/prisma";
 import { Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
 import {
+  IAssignServiceProviderToProperty,
   IAssignTenantToProperty,
   IPropertiesFilterRequest,
   IPropertyData,
@@ -190,6 +191,16 @@ const getPropertyOwnerAllProperty = async (
       include: {
         owner: true,
         Tenant: true,
+        serviceProviders: {
+          include: {
+            Service: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
       },
       where: {
         ...whereConditions,
@@ -382,6 +393,69 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
   return result;
 };
 
+// ! assign service providers to property -----------
+const assignServiceProviderToProperty = async (
+  profileId: string,
+  payload: IAssignServiceProviderToProperty,
+): Promise<Property> => {
+  const { propertyId, serviceProviderId } = payload;
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // check if owner or not
+    const isOwner = await transactionClient.property.findUnique({
+      where: {
+        propertyId,
+        ownerId: profileId,
+      },
+    });
+
+    if (!isOwner) {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        "You are not the owner of this property or this property does not exist",
+      );
+    }
+
+    //
+    const isAlreadyAssigned = await prisma.property.findUnique({
+      where: {
+        propertyId,
+        serviceProviders: {
+          some: {
+            serviceProviderId,
+          },
+        },
+      },
+    });
+
+    if (isAlreadyAssigned) {
+      throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
+    }
+
+    // update logic
+    const res = await transactionClient.property.update({
+      where: {
+        propertyId,
+      },
+      data: {
+        serviceProviders: {
+          connect: {
+            serviceProviderId,
+          },
+        },
+      },
+    });
+
+    if (!res) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Assign Failed");
+    }
+
+    return res;
+  });
+
+  return result;
+};
+
 export const PropertiesService = {
   createNewProperty,
   getAllProperty,
@@ -389,4 +463,5 @@ export const PropertiesService = {
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
+  assignServiceProviderToProperty,
 };

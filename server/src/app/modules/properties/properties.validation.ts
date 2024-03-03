@@ -58,10 +58,22 @@ const assignTenant = z.object({
     }),
   }),
 });
+// ! assign serviceProvider
+const assignServiceProvider = z.object({
+  body: z.object({
+    serviceProviderId: z.string({
+      required_error: "serviceProviderId is Required",
+    }),
+    propertyId: z.string({
+      required_error: "Property Id is Required",
+    }),
+  }),
+});
 
 export const PropertiesValidation = {
   createProperty,
   updateProperty,
   propertyCreate,
   assignTenant,
+  assignServiceProvider,
 };
