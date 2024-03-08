@@ -12,6 +12,7 @@ import AvailableUnitListPopover from "./AvailableUnitListPopover";
 
 const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
+  const { data: unitRes, isLoading: isLoadingUnits, isFetching } = useGetMyAllUnitsQuery();
 
   const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
 
@@ -36,8 +37,6 @@ const AvailableTenantsModal = ({ isModalOpened, setModalOpened, modalData }) => 
       });
     }
   }, [isSuccess, isSuccess, error]);
-
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
 
   return (
     <>

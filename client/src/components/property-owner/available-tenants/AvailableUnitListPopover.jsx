@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Notification, useToaster } from "rsuite";
 // !
 const AvailableUnitListPopover = ({ singleUnit, tenantId }) => {
-  const [assignTenantToProperty, { data, isLoading, isSuccess, isError, error, reset }] = useAssignTenantToPropertyMutation();
+  const [assignTenantToProperty, { data, isLoading, isSuccess, isError, error }] = useAssignTenantToPropertyMutation();
   const toaster = useToaster();
 
   const handleAddTenantToProperty = async (propertyId) => {
@@ -22,7 +22,10 @@ const AvailableUnitListPopover = ({ singleUnit, tenantId }) => {
     });
   };
 
+  console.log("isSuccess---------", isSuccess);
+
   useEffect(() => {
+    console.log("Shafin", data);
     if (!isLoading && !isError && isSuccess && !error) {
       toaster.push(
         <Notification type="success" header="success" closable>
@@ -34,7 +37,6 @@ const AvailableUnitListPopover = ({ singleUnit, tenantId }) => {
           placement: "bottomStart",
         },
       );
-      reset();
     }
     if (!isLoading && isError && !isSuccess && error) {
       toaster.push(

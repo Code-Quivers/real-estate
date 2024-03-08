@@ -309,7 +309,8 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   return result;
 };
 
-// ! assign tenant user to property or unit
+// ! assign tenant user to property or unit -----------------
+
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;
 
@@ -333,13 +334,16 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
     const isAlreadyAssigned = await transactionClient.tenant.findUnique({
       where: {
         tenantId,
-        propertyId,
+        property: {
+          isNot: null,
+        },
       },
     });
 
     if (isAlreadyAssigned) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant is already assigned to this property");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant is already assigned to other property");
     }
+    // check is property already booked or not
 
     const isPropertyBooked = await prisma.property.findUnique({
       where: {
