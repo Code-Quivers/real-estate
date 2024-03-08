@@ -77,7 +77,7 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// ! assign tenant user to property or unit
+// ! assign tenant user to property or unit -----------------
 
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;

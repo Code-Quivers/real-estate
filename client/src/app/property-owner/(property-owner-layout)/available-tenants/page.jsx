@@ -142,8 +142,8 @@ const PropertyOwnerServiceProviders = () => {
           prev
           next
           ellipsis
-          boundaryLinks
-          maxButtons={1}
+          // boundaryLinks
+          // maxButtons={1}
           size="md"
           layout={["total", "-", "limit", "|", "pager", "skip"]}
           limitOptions={[10, 20, 30, 50]}

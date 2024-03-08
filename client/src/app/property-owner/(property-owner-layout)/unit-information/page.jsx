@@ -78,7 +78,7 @@ const PropertyOwnerUnitInformation = () => {
                         {/* if rented add button will hidden */}
                       </div>
                       {/* tenant details */}
-                      {singleProperty?.isRented ? (
+                      {singleProperty?.isRented && singleProperty?.Tenant ? (
                         <>
                           <div className="flex  gap-3   mt-2 ">
                             <div>
