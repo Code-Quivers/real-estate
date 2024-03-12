@@ -53,7 +53,8 @@ const updateTenantProfile = z.object({
     .optional(),
   CurrentEmployerOrBusinessContactInfo: z
     .string({
-      invalid_type_error: "CurrentEmployerOrBusinessContactInfo must be in String",
+      invalid_type_error:
+        "CurrentEmployerOrBusinessContactInfo must be in String",
     })
     .optional(),
   JobTitle: z
@@ -98,7 +99,8 @@ const updateTenantProfile = z.object({
     .optional(),
   isWillingToSignLeasingAgreement: z
     .boolean({
-      invalid_type_error: "isWillingToSignLeasingAgreement must be True or False",
+      invalid_type_error:
+        "isWillingToSignLeasingAgreement must be True or False",
     })
     .optional(),
   isAnyExtraToMention: z

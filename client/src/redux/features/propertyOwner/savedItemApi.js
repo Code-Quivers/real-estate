@@ -3,7 +3,7 @@ import { tagTypes } from "@/redux/tag-types/tag-types";
 
 const SAVE_ITEM = "/saved-item";
 
-export const servicesApi = baseApi.injectEndpoints({
+export const savedItemApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // get all services
     getAllSavedItems: builder.query({
@@ -14,7 +14,8 @@ export const servicesApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.services, tagTypes.items],
     }),
-    saveAllTenant: builder.mutation({
+
+    saveItem: builder.mutation({
       query: (data) => ({
         url: `${SAVE_ITEM}/create`,
         method: "POST",
@@ -28,8 +29,18 @@ export const servicesApi = baseApi.injectEndpoints({
         tagTypes.items,
       ],
     }),
+    removeFromSavedItem: builder.mutation({
+      query: ({ itemId }) => ({
+        url: `${SAVE_ITEM}/remove?itemId=${itemId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.services, tagTypes.items, tagTypes.tenant],
+    }),
   }),
 });
 
-export const { useGetAllSavedItemsQuery, useSaveAllTenantMutation } =
-  servicesApi;
+export const {
+  useGetAllSavedItemsQuery,
+  useSaveItemMutation,
+  useRemoveFromSavedItemMutation,
+} = savedItemApi;

@@ -59,3 +59,22 @@ export const serviceAvailability = [
     value: "ALL_PRIORITIES",
   },
 ].map((item) => ({ label: item.label, value: item.value }));
+
+export const priorityType = [
+  {
+    label: "Low Priority",
+    value: "LOW_PRIORITY",
+  },
+  {
+    label: "Medium Priority",
+    value: "MEDIUM_PRIORITY",
+  },
+  {
+    label: "High Priority",
+    value: "HIGH_PRIORITY",
+  },
+  {
+    label: "All Priorities",
+    value: "ALL_PRIORITIES",
+  },
+].map((item) => ({ label: item.label, value: item.value }));

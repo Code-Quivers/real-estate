@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import httpStatus from 'http-status';
-import ApiError from '../../../errors/ApiError';
+import httpStatus from "http-status";
+import ApiError from "../../../errors/ApiError";
 
 export const userFindUnique = async (
   userName: string,
   email: string,
-  transactionClient: any
+  transactionClient: any,
 ) => {
   // transaction start
 
@@ -14,7 +14,7 @@ export const userFindUnique = async (
   });
 
   if (userNameTaken) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Username is already in use');
+    throw new ApiError(httpStatus.BAD_REQUEST, "Username is already in use");
   }
 
   const isUserExist = await transactionClient.user.findFirst({
@@ -22,6 +22,6 @@ export const userFindUnique = async (
   });
 
   if (isUserExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email is already in use');
+    throw new ApiError(httpStatus.BAD_REQUEST, "Email is already in use");
   }
 };

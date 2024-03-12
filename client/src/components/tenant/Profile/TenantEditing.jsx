@@ -126,6 +126,16 @@ const TenantEditing = ({
 
         <div className="my-10">
           <div className=" flex justify-end gap-5 items-center">
+            {tabActive === 2 && (
+              <Button
+                type="button"
+                onClick={() => setTabActive(1)}
+                size="lg"
+                className="!bg-[#29429f]  hover:!bg-gray-800 !px-12 !rounded-2xl !py-4 !text-white"
+              >
+                CANCEL
+              </Button>
+            )}
             {tabActive >= 3 && tabActive <= 6 && (
               <Button
                 type="button"

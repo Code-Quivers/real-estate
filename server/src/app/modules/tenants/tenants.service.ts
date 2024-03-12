@@ -121,7 +121,8 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   // const profileImagePath = profileImage?.path;
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } = req.body as ITenantUpdateRequest;
+  const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } =
+    req.body as ITenantUpdateRequest;
 
   const tenantReqData = {
     AnnualSalary: Number(AnnualSalary),
@@ -131,8 +132,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     profileImage: profileImagePath,
     ...updates,
   };
-
-  console.log(tenantReqData);
 
   //! deleting old  Image
   if (profileImagePath) deleteOldImage(oldProfileImagePath, profileImagePath);

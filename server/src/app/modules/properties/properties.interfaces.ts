@@ -1,6 +1,7 @@
-import { IUploadFile } from '../../../interfaces/file';
+import { IUploadFile } from "../../../interfaces/file";
 
 export type IPropertyData = {
+  ownerId: string;
   numOfBed: number;
   numOfBath: number;
   address: string;
@@ -11,7 +12,8 @@ export type IPropertyData = {
   universities: string;
   allowedPets: string;
   profileId: string;
-  images: IUploadFile[];
+  images: string[];
+  monthlyRend: number;
 };
 export type IPropertyReqPayload = {
   numOfBed: number;
@@ -31,4 +33,13 @@ export type IPropertiesFilterRequest = {
   // numOfBed?: number | undefined;
   // numOfBath?: number | undefined;
   createdAt?: string | undefined;
+};
+
+export type IAssignTenantToProperty = {
+  tenantId: string;
+  propertyId: string;
+};
+export type IAssignServiceProviderToProperty = {
+  serviceProviderId: string;
+  propertyId: string;
 };

@@ -1,76 +1,106 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  propertyList: [
-    {
-      id: Date.now(),
-      numOfBed: 0,
-      numOfBath: 0,
-      address: "",
-      description: "",
-      maintenanceCoveredTenant: "",
-      maintenanceCoveredOwner: "",
-      schools: "",
-      universities: "",
-      allowedPets: "",
-      images: [],
-    },
-  ],
+const initialProperty = {
+  id: Date.now(),
+  numOfBed: 0,
+  numOfBath: 0,
+  monthlyRent: 1,
+  address: "",
+  description: "",
+  maintenanceCoveredTenant: "",
+  maintenanceCoveredOwner: "",
+  schools: "",
+  universities: "",
+  allowedPets: "",
+  files: [],
 };
+
+const initialState = {
+  propertyList: [initialProperty],
+};
+
 const propertyListSlice = createSlice({
   name: "propertyList",
   initialState,
   reducers: {
     addNewProperty: (state) => {
-      return {
-        ...state,
-        propertyList: [
-          ...state.propertyList,
-          {
-            id: Date.now(),
-            numOfBed: 0,
-            numOfBath: 0,
-            address: "",
-            description: "",
-            maintenanceCoveredTenant: "",
-            maintenanceCoveredOwner: "",
-            schools: "",
-            universities: "",
-            allowedPets: "",
-            images: [],
-          },
-        ],
+      const newProperty = {
+        id: Date.now(),
+        numOfBed: 0,
+        numOfBath: 0,
+        monthlyRent: 1,
+        address: "",
+        description: "",
+        maintenanceCoveredTenant: "",
+        maintenanceCoveredOwner: "",
+        schools: "",
+        universities: "",
+        allowedPets: "",
+        files: [],
       };
+
+      state.propertyList.push(newProperty);
     },
+
     removeProperty: (state, action) => {
       const propertyIdToRemove = action.payload;
-      return {
-        ...state,
-        propertyList: state.propertyList.filter(
-          (property) => property.id !== propertyIdToRemove,
-        ),
-      };
+
+      state.propertyList = state.propertyList.filter(
+        (property) => property.id !== propertyIdToRemove,
+      );
     },
     updateProperty: (state, action) => {
       const { propertyId, field, value } = action.payload;
 
-      // Find the index of the property with the given propertyId
       const propertyIndex = state.propertyList.findIndex(
         (property) => property.id === propertyId,
       );
 
-      // If the property is found, update the specified field with the new value
       if (propertyIndex !== -1) {
-        state.propertyList[propertyIndex] = {
-          ...state.propertyList[propertyIndex],
-          [field]: value,
-        };
+        if (field === "files") {
+          // If the field is "files", update the files array directly
+          const existingFiles = state.propertyList[propertyIndex][field];
+
+          // Modify the file names by adding propertyId
+          const modifiedFiles = value?.map((file) => {
+            const modifiedFile = new File(
+              [file],
+              `${propertyId}_${file.name}`,
+              {
+                type: file.type,
+                lastModified: file.lastModified,
+              },
+            );
+
+            return modifiedFile;
+          });
+
+          state.propertyList[propertyIndex][field] = [
+            ...existingFiles,
+            ...modifiedFiles,
+          ];
+        } else {
+          // Otherwise, update the specified field with the new value
+          state.propertyList[propertyIndex] = {
+            ...state.propertyList[propertyIndex],
+            [field]: value,
+          };
+        }
       }
+    },
+    // ! Reset all state
+    resetPropertyList: (state, action) => {
+      // Reset propertyList to contain only the initialProperty
+      state.propertyList = [initialProperty];
     },
   },
 });
 
-export const { addNewProperty, updateProperty, removeProperty } =
-  propertyListSlice.actions;
+export const {
+  addNewProperty,
+  updateProperty,
+  removeProperty,
+  resetPropertyList,
+} = propertyListSlice.actions;
 
 export default propertyListSlice.reducer;

@@ -3,7 +3,14 @@
 import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, useToaster } from "rsuite";
+import {
+  Button,
+  Form,
+  Input,
+  InputGroup,
+  Notification,
+  useToaster,
+} from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -14,6 +21,7 @@ import { Controller, useForm } from "react-hook-form";
 import { usePropertyOwnerSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
+import { storeUserInfo } from "@/hooks/services/auth.service";
 
 const style = {
   width: "100%",
@@ -46,13 +54,43 @@ const PropertyOwnerSignUpPage = () => {
       email: user?.email,
       password: user?.password,
     };
-    await propertyOwnerSignUp({ data: propertyOwnerData }).unwrap();
+    // await propertyOwnerSignUp({ data: propertyOwnerData }).unwrap();
+
+    const res = await propertyOwnerSignUp({ data: propertyOwnerData }).unwrap();
+    console.log(res);
+    if (res?.data?.accessToken) {
+      storeUserInfo({ accessToken: res?.data?.accessToken });
+    }
   };
 
   useEffect(() => {
-    if ((isSuccess && !isLoading && !isError, !error && data)) {
-      toaster.push(SignUpSuccessMessage(), { placement: "bottomStart" });
-      router.push("/property-owner/login");
+    if (isSuccess && !isLoading && !isError && !error && data) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">
+              Congratulations! Successfully signed up as a Property Owner.
+            </p>
+            <hr className="border-t border-gray-300 my-4" />
+            <p>Your account is now ready to use.</p>
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
+      router.push("/property-owner");
+    }
+    if (!isSuccess && !isLoading && isError && error) {
+      toaster.push(
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">
+              {error?.message || "Something went wrong!"}
+            </p>
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
+      // router.push("/property-owner/login");
     }
   }, [isSuccess, isLoading, isError, error, data]);
 

@@ -28,6 +28,20 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "propertyOwners" (
+    "propertyOwnerId" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "phoneNumber" TEXT,
+    "profileImage" TEXT,
+    "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(0) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "propertyOwners_pkey" PRIMARY KEY ("propertyOwnerId")
+);
+
+-- CreateTable
 CREATE TABLE "tenants" (
     "tenantId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -64,22 +78,9 @@ CREATE TABLE "tenants" (
     "isAnyExtraToMention" TEXT,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
+    "propertyId" TEXT,
 
     CONSTRAINT "tenants_pkey" PRIMARY KEY ("tenantId")
-);
-
--- CreateTable
-CREATE TABLE "propertyOwners" (
-    "propertyOwnerId" TEXT NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT,
-    "profileImage" TEXT,
-    "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(0) NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "propertyOwners_pkey" PRIMARY KEY ("propertyOwnerId")
 );
 
 -- CreateTable
@@ -101,11 +102,12 @@ CREATE TABLE "serviceProviders" (
 );
 
 -- CreateTable
-CREATE TABLE "Property" (
+CREATE TABLE "properties" (
     "propertyId" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
     "numOfBed" INTEGER NOT NULL DEFAULT 1,
     "numOfBath" INTEGER NOT NULL DEFAULT 1,
+    "monthlyRent" INTEGER NOT NULL DEFAULT 1,
     "address" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "maintenanceCoveredTenant" TEXT NOT NULL,
@@ -116,8 +118,9 @@ CREATE TABLE "Property" (
     "images" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isRented" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "Property_pkey" PRIMARY KEY ("propertyId")
+    CONSTRAINT "properties_pkey" PRIMARY KEY ("propertyId")
 );
 
 -- CreateTable
@@ -151,6 +154,12 @@ CREATE TABLE "SavedItem" (
     CONSTRAINT "SavedItem_pkey" PRIMARY KEY ("itemId")
 );
 
+-- CreateTable
+CREATE TABLE "_ServiceProvidersOnProperties" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -158,10 +167,13 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "users_userName_key" ON "users"("userName");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "propertyOwners_userId_key" ON "propertyOwners"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "tenants_userId_key" ON "tenants"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "propertyOwners_userId_key" ON "propertyOwners"("userId");
+CREATE UNIQUE INDEX "tenants_propertyId_key" ON "tenants"("propertyId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "serviceProviders_userId_key" ON "serviceProviders"("userId");
@@ -170,25 +182,25 @@ CREATE UNIQUE INDEX "serviceProviders_userId_key" ON "serviceProviders"("userId"
 CREATE UNIQUE INDEX "Services_ownerId_key" ON "Services"("ownerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_serviceProviderId_key" ON "SavedItem"("serviceProviderId");
+CREATE UNIQUE INDEX "_ServiceProvidersOnProperties_AB_unique" ON "_ServiceProvidersOnProperties"("A", "B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_tenantId_key" ON "SavedItem"("tenantId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SavedItem_propertyId_key" ON "SavedItem"("propertyId");
-
--- AddForeignKey
-ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+CREATE INDEX "_ServiceProvidersOnProperties_B_index" ON "_ServiceProvidersOnProperties"("B");
 
 -- AddForeignKey
 ALTER TABLE "propertyOwners" ADD CONSTRAINT "propertyOwners_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tenants" ADD CONSTRAINT "tenants_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "properties"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "serviceProviders" ADD CONSTRAINT "serviceProviders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "propertyOwners"("propertyOwnerId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "properties" ADD CONSTRAINT "properties_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "propertyOwners"("propertyOwnerId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -200,7 +212,13 @@ ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_serviceProviderId_fkey" FOREIG
 ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("tenantId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "properties"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ServiceProvidersOnProperties" ADD CONSTRAINT "_ServiceProvidersOnProperties_A_fkey" FOREIGN KEY ("A") REFERENCES "properties"("propertyId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ServiceProvidersOnProperties" ADD CONSTRAINT "_ServiceProvidersOnProperties_B_fkey" FOREIGN KEY ("B") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -3,6 +3,7 @@ export type IPropertyOwnerUpdateRequest = {
   lastName?: string;
   phoneNumber?: string;
   oldProfileImagePath?: string;
+  password?: string;
 };
 
 export type IPropertyOwnerFilterRequest = {

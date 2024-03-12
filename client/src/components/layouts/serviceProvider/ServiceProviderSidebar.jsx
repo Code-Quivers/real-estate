@@ -8,11 +8,17 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
-import { getAuthKey } from "@/configs/envConfig";
+import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
+import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 
 const ServiceProviderSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
+
+  const { data, isLoading, isError, error } =
+    useGetServiceProviderMyProfileQuery(null);
+  const { data: myProfileData } = data || {};
+
   const logOut = () => {
     removeUserInfo(getAuthKey());
     router.push("/");
@@ -27,11 +33,19 @@ const ServiceProviderSidebar = () => {
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
-              src={profileLogo}
-              alt="Profile Picture"
-              className=" object-center select-none h-[150px] w-[150px]"
+              width={200}
+              height={200}
+              src={
+                myProfileData?.profileImage
+                  ? ` ${fileUrlKey()}/${myProfileData?.profileImage}`
+                  : profileLogo
+              }
+              className="max-md:w-[70px] max-md:h-[70px] rounded-full md:w-[130px] md:h-[130px] object-cover  select-none"
+              alt="Profile Image"
             />
-            <h2 className="text-white ">Company Name</h2>
+            <h2 className="mt-5 text-white ">
+              {myProfileData?.companyName ?? "--"}
+            </h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>

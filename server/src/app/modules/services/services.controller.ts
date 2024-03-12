@@ -36,17 +36,26 @@ const getSingleService = catchAsync(async (req: Request, res: Response) => {
   });
 });
 // ! create or update
-const createOrUpdateService = catchAsync(async (req: Request, res: Response) => {
-  const profileId = (req.user as IRequestUser).profileId;
+const createOrUpdateService = catchAsync(
+  async (req: Request, res: Response) => {
+    const profileId = (req.user as IRequestUser).profileId;
 
-  const result = await ServicesService.createOrUpdateService(profileId, req.body);
+    const result = await ServicesService.createOrUpdateService(
+      profileId,
+      req.body,
+    );
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Service Created / Updated Successfully",
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Service Created / Updated Successfully",
+      data: result,
+    });
+  },
+);
 
-export const ServicesController = { getAllServices, createOrUpdateService, getSingleService };
+export const ServicesController = {
+  getAllServices,
+  createOrUpdateService,
+  getSingleService,
+};

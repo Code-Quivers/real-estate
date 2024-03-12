@@ -8,5 +8,6 @@
   "jsxBracketSameLine": false,
   "jsxSingleQuote": false,
   "quoteProps": "as-needed",
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "printWidth": 150
 }

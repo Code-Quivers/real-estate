@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -7,16 +8,51 @@ import { Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 // import { ISavedItem } from "./savedItem.interfaces";
 import { isEmptyObject } from "../../../helpers/utils";
+import { ICreateSavedItem } from "./savedItem.interfaces";
 
-const createSavedItem = async (data: any) => {
+const createSavedItem = async (data: ICreateSavedItem) => {
   // saved the item to the SavedItem model.
 
   const result = await prisma.$transaction(async (transactionClient) => {
+    if (data?.itemType === "TENANT") {
+      const isExistTenantItem = await transactionClient.savedItem.findFirst({
+        where: {
+          itemType: data?.itemType,
+          tenantId: data?.tenantId,
+          userId: data?.userId,
+        },
+      });
+
+      if (isExistTenantItem)
+        throw new ApiError(httpStatus.CONFLICT, "Tenant already saved!!");
+
+      const isExistTenant = await transactionClient.tenant.findFirst({
+        where: {
+          tenantId: data?.tenantId,
+        },
+      });
+
+      if (!isExistTenant)
+        throw new ApiError(httpStatus.CONFLICT, "Tenant Not Exist!!");
+    }
+    if (data?.itemType === "SERVICE") {
+      const isExistTenantItem = await transactionClient.savedItem.findFirst({
+        where: {
+          itemType: data?.itemType,
+          serviceProviderId: data?.serviceProviderId,
+          userId: data?.userId,
+        },
+      });
+
+      if (isExistTenantItem)
+        throw new ApiError(
+          httpStatus.CONFLICT,
+          "Service Provider already saved!!",
+        );
+    }
+
     const savedItem = await transactionClient.savedItem.create({
       data: data,
-      include: {
-        user: true,
-      },
     });
     if (!savedItem) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Item saving failed!!!");
@@ -43,7 +79,11 @@ const removeSavedItem = async (itemId: string) => {
   return result;
 };
 
-const getSavedTenants = async (userId: string, filters: any, options: IPaginationOptions) => {
+const getSavedTenants = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { name, address, rent } = filters;
   const orCondition: any[] = [];
@@ -52,18 +92,21 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
     orCondition.push({ lastName: { contains: name } });
   }
   const tenantFilteringCondition: any = {};
-  if (orCondition.length == 2) {
-    tenantFilteringCondition.OR = orCondition;
-  }
-  if (address) {
+  if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
+
+  if (address)
     tenantFilteringCondition.presentAddress = { contains: filters.address };
-  }
-  if (rent) {
+
+  if (rent)
     tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
-  }
 
   const whereConditions: Prisma.SavedItemWhereInput = {
-    AND: [{ userId, itemType: "TENANT" }, ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : [])],
+    AND: [
+      { userId, itemType: "TENANT" },
+      ...(!isEmptyObject(tenantFilteringCondition)
+        ? [{ tenant: tenantFilteringCondition }]
+        : []),
+    ],
   };
 
   //
@@ -89,7 +132,10 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
     const totalPage = Math.ceil(total / limit);
 
     if (!savedItems) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retive saved items!!!");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Failed to retrieved saved items!!!",
+      );
     }
 
     return {
@@ -107,7 +153,11 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
 };
 
 // Get the saved Service Providers
-const getSavedServiceProviders = async (userId: string, filters: any, options: IPaginationOptions) => {
+const getSavedServiceProviders = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { name, serviceType, priority, price } = filters;
   const orCondition: any[] = [];
@@ -119,20 +169,20 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   if (orCondition.length == 2) {
     serviceProviderFilterCondition.OR = orCondition;
   }
-  const sreviceFilterCondition: any = {};
+  const serviceFilterCondition: any = {};
 
   if (serviceType) {
-    sreviceFilterCondition.serviceType = serviceType;
+    serviceFilterCondition.serviceType = serviceType;
   }
   if (priority) {
-    sreviceFilterCondition.serviceAvailability = priority;
+    serviceFilterCondition.serviceAvailability = priority;
   }
   if (price) {
-    sreviceFilterCondition.minPrice = { gte: price };
-    sreviceFilterCondition.maxPrice = { lte: price };
+    serviceFilterCondition.minPrice = { gte: price };
+    serviceFilterCondition.maxPrice = { lte: price };
   }
-  if (!isEmptyObject(sreviceFilterCondition)) {
-    serviceProviderFilterCondition.Service = sreviceFilterCondition;
+  if (!isEmptyObject(serviceFilterCondition)) {
+    serviceProviderFilterCondition.Service = serviceFilterCondition;
   }
 
   const andCondition = [];
@@ -143,7 +193,7 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
   if (!isEmptyObject(serviceProviderFilterCondition)) {
     andCondition.push({ serviceProvider: serviceProviderFilterCondition });
   }
-
+  // @ts-ignore
   const whereConditions: Prisma.SavedItemWhereInput = { AND: andCondition };
   //
   const result = await prisma.$transaction(async (transactionClient) => {

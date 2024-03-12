@@ -3,7 +3,7 @@
 import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, useToaster } from "rsuite";
+import { Button, Form, Input, InputGroup, Notification, useToaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import { FaLock } from "react-icons/fa";
 import { Controller, useForm } from "react-hook-form";
 import { useServiceProviderSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
-import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
+import { storeUserInfo } from "@/hooks/services/auth.service";
 
 const style = {
   width: "100%",
@@ -24,10 +24,7 @@ const style = {
 const ServiceProviderSignUpPage = () => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
-  const [
-    serviceProviderSignUp,
-    { isLoading, error, isSuccess, isError, data },
-  ] = useServiceProviderSignUpMutation();
+  const [serviceProviderSignUp, { isLoading, error, isSuccess, isError, data, reset: resetReq }] = useServiceProviderSignUpMutation();
 
   const router = useRouter();
   const toaster = useToaster();
@@ -48,13 +45,40 @@ const ServiceProviderSignUpPage = () => {
       email: user?.email,
       password: user?.password,
     };
-    await serviceProviderSignUp({ data: serviceProviderData }).unwrap();
+    const res = await serviceProviderSignUp({ data: serviceProviderData }).unwrap();
+    if (res?.data?.accessToken) {
+      storeUserInfo({ accessToken: res?.data?.accessToken });
+    }
   };
 
   useEffect(() => {
+    // ! handle success
     if ((isSuccess && !isLoading && !isError, !error && data)) {
-      toaster.push(SignUpSuccessMessage(), { placement: "bottomStart" });
-      router.push("/service-provider/login");
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">Congratulations! You have successfully signed up as a Service Provider.</p>
+            <hr className="border-t border-gray-300 my-4" />
+            <p>Your account is now ready to use.</p>
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
+      router.push("/service-provider");
+      resetReq();
+    }
+    // ! handle error
+    if ((!isSuccess && !isLoading && isError, error)) {
+      toaster.push(
+        <Notification type="error" header="Failed" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{error?.message || "Something Went wrong"}</p>
+            <hr className="border-t border-gray-300 my-4" />
+            <p>Please try again</p>
+          </div>
+        </Notification>,
+        { placement: "bottomStart" },
+      );
     }
   }, [isSuccess, isLoading, isError, error, data]);
 
@@ -82,20 +106,9 @@ const ServiceProviderSignUpPage = () => {
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
-                        <Input
-                          {...field}
-                          type="text"
-                          placeholder="First Name"
-                        />
+                        <Input {...field} type="text" placeholder="First Name" />
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.firstName &&
-                            !!errors?.firstName?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.firstName && !!errors?.firstName?.message) || false} placement="topEnd">
                         {errors?.firstName?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -118,13 +131,7 @@ const ServiceProviderSignUpPage = () => {
                         </InputGroup.Addon>
                         <Input {...field} type="text" placeholder="Last Name" />
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.lastName && !!errors?.lastName?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.lastName && !!errors?.lastName?.message) || false} placement="topEnd">
                         {errors?.lastName?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -147,13 +154,7 @@ const ServiceProviderSignUpPage = () => {
                         </InputGroup.Addon>
                         <Input {...field} type="text" placeholder="Username" />
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.userName && !!errors?.userName?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.userName && !!errors?.userName?.message) || false} placement="topEnd">
                         {errors?.userName?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -180,12 +181,7 @@ const ServiceProviderSignUpPage = () => {
                         </InputGroup.Addon>
                         <Input {...field} type="text" placeholder="Email" />
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.email && !!errors?.email?.message) || false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.email && !!errors?.email?.message) || false} placement="topEnd">
                         {errors?.email?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -210,11 +206,7 @@ const ServiceProviderSignUpPage = () => {
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
-                        <Input
-                          {...field}
-                          type={visible ? "text" : "password"}
-                          placeholder="Password"
-                        />
+                        <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
                         <InputGroup.Button
                           onClick={() => {
                             setVisible(!visible);
@@ -223,13 +215,7 @@ const ServiceProviderSignUpPage = () => {
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.password && !!errors?.password?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -243,8 +229,7 @@ const ServiceProviderSignUpPage = () => {
                   control={control}
                   rules={{
                     required: "Confirm password must be matched",
-                    validate: (value) =>
-                      value === password || "Confirm Password did not match",
+                    validate: (value) => value === password || "Confirm Password did not match",
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
@@ -252,11 +237,7 @@ const ServiceProviderSignUpPage = () => {
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
-                        <Input
-                          {...field}
-                          type={visible2 ? "text" : "password"}
-                          placeholder="Confirm Password"
-                        />
+                        <Input {...field} type={visible2 ? "text" : "password"} placeholder="Confirm Password" />
                         <InputGroup.Button
                           onClick={() => {
                             setVisible2(!visible2);
@@ -265,14 +246,7 @@ const ServiceProviderSignUpPage = () => {
                           {visible2 ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.confirmPassword &&
-                            !!errors?.confirmPassword?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.confirmPassword && !!errors?.confirmPassword?.message) || false} placement="topEnd">
                         {errors?.confirmPassword?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -281,13 +255,7 @@ const ServiceProviderSignUpPage = () => {
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <Button
-                loading={isLoading}
-                type="submit"
-                size="lg"
-                className="!rounded-full !px-8 !py-3.5 "
-                appearance="default"
-              >
+              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign Up
               </Button>
             </div>
@@ -297,10 +265,7 @@ const ServiceProviderSignUpPage = () => {
         <div className="mt-5">
           <p className="font-semibold">
             Already have an Account?{" "}
-            <Link
-              className="text-blue-800 hover:underline"
-              href="/service-provider/login"
-            >
+            <Link className="text-blue-800 hover:underline" href="/service-provider/login">
               Sign In
             </Link>
           </p>
@@ -308,11 +273,7 @@ const ServiceProviderSignUpPage = () => {
       </div>
       {/* right image */}
       <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
-        <Image
-          className="object-cover"
-          src={serviceProviderLoginImage}
-          alt="Service Provider Sign-Up Image"
-        />
+        <Image className="object-cover" src={serviceProviderLoginImage} alt="Service Provider Sign-Up Image" />
       </div>
     </div>
   );
