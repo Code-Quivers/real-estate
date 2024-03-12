@@ -20,41 +20,81 @@ const createUser = async (req: Request, res: Response) => {
   });
 };
 
-const createNewUserForTenant = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.createNewUserForTenant(req.body);
+const createNewUserForTenant = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForTenant(req.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Tenant created successfully!",
-    data: result,
-  });
-});
+    const { accessToken, refreshToken } = result;
+    // set refresh token into cookie
+
+    const cookieOptions = {
+      secure: config.env === "production",
+      httpOnly: true,
+    };
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Tenant created successfully!",
+      data: {
+        accessToken,
+      },
+    });
+  },
+);
 
 //! Property Owner User Create
 
-const createNewUserForPropertyOwner = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.createNewUserForPropertyOwner(req.body);
+const createNewUserForPropertyOwner = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForPropertyOwner(req.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Property Owner created successfully!",
-    data: result,
-  });
-});
+    const { accessToken, refreshToken } = result;
+    // set refresh token into cookie
+
+    const cookieOptions = {
+      secure: config.env === "production",
+      httpOnly: true,
+    };
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Property Owner created successfully!",
+      data: {
+        accessToken,
+      },
+    });
+  },
+);
 
 //! Service Provider User Create
 
-const createNewUserForServiceProvider = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthService.createNewUserForServiceProvider(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Service Provider Created successfully!",
-    data: result,
-  });
-});
+const createNewUserForServiceProvider = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await AuthService.createNewUserForServiceProvider(req.body);
+
+    const { accessToken, refreshToken } = result;
+    // set refresh token into cookie
+
+    const cookieOptions = {
+      secure: config.env === "production",
+      httpOnly: true,
+    };
+    res.cookie("refreshToken", refreshToken, cookieOptions);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Service Provider Created successfully!",
+      data: {
+        accessToken,
+      },
+    });
+  },
+);
 
 //User Login
 
@@ -73,7 +113,7 @@ const userLogin = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User Logged in successfully!",
+    message: "Logged in successfully!",
     data: {
       accessToken,
     },

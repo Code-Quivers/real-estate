@@ -2,7 +2,10 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { IPropertyOwnerFilterRequest, IPropertyOwnerUpdateRequest } from "./propertyOwner.interfaces";
+import {
+  IPropertyOwnerFilterRequest,
+  IPropertyOwnerUpdateRequest,
+} from "./propertyOwner.interfaces";
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import fs from "fs";
@@ -10,10 +13,19 @@ import { logger } from "../../../shared/logger";
 import { Prisma, PropertyOwner } from "@prisma/client";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
-import { propertyOwnerRelationalFields, propertyOwnerRelationalFieldsMapper, propertyOwnerSearchableFields } from "./propertyOwner.constants";
+import {
+  propertyOwnerRelationalFields,
+  propertyOwnerRelationalFieldsMapper,
+  propertyOwnerSearchableFields,
+} from "./propertyOwner.constants";
+import bcrypt from "bcrypt";
+import config from "../../../config";
 
 // ! get all property owners
-const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
+const getAllPropertyOwners = async (
+  filters: IPropertyOwnerFilterRequest,
+  options: IPaginationOptions,
+) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -50,7 +62,8 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
     });
   }
 
-  const whereConditions: Prisma.PropertyOwnerWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.PropertyOwnerWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allPropertyOwner = await transactionClient.propertyOwner.findMany({
@@ -91,17 +104,24 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
 };
 
 // ! get single Property Owner
-const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<PropertyOwner | null> => {
+const getSinglePropertyOwner = async (
+  propertyOwnerId: string,
+): Promise<PropertyOwner | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const propertyOwner = await transactionClient.propertyOwner.findUnique({
       where: {
         propertyOwnerId,
       },
       include: {
+        _count: true,
         user: {
           select: {
             email: true,
             createdAt: true,
+            userName: true,
+            _count: true,
+            role: true,
+            userStatus: true,
           },
         },
         Property: true,
@@ -109,7 +129,10 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<Property
     });
 
     if (!propertyOwner) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Profile Not Found!!!");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Property Owner Profile Not Found!!!",
+      );
     }
     return propertyOwner;
   });
@@ -125,10 +148,11 @@ const UpdatePropertyOwner = async (
   // payload: IPropertyOwner
 ) => {
   const profileImage: IUploadFile = req.file as any;
-  // const profileImagePath = profileImage?.path?.substring(13);
-  const profileImagePath = profileImage?.path;
+  const profileImagePath = profileImage?.path?.substring(13);
+  // const profileImagePath = profileImage?.path;
 
-  const { firstName, lastName, phoneNumber, oldProfileImagePath } = req.body as IPropertyOwnerUpdateRequest;
+  const { firstName, lastName, phoneNumber, oldProfileImagePath, password } =
+    req.body as IPropertyOwnerUpdateRequest;
 
   // deleting old style Image
   const oldFilePaths = "uploads/" + oldProfileImagePath;
@@ -143,11 +167,12 @@ const UpdatePropertyOwner = async (
 
   //!
   const result = await prisma.$transaction(async (transactionClient) => {
-    const isPropertyOwnerExists = await transactionClient.propertyOwner.findUnique({
-      where: {
-        propertyOwnerId,
-      },
-    });
+    const isPropertyOwnerExists =
+      await transactionClient.propertyOwner.findUnique({
+        where: {
+          propertyOwnerId,
+        },
+      });
 
     if (!isPropertyOwnerExists) {
       throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!");
@@ -156,8 +181,12 @@ const UpdatePropertyOwner = async (
     const updatedPropertyOwnerProfileData: Partial<PropertyOwner> = {};
     if (firstName) updatedPropertyOwnerProfileData["firstName"] = firstName;
     if (lastName) updatedPropertyOwnerProfileData["lastName"] = lastName;
-    if (phoneNumber) updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
-    if (profileImagePath) updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
+    if (phoneNumber)
+      updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
+    if (profileImagePath)
+      updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
+
+    // ! if password
 
     // ! updating
     const res = await transactionClient.propertyOwner.update({
@@ -166,9 +195,26 @@ const UpdatePropertyOwner = async (
       },
       data: updatedPropertyOwnerProfileData,
     });
-
     if (!res) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Updating Failed !");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Property Owner Updating Failed !",
+      );
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(
+        password,
+        Number(config.bcrypt_salt_rounds),
+      );
+      await transactionClient.user.update({
+        where: {
+          userId: res?.userId,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
     }
 
     return res;

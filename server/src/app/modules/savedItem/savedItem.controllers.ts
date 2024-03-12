@@ -7,9 +7,10 @@ import pick from "../../../shared/pick";
 import { SavedItemServices } from "./savedItem.services";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 import ApiError from "../../../errors/ApiError";
+import { ItemType } from "@prisma/client";
 
 const getSavedItems = catchAsync(async (req: Request, res: Response) => {
-  const itemType = req.query?.itemType;
+  const itemType = req.query?.itemType as ItemType;
   const filters = req.query;
   const userId = (req.user as IRequestUser).userId;
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
@@ -17,15 +18,26 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
 
   switch (itemType) {
     case "TENANT":
-      result = await SavedItemServices.getSavedTenants(userId, filters, options);
+      result = await SavedItemServices.getSavedTenants(
+        userId,
+        filters,
+        options,
+      );
       break;
     case "SERVICE":
-      result = await SavedItemServices.getSavedServiceProviders(userId, filters, options);
+      result = await SavedItemServices.getSavedServiceProviders(
+        userId,
+        filters,
+        options,
+      );
       break;
     case undefined:
       throw new ApiError(httpStatus.BAD_REQUEST, "itemType required!!!");
     default:
-      throw new ApiError(httpStatus.BAD_REQUEST, `Provided itemType '${itemType}' not supported!!!`);
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        `Provided itemType '${itemType}' not supported!!!`,
+      );
   }
 
   sendResponse(res, {
@@ -38,7 +50,6 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
 
 const createSavedItem = catchAsync(async (req: Request, res: Response) => {
   const data = req.body;
-  console.log("data", data)
   const userId = (req.user as IRequestUser).userId;
   data["userId"] = userId;
   const result = await SavedItemServices.createSavedItem(data);
@@ -61,7 +72,7 @@ const removeSavedItem = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const SavedItemConrtollers = {
+export const SavedItemControllers = {
   getSavedItems,
   createSavedItem,
   removeSavedItem,

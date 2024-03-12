@@ -1,89 +1,81 @@
 "use client";
-import { Uploader, Message, Loader, useToaster } from "rsuite";
+import { Uploader, Loader, useToaster } from "rsuite";
 import { VscDeviceCamera } from "react-icons/vsc";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { updateProperty } from "@/redux/features/propertyOwner/addPropertySlice";
+import { useAppSelector } from "@/redux/hook";
 
 const AddPropertyAddPhotos = ({ property }) => {
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState([]);
-
   const dispatch = useDispatch();
+  // Fetch files from Redux state when the component mounts
+  const { propertyList } = useAppSelector((state) => state?.propertyList);
+
+  const [fileList, setFileList] = useState(
+    propertyList?.find((single) => single?.id === property?.id)?.files || [],
+  );
 
   const handleChangeImages = (files) => {
     if (files.length > 0) {
-      const latestFile = files[files.length - 1];
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
-      if (
-        latestFile.blobFile?.size &&
-        latestFile.blobFile?.size <= fileSizeLimit
-      ) {
-        const file = latestFile;
-        const reader = new FileReader();
-        // !
-        const validBlobFiles = [];
-
-        files?.forEach((filetype) => {
-          if (
+      const validBlobFiles = files
+        .filter(
+          (filetype) =>
             filetype?.blobFile?.size &&
-            filetype?.blobFile?.size <= fileSizeLimit
-          ) {
-            validBlobFiles.push(filetype?.blobFile);
-          } else {
-            toaster.push("File size exceeds 1MB.");
-          }
-        });
+            filetype?.blobFile?.size <= fileSizeLimit,
+        )
+        .map((filetype) => filetype.blobFile);
 
+      if (validBlobFiles.length > 0) {
+        // Dispatch only the latest (last) valid file to the Redux store
+        const latestValidFile = validBlobFiles[validBlobFiles.length - 1];
         dispatch(
           updateProperty({
-            propertyId: property.id, // Assuming property.id is available in your props
-            field: "images",
-            value: validBlobFiles,
+            propertyId: property.id,
+            field: "files",
+            value: [latestValidFile],
           }),
         );
-
-        reader.readAsDataURL(file.blobFile);
-      } else {
-        toaster.push("File size exceeds 1MB.");
       }
-    } else {
-      //
     }
   };
 
   const handleRemove = (file) => {
-    const updatedFileList = fileList.filter((item) => item !== file);
-    console.log(updatedFileList);
+    // Check if the file is being removed
+    if (fileList.includes(file)) {
+      const updatedFileList = fileList.filter((item) => item !== file);
 
-    // setFileList(updatedFileList);
+      // Update the local state with the filtered file list
+      setFileList(updatedFileList);
+
+      // Dispatch the updated file list to the Redux store
+      dispatch(
+        updateProperty({
+          propertyId: property.id,
+          field: "files",
+          value: updatedFileList,
+        }),
+      );
+    }
   };
 
   const showUploadButton = fileList.length === 0;
 
   return (
     <Uploader
-      draggable={true}
       fileList={fileList}
       listType="picture"
       autoUpload={false}
       onChange={handleChangeImages}
-      onRemove={(file) => handleRemove(file)}
+      onRemove={handleRemove}
       accept="image/*"
-      onSuccess={(response, file) => {
-        toaster.push(<Message type="success">Uploaded successfully</Message>);
-        console.log(response);
-      }}
-      onError={() => {
-        setFileList([]);
-        setUploading(false);
-        toaster.push(<Message type="error">Upload failed</Message>);
-      }}
+      action=""
     >
-      <div className="flex border-4 items-center justify-center">
-        <button>
+      <div className="flex  border-4 items-center justify-center">
+        <button className=" ">
           {uploading && <Loader backdrop center />}
           {!uploading && showUploadButton && (
             <span className="flex justify-center items-center">

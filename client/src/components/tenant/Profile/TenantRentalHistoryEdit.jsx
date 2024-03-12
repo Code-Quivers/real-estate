@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, Input } from "rsuite";
+import { Controller } from "react-hook-form";
+import { Input, InputNumber } from "rsuite";
 
-const TenantRentalHistoryEdit = () => {
+const TenantRentalHistoryEdit = ({ control, responseData }) => {
   return (
     <div className="mt-10  ">
       {/* title */}
@@ -13,66 +14,135 @@ const TenantRentalHistoryEdit = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mt-5">
         {/* left ----------------------------- */}
         <div className="col-span-2 space-y-5">
-          {/* previous landlord */}
-          <div>
+          {/* previous landlord */}{" "}
+          <div className="w-full">
             <label className="text-sm font-medium">
               Previous Landlord Name
             </label>
-            <Input placeholder="" type="text" />
+            <Controller
+              name="prevLandlordName"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.prevLandlordName}
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
-
           {/* Previous landlord contact info */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Previous landlord contact info
             </label>
-            <div className="w-full">
-              <Input placeholder="" type="text" />
-            </div>
+            <Controller
+              name="prevLandlordContactInfo"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.prevLandlordContactInfo}
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
           {/* Length of previous tenancy */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Length of previous tenancy
             </label>
-            <Input type="text" />
+            <Controller
+              name="lengthOfPrevTenancy"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.lengthOfPrevTenancy}
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
           {/* Rent amount you are willing to pay */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Rent amount you are willing to pay
             </label>
-            <Input type="text" />
+            <Controller
+              name="affordableRentAmount"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.affordableRentAmount}
+                    min={0}
+                  />
+                </div>
+              )}
+            />
           </div>
-
           {/* next button */}
         </div>
         {/* right ---------------------------------*/}
         <div className="col-span-2 space-y-5">
           {/* Reason for leaving */}
-
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Reason for leaving</label>
-            <Input as="textarea" rows={5} />
+            <Controller
+              name="leavingReason"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    as="textarea"
+                    className="!w-full"
+                    rows={5}
+                    {...field}
+                    defaultValue={responseData?.leavingReason}
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
 
           {/* Any Eviction or Late Payment */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Any Eviction or Late Payment
             </label>
-            <Input as="textarea" rows={5} />
+            <Controller
+              name="isAnyLatePaymentReason"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    as="textarea"
+                    className="!w-full"
+                    rows={5}
+                    {...field}
+                    defaultValue={responseData?.isAnyLatePaymentReason}
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
         </div>
-      </div>
-
-      <div className=" mt-5 flex justify-end">
-        <Button
-          size="lg"
-          className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );

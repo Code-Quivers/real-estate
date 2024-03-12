@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
-import httpStatus from 'http-status';
-import { JwtPayload, Secret, TokenExpiredError } from 'jsonwebtoken'; // Import TokenExpiredError
-import config from '../../config';
-import ApiError from '../../errors/ApiError';
-import { jwtHelpers } from '../../helpers/jwtHelpers';
-import prisma from '../../shared/prisma';
+import { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status";
+import { JwtPayload, Secret, TokenExpiredError } from "jsonwebtoken"; // Import TokenExpiredError
+import config from "../../config";
+import ApiError from "../../errors/ApiError";
+import { jwtHelpers } from "../../helpers/jwtHelpers";
+import prisma from "../../shared/prisma";
 
 const auth = (...requiredRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -14,14 +14,14 @@ const auth = (...requiredRoles: string[]) => {
       if (!token) {
         throw new ApiError(
           httpStatus.UNAUTHORIZED,
-          'You are not an authorized user'
+          "You are not an authorized user",
         );
       }
 
       try {
         const verifiedUser: JwtPayload = jwtHelpers.verifyToken(
           token,
-          config.jwt.secret as Secret
+          config.jwt.secret as Secret,
         );
 
         const isUserExist = await prisma.user.findUnique({
@@ -55,7 +55,7 @@ const auth = (...requiredRoles: string[]) => {
         if (!isUserExist) {
           throw new ApiError(
             httpStatus.UNAUTHORIZED,
-            'You are not a valid user'
+            "You are not a valid user",
           );
         }
 
@@ -76,10 +76,10 @@ const auth = (...requiredRoles: string[]) => {
           requiredRoles.length &&
           !requiredRoles.includes(verifiedUser.role)
         ) {
-          const rolesString = requiredRoles.join(', ');
+          const rolesString = requiredRoles.join(", ");
           throw new ApiError(
             httpStatus.FORBIDDEN,
-            `Access Forbidden. Required role(s): ${rolesString}`
+            `Access Forbidden. Required role(s): ${rolesString}`,
           );
         }
 
@@ -87,7 +87,7 @@ const auth = (...requiredRoles: string[]) => {
       } catch (error) {
         if (error instanceof TokenExpiredError) {
           // If the token is expired, return a 403 Forbidden status code
-          throw new ApiError(httpStatus.FORBIDDEN, 'Token has expired');
+          throw new ApiError(httpStatus.FORBIDDEN, "Token has expired");
         } else {
           next(error);
         }

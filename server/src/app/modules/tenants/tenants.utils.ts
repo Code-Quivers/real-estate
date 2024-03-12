@@ -8,9 +8,14 @@ type UpdateDataObject = {
   [dataName: string]: UpdateValueType;
 };
 
-export const updateTenantData = (updates: UpdateDataObject): Partial<ITenantUpdateRequest> => {
+export const updateTenantData = (
+  updates: UpdateDataObject,
+): Partial<ITenantUpdateRequest> => {
   const filteredUpdates = Object.entries(updates)
-    .filter(([_, value]) => value !== undefined && value !== null && !Number.isNaN(value))
+    .filter(
+      ([_, value]) =>
+        value !== undefined && value !== null && !Number.isNaN(value),
+    )
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
   return {

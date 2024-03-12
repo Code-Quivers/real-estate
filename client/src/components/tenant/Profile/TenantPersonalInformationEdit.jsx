@@ -1,8 +1,19 @@
 "use client";
 
-import { Button, DatePicker, Input, InputNumber } from "rsuite";
+import { Controller } from "react-hook-form";
+import { DatePicker, Input, SelectPicker } from "rsuite";
+import TenantPersonalProfileUpload from "./TenantPersonalPhotoUpload";
+import moment from "moment";
+import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 
-const TenantPersonalInformationEdit = () => {
+const TenantPersonalInformationEdit = ({
+  control,
+  setFileValue,
+  fileValue,
+  imagePreview,
+  setImagePreview,
+  responseData,
+}) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -13,75 +24,243 @@ const TenantPersonalInformationEdit = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mt-5">
         {/* left --------------- */}
         <div className="col-span-2 space-y-5">
-          {/* Name */}
-          <div>
-            <label className="text-sm font-medium">Name</label>
-            <Input placeholder="Name" type="text" />
+          {/* Name Name */}
+          <div className="flex w-full items-center gap-5">
+            {/* First Name */}
+            <div className="w-full">
+              <label className="text-sm font-medium">First Name</label>
+              <Controller
+                name="firstName"
+                control={control}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper ">
+                    <Input
+                      {...field}
+                      defaultValue={responseData?.firstName}
+                      className="!w-full"
+                      type="text"
+                    />
+                  </div>
+                )}
+              />
+            </div>
+            {/* last Name */}
+            <div className="w-full">
+              <label className="text-sm font-medium">Last Name</label>
+              <Controller
+                name="lastName"
+                control={control}
+                rules={{
+                  required: "Last Name is Required",
+                }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper ">
+                    <Input
+                      className="!w-full"
+                      {...field}
+                      defaultValue={responseData?.lastName}
+                      type="text"
+                    />
+                  </div>
+                )}
+              />
+            </div>
           </div>
 
           {/* Date of Birth */}
           <div>
-            <label className="text-sm font-medium">Date of Birth</label>
             <div className="w-full">
-              <DatePicker size="md" className="w-full" />
+              <label className="text-sm font-medium">Date of Birth</label>
+              <Controller
+                name="dateOfBirth"
+                control={control}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper ">
+                    <div className="w-full">
+                      <DatePicker
+                        {...field}
+                        editable={false}
+                        defaultValue={
+                          responseData?.dateOfBirth &&
+                          moment(responseData?.dateOfBirth)?.toDate()
+                        }
+                        shouldDisableDate={(date) =>
+                          moment(date).isAfter(moment(), "day")
+                        }
+                        size="md"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              />
             </div>
           </div>
           {/* Social Security Number */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">
               Social Security Number
             </label>
-            <Input type="text" />
+            <Controller
+              name="socialSecurityNumber"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.socialSecurityNumber}
+                    className="!w-full"
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
           {/* Driver License Number */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Driver License Number</label>
-            <Input type="text" />
+            <Controller
+              name="drivingLicenseNumber"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.drivingLicenseNumber}
+                    className="!w-full"
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
-
-          {/* next button */}
+          {/* profile photo  */}
+          <div className="w-full">
+            <label className="text-sm font-medium">Profile Image</label>
+            <div className="mt-1">
+              <Controller
+                name="file"
+                control={control}
+                render={({ field }) => (
+                  <TenantPersonalProfileUpload
+                    setFileValue={setFileValue}
+                    fileValue={fileValue}
+                    imagePreview={imagePreview}
+                    setImagePreview={setImagePreview}
+                    field={field}
+                  />
+                )}
+              />
+            </div>
+          </div>
         </div>
         {/* right ---------------------------------*/}
         <div className="col-span-2 space-y-5">
           {/* Current Address */}
-
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Current Address</label>
-            <Input type="text" />
+            <Controller
+              name="presentAddress"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.presentAddress}
+                    className="!w-full"
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
 
           {/* Phone Number */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Phone Number</label>
-            <InputNumber min={0} />
+            <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.phoneNumber}
+                    className="!w-full"
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
+
           {/* Email Address */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">Email Address</label>
-            <Input type="text" />
+            <Controller
+              name="email"
+              rules={{
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Please provide your valid email",
+                },
+              }}
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    {...field}
+                    defaultValue={responseData?.user?.email}
+                    className="!w-full"
+                    type="text"
+                  />
+                </div>
+              )}
+            />
           </div>
+
           {/* criminal Record */}
           <div>
             <label className="text-sm font-medium">
               Do you have a criminal record?
             </label>
-            <Input type="text" />
+
+            <Controller
+              name="isCriminalRecord"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <SelectPicker
+                    {...field}
+                    searchable={false}
+                    defaultValue={String(responseData?.isCriminalRecord)}
+                    data={booleanSelectPicker}
+                    className="!w-full"
+                  />
+                </div>
+              )}
+            />
           </div>
           {/* if yes , describe in details */}
-          <div>
+          <div className="w-full">
             <label className="text-sm font-medium">If Yes, Describe it</label>
-            <Input as="textarea" rows={6} />
+            <Controller
+              name="criminalRecordDescription"
+              control={control}
+              render={({ field }) => (
+                <div className="rs-form-control-wrapper ">
+                  <Input
+                    as="textarea"
+                    {...field}
+                    defaultValue={responseData?.criminalRecordDescription}
+                    rows={6}
+                    className="!w-full"
+                  />
+                </div>
+              )}
+            />
           </div>
         </div>
-      </div>
-
-      <div className=" mt-5 flex justify-start">
-        <Button
-          size="lg"
-          className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );

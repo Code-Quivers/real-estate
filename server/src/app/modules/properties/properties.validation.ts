@@ -1,92 +1,79 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const createProperty = z.object({
+  id: z.number({
+    required_error: "id (propertyId) is Required",
+  }),
   numOfBed: z.number({
-    invalid_type_error: 'Number of Bed must be in Integer',
-    required_error: 'Number of Bed is Required',
+    required_error: "Number of Bed is Required",
   }),
   numOfBath: z.number({
-    invalid_type_error: 'Number of Bath must be in Integer',
-    required_error: 'Number of Bath is Required',
+    required_error: "Number of Bath is Required",
   }),
   address: z.string({
-    invalid_type_error: 'Address must be in String',
-    required_error: 'Address is Required',
+    required_error: "Address is Required",
   }),
   description: z.string({
-    invalid_type_error: 'Description must be in String',
-    required_error: 'Description is Required',
+    required_error: "Description is Required",
   }),
   maintenanceCoveredTenant: z.string({
-    invalid_type_error: 'Maintenance Covered Tenant must be in String',
-    required_error: 'Maintenance Covered Tenant is Required',
+    required_error: "Maintenance Covered Tenant is Required",
   }),
   maintenanceCoveredOwner: z.string({
-    invalid_type_error: 'Maintenance Covered Owner must be in String',
-    required_error: 'Maintenance Covered Owner is Required',
+    required_error: "Maintenance Covered Owner is Required",
   }),
   schools: z.string({
-    invalid_type_error: 'Schools must be in String',
-    required_error: 'Style No is Required',
+    required_error: "Style No is Required",
   }),
   universities: z.string({
-    invalid_type_error: 'Universities must be in String',
-    required_error: 'Universities is Required',
+    required_error: "Universities is Required",
   }),
   allowedPets: z.string({
-    invalid_type_error: 'Allowed Pets must be in String',
-    required_error: 'Allowed Pets must is Required',
+    required_error: "Allowed Pets must is Required",
   }),
 });
 const updateProperty = z.object({
-  numOfBed: z
-    .number({
-      invalid_type_error: 'Number of Bed must be in Integer',
-    })
-    .optional(),
-  numOfBath: z
-    .number({
-      invalid_type_error: 'Number of Bath must be in Integer',
-    })
-    .optional(),
-  address: z
-    .string({
-      invalid_type_error: 'Address must be in String',
-    })
-    .optional(),
-  description: z
-    .string({
-      invalid_type_error: 'Description must be in String',
-    })
-    .optional(),
-  maintenanceCoveredTenant: z
-    .string({
-      invalid_type_error: 'Maintenance Covered Tenant must be in String',
-    })
-    .optional(),
-  maintenanceCoveredOwner: z
-    .string({
-      invalid_type_error: 'Maintenance Covered Owner must be in String',
-    })
-    .optional(),
-  schools: z
-    .string({
-      invalid_type_error: 'Schools must be in String',
-    })
-    .optional(),
-  universities: z
-    .string({
-      invalid_type_error: 'Universities must be in String',
-    })
-    .optional(),
-  allowedPets: z
-    .string({
-      invalid_type_error: 'Allowed Pets must be in String',
-    })
-    .optional(),
+  numOfBed: z.number({}).optional(),
+  numOfBath: z.number({}).optional(),
+  address: z.string({}).optional(),
+  description: z.string({}).optional(),
+  maintenanceCoveredTenant: z.string({}).optional(),
+  maintenanceCoveredOwner: z.string({}).optional(),
+  schools: z.string({}).optional(),
+  universities: z.string({}).optional(),
+  allowedPets: z.string({}).optional(),
+});
+
+const propertyCreate = z.array(createProperty);
+
+// ! assign tenant user
+
+const assignTenant = z.object({
+  body: z.object({
+    tenantId: z.string({
+      required_error: "Tenant Id is Required",
+    }),
+    propertyId: z.string({
+      required_error: "Property Id is Required",
+    }),
+  }),
+});
+// ! assign serviceProvider
+const assignServiceProvider = z.object({
+  body: z.object({
+    serviceProviderId: z.string({
+      required_error: "serviceProviderId is Required",
+    }),
+    propertyId: z.string({
+      required_error: "Property Id is Required",
+    }),
+  }),
 });
 
 export const PropertiesValidation = {
   createProperty,
   updateProperty,
+  propertyCreate,
+  assignTenant,
+  assignServiceProvider,
 };

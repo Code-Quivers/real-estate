@@ -2,13 +2,23 @@
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import TenantProfileButton from "@/components/tenant/Profile/TenantProfileButton";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantEditing from "@/components/tenant/Profile/TenantEditing";
+import { useState } from "react";
+import { Button } from "rsuite";
+import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const TenantProfile = () => {
-  const paramsName = useSearchParams().get("editing");
+  const [tabActive, setTabActive] = useState(1);
+  const {
+    data: dataResponse,
+    isError,
+    isLoading,
+    error,
+  } = useGetTenantMyProfileQuery();
+
+  const { data } = dataResponse || {};
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
@@ -17,15 +27,23 @@ const TenantProfile = () => {
         <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
           <div className="border shadow-lg rounded-full">
             <Image
-              src={profileLogo}
-              className="max-md:w-[80px] md:w-[150px]  select-none"
+              height={150}
+              width={150}
+              src={
+                data?.profileImage
+                  ? `${fileUrlKey()}/${data?.profileImage}`
+                  : profileLogo
+              }
+              className="max-md:w-[80px] md:w-[150px] md:h-[150px]  rounded-full object-cover select-none"
               alt="Profile Image"
             />
           </div>
           <div>
-            <h4 className="text-lg font-medium">Name </h4>
-            <h4 className="text-lg font-medium">Email Address </h4>
-            <h4 className="text-lg font-medium">Phone Number</h4>
+            <h4 className="text-lg font-medium">
+              {data?.firstName} {data?.lastName}
+            </h4>
+            <h4 className="text-lg font-medium"> {data?.user?.email} </h4>
+            <h4 className="text-lg font-medium">{data?.phoneNumber ?? "--"}</h4>
           </div>
         </div>
         {/* score */}
@@ -43,59 +61,82 @@ const TenantProfile = () => {
         </div>
       </div>
       {/* Dashboard */}
+
       <div className="mt-10 grid grid-cols-3 lg:grid-cols-5 w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
         {/* Personal Information */}
         <div className=" ">
-          <TenantProfileButton
-            firstTitle="Personal"
-            secondTitle="Information"
-            href="/tenant?editing=personal-information"
-          />
+          <Button
+            onClick={() => setTabActive(2)}
+            type="button"
+            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
+            size="md"
+            appearance="default"
+          >
+            Personal <br /> Information
+          </Button>
         </div>
         {/* Rental History */}
         <div>
-          <TenantProfileButton
-            firstTitle="Rental"
-            secondTitle="History"
-            href="/tenant?editing=rental-history"
-          />
+          <Button
+            onClick={() => setTabActive(3)}
+            type="button"
+            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
+            size="md"
+            appearance="default"
+          >
+            Rental <br /> History
+          </Button>
         </div>
         {/* income information */}
         <div>
-          <TenantProfileButton
-            firstTitle="Income"
-            secondTitle="Information"
-            href="/tenant?editing=income-information"
-          />
+          <Button
+            onClick={() => setTabActive(4)}
+            type="button"
+            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
+            size="md"
+            appearance="default"
+          >
+            Income <br /> Information
+          </Button>
         </div>
         {/* pets */}
         <div>
-          <TenantProfileButton
-            firstTitle="Pets"
-            href="/tenant?editing=pets-information"
-          />
+          <Button
+            onClick={() => setTabActive(5)}
+            type="button"
+            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
+            size="md"
+            appearance="default"
+          >
+            Pets
+          </Button>
         </div>
         {/* Other Information */}
         <div>
-          <TenantProfileButton
-            firstTitle="Other"
-            secondTitle="Information"
-            href="/tenant?editing=other-information"
-          />
+          <Button
+            onClick={() => setTabActive(6)}
+            type="button"
+            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
+            size="md"
+            appearance="default"
+          >
+            Other <br />
+            Information
+          </Button>
         </div>
       </div>
 
-      {paramsName === null ||
-      ![
-        "personal-information",
-        "rental-history",
-        "income-information",
-        "pets-information",
-        "other-information",
-      ].includes(paramsName) ? (
-        <TenantProfileInformation />
-      ) : (
-        <TenantEditing />
+      {tabActive === 1 && (
+        <TenantProfileInformation setTabActive={setTabActive} data={data} />
+      )}
+      {tabActive !== 1 && (
+        <TenantEditing
+          setTabActive={setTabActive}
+          tabActive={tabActive}
+          data={data}
+          tenantId={data?.tenantId}
+          defaultImage={data?.profileImage}
+        />
       )}
     </section>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidenav, Nav, Button } from "rsuite";
+import { Sidenav, Nav, useToaster, Message } from "rsuite";
 import DashboardIcon from "@rsuite/icons/Dashboard";
 import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
@@ -8,16 +8,45 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
-import { getAuthKey } from "@/configs/envConfig";
+import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
+import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
+import { useEffect } from "react";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
+  const {
+    data: dataResponse,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+  } = useGetPropertyOwnerMyProfileQuery();
+
+  const { data: myProfileData } = dataResponse || {};
+
+  // console.log(data);
+
   const logOut = () => {
     removeUserInfo(getAuthKey());
     router.push("/");
   };
+  const toaster = useToaster();
+
+  useEffect(() => {
+    if (!isLoading && isError && !isSuccess) {
+      toaster.push(
+        <Message centered showIcon type="error" closable>
+          {error?.message || "Something went wrong. Please Login Again"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, toaster]);
 
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
@@ -29,11 +58,20 @@ const PropertyOwnerSidebar = () => {
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
-              src={profileLogo}
-              alt="Profile Picture"
-              className=" object-center select-none h-[120px] w-[120px]"
+              width={120}
+              height={120}
+              src={
+                myProfileData?.profileImage
+                  ? `${fileUrlKey()}/${myProfileData?.profileImage}`
+                  : profileLogo
+              }
+              className="w-[120px] h-[120px] object-cover rounded-full select-none"
+              alt="Profile Image"
             />
-            <h2 className="text-white ">Shafinur Islam</h2>
+            <h2 className="text-white mt-3 ">
+              {myProfileData?.firstName ?? "--"}{" "}
+              {myProfileData?.lastName ?? "--"}
+            </h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>
@@ -103,6 +141,8 @@ const PropertyOwnerSidebar = () => {
               Documents
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/messages"
               style={{ backgroundColor: "#29429f" }}
               eventKey="6"
               className="hover:!bg-[#1b3697]"
@@ -135,6 +175,34 @@ const PropertyOwnerSidebar = () => {
               icon={<GroupIcon />}
             >
               Saved Service Providers
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/reports"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/reports" && "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Reports
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/settings"
+              className={`hover:!bg-[#1b3697] ${
+                activeLink === "/property-owner/settings" && "!bg-[#1b3697]"
+              }`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Settings
             </Nav.Item>
             <Nav.Item
               as={Link}

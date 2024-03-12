@@ -5,13 +5,17 @@ import { PropertyOwnerServices } from "./propertyOwner.service";
 import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import { propertyOwnerFilterableFields } from "./propertyOwner.constants";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 
 // ! get all Property Owners
 const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertyOwnerFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-  const result = await PropertyOwnerServices.getAllPropertyOwners(filters, options);
+  const result = await PropertyOwnerServices.getAllPropertyOwners(
+    filters,
+    options,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -23,24 +27,46 @@ const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
 
 // ! get single  property owner
 
-const getSinglePropertyOwner = catchAsync(async (req: Request, res: Response) => {
-  const propertyOwnerId = req.params?.propertyOwnerId;
+const getSinglePropertyOwner = catchAsync(
+  async (req: Request, res: Response) => {
+    const propertyOwnerId = req.params?.propertyOwnerId;
 
-  const result = await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
+    const result =
+      await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Property Owner Profile Information retrieved successful!",
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Property Owner Profile Information retrieved successful!",
+      data: result,
+    });
+  },
+);
+
+// ! get  property owner my profile
+const getPropertyOwnerMyProfile = catchAsync(
+  async (req: Request, res: Response) => {
+    const propertyOwnerId = (req.user as IRequestUser).profileId;
+    const result =
+      await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
+
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Property Owner my profile retrieved Successful",
+      data: result,
+    });
+  },
+);
 // ! update property owner
 
 const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
   const propertyOwnerId = req.params?.propertyOwnerId;
 
-  const result = await PropertyOwnerServices.UpdatePropertyOwner(propertyOwnerId, req);
+  const result = await PropertyOwnerServices.UpdatePropertyOwner(
+    propertyOwnerId,
+    req,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -54,4 +80,5 @@ export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
+  getPropertyOwnerMyProfile,
 };

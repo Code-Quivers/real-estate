@@ -22,7 +22,7 @@ export type ITenantUpdateRequest = {
   allergies?: string;
   isHaveOtherMember?: boolean;
   numberOfMember?: number;
-  isWillingToSignLeasingAgreement?: number;
+  isWillingToSignLeasingAgreement?: boolean;
   isAnyExtraToMention?: string;
   // pets
   isPets?: boolean;

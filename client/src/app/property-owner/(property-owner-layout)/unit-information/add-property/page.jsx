@@ -1,29 +1,29 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
-import {
-  addNewProperty,
-  removeProperty,
-  updateProperty,
-} from "@/redux/features/propertyOwner/addPropertySlice";
+import { addNewProperty, removeProperty, resetPropertyList, updateProperty } from "@/redux/features/propertyOwner/addPropertySlice";
+
 import { useAppSelector } from "@/redux/hook";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Button, Input, InputNumber, Modal } from "rsuite";
+import { Button, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
 import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
+import { useEffect, useState } from "react";
+import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
+import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
+import { useRouter } from "next/navigation";
 
-import { useState } from "react";
-
-const TenantPetsInformationEdit = () => {
+const AddProperty = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalValue, setModalValue] = useState("");
   const dispatch = useDispatch();
-  const propertyList = useAppSelector(
-    (state) => state?.propertyList?.propertyList,
-  );
-
+  const propertyList = useAppSelector((state) => state?.propertyList);
+  const toaster = useToaster();
+  const router = useRouter();
+  // !
   const handleInputChange = (propertyId, field, value) => {
     dispatch(updateProperty({ propertyId, field, value }));
   };
@@ -31,10 +31,59 @@ const TenantPetsInformationEdit = () => {
     setIsOpenModal(false);
     setModalValue("");
   };
+  const [addProperties, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useAddPropertiesMutation();
+
+  const handleCreateProperty = async () => {
+    // creating form data
+    const formData = new FormData();
+    const allFiles = (propertyList?.propertyList || [])?.flatMap((property) => property?.files || []);
+    const propertiesWithoutFiles = (propertyList?.propertyList || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
+
+    const newPropertyList = JSON.stringify(propertiesWithoutFiles);
+
+    formData.append("data", newPropertyList);
+    // Append all files with the same key "files"
+    allFiles?.forEach((file, index) => {
+      formData.append("files", file, file.name);
+    });
+
+    console.log(allFiles);
+
+    await addProperties({
+      data: formData,
+    });
+  };
+  useEffect(() => {
+    if (!isLoading && !isError && isSuccess && !error) {
+      toaster.push(
+        <Message centered showIcon type="success" closable>
+          {data?.message || "Successfully Created"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+      dispatch(resetPropertyList());
+      router.back();
+      resetReq();
+    }
+    if (!isLoading && isError && !isSuccess) {
+      toaster.push(
+        <Message centered showIcon type="error" closable>
+          {error?.message || "Failed to Created"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 3000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, router, resetReq, toaster]);
 
   return (
     <>
-      <section className="max-w-[1050px] bg-white max-lg:px-3 pb-20 mx-auto mb-5 mt-6 2xl:mx-auto lg:px-5 2xl:px-0">
+      <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="  w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
@@ -68,7 +117,7 @@ const TenantPetsInformationEdit = () => {
           </div>
 
           <div className="grid grid-cols-1  gap-10 mt-5">
-            {propertyList?.map((property, idx) => (
+            {propertyList?.propertyList?.map((property, idx) => (
               <div key={property.id}>
                 <div className="pb-2 flex justify-between items-center">
                   <h3 className="font-semibold">Property {idx + 1}</h3>
@@ -90,74 +139,35 @@ const TenantPetsInformationEdit = () => {
                       <h3 className="font-bold">Property Profile</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
                       {/* add photos */}
-                      <div className="col-span-5">
+                      <div className="col-span-1 md:col-span-6  ">
                         <div>
-                          <label className="text-sm font-medium">
-                            Add Photos
-                          </label>
+                          <label className="text-sm font-medium">Add Photos</label>
                           <div>
                             <AddPropertyAddPhotos property={property} />
                           </div>
                         </div>
                       </div>
-                      {/* number of beds and number of baths */}
-                      <div className="col-span-3">
-                        {/* number of beds */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Number of Beds
-                          </label>
-                          <InputNumber
-                            min={0}
-                            value={property.numOfBed}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "numOfBed",
-                                parseInt(value),
-                              )
-                            }
-                          />
-                        </div>
-                        {/* number of baths */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Number of Baths
-                          </label>
-                          <InputNumber
-                            min={0}
-                            value={property.numOfBath}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "numOfBath",
-                                parseInt(value),
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
+
                       {/* address and description */}
-                      <div className="col-span-4">
+                      <div className="col-span-1 md:col-span-6">
                         {/* address */}
                         <div>
                           <label className="text-sm font-medium">Address</label>
-                          <Input
-                            type="text"
-                            value={property.address}
-                            onChange={(value) =>
-                              handleInputChange(property.id, "address", value)
-                            }
-                          />
+                          <Input type="text" value={property.address} onChange={(value) => handleInputChange(property.id, "address", value)} />
                         </div>
                         {/* description */}
-                        <div>
-                          <label className="text-sm font-medium">
-                            Description
-                          </label>
-                          <Input
+                        <div className="h-[200px]">
+                          <label className="text-sm font-medium">Description</label>
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.description}
+                            handleInputChange={handleInputChange}
+                            field="description"
+                          />
+
+                          {/* <Input
                             as="textarea"
                             rows={6}
                             value={property.description}
@@ -168,7 +178,39 @@ const TenantPetsInformationEdit = () => {
                                 value,
                               )
                             }
-                          />
+                          /> */}
+                        </div>
+                      </div>
+                      <div className="col-span-1 lg:col-span-12">
+                        {/* number of beds and number of baths */}
+                        <div className="lg:flex lg:gap-10 max-lg:space-y-3  ">
+                          {/* number of beds */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">Number of Beds</label>
+                            <InputNumber
+                              min={0}
+                              value={property.numOfBed}
+                              onChange={(value) => handleInputChange(property.id, "numOfBed", parseInt(value))}
+                            />
+                          </div>
+                          {/* number of baths */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">Number of Baths</label>
+                            <InputNumber
+                              min={0}
+                              value={property.numOfBath}
+                              onChange={(value) => handleInputChange(property.id, "numOfBath", parseInt(value))}
+                            />
+                          </div>
+                          {/* Price of Property */}
+                          <div className="w-full">
+                            <label className="text-sm font-medium">Monthly Rent $</label>
+                            <InputNumber
+                              min={1}
+                              value={property.monthlyRent}
+                              onChange={(value) => handleInputChange(property.id, "monthlyRent", parseInt(value))}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -180,46 +222,30 @@ const TenantPetsInformationEdit = () => {
                       <h3 className="font-bold">Maintenance</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* maintenance covered by tenant */}
                       <div className="col-span-6">
                         <div>
-                          <label className="text-sm font-medium">
-                            Maintenance covered by Tenant
-                          </label>
+                          <label className="text-sm font-medium">Maintenance covered by Tenant</label>
                           <Input
                             as="textarea"
                             rows={8}
                             type="text"
                             value={property.maintenanceCoveredTenant}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "maintenanceCoveredTenant",
-                                value,
-                              )
-                            }
+                            onChange={(value) => handleInputChange(property.id, "maintenanceCoveredTenant", value)}
                           />
                         </div>
                       </div>
                       {/* maintenance covered by property owner */}
                       <div className="col-span-6">
                         <div>
-                          <label className="text-sm font-medium">
-                            Maintenance covered by Property Owner
-                          </label>
+                          <label className="text-sm font-medium">Maintenance covered by Property Owner</label>
                           <Input
                             as="textarea"
                             rows={8}
                             type="text"
                             value={property.maintenanceCoveredOwner}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "maintenanceCoveredOwner",
-                                value,
-                              )
-                            }
+                            onChange={(value) => handleInputChange(property.id, "maintenanceCoveredOwner", value)}
                           />
                         </div>
                       </div>
@@ -232,14 +258,12 @@ const TenantPetsInformationEdit = () => {
                       <h3 className="font-bold">Schools</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* What are the schools next to your house? */}
                       <div className="col-span-6">
                         <div>
-                          <label className="text-sm font-medium">
-                            What are the schools next to your house?
-                          </label>
-                          <Input
+                          <label className="text-sm font-medium">What are the schools next to your house?</label>
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -247,16 +271,20 @@ const TenantPetsInformationEdit = () => {
                             onChange={(value) =>
                               handleInputChange(property.id, "schools", value)
                             }
+                          /> */}
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.schools}
+                            handleInputChange={handleInputChange}
+                            field="schools"
                           />
                         </div>
                       </div>
                       {/* What are the universities next to your house? */}
                       <div className="col-span-6">
                         <div>
-                          <label className="text-sm font-medium">
-                            What are the universities next to your house?
-                          </label>
-                          <Input
+                          <label className="text-sm font-medium">What are the universities next to your house?</label>
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -268,11 +296,18 @@ const TenantPetsInformationEdit = () => {
                                 value,
                               )
                             }
+                          /> */}
+
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.universities}
+                            handleInputChange={handleInputChange}
+                            field="universities"
                           />
                         </div>
                       </div>
                     </div>
-                  </div>{" "}
+                  </div>
                   <hr />
                   {/* Pets --------------------------------- */}
                   <div>
@@ -280,14 +315,19 @@ const TenantPetsInformationEdit = () => {
                       <h3 className="font-bold">Pets</h3>
                     </div>
                     {/*   */}
-                    <div className="grid grid-cols-12 gap-10">
+                    <div className="grid lg:grid-cols-12 gap-10">
                       {/* What pets do you allow in your house?*/}
                       <div className="col-span-6">
                         <div>
-                          <label className="text-sm font-medium">
-                            What pets do you allow in your house?
-                          </label>
-                          <Input
+                          <label className="text-sm font-medium">What pets do you allow in your house?</label>
+                          <AddPropertyEditor
+                            propertyId={property?.id}
+                            value={property?.allowedPets}
+                            handleInputChange={handleInputChange}
+                            field="allowedPets"
+                          />
+
+                          {/* <Input
                             as="textarea"
                             rows={8}
                             type="text"
@@ -299,7 +339,7 @@ const TenantPetsInformationEdit = () => {
                                 value,
                               )
                             }
-                          />
+                          /> */}
                         </div>
                       </div>
                     </div>
@@ -308,7 +348,7 @@ const TenantPetsInformationEdit = () => {
               </div>
             ))}
           </div>
-
+          {/* button */}
           <div className="mt-10 border w-full flex  flex-col items-center justify-center py-5">
             <div>
               <button
@@ -323,31 +363,20 @@ const TenantPetsInformationEdit = () => {
                 >
                   <FaPlus size={20} />
                 </span>
-                <span className="hover:underline text-sm">
-                  Add New Property
-                </span>
+                <span className="hover:underline text-sm">Add New Property</span>
               </button>
             </div>
           </div>
 
           <div className="mt-10 flex justify-end">
-            <Button
-              size="lg"
-              className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-            >
-              Next
+            <Button loading={isLoading} onClick={handleCreateProperty} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
+              Click
             </Button>
           </div>
         </div>
       </section>
       {/* alert modal */}
-      <Modal
-        backdrop="static"
-        role="alertdialog"
-        open={isOpenModal}
-        onClose={handleClose}
-        size="xs"
-      >
+      <Modal backdrop="static" role="alertdialog" open={isOpenModal} onClose={handleClose} size="xs">
         <Modal.Body>
           <div className="px-10 pt-5 ">
             <div className="flex justify-center">
@@ -357,10 +386,7 @@ const TenantPetsInformationEdit = () => {
             </div>
             <div className="flex flex-col text-center  w-[80%] mx-auto items-center  justify-center space-y-2">
               <h2 className="text-xl font-semibold"> Are you sure ?</h2>
-              <p className=" text-sm  text-[#7c838a] font-sans ">
-                This action cannot be undone. All values associated with this
-                field will be lost.
-              </p>
+              <p className=" text-sm  text-[#7c838a] font-sans ">This action cannot be undone. All values associated with this field will be lost.</p>
             </div>
 
             <div className="space-y-2.5 mt-5">
@@ -373,10 +399,7 @@ const TenantPetsInformationEdit = () => {
               >
                 Delete Property
               </button>
-              <button
-                onClick={handleClose}
-                className="border py-2 font-medium hover:bg-gray-100  rounded-lg w-full"
-              >
+              <button onClick={handleClose} className="border py-2 font-medium hover:bg-gray-100  rounded-lg w-full">
                 Cancel
               </button>
             </div>
@@ -387,4 +410,4 @@ const TenantPetsInformationEdit = () => {
   );
 };
 
-export default TenantPetsInformationEdit;
+export default AddProperty;
