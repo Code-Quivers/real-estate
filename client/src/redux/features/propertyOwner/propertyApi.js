@@ -12,6 +12,16 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties],
     }),
+    updateProperty: builder.mutation({
+      query: ({ propertyId, data }) => ({
+        url: `/properties/update-property/${propertyId}`,
+        method: "POST",
+        data: data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.properties],
+    }),
+
     getAllAvailableUnits: builder.query({
       query: (arg) => ({
         url: `/properties/all`,
@@ -49,6 +59,7 @@ export const propertyApi = baseApi.injectEndpoints({
 
 export const {
   useAddPropertiesMutation,
+  useUpdatePropertyMutation,
   useGetAllAvailableUnitsQuery,
   useGetMyAllUnitsQuery,
   useAssignTenantToPropertyMutation,

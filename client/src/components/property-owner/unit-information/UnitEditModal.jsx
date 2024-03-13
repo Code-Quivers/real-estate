@@ -4,6 +4,8 @@ import { IoClose } from "react-icons/io5";
 import { Form, Input, InputNumber, Modal } from "rsuite";
 import UpdateImageUpload from "./UpdateImageUpload";
 import EditPropertyEditor from "./EditPropertyEditor";
+import { useUpdatePropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const UnitEditModal = ({ open, handleClose, editData }) => {
   const {
@@ -17,12 +19,47 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
       description: editData?.description, // Ensure it's a valid HTML or Delta format
     },
   });
+  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
 
-  const handleUpdateProperty = (updatedData) => {
+
+  // const handleUpdateProperty = (updatedData) => {
+  //   const { files } = updatedData;
+  //   console.log('handle update Property......')
+  //   console.log(updatedData)
+  //   // Rest of the update logic
+  // };
+
+  const handleUpdateProperty = async (updatedData) => {
+    // creating form data
     const { files } = updatedData;
 
-    // Rest of the update logic
+    const formData = new FormData();
+
+    const newPropertyList = {};
+    formData.append("data", newPropertyList);
+    // Append all files with the same key "files"
+    const oldFiles = [];
+    files?.forEach((file) => {
+      console.log(file)
+      if (file.url) {
+        const fileUrl = fileUrlKey();
+        let fileName = file.url.split(fileUrl)[1]
+        if (fileName.startsWith('//')) {
+          fileName = fileName.substring(2)
+          oldFiles.push(fileName)
+        }
+      } else {
+        formData.append("files", file.blobFile, file.name);
+      }
+    });
+
+    console.log(oldFiles);
+
+    // await addProperties({
+    //   data: formData,
+    // });
   };
+
   return (
     <div>
       <Modal
