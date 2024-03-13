@@ -21,23 +21,6 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
   const handleUpdateProperty = (updatedData) => {
     const { files } = updatedData;
 
-    const srv = files?.reduce(
-      (acc, file) => {
-        if (file && file.fileKey) {
-          if (file.fileKey.startsWith("default-") && file.url) {
-            const urlWithoutLocalhost = file.url.replace("http://localhost:7000/", "");
-            acc.oldFiles.push({ ...file, url: urlWithoutLocalhost });
-          } else if (file.fileKey.startsWith("selected-")) {
-            acc.newFiles.push(file);
-          }
-        }
-        return acc;
-      },
-      { oldFiles: [], newFiles: [] },
-    );
-
-    console.log("Old Files:", updatedData);
-
     // Rest of the update logic
   };
   return (
