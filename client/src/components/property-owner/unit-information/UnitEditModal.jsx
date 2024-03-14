@@ -21,7 +21,6 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
   });
   const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
 
-
   // const handleUpdateProperty = (updatedData) => {
   //   const { files } = updatedData;
   //   console.log('handle update Property......')
@@ -40,26 +39,24 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     files?.forEach((file) => {
       if (file.url) {
         const fileUrl = fileUrlKey();
-        let fileName = file.url.split(fileUrl)[1]
-        if (fileName.startsWith('//')) {
-          fileName = fileName.substring(2)
-
+        let fileName = file.url.split(fileUrl)[1];
+        if (fileName.startsWith("//")) {
+          fileName = fileName.substring(2);
+        } else {
+          fileName = fileName.substring(1);
         }
-        else {
-          fileName = fileName.substring(1)
-        }
-        oldFiles.push(fileName)
+        oldFiles.push(fileName);
       } else {
         formData.append("files", file.blobFile, file.name);
       }
     });
 
     console.log(oldFiles);
-    console.log(restData)
+    console.log(restData);
     const data = {
       ...restData,
       images: oldFiles,
-    }
+    };
     formData.append("data", data);
 
     // await addProperties({
@@ -223,16 +220,48 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                     <div className="grid lg:grid-cols-12 gap-10">
                       {/* maintenance covered by tenant */}
                       <div className="col-span-6">
-                        <div>
+                        <div className="">
                           <label className="text-sm font-medium">Maintenance covered by Tenant</label>
-                          <Input as="textarea" rows={4} type="text" defaultValue={editData?.maintenanceCoveredTenant} />
+                          <Controller
+                            name="maintenanceCoveredTenant"
+                            control={control}
+                            render={({ field }) => (
+                              <div className="rs-form-control-wrapper">
+                                <Input
+                                  className="!w-full"
+                                  {...field}
+                                  as="textarea"
+                                  rows={4}
+                                  type="text"
+                                  defaultValue={editData?.maintenanceCoveredTenant}
+                                />
+                              </div>
+                            )}
+                          />
                         </div>
                       </div>
                       {/* maintenance covered by property owner */}
                       <div className="col-span-6">
                         <div>
                           <label className="text-sm font-medium">Maintenance covered by Property Owner</label>
-                          <Input as="textarea" rows={4} type="text" defaultValue={editData?.maintenanceCoveredOwner} />
+                          <div className="w-full  ">
+                            <Controller
+                              name="maintenanceCoveredOwner"
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <Input
+                                    className="!w-full"
+                                    {...field}
+                                    as="textarea"
+                                    rows={4}
+                                    type="text"
+                                    defaultValue={editData?.maintenanceCoveredOwner}
+                                  />
+                                </div>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -250,7 +279,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                         <div>
                           <label className="text-sm font-medium">What are the schools next to your house?</label>
 
-                          <EditPropertyEditor defaultValue={editData?.schools} />
+                          <div className="w-full  ">
+                            <Controller
+                              name="schools"
+                              defaultValue={editData?.schools}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <EditPropertyEditor {...field} defaultValue={editData?.schools} />
+                                </div>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                       {/* What are the universities next to your house? */}
@@ -258,7 +298,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                         <div>
                           <label className="text-sm font-medium">What are the universities next to your house?</label>
 
-                          <EditPropertyEditor defaultValue={editData?.universities} />
+                          <div className="w-full  ">
+                            <Controller
+                              name="universities"
+                              defaultValue={editData?.universities}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <EditPropertyEditor {...field} defaultValue={editData?.universities} />
+                                </div>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -275,8 +326,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                       <div className="col-span-6">
                         <div>
                           <label className="text-sm font-medium">What pets do you allow in your house?</label>
-
-                          <EditPropertyEditor defaultValue={editData?.allowedPets} />
+                          <div className="w-full  ">
+                            <Controller
+                              name="allowedPets"
+                              defaultValue={editData?.allowedPets}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <EditPropertyEditor {...field} defaultValue={editData?.allowedPets} />
+                                </div>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
