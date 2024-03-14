@@ -4,6 +4,8 @@ import { IoClose } from "react-icons/io5";
 import { Form, Input, InputNumber, Modal } from "rsuite";
 import UpdateImageUpload from "./UpdateImageUpload";
 import EditPropertyEditor from "./EditPropertyEditor";
+import { useUpdatePropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const UnitEditModal = ({ open, handleClose, editData }) => {
   const {
@@ -17,29 +19,54 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
       description: editData?.description, // Ensure it's a valid HTML or Delta format
     },
   });
+  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
 
-  const handleUpdateProperty = (updatedData) => {
-    const { files } = updatedData;
 
-    const srv = files?.reduce(
-      (acc, file) => {
-        if (file && file.fileKey) {
-          if (file.fileKey.startsWith("default-") && file.url) {
-            const urlWithoutLocalhost = file.url.replace("http://localhost:7000/", "");
-            acc.oldFiles.push({ ...file, url: urlWithoutLocalhost });
-          } else if (file.fileKey.startsWith("selected-")) {
-            acc.newFiles.push(file);
-          }
+  // const handleUpdateProperty = (updatedData) => {
+  //   const { files } = updatedData;
+  //   console.log('handle update Property......')
+  //   console.log(updatedData)
+  //   // Rest of the update logic
+  // };
+
+  const handleUpdateProperty = async (updatedData) => {
+    // creating form data
+    const { files, ...restData } = updatedData;
+
+    const formData = new FormData();
+
+    // Append all files with the same key "files"
+    const oldFiles = [];
+    files?.forEach((file) => {
+      if (file.url) {
+        const fileUrl = fileUrlKey();
+        let fileName = file.url.split(fileUrl)[1]
+        if (fileName.startsWith('//')) {
+          fileName = fileName.substring(2)
+
         }
-        return acc;
-      },
-      { oldFiles: [], newFiles: [] },
-    );
+        else {
+          fileName = fileName.substring(1)
+        }
+        oldFiles.push(fileName)
+      } else {
+        formData.append("files", file.blobFile, file.name);
+      }
+    });
 
-    console.log("Old Files:", updatedData);
+    console.log(oldFiles);
+    console.log(restData)
+    const data = {
+      ...restData,
+      images: oldFiles,
+    }
+    formData.append("data", data);
 
-    // Rest of the update logic
+    // await addProperties({
+    //   data: formData,
+    // });
   };
+
   return (
     <div>
       <Modal
