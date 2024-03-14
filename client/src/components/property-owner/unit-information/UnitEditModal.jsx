@@ -31,29 +31,36 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
 
   const handleUpdateProperty = async (updatedData) => {
     // creating form data
-    const { files } = updatedData;
+    const { files, ...restData } = updatedData;
 
     const formData = new FormData();
 
-    const newPropertyList = {};
-    formData.append("data", newPropertyList);
     // Append all files with the same key "files"
     const oldFiles = [];
     files?.forEach((file) => {
-      console.log(file)
       if (file.url) {
         const fileUrl = fileUrlKey();
         let fileName = file.url.split(fileUrl)[1]
         if (fileName.startsWith('//')) {
           fileName = fileName.substring(2)
-          oldFiles.push(fileName)
+
         }
+        else {
+          fileName = fileName.substring(1)
+        }
+        oldFiles.push(fileName)
       } else {
         formData.append("files", file.blobFile, file.name);
       }
     });
 
     console.log(oldFiles);
+    console.log(restData)
+    const data = {
+      ...restData,
+      images: oldFiles,
+    }
+    formData.append("data", data);
 
     // await addProperties({
     //   data: formData,
