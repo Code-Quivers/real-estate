@@ -16,17 +16,14 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     reset: resetForm,
   } = useForm({
     defaultValues: {
-      description: editData?.description, // Ensure it's a valid HTML or Delta format
+      // description: editData?.description,
+      // universities: editData?.universities,
+      schools: editData?.schools,
+      // allowedPets: editData?.allowedPets,
     },
   });
-  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
 
-  // const handleUpdateProperty = (updatedData) => {
-  //   const { files } = updatedData;
-  //   console.log('handle update Property......')
-  //   console.log(updatedData)
-  //   // Rest of the update logic
-  // };
+  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
 
   const handleUpdateProperty = async (updatedData) => {
     // creating form data
@@ -70,9 +67,13 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
         size="xl"
         dialogAs="div"
         overflow={false}
-        className="!max-w-7xl bg-white border rounded-xl mx-auto w-full mt-4 "
+        className="!max-w-7xl bg-white border rounded-xl
+       mx-auto w-full  mt-2 2xl:mt-5 "
         open={open}
-        onClose={handleClose}
+        onClose={() => {
+          handleClose();
+          resetForm();
+        }}
       >
         <Modal.Body className=" ">
           <div className="flex px-5 justify-between items-center">
@@ -100,6 +101,85 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                 </div>
                 {/* description */}
                 <div className="lg:col-span-3">
+                  {/*  beds baths rent*/}
+                  <div className="col-span-6">
+                    {/* number of beds and number of baths */}
+                    <div className="md:grid  md:grid-cols-2 lg:grid-cols-3 items-center  lg:gap-10 ">
+                      {/* number of beds */}
+                      <div className="w-full">
+                        <label className="text-sm font-medium">Number of Beds</label>
+
+                        <Controller
+                          name="numOfBed"
+                          control={control}
+                          rules={{
+                            min: {
+                              value: 0,
+                              message: "Num of Bed must be getter than 0",
+                            },
+                          }}
+                          render={({ field }) => (
+                            <div className="rs-form-control-wrapper ">
+                              <InputNumber className="!w-full" {...field} min={0} defaultValue={editData?.numOfBed} />{" "}
+                              <Form.ErrorMessage show={(!!errors?.numOfBed && !!errors?.numOfBed?.message) || false} placement="topEnd">
+                                {errors?.numOfBed?.message}
+                              </Form.ErrorMessage>
+                            </div>
+                          )}
+                        />
+                      </div>
+                      {/* number of baths */}
+                      <div className="w-full">
+                        <label className="text-sm font-medium">Number of Baths</label>
+                        <Controller
+                          name="numOfBath"
+                          control={control}
+                          rules={{
+                            min: {
+                              value: 0,
+                              message: "Num of Bath must be getter than 0",
+                            },
+                          }}
+                          render={({ field }) => (
+                            <div className="rs-form-control-wrapper ">
+                              <InputNumber className="!w-full  " {...field} min={0} defaultValue={editData?.numOfBath} />{" "}
+                              <Form.ErrorMessage show={(!!errors?.numOfBath && !!errors?.numOfBath?.message) || false} placement="topEnd">
+                                {errors?.numOfBath?.message}
+                              </Form.ErrorMessage>
+                            </div>
+                          )}
+                        />
+                      </div>
+                      {/* Price of Property */}
+                      <div className="w-full">
+                        <label className="text-sm font-medium">Monthly Rent $</label>
+
+                        <Controller
+                          name="monthlyRent"
+                          control={control}
+                          rules={{
+                            min: {
+                              value: 1,
+                              message: "Monthly Rent must be getter than 0",
+                            },
+                          }}
+                          render={({ field }) => (
+                            <div className="rs-form-control-wrapper ">
+                              <InputNumber className="!w-full" {...field} min={0} defaultValue={editData?.monthlyRent} />
+                              <Form.ErrorMessage show={(!!errors?.monthlyRent && !!errors?.monthlyRent?.message) || false} placement="topEnd">
+                                {errors?.monthlyRent?.message}
+                              </Form.ErrorMessage>
+                            </div>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Address and description */}
+
+                <div className="col-span-6">
                   {/* Address */}
                   <div>
                     <label htmlFor="">Address</label>
@@ -113,100 +193,23 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                       )}
                     />
                   </div>
-                  {/* Description */}
 
-                  <div>
-                    {/* description */}
-                    <div className="">
-                      <label className="text-sm font-medium">Description</label>
-                      <Controller
-                        name="description"
-                        control={control}
-                        defaultValue={editData?.description}
-                        render={({ field }) => (
-                          <div className="rs-form-control-wrapper">
-                            <EditPropertyEditor field={field} defaultValue={editData?.description} />
-                          </div>
-                        )}
-                      />
-                    </div>
+                  {/* description */}
+                  <div className="">
+                    <label className="text-sm font-medium">Description</label>
+                    <Controller
+                      name="description"
+                      control={control}
+                      defaultValue={editData?.description}
+                      render={({ field }) => (
+                        <div className="rs-form-control-wrapper">
+                          <EditPropertyEditor field={field} defaultValue={editData?.description} />
+                        </div>
+                      )}
+                    />
                   </div>
                 </div>
 
-                {/*  beds baths rent*/}
-                <div className="col-span-6  ">
-                  {/* number of beds and number of baths */}
-                  <div className="md:grid  md:grid-cols-2 lg:grid-cols-3 items-center  lg:gap-10 ">
-                    {/* number of beds */}
-                    <div className="w-full">
-                      <label className="text-sm font-medium">Number of Beds</label>
-
-                      <Controller
-                        name="numOfBed"
-                        control={control}
-                        rules={{
-                          min: {
-                            value: 0,
-                            message: "Num of Bed must be getter than 0",
-                          },
-                        }}
-                        render={({ field }) => (
-                          <div className="rs-form-control-wrapper ">
-                            <InputNumber className="!w-full" {...field} min={0} defaultValue={editData?.numOfBed} />{" "}
-                            <Form.ErrorMessage show={(!!errors?.numOfBed && !!errors?.numOfBed?.message) || false} placement="topEnd">
-                              {errors?.numOfBed?.message}
-                            </Form.ErrorMessage>
-                          </div>
-                        )}
-                      />
-                    </div>
-                    {/* number of baths */}
-                    <div className="w-full">
-                      <label className="text-sm font-medium">Number of Baths</label>
-                      <Controller
-                        name="numOfBath"
-                        control={control}
-                        rules={{
-                          min: {
-                            value: 0,
-                            message: "Num of Bath must be getter than 0",
-                          },
-                        }}
-                        render={({ field }) => (
-                          <div className="rs-form-control-wrapper ">
-                            <InputNumber className="!w-full" {...field} min={0} defaultValue={editData?.numOfBath} />{" "}
-                            <Form.ErrorMessage show={(!!errors?.numOfBath && !!errors?.numOfBath?.message) || false} placement="topEnd">
-                              {errors?.numOfBath?.message}
-                            </Form.ErrorMessage>
-                          </div>
-                        )}
-                      />
-                    </div>
-                    {/* Price of Property */}
-                    <div className="w-full">
-                      <label className="text-sm font-medium">Monthly Rent $</label>
-
-                      <Controller
-                        name="monthlyRent"
-                        control={control}
-                        rules={{
-                          min: {
-                            value: 1,
-                            message: "Monthly Rent must be getter than 0",
-                          },
-                        }}
-                        render={({ field }) => (
-                          <div className="rs-form-control-wrapper ">
-                            <InputNumber className="!w-full" {...field} min={0} defaultValue={editData?.monthlyRent} />
-                            <Form.ErrorMessage show={(!!errors?.monthlyRent && !!errors?.monthlyRent?.message) || false} placement="topEnd">
-                              {errors?.monthlyRent?.message}
-                            </Form.ErrorMessage>
-                          </div>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </div>
                 {/* maintenance  */}
 
                 <div className="col-span-6 space-y-2.5">
@@ -282,11 +285,11 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                           <div className="w-full  ">
                             <Controller
                               name="schools"
-                              defaultValue={editData?.schools}
+                              // defaultValue={editData?.schools}
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor {...field} defaultValue={editData?.schools} />
+                                  <EditPropertyEditor field={field} defaultValue={editData?.schools} />
                                 </div>
                               )}
                             />
@@ -305,7 +308,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor {...field} defaultValue={editData?.universities} />
+                                  <EditPropertyEditor field={field} defaultValue={editData?.universities} />
                                 </div>
                               )}
                             />
@@ -333,7 +336,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor {...field} defaultValue={editData?.allowedPets} />
+                                  <EditPropertyEditor field={field} defaultValue={editData?.allowedPets} />
                                 </div>
                               )}
                             />
