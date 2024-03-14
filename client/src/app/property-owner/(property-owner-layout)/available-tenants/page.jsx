@@ -5,11 +5,10 @@ import { Input, InputGroup, InputNumber, Loader, Pagination, Progress } from "rs
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { useState } from "react";
-
-import AvailableTenantsModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
-import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import { useDebounced } from "@/redux/hook";
 import { fileUrlKey } from "@/configs/envConfig";
+import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
+import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 
 const PropertyOwnerServiceProviders = () => {
   const query = {};
@@ -49,7 +48,7 @@ const PropertyOwnerServiceProviders = () => {
   return (
     <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
       <div className="flex justify-center">
-        <h2 className="text-3xl ">Available Tenants</h2>
+        <h2 className="text-3xl ">Available Tenants | Total {allTenantsLists?.data?.meta?.total}</h2>
       </div>
       {/* search with price section start */}
       <div className="">
@@ -155,7 +154,7 @@ const PropertyOwnerServiceProviders = () => {
       </div>
 
       <>
-        <AvailableTenantsModal isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
+        <AvailableTenantsDetailModal isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
       </>
     </section>
   );
