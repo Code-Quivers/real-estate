@@ -22,7 +22,4 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetPropertyOwnerMyProfileQuery,
-  useUpdatePropertyOwnerProfileMutation,
-} = propertyOwnerApi;
+export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation } = propertyOwnerApi;

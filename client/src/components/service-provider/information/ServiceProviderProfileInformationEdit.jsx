@@ -5,13 +5,11 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Form, Input } from "rsuite";
 import ServiceProviderProfilePhotoUpload from "./ServiceProviderProfilePhotoUpload";
+import Link from "next/link";
 
 const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
-  const [
-    updateMyServiceProviderMyProfile,
-    { isLoading, isError, isSuccess, error },
-  ] = useUpdateServiceProviderMyProfileMutation();
+  const [updateMyServiceProviderMyProfile, { isLoading, isError, isSuccess, error }] = useUpdateServiceProviderMyProfileMutation();
   const {
     control,
     handleSubmit,
@@ -53,11 +51,7 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               render={({ field }) => (
                 <div className="space-y-1">
                   <label className=" font-medium text-lg">Company Name</label>
-                  <Input
-                    defaultValue={myProfileData?.companyName}
-                    {...field}
-                    type="text"
-                  />
+                  <Input defaultValue={myProfileData?.companyName} {...field} type="text" />
                 </div>
               )}
             />
@@ -67,11 +61,7 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               render={({ field }) => (
                 <div className="space-y-1">
                   <label className="text-lg font-medium">Company Address</label>
-                  <Input
-                    defaultValue={myProfileData?.companyAddress}
-                    {...field}
-                    type="text"
-                  />
+                  <Input defaultValue={myProfileData?.companyAddress} {...field} type="text" />
                 </div>
               )}
             />
@@ -83,14 +73,8 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               control={control}
               render={({ field }) => (
                 <div className="space-y-1">
-                  <label className="text-lg font-medium">
-                    Company Phone Number
-                  </label>
-                  <Input
-                    defaultValue={myProfileData?.companyPhoneNumber}
-                    {...field}
-                    type="text"
-                  />
+                  <label className="text-lg font-medium">Company Phone Number</label>
+                  <Input defaultValue={myProfileData?.companyPhoneNumber} {...field} type="text" />
                 </div>
               )}
             />
@@ -105,24 +89,10 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               }}
               render={({ field }) => (
                 <div className="space-y-1">
-                  <label className="text-lg font-medium">
-                    Company Email Address
-                  </label>
+                  <label className="text-lg font-medium">Company Email Address</label>
                   <div className="rs-form-control-wrapper w-full ">
-                    <Input
-                      className="!w-full"
-                      defaultValue={myProfileData?.companyEmailAddress}
-                      {...field}
-                      type="text"
-                    />
-                    <Form.ErrorMessage
-                      show={
-                        (!!errors?.companyEmailAddress &&
-                          !!errors?.companyEmailAddress?.message) ||
-                        false
-                      }
-                      placement="topEnd"
-                    >
+                    <Input className="!w-full" defaultValue={myProfileData?.companyEmailAddress} {...field} type="text" />
+                    <Form.ErrorMessage show={(!!errors?.companyEmailAddress && !!errors?.companyEmailAddress?.message) || false} placement="topEnd">
                       {errors?.companyEmailAddress?.message}
                     </Form.ErrorMessage>
                   </div>
@@ -135,16 +105,24 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
             <Controller
               name="file"
               control={control}
-              render={({ field }) => (
-                <ServiceProviderProfilePhotoUpload
-                  defaultImage={myProfileData?.profileImage}
-                  field={field}
-                />
-              )}
+              render={({ field }) => <ServiceProviderProfilePhotoUpload defaultImage={myProfileData?.profileImage} field={field} />}
             />
           </div>
         </div>
-        <div className="mt-10 flex justify-end">
+
+        <div className=" flex justify-end gap-5">
+          <Button
+            as={Link}
+            href="/service-provider"
+            type="button"
+            className={`!px-10 whitespace-pre-wrap  !py-5 !bg-[#ffffff]  
+            hover:!bg-[#0a0a0a]
+            !text-white !rounded-2xl `}
+            size="lg"
+            appearance="link"
+          >
+            CANCEL
+          </Button>
           <Button
             loading={isLoading}
             type="submit"

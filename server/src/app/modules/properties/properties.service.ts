@@ -5,7 +5,7 @@ import { Request } from "express";
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { Prisma, Property } from "@prisma/client";
+import { OrderRequest, Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
 import {
   IAssignServiceProviderToProperty,
@@ -191,16 +191,19 @@ const getPropertyOwnerAllProperty = async (
       include: {
         owner: true,
         Tenant: true,
-        serviceProviders: {
-          include: {
-            Service: true,
-            user: {
-              select: {
-                email: true,
-              },
-            },
-          },
-        },
+        _count: true,
+        orderRequest: true,
+
+        // serviceProviders: {
+        //   include: {
+        //     Service: true,
+        //     user: {
+        //       select: {
+        //         email: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
       where: {
         ...whereConditions,
@@ -325,7 +328,7 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
     if (!isOwner) {
       throw new ApiError(
-        httpStatus.UNAUTHORIZED,
+        httpStatus.BAD_REQUEST,
         "You are not the owner of this property or this property does not exist",
       );
     }
@@ -401,12 +404,12 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 const assignServiceProviderToProperty = async (
   profileId: string,
   payload: IAssignServiceProviderToProperty,
-): Promise<Property> => {
+): Promise<OrderRequest> => {
   const { propertyId, serviceProviderId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    // check if owner or not
-    const isOwner = await transactionClient.property.findUnique({
+    // Check if the user is the owner of the property
+    const isOwner = await transactionClient.property.findFirst({
       where: {
         propertyId,
         ownerId: profileId,
@@ -415,20 +418,16 @@ const assignServiceProviderToProperty = async (
 
     if (!isOwner) {
       throw new ApiError(
-        httpStatus.UNAUTHORIZED,
+        httpStatus.BAD_REQUEST,
         "You are not the owner of this property or this property does not exist",
       );
     }
 
-    //
-    const isAlreadyAssigned = await prisma.property.findUnique({
+    // Check if the property is already assigned to the serviceProvider
+    const isAlreadyAssigned = await transactionClient.orderRequest.findFirst({
       where: {
         propertyId,
-        serviceProviders: {
-          some: {
-            serviceProviderId,
-          },
-        },
+        serviceProviderId,
       },
     });
 
@@ -436,17 +435,11 @@ const assignServiceProviderToProperty = async (
       throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
     }
 
-    // update logic
-    const res = await transactionClient.property.update({
-      where: {
-        propertyId,
-      },
+    // Assign the serviceProvider to the property
+    const res = await transactionClient.orderRequest.create({
       data: {
-        serviceProviders: {
-          connect: {
-            serviceProviderId,
-          },
-        },
+        propertyId,
+        serviceProviderId,
       },
     });
 

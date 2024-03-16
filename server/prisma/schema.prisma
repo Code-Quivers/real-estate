@@ -93,7 +93,7 @@ model Tenant {
 }
 
 model ServiceProvider {
-  serviceProviderId   String      @id @default(uuid())
+  serviceProviderId   String        @id @default(uuid())
   firstName           String
   lastName            String
   profileImage        String?
@@ -102,24 +102,24 @@ model ServiceProvider {
   companyAddress      String?
   companyPhoneNumber  String?
   companyEmailAddress String?
-  userId              String      @unique
-  createdAt           DateTime    @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime    @updatedAt @db.Timestamptz(0)
-  user                User        @relation(fields: [userId], references: [userId])
+  userId              String        @unique
+  createdAt           DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime      @updatedAt @db.Timestamptz(0)
+  user                User          @relation(fields: [userId], references: [userId])
   Service             Service?
   SavedItem           SavedItem[]
-  properties          Property[]  @relation("ServiceProvidersOnProperties")
+  orderRequest        OrderRequest?
 
   @@map("serviceProviders")
 }
 
 model Property {
-  propertyId               String            @id @default(uuid())
-  owner                    PropertyOwner     @relation(fields: [ownerId], references: [propertyOwnerId])
+  propertyId               String         @id @default(uuid())
+  owner                    PropertyOwner  @relation(fields: [ownerId], references: [propertyOwnerId])
   ownerId                  String
-  numOfBed                 Int               @default(1)
-  numOfBath                Int               @default(1)
-  monthlyRent              Int               @default(1)
+  numOfBed                 Int            @default(1)
+  numOfBath                Int            @default(1)
+  monthlyRent              Int            @default(1)
   address                  String
   description              String
   maintenanceCoveredTenant String
@@ -128,14 +128,27 @@ model Property {
   universities             String
   allowedPets              String
   images                   String[]
-  createdAt                DateTime          @default(now())
-  updatedAt                DateTime          @updatedAt
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
   SavedItem                SavedItem[]
   Tenant                   Tenant?
-  isRented                 Boolean           @default(false)
-  serviceProviders         ServiceProvider[] @relation("ServiceProvidersOnProperties")
+  isRented                 Boolean        @default(false)
+  orderRequest             OrderRequest[]
 
   @@map("properties")
+}
+
+model OrderRequest {
+  pendingOrderId    String           @id @default(uuid())
+  propertyId        String
+  property          Property         @relation(fields: [propertyId], references: [propertyId])
+  isApproved        Boolean          @default(false)
+  serviceProviderId String?          @unique
+  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@map("order_requests")
 }
 
 model Service {
