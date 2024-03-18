@@ -15,7 +15,7 @@ export const propertyApi = baseApi.injectEndpoints({
     updateProperty: builder.mutation({
       query: ({ propertyId, data }) => ({
         url: `/properties/update-property/${propertyId}`,
-        method: "POST",
+        method: "PATCH",
         data: data,
         contentType: "multipart/form-data",
       }),
