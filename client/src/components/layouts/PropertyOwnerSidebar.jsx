@@ -16,13 +16,7 @@ const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const {
-    data: dataResponse,
-    isError,
-    isLoading,
-    isSuccess,
-    error,
-  } = useGetPropertyOwnerMyProfileQuery();
+  const { data: dataResponse, isError, isLoading, isSuccess, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
 
@@ -50,27 +44,18 @@ const PropertyOwnerSidebar = () => {
 
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
-      <Sidenav
-        expanded={true}
-        className="h-screen !bg-[#29429f]"
-        appearance="inverse"
-      >
+      <Sidenav expanded={true} className="h-screen !bg-[#29429f]" appearance="inverse">
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
               width={120}
               height={120}
-              src={
-                myProfileData?.profileImage
-                  ? `${fileUrlKey()}/${myProfileData?.profileImage}`
-                  : profileLogo
-              }
+              src={myProfileData?.profileImage ? `${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
               className="w-[120px] h-[120px] object-cover rounded-full select-none"
               alt="Profile Image"
             />
             <h2 className="text-white mt-3 ">
-              {myProfileData?.firstName ?? "--"}{" "}
-              {myProfileData?.lastName ?? "--"}
+              {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
             </h2>
           </div>
         </Sidenav.Header>
@@ -81,9 +66,7 @@ const PropertyOwnerSidebar = () => {
               href="/property-owner"
               eventKey="1"
               icon={<DashboardIcon />}
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderTop: "2px solid #000",
@@ -95,10 +78,7 @@ const PropertyOwnerSidebar = () => {
               eventKey="2"
               as={Link}
               href="/property-owner/available-tenants"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/available-tenants" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/available-tenants" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -109,10 +89,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/saved-tenants"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/saved-tenants" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-tenants" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="3"
               icon={<GroupIcon />}
@@ -122,22 +99,14 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/unit-information"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/unit-information" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/unit-information" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
               icon={<GroupIcon />}
             >
               Unit Information
             </Nav.Item>
-            <Nav.Item
-              style={{ backgroundColor: "#29429f" }}
-              eventKey="5"
-              className="hover:!bg-[#1b3697]"
-              icon={<GroupIcon />}
-            >
+            <Nav.Item style={{ backgroundColor: "#29429f" }} eventKey="5" className="hover:!bg-[#1b3697]" icon={<GroupIcon />}>
               Documents
             </Nav.Item>
             <Nav.Item
@@ -153,10 +122,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/service-providers"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/service-providers" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/service-providers" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="7"
               icon={<GroupIcon />}
@@ -166,10 +132,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/saved-service-providers"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/saved-service-providers" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-service-providers" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="8"
               icon={<GroupIcon />}
@@ -179,9 +142,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/reports"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/reports" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/reports" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -193,9 +154,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/settings"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/settings" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -207,10 +166,7 @@ const PropertyOwnerSidebar = () => {
             <Nav.Item
               as={Link}
               href="/property-owner/maintenance-requests"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/maintenance-requests" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -221,10 +177,7 @@ const PropertyOwnerSidebar = () => {
             </Nav.Item>
             <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/maintenance-requests" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",

@@ -13,15 +13,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useLoginUserMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
-import {
-  getUserInfo,
-  isLoggedIn,
-  storeUserInfo,
-} from "@/hooks/services/auth.service";
-import {
-  LoginErrorMessage,
-  LoginSuccessMessage,
-} from "@/components/toasts/auth/authToastMessages";
+import { getUserInfo, isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
+import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
 
 const style = {
   width: "100%",
@@ -31,8 +24,7 @@ const style = {
 
 const LoginPage = () => {
   const [visible, setVisible] = useState(false);
-  const [loginUser, { isLoading, error, isSuccess, isError, data }] =
-    useLoginUserMutation();
+  const [loginUser, { isLoading, error, isSuccess, isError, data }] = useLoginUserMutation();
   const router = useRouter();
   const isAlreadyLoggedIn = isLoggedIn();
   const userDetails = getUserInfo();
@@ -57,10 +49,8 @@ const LoginPage = () => {
   useEffect(() => {
     if (isAlreadyLoggedIn) {
       if (userDetails?.role === "TENANT") router.push("/tenant");
-      else if (userDetails?.role === "PROPERTY_OWNER")
-        router.push("/property-owner");
-      else if (userDetails?.role === "SERVICE_PROVIDER")
-        router.push("/service-provider");
+      else if (userDetails?.role === "PROPERTY_OWNER") router.push("/property-owner");
+      else if (userDetails?.role === "SERVICE_PROVIDER") router.push("/service-provider");
     }
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/tenant");
@@ -75,24 +65,12 @@ const LoginPage = () => {
         placement: "bottomStart",
       });
     }
-  }, [
-    isAlreadyLoggedIn,
-    userDetails,
-    isSuccess,
-    isLoading,
-    isError,
-    error,
-    data,
-  ]);
+  }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
 
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
       <div className="bg-[#29429f] max-md:hidden  col-span-1 w-full  flex justify-center items-center">
-        <Image
-          className="object-cover h-screen"
-          src={tenantLoginImage}
-          alt="Tenant Login Image"
-        />
+        <Image className="object-cover h-screen" src={tenantLoginImage} alt="Tenant Login Image" />
       </div>
       <div className="w-full  col-span-1  ">
         <div className="flex justify-center">
@@ -115,20 +93,9 @@ const LoginPage = () => {
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
-                        <Input
-                          {...field}
-                          type="text"
-                          placeholder="Username or Email"
-                        />
+                        <Input {...field} type="text" placeholder="Username or Email" />
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.emailOrUsername &&
-                            !!errors?.emailOrUsername?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.emailOrUsername && !!errors?.emailOrUsername?.message) || false} placement="topEnd">
                         {errors?.emailOrUsername?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -154,22 +121,10 @@ const LoginPage = () => {
                         <InputGroup.Addon>
                           <FaLock size={20} />
                         </InputGroup.Addon>
-                        <Input
-                          {...field}
-                          type={visible ? "text" : "password"}
-                          placeholder="Password"
-                        />
-                        <InputGroup.Button onClick={() => setVisible(!visible)}>
-                          {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                        </InputGroup.Button>
+                        <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
+                        <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage
-                        show={
-                          (!!errors?.password && !!errors?.password?.message) ||
-                          false
-                        }
-                        placement="topEnd"
-                      >
+                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -178,13 +133,7 @@ const LoginPage = () => {
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <Button
-                loading={isLoading}
-                type="submit"
-                size="lg"
-                className="!rounded-full !px-8 !py-3.5 "
-                appearance="default"
-              >
+              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign In
               </Button>
             </div>

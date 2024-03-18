@@ -13,6 +13,7 @@ import {
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
+  IRemoveTenantFromProperty,
 } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -323,7 +324,6 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
 };
 
 // ! assign tenant user to property or unit -----------------
-
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;
 
@@ -463,6 +463,65 @@ const assignServiceProviderToProperty = async (
   return result;
 };
 
+// ! remove  tenant user from property or unit -----------------
+const removeTenantFromProperty = async (profileId: string, payload: IRemoveTenantFromProperty) => {
+  const { propertyId, tenantId } = payload;
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // check if owner or not
+    const isOwner = await transactionClient.property.findUnique({
+      where: {
+        propertyId,
+        ownerId: profileId,
+      },
+    });
+
+    if (!isOwner) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "You are not the owner of this property or this property does not exist",
+      );
+    }
+
+    // check is property  booked or not by this tenant
+
+    const isPropertyBooked = await prisma.property.findUnique({
+      where: {
+        propertyId,
+        Tenant: { tenantId },
+        isRented: true,
+      },
+    });
+
+    if (!isPropertyBooked) {
+      throw new ApiError(httpStatus.CONFLICT, "Property is not assigned by this tenant");
+    }
+
+    // update logic
+    const res = await transactionClient.tenant.update({
+      where: {
+        tenantId, // use tenantId here for the update
+      },
+      data: {
+        property: {
+          delete: true,
+          update: {
+            isRented: false,
+          },
+        },
+      },
+    });
+
+    if (!res) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant remove Failed");
+    }
+
+    return res;
+  });
+
+  return result;
+};
+
 export const PropertiesService = {
   createNewProperty,
   getAllProperty,
@@ -471,4 +530,5 @@ export const PropertiesService = {
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
+  removeTenantFromProperty,
 };

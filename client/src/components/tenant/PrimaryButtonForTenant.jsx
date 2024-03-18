@@ -1,11 +1,6 @@
 import { Button } from "rsuite";
 
-const PrimaryButtonForTenant = ({
-  title,
-  btnLoading,
-  btnType,
-  onClickHandler,
-}) => {
+const PrimaryButtonForTenant = ({ title, btnLoading, btnType, onClickHandler }) => {
   return (
     <Button
       onClick={onClickHandler ?? null}

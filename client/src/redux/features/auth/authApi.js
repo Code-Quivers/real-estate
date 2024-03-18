@@ -42,9 +42,4 @@ export const AuthenticationApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useTenantSignUpMutation,
-  useLoginUserMutation,
-  useServiceProviderSignUpMutation,
-  usePropertyOwnerSignUpMutation,
-} = AuthenticationApi;
+export const { useTenantSignUpMutation, useLoginUserMutation, useServiceProviderSignUpMutation, usePropertyOwnerSignUpMutation } = AuthenticationApi;

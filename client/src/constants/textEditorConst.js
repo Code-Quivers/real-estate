@@ -1,14 +1,4 @@
-export const formats = [
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "indent",
-  "list",
-  "bullet",
-  "size",
-  "align",
-];
+export const formats = ["bold", "italic", "underline", "strike", "indent", "list", "bullet", "size", "align"];
 
 export const modules = {
   toolbar: [

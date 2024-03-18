@@ -21,12 +21,7 @@ const SavedUnitsCard = () => {
             key={Math.random()}
             className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
           >
-            <Image
-              width="full"
-              objectFit="cover"
-              src={unit.image}
-              alt="Tenant avialable units"
-            />
+            <Image width="full" objectFit="cover" src={unit.image} alt="Tenant avialable units" />
             <div className="flex justify-between items-start mt-2 px-2.5 py-1">
               <div>
                 <h2 className="text-sm">{unit.price}</h2>
@@ -47,12 +42,7 @@ const SavedUnitsCard = () => {
         ))}
       </div>
       {/* modal */}
-      <SavedUnitsModal
-        open={modalOpen}
-        setOpen={setModalOpen}
-        availableUnits={availableUnits}
-        units={units}
-      />
+      <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} />
       {/* Available units card end */}
     </div>
   );

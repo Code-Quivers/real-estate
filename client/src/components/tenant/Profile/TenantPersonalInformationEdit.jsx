@@ -6,14 +6,7 @@ import TenantPersonalProfileUpload from "./TenantPersonalPhotoUpload";
 import moment from "moment";
 import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 
-const TenantPersonalInformationEdit = ({
-  control,
-  setFileValue,
-  fileValue,
-  imagePreview,
-  setImagePreview,
-  responseData,
-}) => {
+const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, imagePreview, setImagePreview, responseData }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -34,12 +27,7 @@ const TenantPersonalInformationEdit = ({
                 control={control}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <Input
-                      {...field}
-                      defaultValue={responseData?.firstName}
-                      className="!w-full"
-                      type="text"
-                    />
+                    <Input {...field} defaultValue={responseData?.firstName} className="!w-full" type="text" />
                   </div>
                 )}
               />
@@ -55,12 +43,7 @@ const TenantPersonalInformationEdit = ({
                 }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <Input
-                      className="!w-full"
-                      {...field}
-                      defaultValue={responseData?.lastName}
-                      type="text"
-                    />
+                    <Input className="!w-full" {...field} defaultValue={responseData?.lastName} type="text" />
                   </div>
                 )}
               />
@@ -80,13 +63,8 @@ const TenantPersonalInformationEdit = ({
                       <DatePicker
                         {...field}
                         editable={false}
-                        defaultValue={
-                          responseData?.dateOfBirth &&
-                          moment(responseData?.dateOfBirth)?.toDate()
-                        }
-                        shouldDisableDate={(date) =>
-                          moment(date).isAfter(moment(), "day")
-                        }
+                        defaultValue={responseData?.dateOfBirth && moment(responseData?.dateOfBirth)?.toDate()}
+                        shouldDisableDate={(date) => moment(date).isAfter(moment(), "day")}
                         size="md"
                         className="w-full"
                       />
@@ -98,20 +76,13 @@ const TenantPersonalInformationEdit = ({
           </div>
           {/* Social Security Number */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Social Security Number
-            </label>
+            <label className="text-sm font-medium">Social Security Number</label>
             <Controller
               name="socialSecurityNumber"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.socialSecurityNumber}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.socialSecurityNumber} className="!w-full" type="text" />
                 </div>
               )}
             />
@@ -124,12 +95,7 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.drivingLicenseNumber}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.drivingLicenseNumber} className="!w-full" type="text" />
                 </div>
               )}
             />
@@ -164,12 +130,7 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.presentAddress}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.presentAddress} className="!w-full" type="text" />
                 </div>
               )}
             />
@@ -183,12 +144,7 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.phoneNumber}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.phoneNumber} className="!w-full" type="text" />
                 </div>
               )}
             />
@@ -208,12 +164,7 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.user?.email}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.user?.email} className="!w-full" type="text" />
                 </div>
               )}
             />
@@ -221,9 +172,7 @@ const TenantPersonalInformationEdit = ({
 
           {/* criminal Record */}
           <div>
-            <label className="text-sm font-medium">
-              Do you have a criminal record?
-            </label>
+            <label className="text-sm font-medium">Do you have a criminal record?</label>
 
             <Controller
               name="isCriminalRecord"
@@ -249,13 +198,7 @@ const TenantPersonalInformationEdit = ({
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    as="textarea"
-                    {...field}
-                    defaultValue={responseData?.criminalRecordDescription}
-                    rows={6}
-                    className="!w-full"
-                  />
+                  <Input as="textarea" {...field} defaultValue={responseData?.criminalRecordDescription} rows={6} className="!w-full" />
                 </div>
               )}
             />

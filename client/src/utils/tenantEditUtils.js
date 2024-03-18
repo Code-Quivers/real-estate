@@ -1,7 +1,6 @@
 export const convertToNumber = (value) => (value ? Number(value) : undefined);
 
-export const convertToBoolean = (value) =>
-  value === "true" ? true : value === "false" ? false : undefined;
+export const convertToBoolean = (value) => (value === "true" ? true : value === "false" ? false : undefined);
 
 export const booleanSelectPicker = [
   {

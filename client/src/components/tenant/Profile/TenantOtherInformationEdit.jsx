@@ -38,20 +38,13 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
           {/* Do you have any allergies? */}
 
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Do you have any allergies?
-            </label>
+            <label className="text-sm font-medium">Do you have any allergies?</label>
             <Controller
               name="allergies"
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    className="!w-full"
-                    defaultValue={responseData?.allergies}
-                    type="text"
-                  />
+                  <Input {...field} className="!w-full" defaultValue={responseData?.allergies} type="text" />
                 </div>
               )}
             />
@@ -59,9 +52,7 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
 
           {/* Do you have any one living with you? */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Do you have any one living with you?
-            </label>
+            <label className="text-sm font-medium">Do you have any one living with you?</label>
             <Controller
               name="isHaveOtherMember"
               control={control}
@@ -81,20 +72,13 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
 
           {/* If so, how many people? */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              If so, how many people?
-            </label>
+            <label className="text-sm font-medium">If so, how many people?</label>
             <Controller
               name="numberOfMember"
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <InputNumber
-                    {...field}
-                    className="!w-full"
-                    defaultValue={responseData?.numberOfMember}
-                    min={0}
-                  />
+                  <InputNumber {...field} className="!w-full" defaultValue={responseData?.numberOfMember} min={0} />
                 </div>
               )}
             />
@@ -104,9 +88,7 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
         <div className="col-span-2 space-y-5">
           {/* Are you willing to sign a leasing agreement?*/}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Are you willing to sign a leasing agreement?
-            </label>
+            <label className="text-sm font-medium">Are you willing to sign a leasing agreement?</label>
             <Controller
               name="isWillingToSignLeasingAgreement"
               control={control}
@@ -115,9 +97,7 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
                   <SelectPicker
                     {...field}
                     searchable={false}
-                    defaultValue={String(
-                      responseData?.isWillingToSignLeasingAgreement,
-                    )}
+                    defaultValue={String(responseData?.isWillingToSignLeasingAgreement)}
                     data={booleanSelectPicker}
                     className="!w-full"
                   />
@@ -128,20 +108,13 @@ const TenantOtherInformationEdit = ({ control, responseData }) => {
 
           {/* Any thing extra you want to mention? */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Any thing extra you want to mention?
-            </label>
+            <label className="text-sm font-medium">Any thing extra you want to mention?</label>
             <Controller
               name="isAnyExtraToMention"
               control={control}
               render={({ field }) => (
                 <div className="  rs-form-control-wrapper ">
-                  <Input
-                    {...field}
-                    defaultValue={responseData?.isAnyExtraToMention}
-                    className="!w-full"
-                    type="text"
-                  />
+                  <Input {...field} defaultValue={responseData?.isAnyExtraToMention} className="!w-full" type="text" />
                 </div>
               )}
             />

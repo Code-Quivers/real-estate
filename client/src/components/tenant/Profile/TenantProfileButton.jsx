@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { Button } from "rsuite";
 
-const TenantProfileButton = ({
-  firstTitle,
-  secondTitle,
-  btnLoading,
-  btnType,
-  href,
-}) => {
+const TenantProfileButton = ({ firstTitle, secondTitle, btnLoading, btnType, href }) => {
   return (
     <Button
       as={Link}
