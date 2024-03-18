@@ -28,9 +28,8 @@ const createProperty = z.object({
   universities: z.string({
     required_error: "Universities is Required",
   }),
-  allowedPets: z.string({
-    required_error: "Allowed Pets must is Required",
-  }),
+  allowedPets: z.string(),
+  monthlyRent: z.number().min(1),
 });
 const updateProperty = z.object({
   numOfBed: z.number({}).optional(),

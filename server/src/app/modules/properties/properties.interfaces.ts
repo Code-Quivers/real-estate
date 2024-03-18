@@ -1,5 +1,3 @@
-import { IUploadFile } from "../../../interfaces/file";
-
 export type IPropertyData = {
   ownerId: string;
   numOfBed: number;
