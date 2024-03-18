@@ -42,6 +42,8 @@ const updateProperty = z.object({
   schools: z.string({}).optional(),
   universities: z.string({}).optional(),
   allowedPets: z.string({}).optional(),
+  monthlyRent: z.number({}).optional(),
+  images: z.array(z.string({})).optional(),
 });
 
 const propertyCreate = z.array(createProperty);

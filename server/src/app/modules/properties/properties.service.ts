@@ -119,8 +119,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: whereConditions,
@@ -218,8 +218,8 @@ const getPropertyOwnerAllProperty = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: {
@@ -265,11 +265,18 @@ const getSinglePropertyInfo = async (propertyId: string): Promise<Property | nul
   });
   return res;
 };
+
+
 // ! update property info
 const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Property> => {
-  const images: IUploadFile[] = req.files as any;
+  // Extract new images paths
+  const newImagesPath: string[] = (req.files as IUploadFile[] || []).map((item: IUploadFile) => `property/${item?.filename}`);
 
-  const imagesPath = images?.map((item: any) => item?.path);
+  // Extract old images paths from the request body
+  const oldImagesPath: string[] = (req.body.images || []).map((imageName: string) => `${imageName}`);
+
+  // Combine old and new image paths
+  const imagesPath: string[] = oldImagesPath.concat(newImagesPath);
 
   const {
     address,
@@ -281,6 +288,7 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     numOfBed,
     schools,
     universities,
+    monthlyRent,
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -294,8 +302,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     if (universities) updatedPropertyData["universities"] = universities;
     if (allowedPets) updatedPropertyData["allowedPets"] = allowedPets;
     if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
-    if (numOfBath) updatedPropertyData["numOfBath"] = Number(numOfBath);
-    if (numOfBed) updatedPropertyData["numOfBed"] = Number(numOfBed);
+    if (numOfBath) updatedPropertyData["numOfBath"] = numOfBath;
+    if (numOfBed) updatedPropertyData["numOfBed"] = numOfBed;
+    if (monthlyRent) updatedPropertyData["monthlyRent"] = monthlyRent;
 
     //
     const updatedProperty = await transactionClient.property.update({

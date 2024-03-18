@@ -48,17 +48,21 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
       }
     });
 
-    console.log(oldFiles);
-    console.log(restData);
     const data = {
       ...restData,
+      numOfBath: restData?.numOfBath ? parseInt(restData.numOfBath) : undefined,
+      numOfBed: restData?.numOfBed ? parseInt(restData.numOfBed) : undefined,
+      monthlyRent: restData?.monthlyRent ? parseInt(restData.monthlyRent) : undefined,
       images: oldFiles,
     };
-    formData.append("data", data);
 
-    // await addProperties({
-    //   data: formData,
-    // });
+    const propertyId = editData?.propertyId || null;
+    formData.append("data", JSON.stringify(data));
+
+    await updateProperty({
+      propertyId: propertyId,
+      data: formData
+    })
   };
 
   return (

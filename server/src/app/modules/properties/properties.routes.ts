@@ -34,6 +34,7 @@ router.get(
 );
 // ! -get property owner my all properties
 router.get("/get-my-properties", auth(UserRoles.PROPERTY_OWNER), PropertiesController.getPropertyOwnerAllProperty);
+
 // ! update property info
 router.patch(
   "/update-property/:propertyId",

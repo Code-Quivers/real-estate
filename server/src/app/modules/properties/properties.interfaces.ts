@@ -13,7 +13,7 @@ export type IPropertyData = {
   allowedPets: string;
   profileId: string;
   images: string[];
-  monthlyRend: number;
+  monthlyRent: number;
 };
 export type IPropertyReqPayload = {
   numOfBed: number;
@@ -25,6 +25,8 @@ export type IPropertyReqPayload = {
   schools: string;
   universities: string;
   allowedPets: string;
+  images?: string[]; // Optional property
+  monthlyRent: number;
 };
 export type IPropertiesFilterRequest = {
   searchTerm?: string | undefined;
