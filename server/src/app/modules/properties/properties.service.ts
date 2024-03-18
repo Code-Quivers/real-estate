@@ -119,8 +119,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: whereConditions,
@@ -218,8 +218,8 @@ const getPropertyOwnerAllProperty = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: {
@@ -290,11 +290,13 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     schools,
     universities,
     monthlyRent,
+    title,
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedPropertyData: Partial<Property> = {};
 
+    if (title) updatedPropertyData["title"] = title;
     if (address) updatedPropertyData["address"] = address;
     if (description) updatedPropertyData["description"] = description;
     if (maintenanceCoveredTenant) updatedPropertyData["maintenanceCoveredTenant"] = maintenanceCoveredTenant;

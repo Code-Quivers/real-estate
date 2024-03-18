@@ -29,10 +29,9 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
   const handleUpdateProperty = async (updatedData) => {
     // creating form data
     const { files, ...restData } = updatedData;
-
     const formData = new FormData();
 
-    // Append all files with the same key "files"
+    // // Handle files
     const oldFiles = [];
     files?.forEach((file) => {
       if (file.url) {
@@ -49,13 +48,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
       }
     });
 
-    const data = {
-      ...restData,
-      numOfBath: restData?.numOfBath ? parseInt(restData.numOfBath) : undefined,
-      numOfBed: restData?.numOfBed ? parseInt(restData.numOfBed) : undefined,
-      monthlyRent: restData?.monthlyRent ? parseInt(restData.monthlyRent) : undefined,
-      images: oldFiles,
-    };
+    // Prepare data object
+    const data = {};
+    for (const [key, value] of Object.entries(restData)) {
+      if (value) {
+        if (key === 'monthlyRent' || key === 'numOfBath' || key === 'numOfBed') {
+          data[key] = parseInt(value);
+        } else {
+          data[key] = value;
+        }
+      }
+    }
+    if (oldFiles.length > 0) data['images'] = oldFiles;
 
     const propertyId = editData?.propertyId || null;
     formData.append("data", JSON.stringify(data));
@@ -214,6 +218,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                 {/* Address and description */}
 
                 <div className="col-span-6">
+                  <div>
+                    <label htmlFor="">Title</label>
+                    <Controller
+                      name="title"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="rs-form-control-wrapper ">
+                          <Input defaultValue={editData?.title} className="!w-full" {...field} type="text" placeholder="Title..." />
+                        </div>
+                      )}
+                    />
+                  </div>
                   {/* Address */}
                   <div>
                     <label htmlFor="">Address</label>

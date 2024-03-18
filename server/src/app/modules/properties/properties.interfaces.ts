@@ -1,4 +1,5 @@
 export type IPropertyData = {
+  title: string;
   ownerId: string;
   numOfBed: number;
   numOfBath: number;
@@ -14,6 +15,7 @@ export type IPropertyData = {
   monthlyRent: number;
 };
 export type IPropertyReqPayload = {
+  title: string;
   numOfBed: number;
   numOfBath: number;
   address: string;

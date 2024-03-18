@@ -4,6 +4,7 @@ const createProperty = z.object({
   id: z.number({
     required_error: "id (propertyId) is Required",
   }),
+  title: z.string({}),
   numOfBed: z.number({
     required_error: "Number of Bed is Required",
   }),
@@ -32,6 +33,7 @@ const createProperty = z.object({
   monthlyRent: z.number().min(1),
 });
 const updateProperty = z.object({
+  title: z.string({}).optional(),
   numOfBed: z.number({}).optional(),
   numOfBath: z.number({}).optional(),
   address: z.string({}).optional(),

@@ -35,7 +35,7 @@ const PropertyOwnerUnitInformation = () => {
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
               <div key={Math.random()} className="mt-5">
-                <h2 className="text-base font-bold mb-4 ">Property {idx + 1}</h2>
+                <h2 className="text-base font-bold mb-4 ">Property {idx + 1}: {singleProperty.title}</h2>
                 <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white  rounded-xl space-y-8 ">
                   {/* top section */}
                   <div className="grid grid-cols-12  gap-5">

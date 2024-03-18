@@ -152,34 +152,26 @@ const AddProperty = () => {
 
                       {/* address and description */}
                       <div className="col-span-1 md:col-span-6">
+                        {/* title */}
+                        <div>
+                          <label className="text-sm font-medium">Title</label>
+                          <Input type="text" value={property.title} onChange={(value) => handleInputChange(property.id, "title", value)} />
+                        </div>
                         {/* address */}
                         <div>
                           <label className="text-sm font-medium">Address</label>
                           <Input type="text" value={property.address} onChange={(value) => handleInputChange(property.id, "address", value)} />
                         </div>
                         {/* description */}
-                        <div className="h-[200px]">
-                          <label className="text-sm font-medium">Description</label>
-                          <AddPropertyEditor
-                            propertyId={property?.id}
-                            value={property?.description}
-                            handleInputChange={handleInputChange}
-                            field="description"
-                          />
-
-                          {/* <Input
-                            as="textarea"
-                            rows={6}
-                            value={property.description}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "description",
-                                value,
-                              )
-                            }
-                          /> */}
-                        </div>
+                      </div>
+                      <div className="col-span-1 lg:col-span-12">
+                        <label className="text-sm font-medium">Description</label>
+                        <AddPropertyEditor
+                          propertyId={property?.id}
+                          value={property?.description}
+                          handleInputChange={handleInputChange}
+                          field="description"
+                        />
                       </div>
                       <div className="col-span-1 lg:col-span-12">
                         {/* number of beds and number of baths */}

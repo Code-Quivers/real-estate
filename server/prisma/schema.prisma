@@ -117,6 +117,7 @@ model Property {
   propertyId               String         @id @default(uuid())
   owner                    PropertyOwner  @relation(fields: [ownerId], references: [propertyOwnerId])
   ownerId                  String
+  title                    String         @default("Property Title")
   numOfBed                 Int            @default(1)
   numOfBath                Int            @default(1)
   monthlyRent              Int            @default(1)
