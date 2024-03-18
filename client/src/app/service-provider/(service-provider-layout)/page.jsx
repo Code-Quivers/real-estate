@@ -14,8 +14,7 @@ import Link from "next/link";
 const ServiceProviderProfileInformation = () => {
   const paramsName = useSearchParams().get("editing");
 
-  const { data, isLoading, isError, error } =
-    useGetServiceProviderMyProfileQuery(null);
+  const { data, isLoading, isError, error } = useGetServiceProviderMyProfileQuery(null);
   const { data: myProfileData } = data || {};
 
   return (
@@ -28,28 +27,17 @@ const ServiceProviderProfileInformation = () => {
             <Image
               width={200}
               height={200}
-              src={
-                myProfileData?.profileImage
-                  ? ` ${fileUrlKey()}/${myProfileData?.profileImage}`
-                  : profileLogo
-              }
+              src={myProfileData?.profileImage ? ` ${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
               className="  rounded-lg md:w-[150px]  select-none"
               alt="Profile Image"
             />
           </div>
           <div className="max-md:border max-md:p-3 max-md:shadow-lg max-md:space-y-3">
             <h4 className="text-lg font-medium">
-              Company Name :{" "}
-              <span className="max-md:block">
-                {`${myProfileData?.companyName ?? "--"}`}
-              </span>
+              Company Name : <span className="max-md:block">{`${myProfileData?.companyName ?? "--"}`}</span>
             </h4>
-            <h4 className="text-lg font-medium">
-              Company Email Address : {myProfileData?.user?.email ?? "--"}
-            </h4>
-            <h4 className="text-lg font-medium">
-              Company Phone Number : {myProfileData?.companyPhoneNumber ?? "--"}
-            </h4>
+            <h4 className="text-lg font-medium">Company Email Address : {myProfileData?.user?.email ?? "--"}</h4>
+            <h4 className="text-lg font-medium">Company Phone Number : {myProfileData?.companyPhoneNumber ?? "--"}</h4>
           </div>
         </div>
         {/* score */}
@@ -71,19 +59,11 @@ const ServiceProviderProfileInformation = () => {
       <div className="grid mt-10 lg:mt-5   grid-cols-2 md:grid-cols-8 md:mr-3 lg:mr-0 lg:grid-cols-8 gap-5">
         {/* button */}
         <div className="flex col-span-1 md:col-span-4   justify-end">
-          <ServiceProviderDashboardButton
-            firstTitle="Profile"
-            secondTitle="Information"
-            href="/service-provider?editing=account-information"
-          />
+          <ServiceProviderDashboardButton firstTitle="Profile" secondTitle="Information" href="/service-provider?editing=account-information" />
         </div>
         {/* button */}
         <div className="flex justify-start  col-span-1 md:col-span-4">
-          <ServiceProviderDashboardButton
-            firstTitle="Service"
-            secondTitle="Information"
-            href="/service-provider?editing=service-information"
-          />
+          <ServiceProviderDashboardButton firstTitle="Service" secondTitle="Information" href="/service-provider?editing=service-information" />
         </div>
       </div>
 
@@ -106,33 +86,19 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Name</h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.companyName ?? "--"}
-                </p>
+                <p className="text-lg font-medium">{myProfileData?.companyName ?? "--"}</p>
               </div>
               <div className="space-y-2">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Company Phone
-                </h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.companyPhoneNumber ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Company Phone</h2>
+                <p className="text-lg font-medium">{myProfileData?.companyPhoneNumber ?? "--"}</p>
               </div>
               <div className="space-y-2">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Company Address
-                </h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.companyAddress ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Company Address</h2>
+                <p className="text-lg font-medium">{myProfileData?.companyAddress ?? "--"}</p>
               </div>
               <div className="space-y-2">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Company Email
-                </h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.companyEmailAddress ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Company Email</h2>
+                <p className="text-lg font-medium">{myProfileData?.companyEmailAddress ?? "--"}</p>
               </div>
             </div>
           </div>
@@ -150,68 +116,44 @@ const ServiceProviderProfileInformation = () => {
                 </button>
               </Link>
             </div>
-            <div className="grid p-5 border-t grid-cols-2  gap-5 gap-x-10 ">
+            <div className="grid p-5 border-t lg:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Service Location
-                </h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.Service?.serviceLocation ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Service Location</h2>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ?? "--"}</p>
               </div>
               <div className="space-y-2">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Service Availability
-                </h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.Service?.serviceAvailability ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceAvailability ?? "--"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Type</h2>
-                <p className="text-lg font-medium">
-                  {myProfileData?.Service?.serviceType ?? "--"}
-                </p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ?? "--"}</p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {`${myProfileData?.Service?.minPrice}$` ?? "--"}{" "}
-                  <span>-</span>{" "}
-                  {`${myProfileData?.Service?.maxPrice}$` ?? "--"}
+                  {`${myProfileData?.Service?.minPrice}$` ?? "--"} <span>-</span> {`${myProfileData?.Service?.maxPrice}$` ?? "--"}
                 </p>
               </div>
             </div>
             {/* service description */}
             <div className="border-t-2">
               <div className="space-y-2 p-5">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Service Description
-                </h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">
-                  {myProfileData?.Service?.serviceDescription ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Service Description</h2>
+                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceDescription ?? "--"}</p>
               </div>
               <div className="space-y-2 p-5 border-t">
-                <h2 className="font-bold text-xl 2xl:text-2xl">
-                  Service Cancellation Policy
-                </h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">
-                  {myProfileData?.Service?.serviceCancellationPolicy ?? "--"}
-                </p>
+                <h2 className="font-bold text-xl 2xl:text-2xl">Service Cancellation Policy</h2>
+                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceCancellationPolicy ?? "--"}</p>
               </div>
             </div>
           </div>
         </>
       )}
 
-      {paramsName === "account-information" && (
-        <ServiceProviderProfileInformationEdit myProfileData={myProfileData} />
-      )}
-      {paramsName === "service-information" && (
-        <ServiceProviderServiceInformationEdit myProfileData={myProfileData} />
-      )}
+      {paramsName === "account-information" && <ServiceProviderProfileInformationEdit myProfileData={myProfileData} />}
+      {paramsName === "service-information" && <ServiceProviderServiceInformationEdit myProfileData={myProfileData} />}
     </section>
   );
 };

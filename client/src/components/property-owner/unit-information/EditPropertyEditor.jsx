@@ -7,8 +7,8 @@ import dynamic from "next/dynamic";
 
 const modules = {
   toolbar: [
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ size: ["small", true, "large", "huge"] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ size: ["small", "large"] }], // Only "normal" and "large" text sizes
     [{ list: "ordered" }, { list: "bullet" }],
     [{ align: [] }],
   ],
@@ -16,18 +16,20 @@ const modules = {
 
 const formats = ["bold", "italic", "underline", "strike", "indent", "list", "bullet", "size", "align"];
 
-const EditPropertyEditor = ({ defaultValue, field }) => {
+const EditPropertyEditor = ({ field, defaultValue }) => {
   const ReactQuill = useMemo(() => dynamic(() => import("react-quill"), { ssr: false }), []);
-
-  // Convert HTML to Delta
 
   return (
     <div className="relative">
       <ReactQuill
+        // {...field}
+        // value={field ? field?.value : defaultValue}
         {...field}
-        defaultValue={defaultValue}
+        onChange={(value) => {
+          field?.onChange(value);
+        }}
         style={{ backgroundColor: "white", borderRadius: "0" }}
-        className="w-full h-20 !rounded-none focus:outline-none !border"
+        className="w-full h-20 !rounded-none  !-z-10 focus:outline-none !border"
         modules={modules}
         formats={formats}
         theme="bubble"

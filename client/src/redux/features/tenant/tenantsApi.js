@@ -4,13 +4,21 @@ import { tagTypes } from "@/redux/tag-types/tag-types";
 export const tenantsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // get all available tenants
-    getAllAvailableTenants: builder.query({
+    getAllTenants: builder.query({
       query: (arg) => ({
         url: "/tenants/get-all-tenants",
         method: "GET",
         params: arg,
       }),
       providesTags: [tagTypes.tenant],
+    }),
+    getAllAvailableTenants: builder.query({
+      query: (arg) => ({
+        url: "/tenants/get-all-available-tenants",
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
     getTenantMyProfile: builder.query({
       query: () => ({
@@ -31,8 +39,4 @@ export const tenantsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetAllAvailableTenantsQuery,
-  useUpdateTenantProfileMutation,
-  useGetTenantMyProfileQuery,
-} = tenantsApi;
+export const { useGetAllAvailableTenantsQuery, useUpdateTenantProfileMutation, useGetTenantMyProfileQuery, useGetAllTenantsQuery } = tenantsApi;
