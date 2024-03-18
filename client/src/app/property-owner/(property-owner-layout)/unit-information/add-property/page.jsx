@@ -40,14 +40,14 @@ const AddProperty = () => {
     const propertiesWithoutFiles = (propertyList?.propertyList || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
 
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
-    
+
     formData.append("data", newPropertyList);
     // Append all files with the same key "files"
     allFiles?.forEach((file, index) => {
       formData.append("files", file, file.name);
     });
 
-    console.log(allFiles);
+    console.log(newPropertyList);
 
     await addProperties({
       data: formData,

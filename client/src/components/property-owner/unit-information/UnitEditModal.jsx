@@ -1,11 +1,12 @@
 "use client";
 import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { Form, Input, InputNumber, Modal } from "rsuite";
+import { Button, Form, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
 import UpdateImageUpload from "./UpdateImageUpload";
 import EditPropertyEditor from "./EditPropertyEditor";
 import { useUpdatePropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
+import { useEffect } from "react";
 
 const UnitEditModal = ({ open, handleClose, editData }) => {
   const {
@@ -23,7 +24,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     },
   });
 
-  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
+  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data: updateResData }] = useUpdatePropertyMutation();
 
   const handleUpdateProperty = async (updatedData) => {
     // creating form data
@@ -61,9 +62,38 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
 
     await updateProperty({
       propertyId: propertyId,
-      data: formData
-    })
+      data: formData,
+    });
   };
+
+  // !
+  const toaster = useToaster();
+  useEffect(() => {
+    if (isSuccess && !isLoading && !isError && !error && updateResData) {
+      toaster.push(
+        <Message bordered showIcon type="success" closable>
+          <h4 className="font-semibold xl:text-2xl">{updateResData?.message ?? "Successfully Updated"}</h4>
+        </Message>,
+        { placement: "topEnd", duration: 20000 },
+      );
+      handleClose();
+      resetReq();
+    }
+    if (!isSuccess && !isLoading && isError && error) {
+      toaster.push(
+        <Message bordered centered showIcon type="error" closable>
+          <h4 className="font-semibold xl:text-2xl">
+            {" "}
+            {
+              // @ts-ignore
+              error?.message || "Update Failed"
+            }
+          </h4>
+        </Message>,
+        { placement: "topEnd", duration: 20000 },
+      );
+    }
+  }, [isSuccess, isLoading, isError, updateResData, error, toaster]);
 
   return (
     <div>
@@ -192,7 +222,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <Input className="!w-full" {...field} type="text" placeholder="Address..." />
+                          <Input defaultValue={editData?.address} className="!w-full" {...field} type="text" placeholder="Address..." />
                         </div>
                       )}
                     />
@@ -363,9 +393,9 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="bg-primary border border-transparent text-white py-2 px-3 rounded-full">
+                <Button loading={isLoading} type="submit" className="!bg-primary !border !border-transparent !text-white !py-3 !px-8 !rounded-full">
                   Submit
-                </button>
+                </Button>
               </div>
             </form>
           </div>
