@@ -9,11 +9,4 @@ export const tagTypes = {
   propertyOwner: "propertyOwner",
 };
 
-export const tagTypesList = [
-  tagTypes.user,
-  tagTypes.tenant,
-  tagTypes.serviceProvider,
-  tagTypes.services,
-  tagTypes.items,
-  tagTypes.propertyOwner,
-];
+export const tagTypesList = [tagTypes.user, tagTypes.tenant, tagTypes.serviceProvider, tagTypes.services, tagTypes.items, tagTypes.propertyOwner];

@@ -15,23 +15,13 @@ const RequestMaintenancePage = () => {
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Do you have animals?</h2>
               <div>
-                <RadioGroup
-                  className=""
-                  name="isAnimal"
-                  inline
-                  appearance="picker"
-                  defaultValue="A"
-                >
+                <RadioGroup className="" name="isAnimal" inline appearance="picker" defaultValue="A">
                   <Radio value="A">Yes</Radio>
                   <Radio value="B">No</Radio>
                 </RadioGroup>
               </div>
               <div>
-                <Input
-                  as="textarea"
-                  placeholder="if you have anything to add regarding animals"
-                  rows={4}
-                />
+                <Input as="textarea" placeholder="if you have anything to add regarding animals" rows={4} />
               </div>
             </div>
 
@@ -43,30 +33,19 @@ const RequestMaintenancePage = () => {
             </div>
 
             <div>
-              <SelectPicker
-                searchable={false}
-                data={priorityType}
-                placeholder="Priority"
-                style={{ width: 224 }}
-              />
+              <SelectPicker searchable={false} data={priorityType} placeholder="Priority" style={{ width: 224 }} />
             </div>
             <div>
               <SelectPicker
                 searchable={false}
                 placeholder="Issue Type"
-                data={["Eugenia", "Bryan", "Linda", "Nancy", "Albert"].map(
-                  (item) => ({ label: item, value: item }),
-                )}
+                data={["Eugenia", "Bryan", "Linda", "Nancy", "Albert"].map((item) => ({ label: item, value: item }))}
                 style={{ width: 224 }}
               />
             </div>
             <div>
               <div className="col-span-4">
-                <Input
-                  as="textarea"
-                  placeholder="Describe the issue..."
-                  rows={6}
-                />
+                <Input as="textarea" placeholder="Describe the issue..." rows={6} />
               </div>
             </div>
           </div>

@@ -13,12 +13,7 @@ const page = () => {
           key={Math.random()}
           className=" hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer max-lg:border border-[#707070] max-lg:shadow-lg "
         >
-          <Image
-            width="full"
-            objectFit="cover"
-            src={unitInfoImage}
-            alt="Tenant available units"
-          />
+          <Image width="full" objectFit="cover" src={unitInfoImage} alt="Tenant available units" />
           <div className="flex justify-between items-start mt-2 px-2.5 py-1">
             <div>
               <h2 className="text-sm">$1200</h2>
@@ -44,9 +39,7 @@ const page = () => {
               <span>$ </span>
               <span>0.00</span>
             </p>
-            <Button className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">
-              Make Payment
-            </Button>
+            <Button className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">Make Payment</Button>
           </div>
         </div>
         <div className="flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">

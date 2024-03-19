@@ -7,8 +7,7 @@ import PropertyOwnerUploadImageEdit from "./PropertyOwnerUploadImageEdit";
 import { useUpdatePropertyOwnerProfileMutation } from "@/redux/features/propertyOwner/propertyOwnerApi";
 
 const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
-  const [updatePropertyOwnerProfile, { isLoading }] =
-    useUpdatePropertyOwnerProfileMutation();
+  const [updatePropertyOwnerProfile, { isLoading }] = useUpdatePropertyOwnerProfileMutation();
   const {
     control,
     handleSubmit,
@@ -53,11 +52,7 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
                   render={({ field }) => (
                     <div className="space-y-1">
                       <label className="font-medium text-lg">First Name</label>
-                      <Input
-                        defaultValue={myProfileData?.firstName}
-                        {...field}
-                        type="text"
-                      />
+                      <Input defaultValue={myProfileData?.firstName} {...field} type="text" />
                     </div>
                   )}
                 />
@@ -66,14 +61,8 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
                   control={control}
                   render={({ field }) => (
                     <div className="space-y-1">
-                      <label className="text-lg font-medium">
-                        Phone Number
-                      </label>
-                      <Input
-                        defaultValue={myProfileData?.phoneNumber}
-                        {...field}
-                        type="text"
-                      />
+                      <label className="text-lg font-medium">Phone Number</label>
+                      <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
                     </div>
                   )}
                 />
@@ -86,11 +75,7 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
                   render={({ field }) => (
                     <div className="space-y-1">
                       <label className=" font-medium text-lg">Last Name</label>
-                      <Input
-                        defaultValue={myProfileData?.lastName}
-                        {...field}
-                        type="text"
-                      />
+                      <Input defaultValue={myProfileData?.lastName} {...field} type="text" />
                     </div>
                   )}
                 />
@@ -101,12 +86,7 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
               <Controller
                 name="file"
                 control={control}
-                render={({ field }) => (
-                  <PropertyOwnerUploadImageEdit
-                    defaultImage={myProfileData?.profileImage}
-                    field={field}
-                  />
-                )}
+                render={({ field }) => <PropertyOwnerUploadImageEdit defaultImage={myProfileData?.profileImage} field={field} />}
               />
             </div>
             <div className="mt-10 flex gap-5 justify-end">

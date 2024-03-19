@@ -54,6 +54,15 @@ router.post(
   validateRequest(PropertiesValidation.assignTenant),
   PropertiesController.assignTenantToProperty,
 );
+
+// ! assign tenant user to property or unit
+
+router.post(
+  "/remove-tenant-from-property",
+  auth(UserRoles.PROPERTY_OWNER),
+  validateRequest(PropertiesValidation.removeTenant),
+  PropertiesController.removeTenantFromProperty,
+);
 // ! assign ServiceProvider to property or unit
 
 router.post(

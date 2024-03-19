@@ -61,6 +61,21 @@ const assignTenant = z.object({
     }),
   }),
 });
+
+// ! remove tenant user
+
+const removeTenant = z.object({
+  body: z.object({
+    tenantId: z.string({
+      required_error: "Tenant Id is Required",
+    }),
+    propertyId: z.string({
+      required_error: "Property Id is Required",
+    }),
+    reasonForRemove: z.string().min(1),
+  }),
+});
+
 // ! assign serviceProvider
 const assignServiceProvider = z.object({
   body: z.object({
@@ -79,4 +94,5 @@ export const PropertiesValidation = {
   propertyCreate,
   assignTenant,
   assignServiceProvider,
+  removeTenant,
 };

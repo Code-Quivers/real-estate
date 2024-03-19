@@ -21,19 +21,14 @@ const PropertyOwnerInformation = () => {
             <Image
               width={80}
               height={80}
-              src={
-                myProfileData?.profileImage
-                  ? `${fileUrlKey()}/${myProfileData?.profileImage}`
-                  : profileLogo
-              }
+              src={myProfileData?.profileImage ? `${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
               className="w-[100px] h-[100px] md:w-[80px] md:h-[80px] object-cover rounded-lg select-none"
               alt="Profile Image"
             />
           </div>
           <div>
             <h4>
-              Name : {myProfileData?.firstName ?? "--"}{" "}
-              {myProfileData?.lastName ?? "--"}
+              Name : {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
             </h4>
             <h4>Email Address : {myProfileData?.user?.email ?? "--"}</h4>
             <h4>Phone Number : {myProfileData?.phoneNumber ?? "--"}</h4>
@@ -78,9 +73,7 @@ const PropertyOwnerInformation = () => {
               </div>
               <div className="  border bg-white  px-5 py-6   rounded-2xl">
                 <h2 className="text-2xl font-semibold">$1900</h2>
-                <p className="text-xl font-medium">
-                  Rented Collected this month
-                </p>
+                <p className="text-xl font-medium">Rented Collected this month</p>
               </div>
               <div className="  border flex justify-between items-start    px-5 py-6  rounded-2xl bg-white">
                 <div>
@@ -88,11 +81,7 @@ const PropertyOwnerInformation = () => {
                   <p className="text-xl font-medium">Cost this month</p>
                 </div>
                 <div>
-                  <IconButton
-                    icon={<FaPencilAlt size={20} />}
-                    appearance="subtle"
-                    circle
-                  />
+                  <IconButton icon={<FaPencilAlt size={20} />} appearance="subtle" circle />
                 </div>
               </div>
             </div>
@@ -110,29 +99,20 @@ const PropertyOwnerInformation = () => {
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Full Name</h2>
               <p className="text-lg font-medium">
-                {myProfileData?.firstName ?? "--"}{" "}
-                {myProfileData?.lastName ?? "--"}
+                {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
               </p>
             </div>
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Phone Number</h2>
-              <p className="text-lg font-medium">
-                {myProfileData?.phoneNumber ?? "--"}
-              </p>
+              <p className="text-lg font-medium">{myProfileData?.phoneNumber ?? "--"}</p>
             </div>
             <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">
-                Account Registered Date
-              </h2>
-              <p className="text-lg font-medium">
-                {moment(myProfileData?.createdAt).format("ll")}
-              </p>
+              <h2 className="font-bold text-xl 2xl:text-2xl">Account Registered Date</h2>
+              <p className="text-lg font-medium">{moment(myProfileData?.createdAt).format("ll")}</p>
             </div>
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Total Property</h2>
-              <p className="text-lg font-medium">
-                {myProfileData?._count?.Property ?? "--"}
-              </p>
+              <p className="text-lg font-medium">{myProfileData?._count?.Property ?? "--"}</p>
             </div>
           </div>
         </div>

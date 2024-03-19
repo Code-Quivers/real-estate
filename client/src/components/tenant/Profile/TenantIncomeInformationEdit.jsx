@@ -16,42 +16,26 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
         <div className="col-span-2 space-y-5">
           {/* Current Employer/Business Name */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Current Employer/Business Name
-            </label>
+            <label className="text-sm font-medium">Current Employer/Business Name</label>
             <Controller
               name="CurrentEmployerOrBusinessName"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.CurrentEmployerOrBusinessName}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.CurrentEmployerOrBusinessName} type="text" />
                 </div>
               )}
             />
           </div>
           {/* Current Employer/Business Contact Info */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Current Employer/Business Contact Info
-            </label>
+            <label className="text-sm font-medium">Current Employer/Business Contact Info</label>
             <Controller
               name="CurrentEmployerOrBusinessContactInfo"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={
-                      responseData?.CurrentEmployerOrBusinessContactInfo
-                    }
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.CurrentEmployerOrBusinessContactInfo} type="text" />
                 </div>
               )}
             />
@@ -64,12 +48,7 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.JobTitle}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.JobTitle} type="text" />
                 </div>
               )}
             />
@@ -82,13 +61,7 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber
-                    className="!w-full"
-                    prefix="$"
-                    {...field}
-                    defaultValue={responseData?.AnnualSalary}
-                    min={0}
-                  />
+                  <InputNumber className="!w-full" prefix="$" {...field} defaultValue={responseData?.AnnualSalary} min={0} />
                 </div>
               )}
             />
@@ -100,20 +73,13 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
         <div className="col-span-2 space-y-5">
           {/* Other Source of income*/}{" "}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Other Source of income
-            </label>
+            <label className="text-sm font-medium">Other Source of income</label>
             <Controller
               name="OtherIncomeSource"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.OtherIncomeSource}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.OtherIncomeSource} type="text" />
                 </div>
               )}
             />
@@ -126,11 +92,7 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.CurrentCreditScore}
-                  />
+                  <InputNumber className="!w-full" {...field} defaultValue={responseData?.CurrentCreditScore} />
                 </div>
               )}
             />

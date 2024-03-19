@@ -41,6 +41,11 @@ export type IAssignTenantToProperty = {
   tenantId: string;
   propertyId: string;
 };
+export type IRemoveTenantFromProperty = {
+  tenantId: string;
+  propertyId: string;
+  reasonForRemove: string;
+};
 export type IAssignServiceProviderToProperty = {
   serviceProviderId: string;
   propertyId: string;

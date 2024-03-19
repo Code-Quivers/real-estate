@@ -47,8 +47,6 @@ const AddProperty = () => {
       formData.append("files", file, file.name);
     });
 
-    console.log(newPropertyList);
-
     await addProperties({
       data: formData,
     });

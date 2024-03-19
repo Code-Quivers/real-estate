@@ -51,20 +51,13 @@ const TenantPetsInformationEdit = ({ control, responseData }) => {
           </div>
           {/* if yes, what type of pets? */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              if yes, what type of pets?
-            </label>
+            <label className="text-sm font-medium">if yes, what type of pets?</label>
             <Controller
               name="typeOfPets"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.typeOfPets}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.typeOfPets} type="text" />
                 </div>
               )}
             />
@@ -74,9 +67,7 @@ const TenantPetsInformationEdit = ({ control, responseData }) => {
         <div className="col-span-2 space-y-5">
           {/* Are you pets up-do-date vaccinations? */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Are your pets up-do-date vaccinations?
-            </label>
+            <label className="text-sm font-medium">Are your pets up-do-date vaccinations?</label>
             <Controller
               name="isPetVaccinated"
               control={control}

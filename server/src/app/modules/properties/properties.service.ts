@@ -13,6 +13,7 @@ import {
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
+  IRemoveTenantFromProperty,
 } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -324,8 +325,59 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   return result;
 };
 
-// ! assign tenant user to property or unit -----------------
+// ! assign service providers to property -----------
+const assignServiceProviderToProperty = async (
+  profileId: string,
+  payload: IAssignServiceProviderToProperty,
+): Promise<OrderRequest> => {
+  const { propertyId, serviceProviderId } = payload;
 
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if the user is the owner of the property
+    const isOwner = await transactionClient.property.findFirst({
+      where: {
+        propertyId,
+        ownerId: profileId,
+      },
+    });
+
+    if (!isOwner) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "You are not the owner of this property or this property does not exist",
+      );
+    }
+
+    // Check if the property is already assigned to the serviceProvider
+    const isAlreadyAssigned = await transactionClient.orderRequest.findFirst({
+      where: {
+        propertyId,
+        serviceProviderId,
+      },
+    });
+
+    if (isAlreadyAssigned) {
+      throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
+    }
+
+    // Assign the serviceProvider to the property
+    const res = await transactionClient.orderRequest.create({
+      data: {
+        propertyId,
+        serviceProviderId,
+      },
+    });
+
+    if (!res) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Assign Failed");
+    }
+
+    return res;
+  });
+
+  return result;
+};
+// ! assign tenant user to property or unit -----------------
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;
 
@@ -411,17 +463,13 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
   return result;
 };
-
-// ! assign service providers to property -----------
-const assignServiceProviderToProperty = async (
-  profileId: string,
-  payload: IAssignServiceProviderToProperty,
-): Promise<OrderRequest> => {
-  const { propertyId, serviceProviderId } = payload;
+// ! remove  tenant user from property or unit -----------------
+const removeTenantFromProperty = async (profileId: string, payload: IRemoveTenantFromProperty) => {
+  const { propertyId, tenantId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    // Check if the user is the owner of the property
-    const isOwner = await transactionClient.property.findFirst({
+    // check if owner or not
+    const isOwner = await transactionClient.property.findUnique({
       where: {
         propertyId,
         ownerId: profileId,
@@ -435,28 +483,37 @@ const assignServiceProviderToProperty = async (
       );
     }
 
-    // Check if the property is already assigned to the serviceProvider
-    const isAlreadyAssigned = await transactionClient.orderRequest.findFirst({
+    // check is property  booked or not by this tenant
+
+    const isPropertyBooked = await prisma.property.findUnique({
       where: {
         propertyId,
-        serviceProviderId,
+        Tenant: { tenantId },
+        isRented: true,
       },
     });
 
-    if (isAlreadyAssigned) {
-      throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
+    if (!isPropertyBooked) {
+      throw new ApiError(httpStatus.CONFLICT, "Property is not assigned by this tenant");
     }
 
-    // Assign the serviceProvider to the property
-    const res = await transactionClient.orderRequest.create({
+    // update logic
+    const res = await transactionClient.tenant.update({
+      where: {
+        tenantId, // use tenantId here for the update
+      },
       data: {
-        propertyId,
-        serviceProviderId,
+        property: {
+          disconnect: true,
+          update: {
+            isRented: false,
+          },
+        },
       },
     });
 
     if (!res) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Assign Failed");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant remove Failed");
     }
 
     return res;
@@ -473,4 +530,5 @@ export const PropertiesService = {
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
+  removeTenantFromProperty,
 };

@@ -16,81 +16,52 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
         <div className="col-span-2 space-y-5">
           {/* previous landlord */}{" "}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Previous Landlord Name
-            </label>
+            <label className="text-sm font-medium">Previous Landlord Name</label>
             <Controller
               name="prevLandlordName"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.prevLandlordName}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.prevLandlordName} type="text" />
                 </div>
               )}
             />
           </div>
           {/* Previous landlord contact info */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Previous landlord contact info
-            </label>
+            <label className="text-sm font-medium">Previous landlord contact info</label>
             <Controller
               name="prevLandlordContactInfo"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.prevLandlordContactInfo}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.prevLandlordContactInfo} type="text" />
                 </div>
               )}
             />
           </div>
           {/* Length of previous tenancy */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Length of previous tenancy
-            </label>
+            <label className="text-sm font-medium">Length of previous tenancy</label>
             <Controller
               name="lengthOfPrevTenancy"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    className="!w-full"
-                    {...field}
-                    defaultValue={responseData?.lengthOfPrevTenancy}
-                    type="text"
-                  />
+                  <Input className="!w-full" {...field} defaultValue={responseData?.lengthOfPrevTenancy} type="text" />
                 </div>
               )}
             />
           </div>
           {/* Rent amount you are willing to pay */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Rent amount you are willing to pay
-            </label>
+            <label className="text-sm font-medium">Rent amount you are willing to pay</label>
             <Controller
               name="affordableRentAmount"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber
-                    className="!w-full"
-                    prefix="$"
-                    {...field}
-                    defaultValue={responseData?.affordableRentAmount}
-                    min={0}
-                  />
+                  <InputNumber className="!w-full" prefix="$" {...field} defaultValue={responseData?.affordableRentAmount} min={0} />
                 </div>
               )}
             />
@@ -107,14 +78,7 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    as="textarea"
-                    className="!w-full"
-                    rows={5}
-                    {...field}
-                    defaultValue={responseData?.leavingReason}
-                    type="text"
-                  />
+                  <Input as="textarea" className="!w-full" rows={5} {...field} defaultValue={responseData?.leavingReason} type="text" />
                 </div>
               )}
             />
@@ -122,22 +86,13 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
 
           {/* Any Eviction or Late Payment */}
           <div className="w-full">
-            <label className="text-sm font-medium">
-              Any Eviction or Late Payment
-            </label>
+            <label className="text-sm font-medium">Any Eviction or Late Payment</label>
             <Controller
               name="isAnyLatePaymentReason"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input
-                    as="textarea"
-                    className="!w-full"
-                    rows={5}
-                    {...field}
-                    defaultValue={responseData?.isAnyLatePaymentReason}
-                    type="text"
-                  />
+                  <Input as="textarea" className="!w-full" rows={5} {...field} defaultValue={responseData?.isAnyLatePaymentReason} type="text" />
                 </div>
               )}
             />

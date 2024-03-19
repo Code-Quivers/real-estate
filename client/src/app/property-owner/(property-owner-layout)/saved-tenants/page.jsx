@@ -50,28 +50,17 @@ const PropertyOwnerSavedTenants = () => {
                         height={80}
                         width={80}
                         className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
-                        src={
-                          singleReq?.tenant?.profileImage
-                            ? `${fileUrlKey()}/${
-                                singleReq?.tenant?.profileImage
-                              }`
-                            : profileLogo
-                        }
+                        src={singleReq?.tenant?.profileImage ? `${fileUrlKey()}/${singleReq?.tenant?.profileImage}` : profileLogo}
                         alt="photo"
                       />
                     </div>
                     <div className="col-span-4 p-5   flex justify-between w-full ">
                       <div className="space-y-1">
                         <h3 className="text-lg font-medium">
-                          <span>{singleReq?.tenant?.firstName}</span>{" "}
-                          <span>{singleReq?.tenant?.lastName}</span>
+                          <span>{singleReq?.tenant?.firstName}</span> <span>{singleReq?.tenant?.lastName}</span>
                         </h3>
-                        <h3 className="text-sm font-medium">
-                          {"singleReq.placeToRent"}
-                        </h3>
-                        <h3 className="text-sm font-medium">
-                          {"singleReq.tenant?.affordable"}
-                        </h3>
+                        <h3 className="text-sm font-medium">{"singleReq.placeToRent"}</h3>
+                        <h3 className="text-sm font-medium">{"singleReq.tenant?.affordable"}</h3>
                       </div>
                       <div>
                         <div style={{ width: 80 }}>
@@ -82,10 +71,7 @@ const PropertyOwnerSavedTenants = () => {
                   </div>
                   {/* remove  */}
                   <div className="absolute top-0 right-0">
-                    <button
-                      onClick={() => handleOpen(singleReq)}
-                      className="hover:bg-black p-1 rounded-tr-lg  hover:text-white"
-                    >
+                    <button onClick={() => handleOpen(singleReq)} className="hover:bg-black p-1 rounded-tr-lg  hover:text-white">
                       <CgClose size={20} />
                     </button>
                   </div>
@@ -97,10 +83,7 @@ const PropertyOwnerSavedTenants = () => {
       {/* delete modal */}
       <Modal open={open} size="xs" backdrop="static" onClose={handleClose}>
         <Modal.Body>
-          <RemoveFromAvailableTenantsModal
-            handleClose={handleClose}
-            modalData={modalData}
-          />
+          <RemoveFromAvailableTenantsModal handleClose={handleClose} modalData={modalData} />
         </Modal.Body>
       </Modal>
     </>

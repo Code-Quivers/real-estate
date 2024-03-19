@@ -12,12 +12,7 @@ import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 
 const TenantSidebar = () => {
-  const {
-    data: dataResponse,
-    isError,
-    isLoading,
-    error,
-  } = useGetTenantMyProfileQuery();
+  const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};
 
@@ -29,21 +24,13 @@ const TenantSidebar = () => {
   };
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
-      <Sidenav
-        expanded={true}
-        className="h-screen !bg-[#29429f]"
-        appearance="inverse"
-      >
+      <Sidenav expanded={true} className="h-screen !bg-[#29429f]" appearance="inverse">
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
             <Image
               width={120}
               height={120}
-              src={
-                data?.profileImage
-                  ? `${fileUrlKey()}/${data?.profileImage}`
-                  : profileLogo
-              }
+              src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
               // src={profileLogo}
               alt="Profile Picture"
               className=" object-cover rounded-full  select-none h-[120px] w-[120px]"
@@ -60,9 +47,7 @@ const TenantSidebar = () => {
               href="/tenant"
               eventKey="1"
               icon={<DashboardIcon />}
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderTop: "2px solid #000",
@@ -74,9 +59,7 @@ const TenantSidebar = () => {
               eventKey="2"
               as={Link}
               href="/tenant/available-units"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/tenant/available-units" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/available-units" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -87,9 +70,7 @@ const TenantSidebar = () => {
             <Nav.Item
               as={Link}
               href="/tenant/saved-units"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/tenant/saved-units" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/saved-units" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="3"
               icon={<GroupIcon />}
@@ -99,9 +80,7 @@ const TenantSidebar = () => {
             <Nav.Item
               as={Link}
               href="/tenant/unit-information"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/tenant/unit-information" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
               icon={<GroupIcon />}
@@ -131,9 +110,7 @@ const TenantSidebar = () => {
             <Nav.Item
               as={Link}
               href="/tenant/requests"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/tenant/requests" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/requests" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -145,9 +122,7 @@ const TenantSidebar = () => {
             <Nav.Item
               as={Link}
               href="/tenant/settings"
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/tenant/settings" && "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/settings" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
@@ -158,10 +133,7 @@ const TenantSidebar = () => {
             </Nav.Item>
             <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${
-                activeLink === "/property-owner/maintenance-requests" &&
-                "!bg-[#1b3697]"
-              }`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",

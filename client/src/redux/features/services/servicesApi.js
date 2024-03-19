@@ -18,15 +18,9 @@ export const servicesApi = baseApi.injectEndpoints({
         method: "PUT",
         data: data,
       }),
-      invalidatesTags: [
-        tagTypes.services,
-        tagTypes.serviceProvider,
-        tagTypes.user,
-        tagTypes.tenant,
-      ],
+      invalidatesTags: [tagTypes.services, tagTypes.serviceProvider, tagTypes.user, tagTypes.tenant],
     }),
   }),
 });
 
-export const { useGetAllServicesQuery, useUpdateServiceInformationMutation } =
-  servicesApi;
+export const { useGetAllServicesQuery, useUpdateServiceInformationMutation } = servicesApi;

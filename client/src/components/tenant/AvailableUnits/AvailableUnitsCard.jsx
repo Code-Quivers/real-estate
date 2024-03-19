@@ -12,15 +12,7 @@ import { useState } from "react";
 import { sortingPicker } from "@/constants/selectPicker.const";
 
 // Search Location data
-const data = [
-  "Newest",
-  "Linda",
-  "Nancy",
-  "Lloyd",
-  "Alice",
-  "Julia",
-  "Albert",
-].map((item) => ({ label: item, value: item }));
+const data = ["Newest", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
 
 // Price data
 
@@ -37,8 +29,7 @@ const AvailableUnitsCard = () => {
   query["searchTerm"] = searchTerm;
   query["sortOrder"] = sortOrder;
   //
-  const { data: allAvailableUnitsRes, isLoading } =
-    useGetAllAvailableUnitsQuery({ ...query });
+  const { data: allAvailableUnitsRes, isLoading } = useGetAllAvailableUnitsQuery({ ...query });
   return (
     <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
@@ -52,20 +43,10 @@ const AvailableUnitsCard = () => {
           </InputGroup>
         </div>
         <div className="w-full">
-          <SelectPicker
-            className="!w-full"
-            size="lg"
-            placeholder="Price"
-            data={data}
-          />
+          <SelectPicker className="!w-full" size="lg" placeholder="Price" data={data} />
         </div>
         <div className="w-full">
-          <SelectPicker
-            size="lg"
-            placeholder="More"
-            data={data}
-            className="!w-full"
-          />
+          <SelectPicker size="lg" placeholder="More" data={data} className="!w-full" />
         </div>
       </div>
       {/* search with price section end */}
@@ -98,11 +79,7 @@ const AvailableUnitsCard = () => {
               width={300}
               height={300}
               className="w-full h-[250px] object-center object-cover"
-              src={
-                unit?.images?.length
-                  ? `${fileUrlKey()}/${unit?.images[0]}`
-                  : profileLogo
-              }
+              src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
               alt="Tenant available units"
             />
             <div className="flex w-full justify-between items-start mt-2 px-2.5 py-1">
@@ -112,9 +89,7 @@ const AvailableUnitsCard = () => {
                   <span>{unit?.numOfBed ?? "0"} Bed </span>
                   <span>{unit?.numOfBath ?? "0"} Bath</span>
                 </h2>
-                <h2 className="text-sm">
-                  {unit?.address ? unit?.address : "--"}
-                </h2>
+                <h2 className="text-sm">{unit?.address ? unit?.address : "--"}</h2>
               </div>
               {/* <div>
                 <div className="py-2 px-5 rounded-full border-2 border-red-700">
@@ -137,12 +112,7 @@ const AvailableUnitsCard = () => {
 
       {/* Available units card end */}
       {/* Available units details using popup start */}
-      <AvailableUnitsModal
-        open={open}
-        setOpen={setOpen}
-        availableUnits={availableUnits}
-        units={units}
-      />
+      <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} units={units} />
       {/* Available units details using popup end */}
     </section>
   );
