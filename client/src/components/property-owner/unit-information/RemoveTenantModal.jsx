@@ -11,9 +11,10 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
     control,
     handleSubmit,
     formState: { errors },
+    reset: formReset,
   } = useForm();
 
-  const [removeTenantFromProperty, { data, isLoading, isSuccess, isError, error }] = useRemoveTenantFromPropertyMutation();
+  const [removeTenantFromProperty, { data, isLoading, isSuccess, isError, error, reset: resetReq }] = useRemoveTenantFromPropertyMutation();
 
   const handleRemoveTenant = async (reasonData) => {
     // console.log("nw data", newData);
@@ -35,6 +36,10 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
       toaster.push(LoginSuccessMessage(data?.message), {
         placement: "bottomStart",
       });
+
+      handleCloseRemove();
+      resetReq();
+      formReset();
     }
 
     // if error
@@ -49,7 +54,10 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
     <>
       <Modal
         open={isOpenTenantRemove}
-        onClose={handleCloseRemove}
+        onClose={() => {
+          handleCloseRemove();
+          resetReq();
+        }}
         size="sm"
         dialogAs="div"
         overflow={false}
@@ -101,10 +109,19 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
                 </div>
 
                 <div className="flex justify-end gap-3 items-center">
-                  <button type="submit" onClick={handleCloseRemove} className="border  px-4 py-2 rounded mt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCloseRemove();
+                      resetReq();
+                    }}
+                    className="border  px-4 py-2 rounded mt-4"
+                  >
                     Cancel
                   </button>
-                  <button className="bg-red-500 text-white px-4 py-2 rounded mt-4">Remove</button>
+                  <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded mt-4">
+                    Remove
+                  </button>
                 </div>
               </form>
             </div>
