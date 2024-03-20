@@ -22,6 +22,7 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
+import { extractNonNullValues } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -120,8 +121,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
     const total = await prisma.property.count({
       where: whereConditions,
@@ -219,8 +220,8 @@ const getPropertyOwnerAllProperty = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
     const total = await prisma.property.count({
       where: {
@@ -295,20 +296,20 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: Partial<Property> = {};
-
-    if (title) updatedPropertyData["title"] = title;
-    if (address) updatedPropertyData["address"] = address;
-    if (description) updatedPropertyData["description"] = description;
-    if (maintenanceCoveredTenant) updatedPropertyData["maintenanceCoveredTenant"] = maintenanceCoveredTenant;
-    if (maintenanceCoveredOwner) updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
-    if (schools) updatedPropertyData["schools"] = schools;
-    if (universities) updatedPropertyData["universities"] = universities;
-    if (allowedPets) updatedPropertyData["allowedPets"] = allowedPets;
-    if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
-    if (numOfBath) updatedPropertyData["numOfBath"] = numOfBath;
-    if (numOfBed) updatedPropertyData["numOfBed"] = numOfBed;
-    if (monthlyRent) updatedPropertyData["monthlyRent"] = monthlyRent;
+    const updatedPropertyData: Partial<Property> = extractNonNullValues({
+      title,
+      address,
+      images: imagesPath,
+      allowedPets,
+      description,
+      maintenanceCoveredOwner,
+      maintenanceCoveredTenant,
+      numOfBath,
+      numOfBed,
+      schools,
+      universities,
+      monthlyRent,
+    });
 
     //
     const updatedProperty = await transactionClient.property.update({

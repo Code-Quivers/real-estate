@@ -62,7 +62,6 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
                     <div className="w-full">
                       <DatePicker
                         {...field}
-                        editable={false}
                         defaultValue={responseData?.dateOfBirth && moment(responseData?.dateOfBirth)?.toDate()}
                         shouldDisableDate={(date) => moment(date).isAfter(moment(), "day")}
                         size="md"
@@ -151,7 +150,7 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
           </div>
 
           {/* Email Address */}
-          <div className="w-full">
+          {/* <div className="w-full">
             <label className="text-sm font-medium">Email Address</label>
             <Controller
               name="email"
@@ -168,7 +167,7 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
                 </div>
               )}
             />
-          </div>
+          </div> */}
 
           {/* criminal Record */}
           <div>
