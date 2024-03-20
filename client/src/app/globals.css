@@ -132,3 +132,10 @@ body::-webkit-scrollbar-thumb {
 .app .ql-editor {
   min-height: 10rem;
 }
+
+
+/* ! uploader */
+.rs-uploader-picture {
+  display: flex !important;
+  flex-direction: column-reverse !important;
+}

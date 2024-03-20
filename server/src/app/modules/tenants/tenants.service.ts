@@ -253,9 +253,34 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   return result;
 };
 
+// ! get tenant my unit information
+
+// get single tenant
+const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const tenants = await transactionClient.tenant.findUnique({
+      where: {
+        tenantId,
+      },
+      select: {
+        property: true,
+        tenantId: true,
+      },
+    });
+
+    if (!tenants) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
+    }
+    return tenants;
+  });
+
+  return result;
+};
+
 export const TenantServices = {
   getAllTenants,
   updateTenantProfile,
   getSingleTenant,
   getAllAvailableTenants,
+  getMyUnitInformation,
 };

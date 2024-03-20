@@ -61,6 +61,7 @@ const AddPropertyAddPhotos = ({ property }) => {
   return (
     <Uploader
       fileList={fileList}
+      as="div"
       listType="picture"
       autoUpload={false}
       onChange={handleChangeImages}
