@@ -95,7 +95,7 @@ model Tenant {
 }
 
 model ServiceProvider {
-  serviceProviderId   String        @id @default(uuid())
+  serviceProviderId   String              @id @default(uuid())
   firstName           String
   lastName            String
   profileImage        String?
@@ -104,13 +104,13 @@ model ServiceProvider {
   companyAddress      String?
   companyPhoneNumber  String?
   companyEmailAddress String?
-  userId              String        @unique
-  createdAt           DateTime      @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime      @updatedAt @db.Timestamptz(0)
-  user                User          @relation(fields: [userId], references: [userId])
+  userId              String              @unique
+  createdAt           DateTime            @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime            @updatedAt @db.Timestamptz(0)
+  user                User                @relation(fields: [userId], references: [userId])
   Service             Service?
   SavedItem           SavedItem[]
-  orderRequest        OrderRequest?
+  maintenanceRequest  MaintenanceRequest?
 
   @@map("serviceProviders")
 }
@@ -143,39 +143,40 @@ model Property {
 }
 
 model MaintenanceRequest {
-  maintenanceRequestId String        @id @default(uuid())
+  maintenanceRequestId String                         @id @default(uuid())
   propertyId           String
-  property             Property      @relation(fields: [propertyId], references: [propertyId])
+  property             Property                       @relation(fields: [propertyId], references: [propertyId])
   tenantId             String
-  tenant               Tenant        @relation(fields: [tenantId], references: [tenantId])
+  tenant               Tenant                         @relation(fields: [tenantId], references: [tenantId])
   ownerId              String
-  owner                PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId])
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
-
+  owner                PropertyOwner                  @relation(fields: [ownerId], references: [propertyOwnerId])
+  createdAt            DateTime                       @default(now())
+  updatedAt            DateTime                       @updatedAt
   // 
-  isAnimal      Boolean?
-  animalDetails String?
+  isAnimal             Boolean?
+  animalDetails        String?
   // 
-  issueLocation String
-  priority      RequestMaintenanceEnum
-  issueType     ServiceType
-  description   String
-  images        String[]
-  status        MaintenanceRequestStatus @default(PENDING)
+  issueLocation        String
+  priority             RequestMaintenancePriorityEnum
+  issueType            ServiceType
+  description          String
+  images               String[]
+  status               MaintenanceRequestStatus       @default(PENDING)
+  // 
+  serviceProviderId    String?                        @unique
+  serviceProvides      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
 
   @@map("maintenance_requests")
 }
 
+// ! not needed , will be deleted
 model OrderRequest {
-  pendingOrderId    String           @id @default(uuid())
-  propertyId        String
-  property          Property         @relation(fields: [propertyId], references: [propertyId])
-  isApproved        Boolean          @default(false)
-  serviceProviderId String?          @unique
-  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
+  pendingOrderId String   @id @default(uuid())
+  propertyId     String
+  property       Property @relation(fields: [propertyId], references: [propertyId])
+  isApproved     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("order_requests")
 }
@@ -262,9 +263,8 @@ enum ItemType {
   TENANT
 }
 
-enum RequestMaintenanceEnum {
+enum RequestMaintenancePriorityEnum {
   LOW_PRIORITY
   MEDIUM_PRIORITY
   HIGH_PRIORITY
-  ALL_PRIORITIES
 }

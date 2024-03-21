@@ -25,6 +25,10 @@ const create_required_directories = () => {
   if (!fs.existsSync("./data/uploads/property")) {
     fs.mkdirSync("./data/uploads/property");
   }
+  // Create maintenance request directory
+  if (!fs.existsSync("./data/uploads/maintenance-requests")) {
+    fs.mkdirSync("./data/uploads/maintenance-requests");
+  }
 
   // Create backup directory where database backup file will be stored.
   if (!fs.existsSync("./data/backup")) {

@@ -15,7 +15,6 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
   } = useForm();
 
   const handleUpdateProfileInformation = async (data) => {
-    console.log(data);
     const formData = new FormData();
     const obj = {
       ...data,

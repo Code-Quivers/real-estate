@@ -2,7 +2,7 @@ import multer from "multer";
 
 const propertyStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "data/uploads/property/");
+    callback(null, "data/uploads/maintenance-requests/");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
