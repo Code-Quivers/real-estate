@@ -2,7 +2,7 @@
 
 import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
 import PendingOrderActions from "@/components/service-provider/pendingOrders/PendingOrderActions";
-import { useGetMyPendingOrdersQuery } from "@/redux/features/pendingOrder/pendingOrderApi";
+
 import Image from "next/image";
 
 const AllPendingOrders = () => {
@@ -28,7 +28,6 @@ const AllPendingOrders = () => {
   ];
 
   // !
-  const { data } = useGetMyPendingOrdersQuery();
 
   return (
     <div>

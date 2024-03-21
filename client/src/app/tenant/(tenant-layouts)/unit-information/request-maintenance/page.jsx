@@ -1,7 +1,9 @@
 "use client";
 import AddMaintenanceReqPhotos from "@/components/tenant/maintenanceRequest/AddMaintenanceReqPhotos";
-import { MaintenancePriorityType, issueTypes } from "@/constants/maintenanceReqConsts";
+import { MaintenancePriorityType, issueTypes } from "@/constants/maintenanceReqConst";
+
 import { useAddMaintenanceRequestMutation } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Form, Input, Message, Radio, RadioGroup, SelectPicker, useToaster } from "rsuite";
@@ -11,22 +13,28 @@ const RequestMaintenancePage = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset: formReset,
   } = useForm();
 
-  const [addMaintenanceRequest, { data, isLoading, isError, isSuccess, error }] = useAddMaintenanceRequestMutation();
+  const [addMaintenanceRequest, { data, isLoading, isError, isSuccess, error, reset }] = useAddMaintenanceRequestMutation();
 
   //
   const handleAddRequest = async ({ files, ...reqData }) => {
     const formData = new FormData();
     const obj = JSON.stringify(reqData);
     formData.append("data", obj);
-    if (files?.length) formData.append("files", files);
 
-    await addMaintenanceRequest(addMaintenanceRequest);
+    // eslint-disable-next-line no-unused-vars
+    files?.forEach((file, index) => {
+      formData.append("files", file);
+    });
+
+    await addMaintenanceRequest(formData);
   };
 
   //
   const toaster = useToaster();
+  const router = useRouter();
   useEffect(() => {
     if (!isLoading && isSuccess && !isError && data) {
       toaster.push(
@@ -35,9 +43,12 @@ const RequestMaintenancePage = () => {
         </Message>,
         {
           placement: "topEnd",
-          duration: 3000,
+          duration: 4000,
         },
       );
+      formReset();
+      reset();
+      router.push("/tenant/unit-information");
     }
     if (!isLoading && !isSuccess && isError && error) {
       toaster.push(
@@ -46,7 +57,7 @@ const RequestMaintenancePage = () => {
         </Message>,
         {
           placement: "topEnd",
-          duration: 3000,
+          duration: 4000,
         },
       );
     }
@@ -192,7 +203,7 @@ const RequestMaintenancePage = () => {
               </div>
               <div>
                 {/* submit button */}
-                <Button type="submit" size="lg" className="!bg-[#e22620] !rounded-full !py-3">
+                <Button loading={isLoading} type="submit" size="lg" className="!bg-[#e22620] !rounded-full !py-3">
                   Send Request
                 </Button>
               </div>
