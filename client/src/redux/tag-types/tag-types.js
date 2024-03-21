@@ -7,6 +7,15 @@ export const tagTypes = {
   items: "items",
   properties: "properties",
   propertyOwner: "propertyOwner",
+  maintenanceRequest: "maintenanceRequest",
 };
 
-export const tagTypesList = [tagTypes.user, tagTypes.tenant, tagTypes.serviceProvider, tagTypes.services, tagTypes.items, tagTypes.propertyOwner];
+export const tagTypesList = [
+  tagTypes.user,
+  tagTypes.tenant,
+  tagTypes.serviceProvider,
+  tagTypes.services,
+  tagTypes.items,
+  tagTypes.propertyOwner,
+  tagTypes.maintenanceRequest,
+];

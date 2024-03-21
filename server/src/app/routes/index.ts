@@ -9,6 +9,7 @@ import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
 import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 import { PendingOrderRoutes } from "../modules/orderRequest/orderRequest.routes";
+import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path: "/pending-orders",
     route: PendingOrderRoutes,
+  },
+  {
+    path: "/maintenance-request",
+    route: MaintenanceRequestRouter,
   },
 ];
 

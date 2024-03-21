@@ -5,7 +5,6 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import config from "../../config";
 import ApiError from "../../errors/ApiError";
 import handleValidationError from "../../errors/handleValidationError";
-
 import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 import handleClientError from "../../errors/handleClientError";
@@ -13,12 +12,7 @@ import handleZodError from "../../errors/handleZodError";
 import { IGenericErrorMessage } from "../../interfaces/error";
 import { errorLogger } from "../../shared/logger";
 
-const globalErrorHandler: ErrorRequestHandler = (
-  error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Response, next: NextFunction) => {
   // config.env === 'development'
   //   ? errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error.statusCode)
   //   : errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error.statusCode);
