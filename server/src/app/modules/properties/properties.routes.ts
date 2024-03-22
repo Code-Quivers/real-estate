@@ -34,6 +34,7 @@ router.get(
 );
 // ! -get property owner my all properties
 router.get("/get-my-properties", auth(UserRoles.PROPERTY_OWNER), PropertiesController.getPropertyOwnerAllProperty);
+
 // ! update property info
 router.patch(
   "/update-property/:propertyId",
@@ -52,6 +53,15 @@ router.post(
   auth(UserRoles.PROPERTY_OWNER),
   validateRequest(PropertiesValidation.assignTenant),
   PropertiesController.assignTenantToProperty,
+);
+
+// ! remove tenant user to property or unit
+
+router.post(
+  "/remove-tenant-from-property",
+  auth(UserRoles.PROPERTY_OWNER),
+  validateRequest(PropertiesValidation.removeTenant),
+  PropertiesController.removeTenantFromProperty,
 );
 // ! assign ServiceProvider to property or unit
 

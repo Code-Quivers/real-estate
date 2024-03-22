@@ -15,12 +15,7 @@ const PendingOrderActions = () => {
         <PrimaryButton title="Contact" onClickHandler={handleOpen} />
       </div>
       {/* contact Modal */}
-      {isModalOpened && (
-        <ContactModal
-          isModalOpened={isModalOpened}
-          setModalOpened={setModalOpened}
-        />
-      )}
+      {isModalOpened && <ContactModal isModalOpened={isModalOpened} setModalOpened={setModalOpened} />}
     </>
   );
 };

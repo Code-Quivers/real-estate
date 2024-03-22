@@ -13,20 +13,14 @@ const AddPropertyAddPhotos = ({ property }) => {
   // Fetch files from Redux state when the component mounts
   const { propertyList } = useAppSelector((state) => state?.propertyList);
 
-  const [fileList, setFileList] = useState(
-    propertyList?.find((single) => single?.id === property?.id)?.files || [],
-  );
+  const [fileList, setFileList] = useState(propertyList?.find((single) => single?.id === property?.id)?.files || []);
 
   const handleChangeImages = (files) => {
     if (files.length > 0) {
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
       const validBlobFiles = files
-        .filter(
-          (filetype) =>
-            filetype?.blobFile?.size &&
-            filetype?.blobFile?.size <= fileSizeLimit,
-        )
+        .filter((filetype) => filetype?.blobFile?.size && filetype?.blobFile?.size <= fileSizeLimit)
         .map((filetype) => filetype.blobFile);
 
       if (validBlobFiles.length > 0) {
@@ -67,6 +61,7 @@ const AddPropertyAddPhotos = ({ property }) => {
   return (
     <Uploader
       fileList={fileList}
+      as="div"
       listType="picture"
       autoUpload={false}
       onChange={handleChangeImages}

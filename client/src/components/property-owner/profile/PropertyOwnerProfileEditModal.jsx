@@ -6,15 +6,8 @@ import PropertyOwnerUploadImageEdit from "./PropertyOwnerUploadImageEdit";
 import { useUpdatePropertyOwnerProfileMutation } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { useEffect } from "react";
 
-const PropertyOwnerProfileEditModal = ({
-  open,
-  myProfileData,
-  handleClose,
-}) => {
-  const [
-    updatePropertyOwnerProfile,
-    { isLoading, isError, isSuccess, error, reset },
-  ] = useUpdatePropertyOwnerProfileMutation();
+const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => {
+  const [updatePropertyOwnerProfile, { isLoading, isError, isSuccess, error, reset }] = useUpdatePropertyOwnerProfileMutation();
   const {
     control,
     handleSubmit,
@@ -55,10 +48,7 @@ const PropertyOwnerProfileEditModal = ({
       dialogAs="div"
       className="bg-white rounded-xl border border-black/50 flex mx-auto justify-center items-center  "
     >
-      <Modal.Body
-        className="p-3  min-h-[750px] md:min-h-[620px] "
-        classPrefix=" !w-full"
-      >
+      <Modal.Body className="p-3  min-h-[750px] md:min-h-[620px] " classPrefix=" !w-full">
         <div className="  border   rounded-xl p-3">
           {/* title */}
           <div className="flex justify-center">
@@ -75,14 +65,8 @@ const PropertyOwnerProfileEditModal = ({
                     control={control}
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <label className="font-medium text-base">
-                          First Name
-                        </label>
-                        <Input
-                          defaultValue={myProfileData?.firstName}
-                          {...field}
-                          type="text"
-                        />
+                        <label className="font-medium text-base">First Name</label>
+                        <Input defaultValue={myProfileData?.firstName} {...field} type="text" />
                       </div>
                     )}
                   />
@@ -94,14 +78,8 @@ const PropertyOwnerProfileEditModal = ({
                     control={control}
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <label className="font-medium text-base">
-                          Last Name
-                        </label>
-                        <Input
-                          defaultValue={myProfileData?.lastName}
-                          {...field}
-                          type="text"
-                        />
+                        <label className="font-medium text-base">Last Name</label>
+                        <Input defaultValue={myProfileData?.lastName} {...field} type="text" />
                       </div>
                     )}
                   />
@@ -114,14 +92,8 @@ const PropertyOwnerProfileEditModal = ({
                     control={control}
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <label className="text-base font-medium">
-                          Phone Number
-                        </label>
-                        <Input
-                          defaultValue={myProfileData?.phoneNumber}
-                          {...field}
-                          type="text"
-                        />
+                        <label className="text-base font-medium">Phone Number</label>
+                        <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
                       </div>
                     )}
                   />
@@ -133,14 +105,8 @@ const PropertyOwnerProfileEditModal = ({
                     control={control}
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <label className="text-base font-medium">
-                          Password
-                        </label>
-                        <Input
-                          placeholder="********"
-                          {...field}
-                          type="password"
-                        />
+                        <label className="text-base font-medium">Password</label>
+                        <Input placeholder="********" {...field} type="password" />
                       </div>
                     )}
                   />
@@ -152,12 +118,7 @@ const PropertyOwnerProfileEditModal = ({
               <Controller
                 name="file"
                 control={control}
-                render={({ field }) => (
-                  <PropertyOwnerUploadImageEdit
-                    defaultImage={myProfileData?.profileImage}
-                    field={field}
-                  />
-                )}
+                render={({ field }) => <PropertyOwnerUploadImageEdit defaultImage={myProfileData?.profileImage} field={field} />}
               />
             </div>
             <div className="mt-10 flex gap-5 justify-end">

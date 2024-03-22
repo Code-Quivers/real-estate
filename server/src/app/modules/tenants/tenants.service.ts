@@ -89,6 +89,93 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
 
   return result;
 };
+// ! get all Available tenants which are not already assigned
+const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+
+  const { searchTerm, ...filterData } = filters;
+
+  const andConditions = [];
+  if (searchTerm) {
+    andConditions.push({
+      OR: tenantsSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => {
+        if (tenantsRelationalFields.includes(key)) {
+          return {
+            [tenantsRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.TenantWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  //
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const allTenants = await transactionClient.tenant.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+      where: {
+        ...whereConditions,
+        property: {
+          is: null,
+        },
+      },
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+              createdAt: "desc",
+            },
+    });
+
+    const total = await prisma.tenant.count({
+      where: {
+        ...whereConditions,
+        property: {
+          is: null,
+        },
+      },
+    });
+    const totalPage = Math.ceil(total / limit);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: allTenants,
+    };
+  });
+
+  return result;
+};
 // get single tenant
 const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -166,8 +253,34 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   return result;
 };
 
+// ! get tenant my unit information
+
+// get single tenant
+const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const tenants = await transactionClient.tenant.findUnique({
+      where: {
+        tenantId,
+      },
+      select: {
+        property: true,
+        tenantId: true,
+      },
+    });
+
+    if (!tenants) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
+    }
+    return tenants;
+  });
+
+  return result;
+};
+
 export const TenantServices = {
   getAllTenants,
   updateTenantProfile,
   getSingleTenant,
+  getAllAvailableTenants,
+  getMyUnitInformation,
 };

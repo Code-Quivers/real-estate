@@ -9,8 +9,7 @@ import { CgClose } from "react-icons/cg";
 import { Button, Message, useToaster } from "rsuite";
 
 const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
-  const [removeFromSavedItem, { isLoading, isSuccess, isError, error, reset }] =
-    useRemoveFromSavedItemMutation();
+  const [removeFromSavedItem, { isLoading, isSuccess, isError, error, reset }] = useRemoveFromSavedItemMutation();
   const toaster = useToaster();
   const handleRemoveFromSavedItem = async (itemId) => {
     //
@@ -37,10 +36,7 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
     <div className="space-y-4">
       <div className="bg-[#ea4b35] flex justify-between w-full px-5 py-3">
         <h2 className="font-medium text-lg text-white">Delete Confirmation</h2>
-        <button
-          onClick={handleClose}
-          className=" px-2 hover:text-white/90 py-1  text-white"
-        >
+        <button onClick={handleClose} className=" px-2 hover:text-white/90 py-1  text-white">
           <CgClose size={25} />
         </button>
       </div>
@@ -55,11 +51,7 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
               height={70}
               className="rounded-full"
               width={70}
-              src={
-                modalData?.tenant?.profileImage
-                  ? `${fileUrlKey()}/${modalData?.tenant?.profileImage}`
-                  : profileLogo
-              }
+              src={modalData?.tenant?.profileImage ? `${fileUrlKey()}/${modalData?.tenant?.profileImage}` : profileLogo}
             />
             <h2>
               {modalData?.tenant?.firstName} {modalData?.tenant?.lastName}
@@ -67,17 +59,13 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
           </div>
           <div>
             <p className="font-medium">
-              Are you sure?{" "}
-              <span className="text-[#ea4b35]">There is no undo! </span>
+              Are you sure? <span className="text-[#ea4b35]">There is no undo! </span>
             </p>
           </div>
         </div>
       </div>
       <div className="px-5 border-t pt-2  flex gap-5 items-center">
-        <button
-          onClick={handleClose}
-          className="border text-sm py-2 hover:bg-slate-100 rounded-md px-3"
-        >
+        <button onClick={handleClose} className="border text-sm py-2 hover:bg-slate-100 rounded-md px-3">
           No, keep the tenant
         </button>
         <Button

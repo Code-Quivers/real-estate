@@ -8,13 +8,7 @@ const ServiceProviderProfilePhotoUpload = ({ field, defaultImage }) => {
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
   const [fileValue, setFileValue] = useState([]);
-  const [imagePreview, setImagePreview] = useState(
-    fileValue?.length
-      ? null
-      : defaultImage
-        ? `${fileUrlKey()}/${defaultImage}`
-        : null,
-  );
+  const [imagePreview, setImagePreview] = useState(fileValue?.length ? null : defaultImage ? `${fileUrlKey()}/${defaultImage}` : null);
 
   const clearImagePreview = () => {
     setImagePreview(`${fileUrlKey()}/${defaultImage}` || undefined);
@@ -32,10 +26,7 @@ const ServiceProviderProfilePhotoUpload = ({ field, defaultImage }) => {
 
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
-      if (
-        latestFile.blobFile?.size &&
-        latestFile.blobFile?.size <= fileSizeLimit
-      ) {
+      if (latestFile.blobFile?.size && latestFile.blobFile?.size <= fileSizeLimit) {
         // Clear previous file information
 
         // Update the fileValue state to contain only the new file
@@ -73,21 +64,12 @@ const ServiceProviderProfilePhotoUpload = ({ field, defaultImage }) => {
   return (
     <div>
       <div>
-        <Uploader
-          fileListVisible={false}
-          listType="picture-text"
-          autoUpload={false}
-          onChange={handleChangeImages}
-          onRemove={clearImagePreview}
-        >
+        <Uploader fileListVisible={false} listType="picture-text" autoUpload={false} onChange={handleChangeImages} onRemove={clearImagePreview}>
           <div style={{ width: 200, height: 200, borderRadius: "50%" }}>
             {uploading && <Loader backdrop center />}
             {imagePreview ? (
               <div>
-                <img
-                  src={imagePreview}
-                  className="w-[200px] h-[200px] rounded-full object-cover "
-                />
+                <img src={imagePreview} className="w-[200px] h-[200px] rounded-full object-cover " />
               </div>
             ) : (
               <div className="!border hover:border-black focus-within:scale-105 rounded-full overflow-hidden  ">
@@ -108,11 +90,7 @@ const ServiceProviderProfilePhotoUpload = ({ field, defaultImage }) => {
         {fileValue?.length > 0 && (
           <div className=" flex justify-between gap-5 items-center">
             <p className="text-wrap">{fileValue[0]?.blobFile?.name}</p>
-            <button
-              onClick={handleRemoveFile}
-              className="text-[#f14e4e] hover:text-red-600"
-              type="button"
-            >
+            <button onClick={handleRemoveFile} className="text-[#f14e4e] hover:text-red-600" type="button">
               <RiDeleteBin5Fill size={30} />
             </button>
           </div>

@@ -490,20 +490,12 @@ const PropertyOwnerMessaging = () => {
               <div
                 key={Math.random()}
                 className={`py-3 px-3  cursor-pointer hover:bg-[#29429f] hover:text-white
-                ${
-                  index !== conversations.length - 1 && "border-b border-black "
-                }
-                ${
-                  Number(paramsChatId) === singleConversation.id &&
-                  "bg-[#29429f] text-white"
-                }
+                ${index !== conversations.length - 1 && "border-b border-black "}
+                ${Number(paramsChatId) === singleConversation.id && "bg-[#29429f] text-white"}
                 
                 `}
               >
-                <PropertyOwnerChatPerson
-                  personName={singleConversation?.user?.name}
-                  chatId={singleConversation?.id}
-                />
+                <PropertyOwnerChatPerson personName={singleConversation?.user?.name} chatId={singleConversation?.id} />
               </div>
             ))}
           </div>

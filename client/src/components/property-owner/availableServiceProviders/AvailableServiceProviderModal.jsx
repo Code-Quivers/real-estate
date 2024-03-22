@@ -6,13 +6,13 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Button, Modal, Popover, Progress, Whisper, toaster } from "rsuite";
+import { Button, Modal, Notification, Popover, Progress, Whisper, useToaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import AvailableServiceProviderPopover from "./AvailableServiceProviderPopover";
+import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 
 const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
+  const toaster = useToaster();
 
   const [saveServiceProvider, { isSuccess, isLoading, isError, error, reset }] = useSaveItemMutation();
   let query = {};
@@ -59,6 +59,53 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
       reset();
     }
   }, [isSuccess, isLoading, isError, error, handleClose, reset, toaster]);
+
+  // !-------------------------------------
+
+  const [
+    assignServiceProviderToProperty,
+    { data: dataAdd, isLoading: isLoadingAdd, isSuccess: isSuccessAdd, isError: isErrorAdd, error: errorAdd, reset: resetAdd },
+  ] = useAssignServiceProviderToPropertyMutation();
+
+  const handleAddTenantToProperty = async (propertyId) => {
+    const assignData = {
+      propertyId,
+      serviceProviderId: modalData?.serviceProviderId,
+    };
+
+    await assignServiceProviderToProperty({
+      data: assignData,
+    });
+  };
+  // ! ------
+
+  useEffect(() => {
+    if (!isLoadingAdd && !isErrorAdd && isSuccessAdd && dataAdd) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{dataAdd?.message ?? "Successfully Assigned"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+    if (!isLoadingAdd && isErrorAdd && !isSuccessAdd && errorAdd) {
+      toaster.push(
+        <Notification type="error" header="Failed" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{errorAdd?.message ?? "Failed to Assigned"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      resetAdd();
+    }
+  }, [isLoadingAdd, isErrorAdd, isSuccessAdd, errorAdd, dataAdd, toaster, resetAdd]);
 
   return (
     <>
@@ -163,7 +210,29 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                       {unitRes?.data?.length > 0
                         ? unitRes?.data?.map((singleUnit) => (
                             <div key={Math.random()}>
-                              <AvailableServiceProviderPopover singleUnit={singleUnit} serviceProviderId={modalData?.serviceProviderId} />
+                              <button
+                                onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                                className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                              >
+                                <div>
+                                  <Image
+                                    width={120}
+                                    height={120}
+                                    className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                                    src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
+                                    alt="photo"
+                                  />
+                                </div>
+                                <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
+                                  <h3>${singleUnit?.monthlyRent}</h3>
+                                  <h3>
+                                    {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
+                                  </h3>
+                                  <h3>{singleUnit?.address}</h3>
+                                </div>
+                              </button>
+
+                              {/* <AvailableServiceProviderPopover singleUnit={singleUnit} serviceProviderId={modalData?.serviceProviderId} /> */}
                             </div>
                           ))
                         : "No Unit Found"}

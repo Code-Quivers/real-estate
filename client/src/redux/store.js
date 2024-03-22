@@ -4,8 +4,7 @@ import { baseApi } from "./api/baseApi";
 
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
   devTools: true,
 });
 

@@ -13,68 +13,15 @@ const UpdateImageUpload = ({ control, setValue, images }) => {
     })) || [],
   );
 
-  const handleRemove = (file) => {
-    // Remove the file from the defaultFileList
-    // const updatedDefaultFileList = defaultFileList.filter((item) => item.fileKey !== file.fileKey).map((item) => ({ ...item }));
-
-    // // Update the defaultFileList
-    // setDefaultFileList(updatedDefaultFileList);
-
-    // // Remove the file from the "files" field in the React Hook Form
-    // setValue("files", updatedDefaultFileList);
-    console.log(file);
-
-    if (file.fileKey.startsWith("default-")) {
-      // Remove the file from the defaultFileList
-      const updatedDefaultFileList = defaultFileList.filter((item) => item.fileKey !== file.fileKey);
-
-      // Update the defaultFileList
-      setDefaultFileList(updatedDefaultFileList);
-
-      // Remove the file from the "files" field in the React Hook Form
-      setValue("files", updatedDefaultFileList);
-    } else {
-      // Handle the removal of selected files
-      const updatedSelectedFiles = defaultFileList.filter((item) => {
-        console.log("item", item.fileKey);
-        console.log("file", file.fileKey);
-        return item.fileKey !== file.fileKey;
-      });
-      console.log(updatedSelectedFiles);
-      console.log(updatedSelectedFiles, "selected");
-      // Update the "files" field in the React Hook Form
-      setValue("files", updatedSelectedFiles);
-
-      // Update the defaultFileList
-      setDefaultFileList(updatedSelectedFiles);
-    }
-  };
   const handleChangeImages = (files) => {
     if (files.length > 0) {
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
+      console.log(files, "handleOnChanges");
+      // Update the "files" field in the React Hook Form
+      setValue("files", files);
 
-      // Check if any file is from the new selected files
-      const isNewSelected = files.some((file) => defaultFileList.every((defaultFile) => defaultFile.url !== file.url));
-      if (isNewSelected) {
-        console.log("is new selected");
-        const validBlobFiles = files
-          .filter((filetype) => filetype?.blobFile?.size && filetype?.blobFile?.size <= fileSizeLimit)
-          .map((filetype, index) => ({
-            blobFile: filetype.blobFile,
-            fileKey: `selected-${index + 1}`,
-            name: filetype.blobFile.name,
-            status: "inited", // You might want to set an appropriate status
-          }));
-
-        // Update the defaultFileList with new and valid files
-        const updatedDefaultFileList = [...defaultFileList.filter((file) => !file.fileKey.startsWith("selected")), ...validBlobFiles];
-
-        // Update the "files" field in the React Hook Form
-        setValue("files", updatedDefaultFileList);
-
-        // Update the defaultFileList
-        setDefaultFileList(updatedDefaultFileList);
-      }
+      // Update the defaultFileList
+      setDefaultFileList(files);
     }
   };
 
@@ -85,7 +32,6 @@ const UpdateImageUpload = ({ control, setValue, images }) => {
       render={({ field }) => (
         <Uploader
           {...field}
-          onRemove={handleRemove}
           defaultFileList={defaultFileList}
           listType="picture"
           autoUpload={false}

@@ -17,12 +17,7 @@ const ServiceProviderNavbar = () => {
     <div>
       <div className="border-b py-1 shadow-lg flex justify-between items-center pr-3">
         <div>
-          <IconButton
-            circle
-            icon={<GiHamburgerMenu size={30} />}
-            size="xs"
-            onClick={() => handleOpen()}
-          />
+          <IconButton circle icon={<GiHamburgerMenu size={30} />} size="xs" onClick={() => handleOpen()} />
         </div>
         <div>
           <p className="font-semibold">
@@ -31,12 +26,7 @@ const ServiceProviderNavbar = () => {
         </div>
       </div>
       <div>
-        <Drawer
-          size="xs"
-          placement="left"
-          open={open}
-          onClose={() => setOpen(false)}
-        >
+        <Drawer size="xs" placement="left" open={open} onClose={() => setOpen(false)}>
           <Drawer.Header>
             <Drawer.Title>Menu</Drawer.Title>
             {/* <Drawer.Actions>

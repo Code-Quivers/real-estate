@@ -45,16 +45,12 @@ const propertyListSlice = createSlice({
     removeProperty: (state, action) => {
       const propertyIdToRemove = action.payload;
 
-      state.propertyList = state.propertyList.filter(
-        (property) => property.id !== propertyIdToRemove,
-      );
+      state.propertyList = state.propertyList.filter((property) => property.id !== propertyIdToRemove);
     },
     updateProperty: (state, action) => {
       const { propertyId, field, value } = action.payload;
 
-      const propertyIndex = state.propertyList.findIndex(
-        (property) => property.id === propertyId,
-      );
+      const propertyIndex = state.propertyList.findIndex((property) => property.id === propertyId);
 
       if (propertyIndex !== -1) {
         if (field === "files") {
@@ -63,22 +59,15 @@ const propertyListSlice = createSlice({
 
           // Modify the file names by adding propertyId
           const modifiedFiles = value?.map((file) => {
-            const modifiedFile = new File(
-              [file],
-              `${propertyId}_${file.name}`,
-              {
-                type: file.type,
-                lastModified: file.lastModified,
-              },
-            );
+            const modifiedFile = new File([file], `${propertyId}_${file.name}`, {
+              type: file.type,
+              lastModified: file.lastModified,
+            });
 
             return modifiedFile;
           });
 
-          state.propertyList[propertyIndex][field] = [
-            ...existingFiles,
-            ...modifiedFiles,
-          ];
+          state.propertyList[propertyIndex][field] = [...existingFiles, ...modifiedFiles];
         } else {
           // Otherwise, update the specified field with the new value
           state.propertyList[propertyIndex] = {
@@ -96,11 +85,6 @@ const propertyListSlice = createSlice({
   },
 });
 
-export const {
-  addNewProperty,
-  updateProperty,
-  removeProperty,
-  resetPropertyList,
-} = propertyListSlice.actions;
+export const { addNewProperty, updateProperty, removeProperty, resetPropertyList } = propertyListSlice.actions;
 
 export default propertyListSlice.reducer;

@@ -13,6 +13,7 @@ import {
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
+  IRemoveTenantFromProperty,
 } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -21,6 +22,7 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
+import { extractNonNullValues } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -191,16 +193,20 @@ const getPropertyOwnerAllProperty = async (
       include: {
         owner: true,
         Tenant: true,
-        serviceProviders: {
-          include: {
-            Service: true,
-            user: {
-              select: {
-                email: true,
-              },
-            },
-          },
-        },
+        _count: true,
+        maintenanceRequests: true,
+        serviceProviders: true,
+
+        // serviceProviders: {
+        //   include: {
+        //     Service: true,
+        //     user: {
+        //       select: {
+        //         email: true,
+        //       },
+        //     },
+        //   },
+        // },
       },
       where: {
         ...whereConditions,
@@ -262,11 +268,19 @@ const getSinglePropertyInfo = async (propertyId: string): Promise<Property | nul
   });
   return res;
 };
+
 // ! update property info
 const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Property> => {
-  const images: IUploadFile[] = req.files as any;
+  // Extract new images paths
+  const newImagesPath: string[] = ((req.files as IUploadFile[]) || []).map(
+    (item: IUploadFile) => `property/${item?.filename}`,
+  );
 
-  const imagesPath = images?.map((item: any) => item?.path);
+  // Extract old images paths from the request body
+  const oldImagesPath: string[] = (req.body.images || []).map((imageName: string) => `${imageName}`);
+
+  // Combine old and new image paths
+  const imagesPath: string[] = oldImagesPath.concat(newImagesPath);
 
   const {
     address,
@@ -278,21 +292,25 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     numOfBed,
     schools,
     universities,
+    monthlyRent,
+    title,
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: Partial<Property> = {};
-
-    if (address) updatedPropertyData["address"] = address;
-    if (description) updatedPropertyData["description"] = description;
-    if (maintenanceCoveredTenant) updatedPropertyData["maintenanceCoveredTenant"] = maintenanceCoveredTenant;
-    if (maintenanceCoveredOwner) updatedPropertyData["maintenanceCoveredOwner"] = maintenanceCoveredOwner;
-    if (schools) updatedPropertyData["schools"] = schools;
-    if (universities) updatedPropertyData["universities"] = universities;
-    if (allowedPets) updatedPropertyData["allowedPets"] = allowedPets;
-    if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
-    if (numOfBath) updatedPropertyData["numOfBath"] = Number(numOfBath);
-    if (numOfBed) updatedPropertyData["numOfBed"] = Number(numOfBed);
+    const updatedPropertyData: Partial<Property> = extractNonNullValues({
+      title,
+      address,
+      images: imagesPath,
+      allowedPets,
+      description,
+      maintenanceCoveredOwner,
+      maintenanceCoveredTenant,
+      numOfBath,
+      numOfBed,
+      schools,
+      universities,
+      monthlyRent,
+    });
 
     //
     const updatedProperty = await transactionClient.property.update({
@@ -309,8 +327,68 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   return result;
 };
 
-// ! assign tenant user to property or unit -----------------
+//! -------------------------------------------------------------------------------------------------------------
 
+// ! assign service providers to property -----------
+const assignServiceProviderToProperty = async (profileId: string, payload: IAssignServiceProviderToProperty) => {
+  const { propertyId, serviceProviderId } = payload;
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if the user is the owner of the property
+    const isOwner = await transactionClient.property.findFirst({
+      where: {
+        propertyId,
+        ownerId: profileId,
+      },
+    });
+
+    if (!isOwner) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "You are not the owner of this property or this property does not exist",
+      );
+    }
+
+    // Check if the property is already assigned to the serviceProvider
+    const isAlreadyAssigned = await transactionClient.property.findFirst({
+      where: {
+        propertyId,
+        serviceProviders: {
+          some: {
+            serviceProviderId,
+          },
+        },
+      },
+    });
+
+    if (isAlreadyAssigned) {
+      throw new ApiError(httpStatus.CONFLICT, "Already Assigned this Provider");
+    }
+
+    // Assign the serviceProvider to the property
+    const res = await transactionClient.property.update({
+      where: {
+        propertyId,
+      },
+      data: {
+        serviceProviders: {
+          connect: {
+            serviceProviderId,
+          },
+        },
+      },
+    });
+
+    if (!res) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Assign Failed");
+    }
+
+    return res;
+  });
+
+  return result;
+};
+// ! assign tenant user to property or unit -----------------
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;
 
@@ -325,7 +403,7 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
     if (!isOwner) {
       throw new ApiError(
-        httpStatus.UNAUTHORIZED,
+        httpStatus.BAD_REQUEST,
         "You are not the owner of this property or this property does not exist",
       );
     }
@@ -396,13 +474,9 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
   return result;
 };
-
-// ! assign service providers to property -----------
-const assignServiceProviderToProperty = async (
-  profileId: string,
-  payload: IAssignServiceProviderToProperty,
-): Promise<Property> => {
-  const { propertyId, serviceProviderId } = payload;
+// ! remove  tenant user from property or unit -----------------
+const removeTenantFromProperty = async (profileId: string, payload: IRemoveTenantFromProperty) => {
+  const { propertyId, tenantId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
     // check if owner or not
@@ -415,43 +489,42 @@ const assignServiceProviderToProperty = async (
 
     if (!isOwner) {
       throw new ApiError(
-        httpStatus.UNAUTHORIZED,
+        httpStatus.BAD_REQUEST,
         "You are not the owner of this property or this property does not exist",
       );
     }
 
-    //
-    const isAlreadyAssigned = await prisma.property.findUnique({
+    // check is property  booked or not by this tenant
+
+    const isPropertyBooked = await prisma.property.findUnique({
       where: {
         propertyId,
-        serviceProviders: {
-          some: {
-            serviceProviderId,
-          },
-        },
+        Tenant: { tenantId },
+        isRented: true,
       },
     });
 
-    if (isAlreadyAssigned) {
-      throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
+    if (!isPropertyBooked) {
+      throw new ApiError(httpStatus.CONFLICT, "Property is not assigned by this tenant");
     }
 
     // update logic
-    const res = await transactionClient.property.update({
+    const res = await transactionClient.tenant.update({
       where: {
-        propertyId,
+        tenantId, // use tenantId here for the update
       },
       data: {
-        serviceProviders: {
-          connect: {
-            serviceProviderId,
+        property: {
+          disconnect: true,
+          update: {
+            isRented: false,
           },
         },
       },
     });
 
     if (!res) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Assign Failed");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant remove Failed");
     }
 
     return res;
@@ -468,4 +541,5 @@ export const PropertiesService = {
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
+  removeTenantFromProperty,
 };
