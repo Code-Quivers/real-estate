@@ -27,17 +27,19 @@ model User {
 }
 
 model PropertyOwner {
-  propertyOwnerId     String               @id @default(uuid())
-  firstName           String
-  lastName            String
-  phoneNumber         String?
-  profileImage        String?
-  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
-  userId              String               @unique
-  user                User                 @relation(fields: [userId], references: [userId])
-  Property            Property[]
-  maintenanceRequests MaintenanceRequest[]
+  propertyOwnerId      String               @id @default(uuid())
+  firstName            String
+  lastName             String
+  phoneNumber          String?
+  profileImage         String?
+  paypalBussinessEmail String?              @unique
+  paypalMerchentId     String?              @unique
+  createdAt            DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime             @updatedAt @db.Timestamptz(0)
+  userId               String               @unique
+  user                 User                 @relation(fields: [userId], references: [userId])
+  Property             Property[]
+  maintenanceRequests  MaintenanceRequest[]
 
   @@map("propertyOwners")
 }
