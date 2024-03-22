@@ -1,4 +1,5 @@
 "use client";
+import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
 import { IoClose } from "react-icons/io5";
 import { Modal } from "rsuite";
 
@@ -29,8 +30,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose }) => {
             </button>
           </div>
           <div className="p-5">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae deleniti nam beatae architecto assumenda labore iusto suscipit quia,
-            inventore quis laborum tenetur placeat iure quod, perspiciatis fuga illo repellendus sequi!
+            <PaypalCheckout />
           </div>
         </Modal.Body>
       </Modal>
