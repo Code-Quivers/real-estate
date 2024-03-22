@@ -5,7 +5,7 @@ import { Request } from "express";
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { OrderRequest, Prisma, Property } from "@prisma/client";
+import { Prisma, Property } from "@prisma/client";
 import { IUploadFile } from "../../../interfaces/file";
 import {
   IAssignServiceProviderToProperty,
@@ -194,7 +194,8 @@ const getPropertyOwnerAllProperty = async (
         owner: true,
         Tenant: true,
         _count: true,
-        orderRequest: true,
+        maintenanceRequests: true,
+        serviceProviders: true,
 
         // serviceProviders: {
         //   include: {
@@ -326,11 +327,10 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   return result;
 };
 
+//! -------------------------------------------------------------------------------------------------------------
+
 // ! assign service providers to property -----------
-const assignServiceProviderToProperty = async (
-  profileId: string,
-  payload: IAssignServiceProviderToProperty,
-): Promise<OrderRequest> => {
+const assignServiceProviderToProperty = async (profileId: string, payload: IAssignServiceProviderToProperty) => {
   const { propertyId, serviceProviderId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -350,22 +350,32 @@ const assignServiceProviderToProperty = async (
     }
 
     // Check if the property is already assigned to the serviceProvider
-    const isAlreadyAssigned = await transactionClient.orderRequest.findFirst({
+    const isAlreadyAssigned = await transactionClient.property.findFirst({
       where: {
         propertyId,
-        serviceProviderId,
+        serviceProviders: {
+          some: {
+            serviceProviderId,
+          },
+        },
       },
     });
 
     if (isAlreadyAssigned) {
-      throw new ApiError(httpStatus.CONFLICT, "Already Assigned by this Provider");
+      throw new ApiError(httpStatus.CONFLICT, "Already Assigned this Provider");
     }
 
     // Assign the serviceProvider to the property
-    const res = await transactionClient.orderRequest.create({
-      data: {
+    const res = await transactionClient.property.update({
+      where: {
         propertyId,
-        serviceProviderId,
+      },
+      data: {
+        serviceProviders: {
+          connect: {
+            serviceProviderId,
+          },
+        },
       },
     });
 

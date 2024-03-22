@@ -2,6 +2,7 @@
 
 import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
 import PendingOrderActions from "@/components/service-provider/pendingOrders/PendingOrderActions";
+import { useGetAllMaintenanceReqForServiceProviderQuery } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
 
 import Image from "next/image";
 
@@ -27,6 +28,7 @@ const AllPendingOrders = () => {
     },
   ];
 
+  const { data, isLoading, isError, isSuccess, error } = useGetAllMaintenanceReqForServiceProviderQuery({});
   // !
 
   return (

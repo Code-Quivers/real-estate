@@ -38,6 +38,7 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties, tagTypes.tenant],
     }),
+    // ! assign
     assignServiceProviderToProperty: builder.mutation({
       query: ({ data }) => ({
         url: `/properties/assign-service-provider-to-property`,

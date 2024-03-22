@@ -87,6 +87,9 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
         property: true,
         serviceProvider: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return res;
@@ -94,7 +97,121 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
   return result;
 };
 
+// ! get all requested maintenances for property owner
+
+const getRequestedMaintenanceForPropertyOwner = async (propertyOwnerId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    //
+    const res = await transactionClient.maintenanceRequest.findMany({
+      where: {
+        ownerId: propertyOwnerId,
+        priority: {
+          in: ["LOW_PRIORITY", "MEDIUM_PRIORITY"],
+        },
+        property: {
+          isRented: true,
+        },
+        status: {
+          equals: "PENDING",
+        },
+      },
+      include: {
+        property: true,
+        serviceProvider: true,
+        tenant: true,
+        owner: true,
+      },
+    });
+
+    return res;
+  });
+  return result;
+};
+
+// ! get all requested maintenances for Service Provider
+const getRequestedMaintenanceForServiceProvider = async (serviceProviderId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const res = await transactionClient.maintenanceRequest.findMany({
+      where: {
+        property: {
+          isRented: true,
+          serviceProviders: {
+            some: {
+              serviceProviderId,
+            },
+          },
+        },
+
+        OR: [
+          {
+            // if status is approved and priority is not high
+            status: "APPROVED",
+            priority: {
+              not: "HIGH_PRIORITY",
+            },
+          },
+          {
+            // if status is pending and priority is high
+            status: "PENDING",
+            priority: "HIGH_PRIORITY",
+          },
+        ],
+      },
+      include: {
+        property: true,
+        serviceProvider: true,
+        tenant: true,
+        owner: true,
+      },
+    });
+    return res;
+  });
+  return result;
+};
+
+// -------------------------------------------------------Update----------------------
+
+// ! accept request and send to service providers
+const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ownerId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // checking if the tenant is assigned to any property or not
+    const isExistReq = await transactionClient.maintenanceRequest.findUnique({
+      where: {
+        maintenanceRequestId,
+        ownerId,
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "You have not assigned to any unit");
+    if (isExistReq && isExistReq.status === "APPROVED") {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Already Approved !");
+    }
+
+    // ! updating
+    const res = await transactionClient.maintenanceRequest.update({
+      where: {
+        maintenanceRequestId,
+      },
+      data: {
+        status: "APPROVED",
+      },
+    });
+
+    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+    return res;
+
+    //
+  });
+  return result;
+};
+
 export const RequestMaintenanceService = {
   addRequestMaintenanceToPropertyOwner,
   getMyRequestedMaintenance,
+  getRequestedMaintenanceForPropertyOwner,
+  acceptRequestMaintenanceForOwner,
+  getRequestedMaintenanceForServiceProvider,
 };
