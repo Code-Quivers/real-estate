@@ -21,7 +21,34 @@ export const MaintenanceRequestApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.maintenanceRequest, tagTypes.properties],
     }),
+    getAllMaintenanceReqForOwner: builder.query({
+      query: () => ({
+        url: `${MAINTENANCE_REQUEST_API}/requested-maintenance-for-owner`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.maintenanceRequest, tagTypes.properties, tagTypes.serviceProvider],
+    }),
+    getAllMaintenanceReqForServiceProvider: builder.query({
+      query: () => ({
+        url: `${MAINTENANCE_REQUEST_API}/requested-maintenance-for-service-providers`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.maintenanceRequest, tagTypes.properties, tagTypes.serviceProvider],
+    }),
+    acceptMaintenanceRequestForOwner: builder.mutation({
+      query: (maintenanceRequestId) => ({
+        url: `${MAINTENANCE_REQUEST_API}/accept-maintenance-req-for-owner/${maintenanceRequestId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
+    }),
   }),
 });
 
-export const { useAddMaintenanceRequestMutation, useGetMyRequestedMaintenanceQuery } = MaintenanceRequestApi;
+export const {
+  useAddMaintenanceRequestMutation,
+  useGetMyRequestedMaintenanceQuery,
+  useGetAllMaintenanceReqForOwnerQuery,
+  useAcceptMaintenanceRequestForOwnerMutation,
+  useGetAllMaintenanceReqForServiceProviderQuery,
+} = MaintenanceRequestApi;

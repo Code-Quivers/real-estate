@@ -110,6 +110,7 @@ model ServiceProvider {
   user                User                @relation(fields: [userId], references: [userId])
   Service             Service?
   SavedItem           SavedItem[]
+  properties          Property[]
   maintenanceRequest  MaintenanceRequest?
 
   @@map("serviceProviders")
@@ -136,8 +137,8 @@ model Property {
   SavedItem                SavedItem[]
   Tenant                   Tenant?
   isRented                 Boolean              @default(false)
-  orderRequest             OrderRequest[]
   maintenanceRequests      MaintenanceRequest[]
+  serviceProviders         ServiceProvider[]
 
   @@map("properties")
 }
@@ -170,16 +171,6 @@ model MaintenanceRequest {
 }
 
 // ! not needed , will be deleted
-model OrderRequest {
-  pendingOrderId String   @id @default(uuid())
-  propertyId     String
-  property       Property @relation(fields: [propertyId], references: [propertyId])
-  isApproved     Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@map("order_requests")
-}
 
 model Service {
   serviceId                 String                   @id @default(uuid())

@@ -55,7 +55,7 @@ router.post(
   PropertiesController.assignTenantToProperty,
 );
 
-// ! assign tenant user to property or unit
+// ! remove tenant user to property or unit
 
 router.post(
   "/remove-tenant-from-property",
