@@ -164,7 +164,7 @@ model MaintenanceRequest {
   status               MaintenanceRequestStatus       @default(PENDING)
   // 
   serviceProviderId    String?                        @unique
-  serviceProvides      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
+  serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
 
   @@map("maintenance_requests")
 }

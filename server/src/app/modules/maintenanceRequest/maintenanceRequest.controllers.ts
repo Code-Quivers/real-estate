@@ -17,5 +17,18 @@ const addRequestMaintenanceToPropertyOwner = catchAsync(async (req: Request, res
     data: result,
   });
 });
+// ! get my(tenant) requested maintenances
 
-export const MaintenanceRequestControllers = { addRequestMaintenanceToPropertyOwner };
+const getMyRequestedMaintenance = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = (req.user as IRequestUser).profileId;
+
+  const result = await RequestMaintenanceService.getMyRequestedMaintenance(tenantId);
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "My Requested Maintenance retrieved successful",
+    data: result,
+  });
+});
+
+export const MaintenanceRequestControllers = { addRequestMaintenanceToPropertyOwner, getMyRequestedMaintenance };

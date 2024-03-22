@@ -10,6 +10,9 @@ import httpStatus from "http-status";
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
   // Ensure req.files and req.body exist and have correct types
   const images: IUploadFile[] = (req.files as any) || [];
+
+  console.log(images);
+
   const { isAnimal, description, issueLocation, issueType, priority, animalDetails } =
     req?.body as IAddRequestMaintenance;
   // Process images
@@ -55,6 +58,43 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
   return result;
 };
 
+// ! get my(tenant) requested maintenances
+
+const getMyRequestedMaintenance = async (tenantId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const isAssigned = await transactionClient.tenant.findUnique({
+      where: {
+        tenantId,
+        property: {
+          isNot: null,
+        },
+      },
+      select: {
+        propertyId: true,
+      },
+    });
+
+    if (!isAssigned) throw new ApiError(httpStatus.BAD_REQUEST, "You haven't assigned to unit");
+
+    //
+    const res = await transactionClient.maintenanceRequest.findMany({
+      where: {
+        tenantId,
+        propertyId: isAssigned?.propertyId as string,
+      },
+      include: {
+        owner: true,
+        property: true,
+        serviceProvider: true,
+      },
+    });
+
+    return res;
+  });
+  return result;
+};
+
 export const RequestMaintenanceService = {
   addRequestMaintenanceToPropertyOwner,
+  getMyRequestedMaintenance,
 };

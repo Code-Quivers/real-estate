@@ -7,14 +7,14 @@ import Link from "next/link";
 import { useGetTenantMyUnitInformationQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import TenantMakePaymentModal from "@/components/tenant/unitInformation/TenantMakePaymentModal";
+import { useRouter } from "next/navigation";
 
 const TenantUnitInformation = () => {
   const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery();
   const { data: unitRes } = data || {};
-
   const [isOpenMakePayment, setIsOpenMakePayment] = useState(false);
   const handleClose = () => setIsOpenMakePayment(false);
-
+  const router = useRouter();
   return (
     <div className="max-w-[1050px] mt-6 2xl:mx-auto md:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto">
       <h2 className="text-2xl mb-5 text-center">Unit Information</h2>
@@ -65,7 +65,7 @@ const TenantUnitInformation = () => {
                 </Button>
               </div>
             </div>
-            <div className=" lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
+            <div className=" relative lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
               <div>
                 <h2 className="text-2xl text-center font-semibold mb-2.5 leading-9">
                   Request <br />
@@ -79,6 +79,11 @@ const TenantUnitInformation = () => {
                 >
                   Send Request
                 </Button>
+              </div>
+              <div className="absolute top-2 right-2">
+                <button onClick={() => router.push("/tenant/unit-information/my-requests")} className="border px-2.5 py-1  text-sm rounded-full">
+                  My Requests
+                </button>
               </div>
             </div>
           </div>

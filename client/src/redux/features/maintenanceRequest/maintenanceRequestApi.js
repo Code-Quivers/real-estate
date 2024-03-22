@@ -14,7 +14,14 @@ export const MaintenanceRequestApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
     }),
+    getMyRequestedMaintenance: builder.query({
+      query: () => ({
+        url: `${MAINTENANCE_REQUEST_API}/my-requested-maintenance`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.maintenanceRequest, tagTypes.properties],
+    }),
   }),
 });
 
-export const { useAddMaintenanceRequestMutation } = MaintenanceRequestApi;
+export const { useAddMaintenanceRequestMutation, useGetMyRequestedMaintenanceQuery } = MaintenanceRequestApi;

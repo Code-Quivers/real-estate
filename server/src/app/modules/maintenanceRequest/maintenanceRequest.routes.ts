@@ -18,4 +18,10 @@ router.post(
   },
 );
 
+router.get(
+  "/my-requested-maintenance",
+  auth(UserRoles.TENANT),
+  MaintenanceRequestControllers.getMyRequestedMaintenance,
+);
+
 export const MaintenanceRequestRouter = router;
