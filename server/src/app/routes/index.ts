@@ -9,6 +9,7 @@ import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
 import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
+import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
 
 const router = express.Router();
 
@@ -45,6 +46,10 @@ const moduleRoutes = [
   {
     path: "/maintenance-request",
     route: MaintenanceRequestRouter,
+  },
+  {
+    path: '/payment-paypal',
+    route: PaypalRoutes,
   },
 ];
 
