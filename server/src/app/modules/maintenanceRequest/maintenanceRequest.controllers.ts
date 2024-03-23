@@ -30,6 +30,20 @@ const getMyRequestedMaintenance = catchAsync(async (req: Request, res: Response)
     data: result,
   });
 });
+// ! get my(Service Provider) accepted orders (all Orders)
+
+const getMyAllOrdersForServiceProvider = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await RequestMaintenanceService.getMyAllOrdersForServiceProvider(profileId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All Orders retrieved successful",
+    data: result,
+  });
+});
+// ----------------------------------------------------------------------------------
 // ! get all  requested maintenances for property owner
 
 const getRequestedMaintenanceForPropertyOwner = catchAsync(async (req: Request, res: Response) => {
@@ -44,7 +58,6 @@ const getRequestedMaintenanceForPropertyOwner = catchAsync(async (req: Request, 
   });
 });
 // ! get all  requested maintenances for Service Providers
-
 const getRequestedMaintenanceForServiceProvider = catchAsync(async (req: Request, res: Response) => {
   const serviceProviderId = (req.user as IRequestUser).profileId;
 
@@ -73,6 +86,36 @@ const acceptRequestMaintenanceForOwner = catchAsync(async (req: Request, res: Re
     data: result,
   });
 });
+// ! accept request and send to service providers
+const acceptRequestMaintenanceForServiceProvider = catchAsync(async (req: Request, res: Response) => {
+  const serviceProviderId = (req.user as IRequestUser).profileId;
+  const maintenanceRequestId = req.params?.maintenanceRequestId;
+
+  const result = await RequestMaintenanceService.acceptRequestMaintenanceForServiceProvider(
+    maintenanceRequestId,
+    serviceProviderId,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Accepted successful",
+    data: result,
+  });
+});
+// ! Update Order request (status)
+const updateRequestMaintenanceForServiceProvider = catchAsync(async (req: Request, res: Response) => {
+  const maintenanceRequestId = req.params?.maintenanceRequestId;
+  const result = await RequestMaintenanceService.updateRequestMaintenanceForServiceProvider(
+    maintenanceRequestId,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Updated successful",
+    data: result,
+  });
+});
 
 export const MaintenanceRequestControllers = {
   addRequestMaintenanceToPropertyOwner,
@@ -80,4 +123,7 @@ export const MaintenanceRequestControllers = {
   getRequestedMaintenanceForPropertyOwner,
   acceptRequestMaintenanceForOwner,
   getRequestedMaintenanceForServiceProvider,
+  acceptRequestMaintenanceForServiceProvider,
+  getMyAllOrdersForServiceProvider,
+  updateRequestMaintenanceForServiceProvider,
 };

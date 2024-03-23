@@ -61,7 +61,6 @@ const MaintenanceRequest = () => {
                     <div className="border border-[#acacac]">
                       <Image
                         className="w-[500px] h-[250px] object-cover object-left"
-                        // src={singleReq.image}
                         alt="photo"
                         width={500}
                         height={250}

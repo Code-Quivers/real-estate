@@ -96,28 +96,6 @@ model Tenant {
   @@map("tenants")
 }
 
-model ServiceProvider {
-  serviceProviderId   String              @id @default(uuid())
-  firstName           String
-  lastName            String
-  profileImage        String?
-  phoneNumber         String?
-  companyName         String?
-  companyAddress      String?
-  companyPhoneNumber  String?
-  companyEmailAddress String?
-  userId              String              @unique
-  createdAt           DateTime            @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime            @updatedAt @db.Timestamptz(0)
-  user                User                @relation(fields: [userId], references: [userId])
-  Service             Service?
-  SavedItem           SavedItem[]
-  properties          Property[]
-  maintenanceRequest  MaintenanceRequest?
-
-  @@map("serviceProviders")
-}
-
 model Property {
   propertyId               String               @id @default(uuid())
   owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId])
@@ -145,6 +123,28 @@ model Property {
   @@map("properties")
 }
 
+model ServiceProvider {
+  serviceProviderId   String               @id @default(uuid())
+  firstName           String
+  lastName            String
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  userId              String               @unique
+  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
+  user                User                 @relation(fields: [userId], references: [userId])
+  Service             Service?
+  SavedItem           SavedItem[]
+  properties          Property[]
+  maintenanceRequest  MaintenanceRequest[]
+
+  @@map("serviceProviders")
+}
+
 model MaintenanceRequest {
   maintenanceRequestId String                         @id @default(uuid())
   propertyId           String
@@ -166,7 +166,7 @@ model MaintenanceRequest {
   images               String[]
   status               MaintenanceRequestStatus       @default(PENDING)
   // 
-  serviceProviderId    String?                        @unique
+  serviceProviderId    String?
   serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
 
   @@map("maintenance_requests")
