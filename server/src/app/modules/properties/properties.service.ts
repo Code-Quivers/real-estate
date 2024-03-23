@@ -29,7 +29,6 @@ const createNewProperty = async (profileId: string, req: Request) => {
   // Ensure req.files and req.body exist and have correct types
   const images: IUploadFile[] = (req.files as any) || [];
   const data: any[] = req?.body || [];
-
   // Use meaningful variable names
   const imagesPath: { [key: number]: string[] } = {};
   // Process images
@@ -38,13 +37,14 @@ const createNewProperty = async (profileId: string, req: Request) => {
 
     // Use the logical nullish assignment operator to handle undefined case
     imagesPath[propId] ??= [];
-    imagesPath[propId].push(`property/${image.originalname}`);
+    imagesPath[propId].push(`property/${image.filename}`);
   });
 
   // Process property info
   const propertyInfo: IPropertyData[] = data.map((item: any) => {
     const propId: number = item.id;
     const imagesForId: string[] = imagesPath[propId] || []; // Handle case when no images found for property id
+
     return {
       ...item, // Spread the properties of item
       images: imagesForId,
@@ -281,6 +281,8 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
 
   // Combine old and new image paths
   const imagesPath: string[] = oldImagesPath.concat(newImagesPath);
+
+  console.log("propertyInfo", imagesPath);
 
   const {
     address,

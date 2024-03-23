@@ -2,7 +2,7 @@
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import prisma from "../../../shared/prisma";
-import { IAddRequestMaintenance } from "./maintenanceRequest.interfaces";
+import { IAddRequestMaintenance, IUpdateRequestMaintenance } from "./maintenanceRequest.interfaces";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
 
@@ -96,8 +96,38 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
   });
   return result;
 };
+// ! get my(Service Provider) accepted orders (all Orders)
 
-// ! get all requested maintenances for property owner
+const getMyAllOrdersForServiceProvider = async (serviceProviderId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    //
+    const res = await transactionClient.maintenanceRequest.findMany({
+      where: {
+        serviceProviderId,
+      },
+      include: {
+        owner: true,
+        property: true,
+        serviceProvider: true,
+        tenant: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    const totalCount = await transactionClient.maintenanceRequest.count({
+      where: {
+        serviceProviderId,
+      },
+    });
+
+    return { data: res, total: totalCount };
+  });
+
+  return result;
+};
+
+// ! get all requested maintenances for property owner-------------------------------------------------------------------------------------------
 
 const getRequestedMaintenanceForPropertyOwner = async (propertyOwnerId: string) => {
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -169,9 +199,9 @@ const getRequestedMaintenanceForServiceProvider = async (serviceProviderId: stri
   return result;
 };
 
-// -------------------------------------------------------Update----------------------
+// -------------------------------------------------------Update-------------------------
 
-// ! accept request and send to service providers
+// ! accept request and send to service providers (Property owner)
 const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ownerId: string) => {
   const result = await prisma.$transaction(async (transactionClient) => {
     // checking if the tenant is assigned to any property or not
@@ -208,10 +238,89 @@ const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ow
   return result;
 };
 
+// ! accept request and   start to work for service providers
+const acceptRequestMaintenanceForServiceProvider = async (maintenanceRequestId: string, serviceProviderId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if the maintenance request exists and its status allows acceptance
+    const isExistReq = await transactionClient.maintenanceRequest.findUnique({
+      where: {
+        maintenanceRequestId,
+        status: {
+          not: {
+            in: ["CANCEL", "ACTIVE", "COMPLETED", "PAUSED"],
+          },
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "Already accepted or not found!");
+    // ! updating
+    const res = await transactionClient.maintenanceRequest.update({
+      where: {
+        maintenanceRequestId,
+      },
+      data: {
+        status: "ACTIVE",
+
+        serviceProvider: {
+          connect: {
+            serviceProviderId,
+          },
+        },
+      },
+    });
+
+    console.log(res);
+
+    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+    return res;
+  });
+  return result;
+};
+
+// ! Update Order request (status)
+const updateRequestMaintenanceForServiceProvider = async (
+  maintenanceRequestId: string,
+  payload: IUpdateRequestMaintenance,
+) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if the maintenance request exists and its status allows acceptance
+    const isExistReq = await transactionClient.maintenanceRequest.findUnique({
+      where: {
+        maintenanceRequestId,
+        status: {
+          notIn: ["PENDING", "CANCEL", "APPROVED"],
+        },
+      },
+    });
+
+    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "Order Not Found or Cancelled!");
+    // ! updating
+    const res = await transactionClient.maintenanceRequest.update({
+      where: {
+        maintenanceRequestId,
+      },
+      data: {
+        status: payload.status,
+      },
+    });
+
+    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Update, try again");
+    return res;
+  });
+  return result;
+};
+
 export const RequestMaintenanceService = {
   addRequestMaintenanceToPropertyOwner,
   getMyRequestedMaintenance,
   getRequestedMaintenanceForPropertyOwner,
   acceptRequestMaintenanceForOwner,
   getRequestedMaintenanceForServiceProvider,
+  acceptRequestMaintenanceForServiceProvider,
+  getMyAllOrdersForServiceProvider,
+  updateRequestMaintenanceForServiceProvider,
 };

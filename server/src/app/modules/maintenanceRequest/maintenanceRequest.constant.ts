@@ -11,3 +11,5 @@ export const ZodMaintenanceIssueType = [
   "MARKETING",
   "TECHNOLOGY",
 ];
+
+export const ZodMaintenanceUpdateStatus = ["PAUSED", "COMPLETED"];

@@ -14,9 +14,18 @@ export const MaintenanceRequestApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
     }),
+
     getMyRequestedMaintenance: builder.query({
       query: () => ({
         url: `${MAINTENANCE_REQUEST_API}/my-requested-maintenance`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.maintenanceRequest, tagTypes.properties],
+    }),
+    // for service provider
+    getMyAllAcceptedOrders: builder.query({
+      query: () => ({
+        url: `${MAINTENANCE_REQUEST_API}/my-all-accepted-orders`,
         method: "GET",
       }),
       providesTags: [tagTypes.maintenanceRequest, tagTypes.properties],
@@ -35,12 +44,28 @@ export const MaintenanceRequestApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.maintenanceRequest, tagTypes.properties, tagTypes.serviceProvider],
     }),
+    // !----------------------------
     acceptMaintenanceRequestForOwner: builder.mutation({
       query: (maintenanceRequestId) => ({
         url: `${MAINTENANCE_REQUEST_API}/accept-maintenance-req-for-owner/${maintenanceRequestId}`,
         method: "PATCH",
       }),
       invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
+    }),
+    acceptMaintenanceRequestForServiceProvider: builder.mutation({
+      query: (maintenanceRequestId) => ({
+        url: `${MAINTENANCE_REQUEST_API}/accept-maintenance-req-for-service-provider/${maintenanceRequestId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider, tagTypes.properties],
+    }),
+    updateMaintenanceOrderRequest: builder.mutation({
+      query: ({ data, maintenanceRequestId }) => ({
+        url: `${MAINTENANCE_REQUEST_API}/update-maintenance-order-req/${maintenanceRequestId}`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.serviceProvider],
     }),
   }),
 });
@@ -51,4 +76,7 @@ export const {
   useGetAllMaintenanceReqForOwnerQuery,
   useAcceptMaintenanceRequestForOwnerMutation,
   useGetAllMaintenanceReqForServiceProviderQuery,
+  useAcceptMaintenanceRequestForServiceProviderMutation,
+  useGetMyAllAcceptedOrdersQuery,
+  useUpdateMaintenanceOrderRequestMutation,
 } = MaintenanceRequestApi;
