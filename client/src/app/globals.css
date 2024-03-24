@@ -4,7 +4,7 @@
 
 /* ! scrollbar */
 body::-webkit-scrollbar {
-  width: 0px;
+  width: 5px;
   /* width of the entire scrollbar */
 }
 

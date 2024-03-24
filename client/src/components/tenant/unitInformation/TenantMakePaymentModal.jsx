@@ -19,7 +19,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose }) => {
       >
         <Modal.Body className=" ">
           <div className="flex px-5 justify-between items-center">
-            <h3 className="text-lg font-semibold">Edit Unit Information</h3>
+            <h3 className="text-lg font-semibold">Payment</h3>
             <button
               className="hover:text-rose-600 hover:scale-125 duration-300 transition-all "
               onClick={() => {
