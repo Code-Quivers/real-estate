@@ -153,6 +153,18 @@ const PropertyOwnerSidebar = () => {
             </Nav.Item>
             <Nav.Item
               as={Link}
+              href="/property-owner/maintenance-requests"
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<GroupIcon />}
+            >
+              Maintenance Request
+            </Nav.Item>{" "}
+            <Nav.Item
+              as={Link}
               href="/property-owner/settings"
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#1b3697]"}`}
               style={{
@@ -164,20 +176,8 @@ const PropertyOwnerSidebar = () => {
               Settings
             </Nav.Item>
             <Nav.Item
-              as={Link}
-              href="/property-owner/maintenance-requests"
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
-              style={{
-                backgroundColor: "#29429f",
-              }}
-              eventKey="9"
-              icon={<GroupIcon />}
-            >
-              Maintenance Request
-            </Nav.Item>
-            <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697]`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",

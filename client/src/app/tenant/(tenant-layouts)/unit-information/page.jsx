@@ -58,7 +58,7 @@ const TenantUnitInformation = () => {
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
-                  <span>0.00</span>
+                  <span>100.00</span>
                 </p>
                 <Button onClick={() => setIsOpenMakePayment(true)} className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">
                   Make Payment

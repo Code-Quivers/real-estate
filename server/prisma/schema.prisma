@@ -40,6 +40,7 @@ model PropertyOwner {
   user                 User                 @relation(fields: [userId], references: [userId])
   Property             Property[]
   maintenanceRequests  MaintenanceRequest[]
+  orders               Order[]
 
   @@map("propertyOwners")
 }
@@ -92,6 +93,7 @@ model Tenant {
   propertyId                           String?              @unique
   property                             Property?            @relation(fields: [propertyId], references: [propertyId])
   maintenanceRequests                  MaintenanceRequest[]
+  orders                               Order[]
 
   @@map("tenants")
 }
@@ -119,8 +121,28 @@ model Property {
   isRented                 Boolean              @default(false)
   maintenanceRequests      MaintenanceRequest[]
   serviceProviders         ServiceProvider[]
+  orderId                  String?
+  order                    Order?               @relation(fields: [orderId], references: [orderId])
+  // 
+  planType                 PlanType             @default(PENDING)
+  isActive                 Boolean              @default(true)
 
   @@map("properties")
+}
+
+model Order {
+  // 
+  orderId     String         @id @default(uuid())
+  properties  Property[]
+  orderStatus OrderStatus    @default(PENDING)
+  // 
+  ownerId     String?
+  owner       PropertyOwner? @relation(fields: [ownerId], references: [propertyOwnerId])
+  // 
+  tenantId    String?
+  tenant      Tenant?        @relation(fields: [tenantId], references: [tenantId])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model ServiceProvider {
@@ -211,6 +233,18 @@ enum UserStatus {
   ACTIVE
   PAUSED
   SUSPENDED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum PlanType {
+  PENDING
+  ON_TRIAL
+  PREMIUM
 }
 
 enum MaintenanceRequestStatus {

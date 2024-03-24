@@ -86,8 +86,8 @@ const AddProperty = () => {
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
             <Button
-              as={Link}
-              href={"/"}
+              // as={Link}
+              // href={"/property-owner/unit-information/add-property"}
               type="button"
               className={`   h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
               size="md"
@@ -96,8 +96,8 @@ const AddProperty = () => {
               Property <br /> Information
             </Button>
             <Button
-              as={Link}
-              href={"/"}
+              // as={Link}
+              // href={"/"}
               type="button"
               className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
               size="lg"
@@ -130,7 +130,7 @@ const AddProperty = () => {
                   </button>
                 </div>
 
-                <div className="border rounded-2xl space-y-5 p-4 pt-3 shadow-lg">
+                <div className="border  space-y-5 p-5 ">
                   {/* property Profile ------------------------ */}
                   <div>
                     <div>

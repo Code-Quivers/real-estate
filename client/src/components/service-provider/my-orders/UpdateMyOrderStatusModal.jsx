@@ -6,13 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Button, Message, Modal, SelectPicker, useToaster } from "rsuite";
 
 const UpdateMyOrderStatusModal = ({ isOpen, handleClose, editData }) => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset: resetForm,
-    watch,
-  } = useForm({});
+  const { control, handleSubmit, reset: resetForm, watch } = useForm({});
   const { status } = watch();
   const [updateMaintenanceOrderRequest, { data, isLoading, isSuccess, isError, error, reset }] = useUpdateMaintenanceOrderRequestMutation();
 
