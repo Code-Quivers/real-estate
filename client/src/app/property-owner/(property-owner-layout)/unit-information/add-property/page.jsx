@@ -63,7 +63,7 @@ const AddProperty = () => {
         },
       );
       dispatch(resetPropertyList());
-      router.back();
+      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}`);
       resetReq();
     }
     if (!isLoading && isError && !isSuccess) {
