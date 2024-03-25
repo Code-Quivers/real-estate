@@ -36,7 +36,20 @@ export const tenantsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.tenant],
     }),
+    getTenantMyUnitInformation: builder.query({
+      query: () => ({
+        url: "/tenants/get-my-unit-information",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.tenant, tagTypes.properties],
+    }),
   }),
 });
 
-export const { useGetAllAvailableTenantsQuery, useUpdateTenantProfileMutation, useGetTenantMyProfileQuery, useGetAllTenantsQuery } = tenantsApi;
+export const {
+  useGetAllAvailableTenantsQuery,
+  useUpdateTenantProfileMutation,
+  useGetTenantMyProfileQuery,
+  useGetAllTenantsQuery,
+  useGetTenantMyUnitInformationQuery,
+} = tenantsApi;

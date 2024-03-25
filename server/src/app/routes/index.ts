@@ -8,7 +8,9 @@ import { ServiceProviderRouter } from "../modules/serviceProviders/serviceProvid
 import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
 import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
-import { PendingOrderRoutes } from "../modules/orderRequest/orderRequest.routes";
+import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
+import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
+import { OrderRoutes } from "../modules/orders/orders.routes";
 
 const router = express.Router();
 
@@ -41,9 +43,18 @@ const moduleRoutes = [
     path: "/saved-item",
     route: SavedItemRouter,
   },
+
   {
-    path: "/pending-orders",
-    route: PendingOrderRoutes,
+    path: "/maintenance-request",
+    route: MaintenanceRequestRouter,
+  },
+  {
+    path: "/payment-paypal",
+    route: PaypalRoutes,
+  },
+  {
+    path: "/orders",
+    route: OrderRoutes,
   },
 ];
 

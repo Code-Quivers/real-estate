@@ -9,8 +9,7 @@ import { Button, Input, InputNumber, SelectPicker } from "rsuite";
 
 const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
-  const [updateServiceInformation, { isLoading, isError, isSuccess, error }] =
-    useUpdateServiceInformationMutation();
+  const [updateServiceInformation, { isLoading, isError, isSuccess, error }] = useUpdateServiceInformationMutation();
   const {
     control,
     handleSubmit,
@@ -45,9 +44,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                   <SelectPicker
                     searchable={false}
                     onChange={(value) => setValue("serviceType", value)}
-                    defaultValue={
-                      myProfileData?.Service?.serviceType ?? undefined
-                    }
+                    defaultValue={myProfileData?.Service?.serviceType ?? undefined}
                     data={
                       serviceTypes?.map((item) => ({
                         label: item.label,
@@ -62,13 +59,9 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
             {/* Service Description */}
             <div>
               <div className="space-y-1">
-                <label className="text-lg   font-medium">
-                  Service Description
-                </label>
+                <label className="text-lg   font-medium">Service Description</label>
                 <Input
-                  defaultValue={
-                    myProfileData?.Service?.serviceDescription ?? undefined
-                  }
+                  defaultValue={myProfileData?.Service?.serviceDescription ?? undefined}
                   onChange={(value) => setValue("serviceDescription", value)}
                   as="textarea"
                   rows={6}
@@ -82,9 +75,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1 w-full">
                   <label className="text-lg   font-medium">Min Price</label>
                   <InputNumber
-                    defaultValue={
-                      parseFloat(myProfileData?.Service?.minPrice) ?? undefined
-                    }
+                    defaultValue={parseFloat(myProfileData?.Service?.minPrice) ?? undefined}
                     onChange={(value) => setValue("minPrice", value)}
                     min={0}
                   />
@@ -92,9 +83,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1  w-full">
                   <label className="text-lg   font-medium">Max Price</label>
                   <InputNumber
-                    defaultValue={
-                      parseFloat(myProfileData?.Service?.maxPrice) ?? undefined
-                    }
+                    defaultValue={parseFloat(myProfileData?.Service?.maxPrice) ?? undefined}
                     onChange={(value) => setValue("maxPrice", value)}
                     min={0}
                   />
@@ -107,14 +96,10 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
             {/* Service Availability */}
             <div>
               <div className="space-y-1 max-lg:w-full">
-                <label className="text-lg font-medium">
-                  Service Availability
-                </label>
+                <label className="text-lg font-medium">Service Availability</label>
                 <div>
                   <SelectPicker
-                    defaultValue={
-                      myProfileData?.Service?.serviceAvailability ?? undefined
-                    }
+                    defaultValue={myProfileData?.Service?.serviceAvailability ?? undefined}
                     onChange={(value) => setValue("serviceAvailability", value)}
                     data={serviceAvailability}
                     searchable={false}
@@ -127,14 +112,10 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
             {/* Service location */}
             <div>
               <div className="space-y-1">
-                <label className="text-lg   font-medium">
-                  Service Location
-                </label>
+                <label className="text-lg   font-medium">Service Location</label>
                 <Input
                   type="text"
-                  defaultValue={
-                    myProfileData?.Service?.serviceLocation ?? undefined
-                  }
+                  defaultValue={myProfileData?.Service?.serviceLocation ?? undefined}
                   onChange={(value) => setValue("serviceLocation", value)}
                 />
               </div>
@@ -142,17 +123,10 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
             {/* service cancellation policy */}
             <div>
               <div className="space-y-1">
-                <label className="text-lg   font-medium">
-                  Service Cancellation Policy
-                </label>
+                <label className="text-lg   font-medium">Service Cancellation Policy</label>
                 <Input
-                  defaultValue={
-                    myProfileData?.Service?.serviceCancellationPolicy ??
-                    undefined
-                  }
-                  onChange={(value) =>
-                    setValue("serviceCancellationPolicy", value)
-                  }
+                  defaultValue={myProfileData?.Service?.serviceCancellationPolicy ?? undefined}
+                  onChange={(value) => setValue("serviceCancellationPolicy", value)}
                   as="textarea"
                   rows={6}
                 />

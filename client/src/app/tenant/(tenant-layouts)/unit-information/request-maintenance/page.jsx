@@ -1,7 +1,68 @@
-import { priorityType } from "@/constants/serviceConst";
-import { Button, Input, Radio, RadioGroup, SelectPicker } from "rsuite";
+"use client";
+import AddMaintenanceReqPhotos from "@/components/tenant/maintenanceRequest/AddMaintenanceReqPhotos";
+import { MaintenancePriorityType, issueTypes } from "@/constants/maintenanceReqConst";
+
+import { useAddMaintenanceRequestMutation } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Button, Form, Input, Message, Radio, RadioGroup, SelectPicker, useToaster } from "rsuite";
 
 const RequestMaintenancePage = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset: formReset,
+  } = useForm();
+
+  const [addMaintenanceRequest, { data, isLoading, isError, isSuccess, error, reset }] = useAddMaintenanceRequestMutation();
+
+  //
+  const handleAddRequest = async ({ files, ...reqData }) => {
+    const formData = new FormData();
+    const obj = JSON.stringify(reqData);
+    formData.append("data", obj);
+
+    // eslint-disable-next-line no-unused-vars
+    files?.forEach((file, index) => {
+      formData.append("files", file);
+    });
+
+    await addMaintenanceRequest(formData);
+  };
+
+  //
+  const toaster = useToaster();
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoading && isSuccess && !isError && data) {
+      toaster.push(
+        <Message centered showIcon type="success" closable>
+          {data?.message || "Success"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 4000,
+        },
+      );
+      formReset();
+      reset();
+      router.push("/tenant/unit-information");
+    }
+    if (!isLoading && !isSuccess && isError && error) {
+      toaster.push(
+        <Message centered showIcon type="error" closable>
+          {error?.message || "Failed to request"}
+        </Message>,
+        {
+          placement: "topEnd",
+          duration: 4000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error, data, toaster]);
+
   return (
     <section className="max-w-[1050px] mt-6 2xl:mx-auto sm:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto">
       {/* section title */}
@@ -9,28 +70,40 @@ const RequestMaintenancePage = () => {
         <h2 className="font-semibold text-xl">Request Maintenance</h2>
       </div>
       {/* form */}
-      <form>
+      <form onSubmit={handleSubmit(handleAddRequest)}>
         <div className="border p-5 border-[#989898] shadow-lg md:grid md:grid-cols-6 max-md:space-y-5 gap-10 items-end">
           <div className="col-span-4   space-y-4">
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Do you have animals?</h2>
               <div>
-                <RadioGroup
-                  className=""
+                <Controller
                   name="isAnimal"
-                  inline
-                  appearance="picker"
-                  defaultValue="A"
-                >
-                  <Radio value="A">Yes</Radio>
-                  <Radio value="B">No</Radio>
-                </RadioGroup>
+                  control={control}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <RadioGroup defaultValue={false} {...field} className="" name="isAnimal" inline appearance="default">
+                        <Radio value={true}>Yes</Radio>
+                        <Radio value={false}>No</Radio>
+                      </RadioGroup>
+                      <Form.ErrorMessage show={(!!errors?.isAnimal && !!errors?.isAnimal?.message) || false} placement="topEnd">
+                        {errors?.isAnimal?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
               <div>
-                <Input
-                  as="textarea"
-                  placeholder="if you have anything to add regarding animals"
-                  rows={4}
+                <Controller
+                  name="animalDetails"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <Input className="!w-full" {...field} as="textarea" placeholder="if you have anything to add regarding animals" rows={4} />
+                      <Form.ErrorMessage show={(!!errors?.animalDetails && !!errors?.animalDetails?.message) || false} placement="topEnd">
+                        {errors?.animalDetails?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
                 />
               </div>
             </div>
@@ -38,49 +111,102 @@ const RequestMaintenancePage = () => {
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Issue Details</h2>
               <div>
-                <Input type="text" placeholder="Issue Location" />
+                <Controller
+                  name="issueLocation"
+                  control={control}
+                  rules={{
+                    required: "issueLocation is required",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <Input {...field} className="!w-full" type="text" placeholder="Issue Location" />
+                      <Form.ErrorMessage show={(!!errors?.issueLocation && !!errors?.issueLocation?.message) || false} placement="topEnd">
+                        {errors?.issueLocation?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
               </div>
             </div>
 
             <div>
-              <SelectPicker
-                searchable={false}
-                data={priorityType}
-                placeholder="Priority"
-                style={{ width: 224 }}
+              <Controller
+                name="priority"
+                control={control}
+                rules={{
+                  required: "Priority is required",
+                }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper ">
+                    <SelectPicker {...field} searchable={false} data={MaintenancePriorityType} placeholder="Priority" className="!w-full" />
+                    <Form.ErrorMessage show={(!!errors?.priority && !!errors?.priority?.message) || false} placement="topEnd">
+                      {errors?.priority?.message}
+                    </Form.ErrorMessage>
+                  </div>
+                )}
               />
             </div>
             <div>
-              <SelectPicker
-                searchable={false}
-                placeholder="Issue Type"
-                data={["Eugenia", "Bryan", "Linda", "Nancy", "Albert"].map(
-                  (item) => ({ label: item, value: item }),
+              <Controller
+                name="issueType"
+                control={control}
+                rules={{
+                  required: "Issue Type is required",
+                }}
+                render={({ field }) => (
+                  <div className="rs-form-control-wrapper ">
+                    <SelectPicker {...field} placeholder="Issue Type" data={issueTypes} className="!w-full" />
+                    <Form.ErrorMessage show={(!!errors?.issueType && !!errors?.issueType?.message) || false} placement="topEnd">
+                      {errors?.issueType?.message}
+                    </Form.ErrorMessage>
+                  </div>
                 )}
-                style={{ width: 224 }}
               />
             </div>
+            {/* description */}
             <div>
               <div className="col-span-4">
-                <Input
-                  as="textarea"
-                  placeholder="Describe the issue..."
-                  rows={6}
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{
+                    required: "Description is required",
+                  }}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <Input as="textarea" {...field} className="!w-full" placeholder="Describe the issue..." rows={6} />
+                      <Form.ErrorMessage show={(!!errors?.description && !!errors?.description?.message) || false} placement="topEnd">
+                        {errors?.description?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
                 />
               </div>
             </div>
           </div>
+          {/* upload and submit button */}
           <div className="col-span-2">
-            <div className="flex flex-col space-y-5">
-              <button
-                type="button"
-                className="bg-[#fff] border border-[#29429f] font-semibold focus-within:text-white focus-within:bg-[#29429f]  rounded-full !py-3"
-              >
-                Add Photos
-              </button>
-              <Button size="lg" className="!bg-[#e22620] !rounded-full !py-3">
-                Send Request
-              </Button>
+            <div className="flex flex-col justify-between space-y-5">
+              <div className="border">
+                <Controller
+                  name="files"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="rs-form-control-wrapper ">
+                      <AddMaintenanceReqPhotos field={field} />
+                      <Form.ErrorMessage show={(!!errors?.isAnimal && !!errors?.isAnimal?.message) || false} placement="topEnd">
+                        {errors?.isAnimal?.message}
+                      </Form.ErrorMessage>
+                    </div>
+                  )}
+                />
+              </div>
+              <div>
+                {/* submit button */}
+                <Button loading={isLoading} type="submit" size="lg" className="!bg-[#e22620] !rounded-full !py-3">
+                  Send Request
+                </Button>
+              </div>
             </div>
           </div>
         </div>

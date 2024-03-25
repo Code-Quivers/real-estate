@@ -69,6 +69,18 @@ const ServiceProviderSidebar = () => {
             </Nav.Item>
             <Nav.Item
               as={Link}
+              href="/service-provider/my-orders"
+              className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider/my-orders" && "!bg-[#1b3697]"}`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="3"
+              icon={<TaskIcon />}
+            >
+              My Orders
+            </Nav.Item>{" "}
+            <Nav.Item
+              as={Link}
               href="/service-provider/pending-orders"
               className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider/pending-orders" && "!bg-[#1b3697]"}`}
               style={{

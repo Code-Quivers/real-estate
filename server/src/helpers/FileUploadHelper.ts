@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import multer from "multer";
 import path from "path";
-import express, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 const propertyStorage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -49,11 +52,7 @@ type fieldType = {
   maxCount: number;
 };
 // const uploadPropertyImages = multer({ storage: propertyStorage });
-const uploadPropertyImages2 = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const uploadPropertyImages2 = (req: Request, res: Response, next: NextFunction) => {
   const keys = Object.keys([]);
   const fields: fieldType[] | any = [];
   keys.forEach((item) => {

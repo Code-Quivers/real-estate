@@ -23,10 +23,7 @@ const TenantSettings = () => {
               <h4 className="text-xl font-medium">Profile Information</h4>
             </div>
             <div>
-              <button
-                onClick={handleOpen}
-                className="text-[#080808] hover:bg-black/10 p-2 rounded-full font-medium "
-              >
+              <button onClick={handleOpen} className="text-[#080808] hover:bg-black/10 p-2 rounded-full font-medium ">
                 <MdEdit size={25} />
               </button>
             </div>
@@ -36,24 +33,16 @@ const TenantSettings = () => {
               Name : {data?.data?.firstName ?? "--"}
               {data?.data?.lastName ?? "-"}
             </h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">
-              Email : {data?.data?.user?.email}
-            </h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">
-              Username : {data?.data?.user?.userName}
-            </h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">
-              Password
-            </h3>
+            <h3 className="border p-3 rounded-2xl border-[#707070]">Email : {data?.data?.user?.email}</h3>
+            <h3 className="border p-3 rounded-2xl border-[#707070]">Username : {data?.data?.user?.userName}</h3>
+            <h3 className="border p-3 rounded-2xl border-[#707070]">Password</h3>
           </div>
         </div>
         <div className="border-t  border-[#707070] p-5">
           <div>
             <h4 className="text-xl font-medium">Card Information</h4>
           </div>
-          <div
-            className={`my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8`}
-          >
+          <div className={`my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8`}>
             <h3 className={style}>First Name</h3>
             <h3 className={style}>Last Name</h3>
             <h3 className={style}>Card Number</h3>
@@ -61,9 +50,7 @@ const TenantSettings = () => {
             <h3 className={style}>Card Expiration</h3>
           </div>
           <div>
-            <button className="text-green-600 font-medium hover:underline">
-              Change Card
-            </button>
+            <button className="text-green-600 font-medium hover:underline">Change Card</button>
           </div>
         </div>
       </div>

@@ -21,13 +21,7 @@ export const savedItemApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [
-        tagTypes.services,
-        tagTypes.serviceProvider,
-        tagTypes.user,
-        tagTypes.tenant,
-        tagTypes.items,
-      ],
+      invalidatesTags: [tagTypes.services, tagTypes.serviceProvider, tagTypes.user, tagTypes.tenant, tagTypes.items],
     }),
     removeFromSavedItem: builder.mutation({
       query: ({ itemId }) => ({
@@ -39,8 +33,4 @@ export const savedItemApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetAllSavedItemsQuery,
-  useSaveItemMutation,
-  useRemoveFromSavedItemMutation,
-} = savedItemApi;
+export const { useGetAllSavedItemsQuery, useSaveItemMutation, useRemoveFromSavedItemMutation } = savedItemApi;

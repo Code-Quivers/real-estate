@@ -27,23 +27,27 @@ model User {
 }
 
 model PropertyOwner {
-  propertyOwnerId String     @id @default(uuid())
-  firstName       String
-  lastName        String
-  phoneNumber     String?
-  profileImage    String?
-  createdAt       DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt       DateTime   @updatedAt @db.Timestamptz(0)
-  userId          String     @unique
-  user            User       @relation(fields: [userId], references: [userId])
-  Property        Property[]
+  propertyOwnerId      String               @id @default(uuid())
+  firstName            String
+  lastName             String
+  phoneNumber          String?
+  profileImage         String?
+  paypalBussinessEmail String?              @unique
+  paypalMerchentId     String?              @unique
+  createdAt            DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime             @updatedAt @db.Timestamptz(0)
+  userId               String               @unique
+  user                 User                 @relation(fields: [userId], references: [userId])
+  Property             Property[]
+  maintenanceRequests  MaintenanceRequest[]
+  orders               Order[]
 
   @@map("propertyOwners")
 }
 
 model Tenant {
-  tenantId                             String      @id @default(uuid()) // Change uuid() to auto() for the primary key
-  userId                               String      @unique
+  tenantId                             String               @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId                               String               @unique
   // personal information
   firstName                            String
   lastName                             String
@@ -81,45 +85,27 @@ model Tenant {
   isWillingToSignLeasingAgreement      Boolean?
   isAnyExtraToMention                  String?
   // 
-  createdAt                            DateTime    @default(now()) @db.Timestamptz(0)
-  updatedAt                            DateTime    @updatedAt @db.Timestamptz(0)
-  user                                 User        @relation(fields: [userId], references: [userId])
+  createdAt                            DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt                            DateTime             @updatedAt @db.Timestamptz(0)
+  user                                 User                 @relation(fields: [userId], references: [userId])
   SavedItem                            SavedItem[]
   // assigned in property
-  propertyId                           String?     @unique
-  property                             Property?   @relation(fields: [propertyId], references: [propertyId])
+  propertyId                           String?              @unique
+  property                             Property?            @relation(fields: [propertyId], references: [propertyId])
+  maintenanceRequests                  MaintenanceRequest[]
+  orders                               Order[]
 
   @@map("tenants")
 }
 
-model ServiceProvider {
-  serviceProviderId   String        @id @default(uuid())
-  firstName           String
-  lastName            String
-  profileImage        String?
-  phoneNumber         String?
-  companyName         String?
-  companyAddress      String?
-  companyPhoneNumber  String?
-  companyEmailAddress String?
-  userId              String        @unique
-  createdAt           DateTime      @default(now()) @db.Timestamptz(0)
-  updatedAt           DateTime      @updatedAt @db.Timestamptz(0)
-  user                User          @relation(fields: [userId], references: [userId])
-  Service             Service?
-  SavedItem           SavedItem[]
-  orderRequest        OrderRequest?
-
-  @@map("serviceProviders")
-}
-
 model Property {
-  propertyId               String         @id @default(uuid())
-  owner                    PropertyOwner  @relation(fields: [ownerId], references: [propertyOwnerId])
+  propertyId               String               @id @default(uuid())
+  owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId])
   ownerId                  String
-  numOfBed                 Int            @default(1)
-  numOfBath                Int            @default(1)
-  monthlyRent              Int            @default(1)
+  title                    String               @default("Property Title")
+  numOfBed                 Int                  @default(1)
+  numOfBath                Int                  @default(1)
+  monthlyRent              Int                  @default(1)
   address                  String
   description              String
   maintenanceCoveredTenant String
@@ -128,28 +114,87 @@ model Property {
   universities             String
   allowedPets              String
   images                   String[]
-  createdAt                DateTime       @default(now())
-  updatedAt                DateTime       @updatedAt
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
   SavedItem                SavedItem[]
   Tenant                   Tenant?
-  isRented                 Boolean        @default(false)
-  orderRequest             OrderRequest[]
+  isRented                 Boolean              @default(false)
+  maintenanceRequests      MaintenanceRequest[]
+  serviceProviders         ServiceProvider[]
+  orderId                  String?
+  order                    Order?               @relation(fields: [orderId], references: [orderId])
+  // 
+  planType                 PlanType             @default(PENDING)
+  isActive                 Boolean              @default(true)
 
   @@map("properties")
 }
 
-model OrderRequest {
-  pendingOrderId    String           @id @default(uuid())
-  propertyId        String
-  property          Property         @relation(fields: [propertyId], references: [propertyId])
-  isApproved        Boolean          @default(false)
-  serviceProviderId String?          @unique
-  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  @@map("order_requests")
+model Order {
+  // 
+  orderId     String         @id @default(uuid())
+  properties  Property[]
+  orderStatus OrderStatus    @default(PENDING)
+  // 
+  ownerId     String?
+  owner       PropertyOwner? @relation(fields: [ownerId], references: [propertyOwnerId])
+  // 
+  tenantId    String?
+  tenant      Tenant?        @relation(fields: [tenantId], references: [tenantId])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
+
+model ServiceProvider {
+  serviceProviderId   String               @id @default(uuid())
+  firstName           String
+  lastName            String
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  userId              String               @unique
+  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
+  user                User                 @relation(fields: [userId], references: [userId])
+  Service             Service?
+  SavedItem           SavedItem[]
+  properties          Property[]
+  maintenanceRequest  MaintenanceRequest[]
+
+  @@map("serviceProviders")
+}
+
+model MaintenanceRequest {
+  maintenanceRequestId String                         @id @default(uuid())
+  propertyId           String
+  property             Property                       @relation(fields: [propertyId], references: [propertyId])
+  tenantId             String
+  tenant               Tenant                         @relation(fields: [tenantId], references: [tenantId])
+  ownerId              String
+  owner                PropertyOwner                  @relation(fields: [ownerId], references: [propertyOwnerId])
+  createdAt            DateTime                       @default(now())
+  updatedAt            DateTime                       @updatedAt
+  // 
+  isAnimal             Boolean?
+  animalDetails        String?
+  // 
+  issueLocation        String
+  priority             RequestMaintenancePriorityEnum
+  issueType            ServiceType
+  description          String
+  images               String[]
+  status               MaintenanceRequestStatus       @default(PENDING)
+  // 
+  serviceProviderId    String?
+  serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
+
+  @@map("maintenance_requests")
+}
+
+// ! not needed , will be deleted
 
 model Service {
   serviceId                 String                   @id @default(uuid())
@@ -190,6 +235,27 @@ enum UserStatus {
   SUSPENDED
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum PlanType {
+  PENDING
+  ON_TRIAL
+  PREMIUM
+}
+
+enum MaintenanceRequestStatus {
+  PENDING
+  APPROVED
+  ACTIVE
+  PAUSED
+  CANCEL
+  COMPLETED
+}
+
 enum ServiceType {
   TENANT_SCREENING
   MAINTENANCE_AND_REPAIR
@@ -222,4 +288,10 @@ enum ItemType {
   PROPERTY_OWNER
   SERVICE
   TENANT
+}
+
+enum RequestMaintenancePriorityEnum {
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
 }

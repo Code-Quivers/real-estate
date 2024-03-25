@@ -38,4 +38,7 @@ router.patch(
   },
 );
 
+// ! get tenant my unit information
+router.get("/get-my-unit-information", auth(UserRoles.TENANT), TenantsControllers.getMyUnitInformation);
+
 export const TenantsRouters = router;

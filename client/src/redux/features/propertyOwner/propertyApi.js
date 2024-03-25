@@ -38,6 +38,16 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties, tagTypes.tenant],
     }),
+    // ! assign
+    assignServiceProviderToProperty: builder.mutation({
+      query: ({ data }) => ({
+        url: `/properties/assign-service-provider-to-property`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.serviceProvider],
+    }),
+    // ! tenant
     assignTenantToProperty: builder.mutation({
       query: ({ data }) => ({
         url: `/properties/assign-tenant-to-property`,
@@ -46,13 +56,13 @@ export const propertyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
-    assignServiceProviderToProperty: builder.mutation({
+    removeTenantFromProperty: builder.mutation({
       query: ({ data }) => ({
-        url: `/properties/assign-service-provider-to-property`,
+        url: `/properties/remove-tenant-from-property`,
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.properties, tagTypes.serviceProvider],
+      invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
   }),
 });
@@ -64,4 +74,5 @@ export const {
   useGetMyAllUnitsQuery,
   useAssignTenantToPropertyMutation,
   useAssignServiceProviderToPropertyMutation,
+  useRemoveTenantFromPropertyMutation,
 } = propertyApi;

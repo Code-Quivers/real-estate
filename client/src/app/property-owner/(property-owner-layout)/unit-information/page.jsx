@@ -1,6 +1,5 @@
 "use client";
 import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
-
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { IconButton, Placeholder } from "rsuite";
@@ -10,13 +9,23 @@ import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyAp
 import { fileUrlKey } from "@/configs/envConfig";
 import UnitEditModal from "@/components/property-owner/unit-information/UnitEditModal";
 import { useState } from "react";
+import { BiSolidMessageAltDetail } from "react-icons/bi";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import RemoveTenantModal from "@/components/property-owner/unit-information/RemoveTenantModal";
 
 const PropertyOwnerUnitInformation = () => {
-  const { data, isLoading, isSuccess, isError } = useGetMyAllUnitsQuery();
-
+  const { data, isLoading } = useGetMyAllUnitsQuery();
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
   const handleCloseEdit = () => setIsOpenEdit(false);
+
+  // ! remove tenant
+  const [tenantRemoveData, setTenantRemoveData] = useState(null);
+  const [isOpenTenantRemove, setIsOpenTenantRemove] = useState(false);
+  const handleCloseRemove = () => setIsOpenTenantRemove(false);
+
+  // !
+
   return (
     <>
       <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
@@ -35,7 +44,7 @@ const PropertyOwnerUnitInformation = () => {
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
               <div key={Math.random()} className="mt-5">
-                <h2 className="text-base font-bold mb-4 ">Property {idx + 1}</h2>
+                <h2 className="text-base font-bold mb-4 ">Property {idx + 1}: {singleProperty.title}</h2>
                 <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white  rounded-xl space-y-8 ">
                   {/* top section */}
                   <div className="grid grid-cols-12  gap-5">
@@ -79,6 +88,24 @@ const PropertyOwnerUnitInformation = () => {
                           <div>
                             <h3 className="text-base font-semibold">Tenant Information</h3>
                           </div>
+
+                          {singleProperty?.isRented && singleProperty?.Tenant && (
+                            <div className="flex gap-2 items-center">
+                              <button>
+                                <BiSolidMessageAltDetail size={20} />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setIsOpenTenantRemove(true);
+                                  setTenantRemoveData(singleProperty);
+                                }}
+                                className="hover:text-red-600 duration-300"
+                              >
+                                <RiDeleteBin5Fill size={20} />
+                              </button>
+                            </div>
+                          )}
+
                           {/* if rented add button will hidden */}
                         </div>
                         {/* tenant details */}
@@ -227,6 +254,10 @@ const PropertyOwnerUnitInformation = () => {
       {/* Unit edit modal */}
       <UnitEditModal open={isOpenEdit} editData={editData} handleClose={handleCloseEdit} />
       {/* tenant view modal */}
+
+      {/* remove tenant drawer */}
+
+      <RemoveTenantModal tenantRemoveData={tenantRemoveData} isOpenTenantRemove={isOpenTenantRemove} handleCloseRemove={handleCloseRemove} />
     </>
   );
 };

@@ -1,11 +1,12 @@
 "use client";
 import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { Form, Input, InputNumber, Modal } from "rsuite";
+import { Button, Form, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
 import UpdateImageUpload from "./UpdateImageUpload";
 import EditPropertyEditor from "./EditPropertyEditor";
 import { useUpdatePropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
+import { useEffect } from "react";
 
 const UnitEditModal = ({ open, handleClose, editData }) => {
   const {
@@ -23,15 +24,14 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     },
   });
 
-  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useUpdatePropertyMutation();
+  const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data: updateResData }] = useUpdatePropertyMutation();
 
   const handleUpdateProperty = async (updatedData) => {
     // creating form data
     const { files, ...restData } = updatedData;
-
     const formData = new FormData();
 
-    // Append all files with the same key "files"
+    // // Handle files
     const oldFiles = [];
     files?.forEach((file) => {
       if (file.url) {
@@ -48,22 +48,56 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
       }
     });
 
-    const data = {
-      ...restData,
-      numOfBath: restData?.numOfBath ? parseInt(restData.numOfBath) : undefined,
-      numOfBed: restData?.numOfBed ? parseInt(restData.numOfBed) : undefined,
-      monthlyRent: restData?.monthlyRent ? parseInt(restData.monthlyRent) : undefined,
-      images: oldFiles,
-    };
+    // Prepare data object
+    const data = {};
+    for (const [key, value] of Object.entries(restData)) {
+      if (value) {
+        if (key === 'monthlyRent' || key === 'numOfBath' || key === 'numOfBed') {
+          data[key] = parseInt(value);
+        } else {
+          data[key] = value;
+        }
+      }
+    }
+    if (oldFiles.length > 0) data['images'] = oldFiles;
 
     const propertyId = editData?.propertyId || null;
     formData.append("data", JSON.stringify(data));
 
     await updateProperty({
       propertyId: propertyId,
-      data: formData
-    })
+      data: formData,
+    });
   };
+
+  // !
+  const toaster = useToaster();
+  useEffect(() => {
+    if (isSuccess && !isLoading && !isError && !error && updateResData) {
+      toaster.push(
+        <Message bordered showIcon type="success" closable>
+          <h4 className="font-semibold xl:text-2xl">{updateResData?.message ?? "Successfully Updated"}</h4>
+        </Message>,
+        { placement: "topEnd", duration: 20000 },
+      );
+      handleClose();
+      resetReq();
+    }
+    if (!isSuccess && !isLoading && isError && error) {
+      toaster.push(
+        <Message bordered centered showIcon type="error" closable>
+          <h4 className="font-semibold xl:text-2xl">
+            {" "}
+            {
+              // @ts-ignore
+              error?.message || "Update Failed"
+            }
+          </h4>
+        </Message>,
+        { placement: "topEnd", duration: 20000 },
+      );
+    }
+  }, [isSuccess, isLoading, isError, updateResData, error, toaster]);
 
   return (
     <div>
@@ -184,6 +218,18 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                 {/* Address and description */}
 
                 <div className="col-span-6">
+                  <div>
+                    <label htmlFor="">Title</label>
+                    <Controller
+                      name="title"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="rs-form-control-wrapper ">
+                          <Input defaultValue={editData?.title} className="!w-full" {...field} type="text" placeholder="Title..." />
+                        </div>
+                      )}
+                    />
+                  </div>
                   {/* Address */}
                   <div>
                     <label htmlFor="">Address</label>
@@ -192,7 +238,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <Input className="!w-full" {...field} type="text" placeholder="Address..." />
+                          <Input defaultValue={editData?.address} className="!w-full" {...field} type="text" placeholder="Address..." />
                         </div>
                       )}
                     />
@@ -363,9 +409,9 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="bg-primary border border-transparent text-white py-2 px-3 rounded-full">
+                <Button loading={isLoading} type="submit" className="!bg-primary !border !border-transparent !text-white !py-3 !px-8 !rounded-full">
                   Submit
-                </button>
+                </Button>
               </div>
             </form>
           </div>

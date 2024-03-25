@@ -92,6 +92,20 @@ const assignTenantToProperty = catchAsync(async (req: Request, res: Response) =>
   });
 });
 
+// ! remove  tenant user from property or unit -----------------
+const removeTenantFromProperty = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await PropertiesService.removeTenantFromProperty(profileId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Tenant remove Successfully",
+    data: result,
+  });
+});
+
 // ! assign Service Provider to property or unit
 
 const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Response) => {
@@ -115,4 +129,5 @@ export const PropertiesController = {
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
+  removeTenantFromProperty,
 };
