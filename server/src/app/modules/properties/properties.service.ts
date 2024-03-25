@@ -32,9 +32,8 @@ const createNewProperty = async (profileId: string, req: Request) => {
   // Use meaningful variable names
   const imagesPath: { [key: number]: string[] } = {};
   // Process images
-  images.forEach((image: IUploadFile) => {
+  images?.forEach((image: IUploadFile) => {
     const propId: number = parseInt(image.originalname.split("_")[0]);
-
     // Use the logical nullish assignment operator to handle undefined case
     imagesPath[propId] ??= [];
     imagesPath[propId].push(`property/${image.filename}`);
@@ -56,20 +55,52 @@ const createNewProperty = async (profileId: string, req: Request) => {
   propertyInfo.forEach((item: any) => {
     delete item["id"];
   });
+  // if property is created , creating a new order
 
-  const property = await prisma.$transaction(async (transactionClient) => {
-    const result = await transactionClient.property.createMany({
-      data: propertyInfo,
-    });
-    if (!result) {
+  const createdData = await prisma.$transaction(async (transactionClient) => {
+    const result = [];
+    for (const singleProperty of propertyInfo) {
+      const createdProperty = await transactionClient.property.create({
+        data: singleProperty,
+      });
+      result.push(createdProperty.propertyId);
+    }
+
+    console.log("Created properties:", result);
+
+    // const results = await transactionClient.property.createMany({
+    //   data: propertyInfo,
+
+    // });
+    if (!result?.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
     }
-    return result;
+
+    const createOrder = await transactionClient.order.create({
+      data: {
+        ownerId: profileId,
+        properties: {
+          connect: result.map((propertyId) => ({ propertyId })),
+        },
+      },
+      include: {
+        _count: true,
+        properties: {
+          select: {
+            propertyId: true,
+            title: true,
+          },
+        },
+        owner: true,
+      },
+    });
+
+    return createOrder;
   });
-  return property;
+  return createdData;
 };
 
-// ! Getting all property
+// ! Getting all property========================================================================
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
