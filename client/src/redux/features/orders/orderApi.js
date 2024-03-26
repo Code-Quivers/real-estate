@@ -10,7 +10,20 @@ export const orderApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties],
     }),
+    getSingleOrder: builder.query({
+      query: ({ orderId }) => ({
+        url: `/orders/get-single-order/${orderId}`,
+      }),
+      providesTags: [tagTypes.order, tagTypes.properties, tagTypes.propertyOwner],
+    }),
+    updatePropertyTrialPeriod: builder.mutation({
+      query: ({ orderId }) => ({
+        url: `/orders/update-to-trial-period/${orderId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
+    }),
   }),
 });
 
-export const { useCreatePaypalPaymentMutation, useCapturePaypalPaymentMutation } = orderApi;
+export const { useCapturePaypalPaymentQuery, useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } = orderApi;

@@ -7,8 +7,13 @@ const router = express.Router();
 
 router.get(
   "/get-single-order/:orderId",
-  auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
-  OrdersController.getSavedItems,
+  auth(UserRoles.SUPERADMIN, UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
+  OrdersController.getSingleOrder,
+);
+router.patch(
+  "/update-to-trial-period/:orderId",
+  auth(UserRoles.PROPERTY_OWNER),
+  OrdersController.updatePropertyTrialPeriod,
 );
 
 export const OrderRoutes = router;
