@@ -2,7 +2,7 @@
 import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-import { IconButton, Placeholder } from "rsuite";
+import { Button, IconButton, Placeholder } from "rsuite";
 import { FaPencilAlt, FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { BiSolidMessageAltDetail } from "react-icons/bi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import RemoveTenantModal from "@/components/property-owner/unit-information/RemoveTenantModal";
+import moment from "moment";
 
 const PropertyOwnerUnitInformation = () => {
   const { data, isLoading } = useGetMyAllUnitsQuery();
@@ -35,7 +36,8 @@ const PropertyOwnerUnitInformation = () => {
             href="/property-owner/unit-information/add-property"
             className=" bg-primary text-white px-3 rounded-full flex items-center gap-2 py-2 drop-shadow-lg"
           >
-            <FaPlus /> Add New Unit / House
+            {" "}
+            Add New Unit / House
           </Link>
         </div>
         {/* main section */}
@@ -44,7 +46,14 @@ const PropertyOwnerUnitInformation = () => {
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
               <div key={Math.random()} className="mt-5">
-                <h2 className="text-base font-bold mb-4 ">Property {idx + 1}: {singleProperty.title}</h2>
+                <div className="flex justify-between items-center">
+                  <h2 className="text-base font-bold mb-4 ">
+                    Property {idx + 1}: {singleProperty.title}
+                  </h2>
+                  {singleProperty?.planType === "ON_TRIAL" && (
+                    <h2 className="text-sm ">trial period is activated since - {moment(singleProperty?.createdAt).format("LL")}</h2>
+                  )}
+                </div>
                 <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white  rounded-xl space-y-8 ">
                   {/* top section */}
                   <div className="grid grid-cols-12  gap-5">
@@ -70,6 +79,9 @@ const PropertyOwnerUnitInformation = () => {
                           </div>
                           <div>
                             <IconButton
+                              disabled={
+                                singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
+                              }
                               onClick={() => {
                                 setIsOpenEdit(true);
                                 setEditData(singleProperty);
@@ -95,6 +107,9 @@ const PropertyOwnerUnitInformation = () => {
                                 <BiSolidMessageAltDetail size={20} />
                               </button>
                               <button
+                                disabled={
+                                  singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
+                                }
                                 onClick={() => {
                                   setIsOpenTenantRemove(true);
                                   setTenantRemoveData(singleProperty);
@@ -137,12 +152,16 @@ const PropertyOwnerUnitInformation = () => {
                             <div>
                               {!singleProperty?.isRented && (
                                 <div className="flex gap-2 justify-center  items-center">
-                                  <Link
+                                  <Button
+                                    as={Link}
+                                    disabled={
+                                      singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
+                                    }
                                     href="/property-owner/available-tenants"
-                                    className="rounded-full border border-transparent bg-primary text-white px-5 py-2 text-sm"
+                                    className="!rounded-full !bg-primary !text-white !px-5 !py-2.5 !text-sm"
                                   >
                                     Add Tenant
-                                  </Link>
+                                  </Button>
                                 </div>
                               )}
                             </div>
@@ -161,10 +180,12 @@ const PropertyOwnerUnitInformation = () => {
                       {/* action */}
                       <div className="flex gap-2 items-center">
                         <Link
+                          as={Link}
+                          disabled={singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false}
                           href="/property-owner/service-providers"
-                          className=" border border-transparent bg-primary text-white rounded-full flex items-center gap-1 px-3 py-1"
+                          className="!rounded-full  !bg-primary !text-white !px-3 !py-2.5 !text-sm"
                         >
-                          <FaPlus /> Add Service Provider
+                          Add Service Provider
                         </Link>
                         <button
                           type="button"

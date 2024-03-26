@@ -52,14 +52,14 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     const data = {};
     for (const [key, value] of Object.entries(restData)) {
       if (value) {
-        if (key === 'monthlyRent' || key === 'numOfBath' || key === 'numOfBed') {
+        if (key === "monthlyRent" || key === "numOfBath" || key === "numOfBed") {
           data[key] = parseInt(value);
         } else {
           data[key] = value;
         }
       }
     }
-    if (oldFiles.length > 0) data['images'] = oldFiles;
+    if (oldFiles.length > 0) data["images"] = oldFiles;
 
     const propertyId = editData?.propertyId || null;
     formData.append("data", JSON.stringify(data));

@@ -244,6 +244,9 @@ const getPropertyOwnerAllProperty = async (
         owner: {
           propertyOwnerId: profileId,
         },
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
       },
 
       skip,
@@ -260,6 +263,9 @@ const getPropertyOwnerAllProperty = async (
         ...whereConditions,
         owner: {
           propertyOwnerId: profileId,
+        },
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
         },
       },
     });
@@ -312,8 +318,6 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
 
   // Combine old and new image paths
   const imagesPath: string[] = oldImagesPath.concat(newImagesPath);
-
-  console.log("propertyInfo", imagesPath);
 
   const {
     address,
