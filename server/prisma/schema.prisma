@@ -41,6 +41,7 @@ model PropertyOwner {
   Property             Property[]
   maintenanceRequests  MaintenanceRequest[]
   orders               Order[]
+  reports              Report[]
 
   @@map("propertyOwners")
 }
@@ -126,8 +127,37 @@ model Property {
   // 
   planType                 PlanType             @default(PENDING)
   isActive                 Boolean              @default(true)
+  // 
 
   @@map("properties")
+}
+
+model Report {
+  reportId            String        @id @default(uuid())
+  // monthly and annual
+  reportType          ReportType
+  propertyName        String
+  propertyInformation Json
+  // monthly
+  rentAmount          Float
+  collectedRent       Float
+  // annual
+  expenses            Float?
+  // total
+  grossProfit         Float
+  taxDocumentFile     String?
+  // 
+  propertyOwnerId     String
+  propertyOwner       PropertyOwner @relation(fields: [propertyOwnerId], references: [propertyOwnerId])
+  // 
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+enum ReportType {
+  Monthly
+  Annually
+  Tax
 }
 
 model Order {
