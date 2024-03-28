@@ -1,5 +1,6 @@
 "use client";
 
+import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
 import { useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } from "@/redux/features/orders/orderApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ const UnitPaymentPage = ({ params }) => {
   const router = useRouter();
   const toaster = useToaster();
   const [isOpenFreeTrial, setIsOpenFreeTrial] = useState(false);
+  const [monthlyChargePerProperty, setMonthlyChargePerProperty] = useState(20.00)
   const {
     data: orderDetails,
     isLoading: isOrderLoading,
@@ -97,7 +99,13 @@ const UnitPaymentPage = ({ params }) => {
             <h2 className="text-xl ">You will be charged $XYZ/month for each property you add.</h2>
           </div>
           {/* paypal or payment method */}
-          <div></div>
+          <div>
+            {console.log(orderDetails)}
+            <PaypalCheckout
+              realestateOrderId={orderDetails?.data?.orderId}
+              amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
+            />
+          </div>
           {/* activate a free trial */}
           <div className="mt-10 text-center">
             <button onClick={() => setIsOpenFreeTrial(true)} className="hover:underline">

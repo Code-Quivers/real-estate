@@ -23,7 +23,21 @@ export const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
+
+    updateOrderInfo: builder.mutation({
+      query: ({ orderId, orderInfo }) => ({
+        url: `/orders/update/${orderId}`,
+        method: "PATCH",
+        data: orderInfo
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner, tagTypes.order],
+    }),
   }),
 });
 
-export const { useCapturePaypalPaymentQuery, useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } = orderApi;
+export const {
+  useCapturePaypalPaymentQuery,
+  useGetSingleOrderQuery,
+  useUpdatePropertyTrialPeriodMutation,
+  useUpdateOrderInfoMutation,
+} = orderApi;

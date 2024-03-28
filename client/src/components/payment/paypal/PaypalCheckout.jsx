@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useRouter } from "next/navigation";
+
 import { getAuthKey, getBaseUrl, paymentClientId, paymentCurrency, paymentDataSdk } from "@/configs/envConfig";
 import { useCapturePaypalPaymentMutation, useCreatePaypalPaymentMutation } from "@/redux/features/payment/paypalPaymentApi";
+import { useUpdateOrderInfoMutation } from "@/redux/features/orders/orderApi";
 
-const PaypalCheckout = () => {
+const PaypalCheckout = ({ realestateOrderId, amountToPaid }) => {
   const initialOptions = {
     "client-id": paymentClientId(),
     // "enable-funding": paymentEnableFunding(),
     "data-sdk-integration-source": paymentDataSdk(),
     currency: paymentCurrency(),
   };
-
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [createPaypalPayment, { isError, isLoading, isSuccess }] = useCreatePaypalPaymentMutation();
+  const [updateOrderInfo, { data }] = useUpdateOrderInfoMutation();
   const [capturePaypalPayment, { isError: isErrorCapture, isLoading: isLoadingCapture, isSuccess: isSuccessCapture }] =
     useCapturePaypalPaymentMutation();
   const createOrder = async () => {
     try {
-      const resp = await createPaypalPayment({ id: "abc1234", amount: 100 });
+      const resp = await createPaypalPayment({ id: realestateOrderId, amount: amountToPaid });
       const orderData = resp?.data?.data;
       if (orderData.id) {
         return orderData.id;
@@ -36,7 +40,7 @@ const PaypalCheckout = () => {
     try {
       const dataToSend = {
         paypalOrderId: data.orderID,
-        orderId: "abc1234",
+        orderId: realestateOrderId,
       };
       const resp = await capturePaypalPayment({ data: dataToSend });
 
@@ -52,8 +56,19 @@ const PaypalCheckout = () => {
         // Or go to another URL:  actions.redirect('thank_you.html');
         const transactionStatus = orderData.paymentStatus;
         setMessage(`Transaction ${transactionStatus}`);
+
+        // Update order status in DB
+        updateOrderInfo({
+          orderId: realestateOrderId,
+          orderInfo: { orderStatus: 'CONFIRMED' }
+
+        })
+
+        // Navigate to payment done page.
+        router.push(`/payment/payment-done/${realestateOrderId}`);
+
         // showing toast
-        console.log("Capture result", orderData, JSON.stringify(orderData, null, 2));
+        // console.log("Capture result", orderData, JSON.stringify(orderData, null, 2));
       }
     } catch (error) {
       console.error(error);
