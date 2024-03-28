@@ -97,7 +97,25 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
   return result;
 };
 
+
+// Update a specific order info
+const updateOrderInfo = async (orderId: string, orderInfo: any) => {
+
+  const updatedInfo = await prisma.order.update({
+    where: { orderId },
+    data: orderInfo,
+  })
+
+  if (!updatedInfo) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.")
+  }
+
+  return updatedInfo;
+}
+
+
 export const OrderServices = {
   getSingleOrder,
   updatePropertyTrialPeriod,
+  updateOrderInfo
 };

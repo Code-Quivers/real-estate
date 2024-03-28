@@ -29,7 +29,20 @@ const updatePropertyTrialPeriod = catchAsync(async (req: Request, res: Response)
   });
 });
 
+const updateOrderInfo = catchAsync(async (req: Request, res: Response) => {
+  const orderId = req.params?.orderId as string;
+  const orderInfo = req?.body;
+  const result = await OrderServices.updateOrderInfo(orderId, orderInfo);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `Order information successfully updated!`,
+    data: result,
+  });
+});
+
 export const OrdersController = {
   getSingleOrder,
   updatePropertyTrialPeriod,
+  updateOrderInfo,
 };
