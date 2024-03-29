@@ -25,8 +25,8 @@ export const orderApi = baseApi.injectEndpoints({
     }),
 
     updateOrderInfo: builder.mutation({
-      query: ({ orderId, orderInfo }) => ({
-        url: `/orders/update/${orderId}`,
+      query: ({orderInfo}) => ({
+        url: `/orders/update-status`,
         method: "PATCH",
         data: orderInfo
       }),

@@ -59,8 +59,7 @@ const PaypalCheckout = ({ realestateOrderId, amountToPaid }) => {
 
         // Update order status in DB
         updateOrderInfo({
-          orderId: realestateOrderId,
-          orderInfo: { orderStatus: 'CONFIRMED' }
+          orderInfo: { orderId: realestateOrderId, orderStatus: 'CONFIRMED', planType: 'PREMIUM' }
 
         })
 
