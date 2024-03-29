@@ -10,18 +10,19 @@ datasource db {
 // Prisma schema
 
 model User {
-  userId          String           @id @default(uuid()) // Change uuid() to auto() for the primary key
-  email           String           @unique
-  userName        String           @unique
-  password        String
-  userStatus      UserStatus       @default(ACTIVE)
-  createdAt       DateTime         @default(now()) @db.Timestamptz(0)
-  updatedAt       DateTime         @updatedAt @db.Timestamptz(0)
-  role            UserRoles
-  tenant          Tenant?
-  propertyOwner   PropertyOwner?
-  serviceProvider ServiceProvider?
-  SavedItem       SavedItem[]
+  userId             String               @id @default(uuid()) // Change uuid() to auto() for the primary key
+  email              String               @unique
+  userName           String               @unique
+  password           String
+  userStatus         UserStatus           @default(ACTIVE)
+  createdAt          DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt          DateTime             @updatedAt @db.Timestamptz(0)
+  role               UserRoles
+  tenant             Tenant?
+  propertyOwner      PropertyOwner?
+  serviceProvider    ServiceProvider?
+  SavedItem          SavedItem[]
+  PaymentInformation PaymentInformation[]
 
   @@map("users")
 }
@@ -162,17 +163,18 @@ enum ReportType {
 
 model Order {
   // 
-  orderId     String         @id @default(uuid())
-  properties  Property[]
-  orderStatus OrderStatus    @default(PENDING)
+  orderId            String               @id @default(uuid())
+  properties         Property[]
+  orderStatus        OrderStatus          @default(PENDING)
   // 
-  ownerId     String?
-  owner       PropertyOwner? @relation(fields: [ownerId], references: [propertyOwnerId])
+  ownerId            String?
+  owner              PropertyOwner?       @relation(fields: [ownerId], references: [propertyOwnerId])
   // 
-  tenantId    String?
-  tenant      Tenant?        @relation(fields: [tenantId], references: [tenantId])
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  tenantId           String?
+  tenant             Tenant?              @relation(fields: [tenantId], references: [tenantId])
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  PaymentInformation PaymentInformation[]
 }
 
 model ServiceProvider {
@@ -256,6 +258,35 @@ model SavedItem {
   user              User             @relation(fields: [userId], references: [userId])
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
+}
+
+model PaymentInformation {
+  id                           String   @id @default(uuid())
+  platform                     PLATFORM
+  paymentStatus                String
+  amountToPay                  Float
+  amountPaid                   Float
+  currency                     String
+  platformFee                  Float
+  netAmount                    Float
+  paymentPlatformTransactionId String
+  paymentPlatformOrderId       String
+  refundLink                   String
+  transactionCreatedTime       DateTime
+  transactionUpdatedTime       DateTime
+  payerName                    String
+  payerEmailAddress            String
+  orderId                      String
+  order                        Order    @relation(fields: [orderId], references: [orderId])
+  userId                       String
+  user                         User     @relation(fields: [userId], references: [userId])
+  createdAt                    DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt                    DateTime @updatedAt @db.Timestamptz(0)
+}
+
+enum PLATFORM {
+  PAYPAL
+  KLARNA
 }
 
 // enums

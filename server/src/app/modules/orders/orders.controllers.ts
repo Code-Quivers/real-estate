@@ -41,8 +41,20 @@ const updateOrderInfo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateOrderStatusAndPropertyPlanType = catchAsync(async (req: Request, res: Response) => {
+  const { orderStatus, planType, orderId } = req?.body;
+  const result = await OrderServices.updateOrderStatusAndPropertyPlanType(orderId, orderStatus, planType);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `Order information successfully updated!`,
+    data: result,
+  });
+});
+
 export const OrdersController = {
   getSingleOrder,
   updatePropertyTrialPeriod,
   updateOrderInfo,
+  updateOrderStatusAndPropertyPlanType
 };

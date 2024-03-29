@@ -152,8 +152,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: whereConditions,
@@ -219,8 +219,9 @@ const getPropertyOwnerAllProperty = async (
 
   const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
+
   const result = await prisma.$transaction(async (transactionClient) => {
-    const properties = await transactionClient.property.findMany({
+        const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
         Tenant: true,
@@ -241,9 +242,7 @@ const getPropertyOwnerAllProperty = async (
       },
       where: {
         ...whereConditions,
-        owner: {
-          propertyOwnerId: profileId,
-        },
+        ownerId: profileId,
         planType: {
           in: ["ON_TRIAL", "PREMIUM"],
         },
@@ -255,8 +254,8 @@ const getPropertyOwnerAllProperty = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
     const total = await prisma.property.count({
       where: {
@@ -425,6 +424,7 @@ const assignServiceProviderToProperty = async (profileId: string, payload: IAssi
 
   return result;
 };
+
 // ! assign tenant user to property or unit -----------------
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;

@@ -11,6 +11,7 @@ import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
 import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
 import { OrderRoutes } from "../modules/orders/orders.routes";
+import { PaymentRoutes } from "../modules/payment/payment.routes";
 
 const router = express.Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: "/maintenance-request",
     route: MaintenanceRequestRouter,
+  },
+  {
+    path: "/payment",
+    route: PaymentRoutes,
   },
   {
     path: "/payment-paypal",

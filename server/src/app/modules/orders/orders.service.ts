@@ -3,6 +3,7 @@
 import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
+import { OrderStatus, PlanType } from "@prisma/client";
 
 // ! get single order details
 const getSingleOrder = async (orderId: string) => {
@@ -113,9 +114,36 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
   return updatedInfo;
 }
 
+const updateOrderStatusAndPropertyPlanType = async (orderId: string, orderStatus: OrderStatus, planType: PlanType) => {
 
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const updatedInfo = await transactionClient.order.update({
+      where: {
+        orderId
+      },
+      data: {
+        orderStatus: orderStatus,
+        properties: {
+          updateMany: {
+            where: { orderId: orderId },
+            data: {
+              planType: planType,
+            }
+          }
+        }
+      }
+    })
+    if (!updatedInfo) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.")
+    }
+
+    return updatedInfo;
+  })
+  return result
+}
 export const OrderServices = {
   getSingleOrder,
   updatePropertyTrialPeriod,
-  updateOrderInfo
+  updateOrderInfo,
+  updateOrderStatusAndPropertyPlanType
 };

@@ -4,9 +4,10 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { PaymentServices } from './payment.services';
-import { IRequestUser } from '../users/user.interface';
+
 import { PaymentFilterableFields } from './payment.constant';
 import pick from '../../../shared/pick';
+import { IRequestUser } from '../../interfaces/global.interfaces';
 
 // const getPaymentReports = catchAsync(async (req, res) => {
 //   //   const paymentInfo = req.body;

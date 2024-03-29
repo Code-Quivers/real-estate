@@ -17,11 +17,9 @@ class PaypalController {
 
   static payForOrder = catchAsync(async (req: Request, res: Response) => {
     console.log('Order API hit..............');
-    console.log(req.body)
     const paymentInfo = req.body;
     const { jsonResponse, httpStatusCode } = await PaypalServices.createOrder(paymentInfo);
     // PaypalController.sendPaymentResponse(res, httpStatusCode, jsonResponse);
-    console.log(jsonResponse)
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -32,7 +30,6 @@ class PaypalController {
   });
 
   static paymentCapture = catchAsync(async (req: Request, res: Response) => {
-    console.log('Order capture with ID.............');
     const paypalOrderId = req.body?.paypalOrderId;
     const orderId = req.body?.orderId;
     const userId = (req.user as IRequestUser).userId;
@@ -41,9 +38,8 @@ class PaypalController {
     const capturedPaymentInfo = jsonResponse.purchase_units[0].payments.captures[0];
     const paymentReport = PaypalController.generatePaymentReport(jsonResponse, capturedPaymentInfo, orderId, userId);
 
-    console.log(paymentReport);
 
-    // const result = await PaymentServices.createPaymnentReport(paymentReport);
+    const result = await PaymentServices.createPaymnentReport(paymentReport);
 
     if (!paymentReport) {
       errorLogger.error('Failed to add payment information');
@@ -80,8 +76,8 @@ class PaypalController {
       currency: capturedPaymentInfo.amount.currency_code,
       platformFee: parseFloat(capturedPaymentInfo.seller_receivable_breakdown.paypal_fee.value),
       netAmount: parseFloat(capturedPaymentInfo.seller_receivable_breakdown.net_amount.value),
-      platformTransactionId: capturedPaymentInfo.id,
-      platformOrderId: jsonResponse.id,
+      paymentPlatformTransactionId: capturedPaymentInfo.id,
+      paymentPlatformOrderId: jsonResponse.id,
       refundLink: capturedPaymentInfo.links[1].href,
       transactionCreatedTime: capturedPaymentInfo.create_time,
       transactionUpdatedTime: capturedPaymentInfo.update_time,
