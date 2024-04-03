@@ -102,7 +102,7 @@ const UnitPaymentPage = ({ params }) => {
           <div>
             {console.log(orderDetails)}
             <PaypalCheckout
-              realestateOrderId={orderDetails?.data?.orderId}
+              ownerOrdererId={orderDetails?.data?.orderId}
               amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
             />
           </div>
