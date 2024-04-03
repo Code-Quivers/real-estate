@@ -93,7 +93,7 @@ model Tenant {
   SavedItem                            SavedItem[]
   // assigned in property
   propertyId                           String?              @unique
-  property                             Property?            @relation(fields: [propertyId], references: [propertyId])
+  property                             Property?            @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
   maintenanceRequests                  MaintenanceRequest[]
   orders                               Order[]
 
@@ -102,7 +102,7 @@ model Tenant {
 
 model Property {
   propertyId               String               @id @default(uuid())
-  owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId])
+  owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
   ownerId                  String
   title                    String               @default("Property Title")
   numOfBed                 Int                  @default(1)
@@ -124,7 +124,7 @@ model Property {
   maintenanceRequests      MaintenanceRequest[]
   serviceProviders         ServiceProvider[]
   orderId                  String?
-  order                    Order?               @relation(fields: [orderId], references: [orderId])
+  order                    Order?               @relation(fields: [orderId], references: [orderId], onDelete: SetNull)
   // 
   planType                 PlanType             @default(PENDING)
   isActive                 Boolean              @default(true)
