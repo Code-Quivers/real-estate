@@ -5,6 +5,38 @@ import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
 import { OrderStatus, PlanType } from "@prisma/client";
 
+
+/**
+ * Creates a new order in the database.
+ */
+const createOrder = async (orderInfo: any) => {
+  // Map property IDs to connect property relationship
+  const data = {
+    ...orderInfo,
+    properties: {
+      connect: orderInfo.properties.map((propertyId: any) => ({ propertyId })),
+    },
+  }
+
+  // Execute transaction to create the order
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Create a new order using transaction
+    const newOrder = await transactionClient.order.create({
+      data: data
+    })
+
+    // If no new order is created, throw an error
+    if (!newOrder) throw new ApiError(httpStatus.BAD_REQUEST, "No Order Found");
+    
+    // Return the newly created order
+    return newOrder;
+  });
+
+  // Return the result of the transaction
+  return result;
+}
+
+
 // ! get single order details
 const getSingleOrder = async (orderId: string) => {
   if (!orderId) {
@@ -142,6 +174,7 @@ const updateOrderStatusAndPropertyPlanType = async (orderId: string, orderStatus
   return result
 }
 export const OrderServices = {
+  createOrder,
   getSingleOrder,
   updatePropertyTrialPeriod,
   updateOrderInfo,

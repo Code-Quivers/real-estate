@@ -12,15 +12,19 @@ paypal.configure({
   client_secret: config.paypalClientSecret as string,
 });
 
-const get_merchant_info = async (propertyId, ownerId) => {
+/**
+ * Retrieves merchant information associated with a property and owner.
+ */
+const get_merchant_info = async (propertyId: any, ownerId: any): Promise<any> => {
+  // Execute transaction to retrieve merchant information
   const result = await prisma.$transaction(async (transactionClient) => {
-    // checking if the tenant is assigned to any property or not
+    // Checking if the owner is assigned to the specified property
     const ownerInfo = await transactionClient.property.findUnique({
       where: {
         propertyId: propertyId,
         ownerId: ownerId
       },
-      include: {
+      select: {
         owner: {
           select: {
             paypalBussinessEmail: true,
@@ -28,57 +32,60 @@ const get_merchant_info = async (propertyId, ownerId) => {
           }
         }
       },
-      select:{},
     });
-    console.log(ownerInfo, 'on get merchant info')
 
-
+    // Throw error if owner information is not found
     if (!ownerInfo) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to fetch merchant information");
-    return ownerInfo;
+
+    return ownerInfo.owner;
   });
+
+  return result;
 }
 
 
 
+
+/**
+ * Creates a PayPal order for processing payment.
+ */
 const createOrder = async (paymentInfo: any) => {
   // use the cart information passed from the front-end to calculate the purchase unit details
-  // console.log('shopping cart information passed from the frontend createOrder() callback:', paymentInfo);
-  console.log(paymentInfo)
-  console.log('-----------------------------')
+
+  // Generate access token for PayPal API authentication
   const accessToken = await generateAccessTokenForPaypal(
     config.paypalBaseUrl as string,
     config.paypalClientId as string,
     config.paypalClientSecret as string
   );
+
+  // Define the endpoint URL for creating PayPal orders
   const url = `${config.paypalBaseUrl}/v2/checkout/orders`;
+
+  // Construct purchase unit information
   const purchaseUnitInfo: any = {
-    // reference_id: 'd9f80740-38f0-11e8-b467-0ed5f89f718b',
     amount: {
       currency_code: 'USD',
-      value: (Math.ceil(paymentInfo?.amount * 100) / 100).toFixed(2),
+      value: (Math.ceil(paymentInfo?.amountToPaid * 100) / 100).toFixed(2),
     },
   }
 
+  // If the payment is for rent, assign payee information
   if (paymentInfo?.isRentPayment) {
-    await get_merchant_info(paymentInfo.propertyId, paymentInfo.ownerId)
+    const merchantInfo = await get_merchant_info(paymentInfo.propertyId, paymentInfo.ownerId)
     purchaseUnitInfo.payee = {
-      email_address: '',
-      merchant_id: ""
+      email_address: merchantInfo.paypalBussinessEmail,
+      merchant_id: merchantInfo.paypalMerchentId
     }
   }
+
+  // Construct payload for creating the order
   const payload = {
     intent: 'CAPTURE',
-    purchase_units: [
-      {
-        // reference_id: 'd9f80740-38f0-11e8-b467-0ed5f89f718b',
-        amount: {
-          currency_code: 'USD',
-          value: (Math.ceil(paymentInfo?.amount * 100) / 100).toFixed(2),
-        },
-      },
-    ],
+    purchase_units: [purchaseUnitInfo],
   };
 
+  // Make a POST request to create the order
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
@@ -89,16 +96,21 @@ const createOrder = async (paymentInfo: any) => {
   });
 
   try {
+    // Parse JSON response
     const jsonResponse = await response.json();
+
+    // Return the response along with HTTP status code
     return {
       jsonResponse,
       httpStatusCode: response.status,
     };
   } catch (err) {
+    // If unable to parse JSON response, handle the error
     const errorMessage = await response.text();
     throw new ApiError(response.status, errorMessage);
   }
 };
+
 
 /**
  * Capture payment for the created order to complete the transaction.

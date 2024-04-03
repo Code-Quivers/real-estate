@@ -9,21 +9,24 @@ import { PaymentServices } from '../payment/payment.services';
 
 import prisma from '../../../shared/prisma';
 import { errorLogger, logger } from '../../../shared/logger';
+import { OrderServices } from '../orders/orders.service';
 
 
+/**
+ * Controller handling PayPal related operations such as creating and capturing orders.
+ */
 class PaypalController {
   private static orderCreationSuccessMessage = 'Order creation successful!!!';
   private static orderCreationFailedMessage = 'Order creation failed!!!';
 
+  /**
+   * Handles payment for an order.
+   */
   static payForOrder = catchAsync(async (req: Request, res: Response) => {
     console.log('Order API hit..............');
-    const userRole = (req.user as IRequestUser).role;
-    const profileId = (req.user as IRequestUser).profileId
-
 
     const paymentInfo = req.body;
     const { jsonResponse, httpStatusCode } = await PaypalServices.createOrder(paymentInfo);
-    // PaypalController.sendPaymentResponse(res, httpStatusCode, jsonResponse);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -33,22 +36,51 @@ class PaypalController {
     });
   });
 
-  static paymentCapture = catchAsync(async (req: Request, res: Response) => {
-    const paypalOrderId = req.body?.paypalOrderId;
-    const orderId = req.body?.orderId;
-    const userId = (req.user as IRequestUser).userId;
+  /**
+   * Retrieves or creates an order ID for a new order.
+   */
+  private static getOrderIdByCreateNewOrder = async (orderId: string, tenantId: string, propertyId: string): Promise<string> => {
+    if (orderId) return orderId;
 
+    const orderInfo = {
+      tenantId: tenantId,
+      properties: [propertyId]
+    }
+    const newOrderData = await OrderServices.createOrder(orderInfo);
+
+    return newOrderData.orderId;
+  }
+
+  /**
+   * Handles capturing payment for a PayPal order.
+   */
+  static paymentCapture = catchAsync(async (req: Request, res: Response) => {
+    // Extract necessary data from the request
+    const paypalOrderId = req.body?.paypalOrderId;
+    let orderId: string = req.body?.orderId || "";
+    const userId = (req.user as IRequestUser).userId;
+    const tenantId: string = req.body?.tenantId || "";
+    const propertyId: string = req.body?.propertyId || "";
+
+    // Capture payment using PayPal services
     const { jsonResponse, httpStatusCode } = await PaypalServices.captureOrder(paypalOrderId);
     const capturedPaymentInfo = jsonResponse.purchase_units[0].payments.captures[0];
+
+    // Get or create an order ID for the payment
+    orderId = await this.getOrderIdByCreateNewOrder(orderId, tenantId, propertyId);
+
+    // Generate payment report based on PayPal API response
     const paymentReport = PaypalController.generatePaymentReport(jsonResponse, capturedPaymentInfo, orderId, userId);
 
-
+    // Create payment report in the database
     const result = await PaymentServices.createPaymnentReport(paymentReport);
 
-    if (!paymentReport) {
+    // Log error if failed to add payment information
+    if (!result) {
       errorLogger.error('Failed to add payment information');
     }
 
+    // Send response back to the client
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: true,
@@ -57,15 +89,9 @@ class PaypalController {
     });
   });
 
-  private static sendPaymentResponse(res: Response, statusCode: number, data: any) {
-    sendResponse(res, {
-      statusCode: statusCode,
-      success: true,
-      message: 'Payment capture successful!!!',
-      data: data,
-    });
-  }
-
+  /**
+   * Generates a payment report based on PayPal API response data.
+   */
   private static generatePaymentReport(
     jsonResponse: any,
     capturedPaymentInfo: any,
