@@ -6,7 +6,7 @@ import { getAuthKey, getBaseUrl, paymentClientId, paymentCurrency, paymentDataSd
 import { useCapturePaypalPaymentMutation, useCreatePaypalPaymentMutation } from "@/redux/features/payment/paypalPaymentApi";
 import { useUpdateOrderInfoMutation } from "@/redux/features/orders/orderApi";
 
-const PaypalCheckout = ({ realestateOrderId, amountToPaid }) => {
+const PaypalCheckout = ({ isRentPayment, realestateOrderId, amountToPaid, tenantId, propertyId, ownerId }) => {
   const initialOptions = {
     "client-id": paymentClientId(),
     // "enable-funding": paymentEnableFunding(),
@@ -22,7 +22,16 @@ const PaypalCheckout = ({ realestateOrderId, amountToPaid }) => {
     useCapturePaypalPaymentMutation();
   const createOrder = async () => {
     try {
-      const resp = await createPaypalPayment({ id: realestateOrderId, amount: amountToPaid });
+      const paymentInfo = {
+        id: isRentPayment ? 'abddd123' : realestateOrderId,
+        amountToPaid: amountToPaid,
+        isRentPayment: isRentPayment,
+        tenantId: tenantId,
+        propertyId: propertyId,
+        ownerId: ownerId
+      }
+      console.log(paymentInfo, '77777777777777777777777')
+      const resp = await createPaypalPayment(paymentInfo);
       const orderData = resp?.data?.data;
       if (orderData.id) {
         return orderData.id;
@@ -78,6 +87,8 @@ const PaypalCheckout = ({ realestateOrderId, amountToPaid }) => {
     <div className=" max-lg:px-5 w-full py-10 ">
       <div className="grid grid-cols-2 gap-5 w-full">
         <div>
+      {console.log(amountToPaid, isRentPayment, propertyId, ownerId, '33333333333333333333')}
+          
           <PayPalScriptProvider options={initialOptions}>
             <PayPalButtons
               style={{

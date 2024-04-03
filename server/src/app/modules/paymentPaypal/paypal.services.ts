@@ -3,6 +3,8 @@ import paypal from 'paypal-rest-sdk';
 import config from '../../../config';
 import { generateAccessTokenForPaypal } from './utils';
 import ApiError from '../../../errors/ApiError';
+import prisma from '../../../shared/prisma';
+import httpStatus from 'http-status';
 
 paypal.configure({
   mode: config.paypalMode as string, //sandbox or live
@@ -10,17 +12,60 @@ paypal.configure({
   client_secret: config.paypalClientSecret as string,
 });
 
+const get_merchant_info = async (propertyId, ownerId) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // checking if the tenant is assigned to any property or not
+    const ownerInfo = await transactionClient.property.findUnique({
+      where: {
+        propertyId: propertyId,
+        ownerId: ownerId
+      },
+      include: {
+        owner: {
+          select: {
+            paypalBussinessEmail: true,
+            paypalMerchentId: true
+          }
+        }
+      },
+      select:{},
+    });
+    console.log(ownerInfo, 'on get merchant info')
+
+
+    if (!ownerInfo) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to fetch merchant information");
+    return ownerInfo;
+  });
+}
+
+
 
 const createOrder = async (paymentInfo: any) => {
   // use the cart information passed from the front-end to calculate the purchase unit details
   // console.log('shopping cart information passed from the frontend createOrder() callback:', paymentInfo);
-
+  console.log(paymentInfo)
+  console.log('-----------------------------')
   const accessToken = await generateAccessTokenForPaypal(
     config.paypalBaseUrl as string,
     config.paypalClientId as string,
     config.paypalClientSecret as string
   );
   const url = `${config.paypalBaseUrl}/v2/checkout/orders`;
+  const purchaseUnitInfo: any = {
+    // reference_id: 'd9f80740-38f0-11e8-b467-0ed5f89f718b',
+    amount: {
+      currency_code: 'USD',
+      value: (Math.ceil(paymentInfo?.amount * 100) / 100).toFixed(2),
+    },
+  }
+
+  if (paymentInfo?.isRentPayment) {
+    await get_merchant_info(paymentInfo.propertyId, paymentInfo.ownerId)
+    purchaseUnitInfo.payee = {
+      email_address: '',
+      merchant_id: ""
+    }
+  }
   const payload = {
     intent: 'CAPTURE',
     purchase_units: [

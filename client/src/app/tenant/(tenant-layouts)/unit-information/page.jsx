@@ -21,6 +21,8 @@ const TenantUnitInformation = () => {
 
       {!isLoading && !isError && unitRes && (
         <div>
+          {console.log(unitRes, 'unit information of tenant')}
+
           <div className="grid lg:grid-cols-6 max-lg:gap-5  grid-cols-1 lg:border border-[#707070] ">
             <div
               key={Math.random()}
@@ -58,7 +60,7 @@ const TenantUnitInformation = () => {
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
-                  <span>100.00</span>
+                  <span>{unitRes?.property?.monthlyRent}</span>
                 </p>
                 <Button onClick={() => setIsOpenMakePayment(true)} className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">
                   Make Payment
@@ -105,7 +107,12 @@ const TenantUnitInformation = () => {
       {/*  */}
 
       <div>
-        <TenantMakePaymentModal isOpen={isOpenMakePayment} handleClose={handleClose} />
+        <TenantMakePaymentModal
+          isOpen={isOpenMakePayment}
+          handleClose={handleClose}
+          propertyInfo={unitRes?.property}
+          tenantId={unitRes?.tenantId}
+        />
       </div>
     </div>
   );

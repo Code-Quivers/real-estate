@@ -17,6 +17,10 @@ class PaypalController {
 
   static payForOrder = catchAsync(async (req: Request, res: Response) => {
     console.log('Order API hit..............');
+    const userRole = (req.user as IRequestUser).role;
+    const profileId = (req.user as IRequestUser).profileId
+
+
     const paymentInfo = req.body;
     const { jsonResponse, httpStatusCode } = await PaypalServices.createOrder(paymentInfo);
     // PaypalController.sendPaymentResponse(res, httpStatusCode, jsonResponse);
