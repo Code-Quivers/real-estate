@@ -42,8 +42,8 @@ const updateOrderInfo = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateOrderStatusAndPropertyPlanType = catchAsync(async (req: Request, res: Response) => {
-  const { orderStatus, planType, orderId } = req?.body;
-  const result = await OrderServices.updateOrderStatusAndPropertyPlanType(orderId, orderStatus, planType);
+  const data = req?.body;
+  const result = await OrderServices.updateOrderStatusAndPropertyPlanType(data);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

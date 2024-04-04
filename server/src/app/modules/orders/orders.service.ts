@@ -27,7 +27,7 @@ const createOrder = async (orderInfo: any) => {
 
     // If no new order is created, throw an error
     if (!newOrder) throw new ApiError(httpStatus.BAD_REQUEST, "No Order Found");
-    
+
     // Return the newly created order
     return newOrder;
   });
@@ -146,8 +146,8 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
   return updatedInfo;
 }
 
-const updateOrderStatusAndPropertyPlanType = async (orderId: string, orderStatus: OrderStatus, planType: PlanType) => {
-
+const updateOrderStatusAndPropertyPlanType = async (data: any) => {
+  const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedInfo = await transactionClient.order.update({
       where: {
@@ -155,17 +155,29 @@ const updateOrderStatusAndPropertyPlanType = async (orderId: string, orderStatus
       },
       data: {
         orderStatus: orderStatus,
-        properties: {
-          updateMany: {
-            where: { orderId: orderId },
-            data: {
-              planType: planType,
-            }
-          }
-        }
+        // properties: {
+        //   updateMany: {
+        //     where: { orderId: orderId },
+        //     data: {
+        //       planType: planType,
+        //     }
+        //   }
+        // }
       }
     })
-    if (!updatedInfo) {
+
+    // if the order is for paying rent then return the result
+    if (isRentPayment) return updatedInfo;
+
+    // When The order is for property payment
+    const updatedProperty = await transactionClient.property.updateMany({
+      where: {
+        orders: { some: { orderId } }
+      },
+      data: { planType }
+    })
+
+    if (!updatedInfo || !updatedProperty) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.")
     }
 

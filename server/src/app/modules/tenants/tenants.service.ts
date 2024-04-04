@@ -255,6 +255,17 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
+
+function differenceInMonths(date1: any, date2 = new Date()) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  const yearDiff = d2.getFullYear() - d1.getFullYear();
+  const monthDiff = d2.getMonth() - d1.getMonth();
+
+  return yearDiff * 12 + monthDiff;
+}
+
 // get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -268,10 +279,10 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
     });
     console.log(tenants, 'tenant unit information........')
-    if (!tenants) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
-    }
-    const propertyId = tenants.property?.propertyId;
+    // if (!tenants) {
+    //   throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
+    // }
+    const propertyId = tenants?.property?.propertyId;
     const orderData = await transactionClient.order.findMany({
       where: {
         tenantId: tenantId,
@@ -287,11 +298,16 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       orderBy: {
         updatedAt: 'desc'
       },
-      
+
     })
-    console.log(orderData, 'oooooooooooo')
-    
-    return tenants;
+    const dueMonths = differenceInMonths(orderData[0].updatedAt)
+    const tenantUnitInfo = {
+      ...tenants,
+      dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
+      dueMonths: dueMonths
+    }
+
+    return tenantUnitInfo;
   });
 
   return result;

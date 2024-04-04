@@ -60,9 +60,13 @@ const TenantUnitInformation = () => {
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
-                  <span>{unitRes?.property?.monthlyRent}</span>
+                  <span>{unitRes?.dueRent}</span>
                 </p>
-                <Button onClick={() => setIsOpenMakePayment(true)} className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">
+                <Button
+                  className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full"
+                  onClick={() => setIsOpenMakePayment(true)}
+                  disabled={unitRes?.dueRent == 0 ? true : false}
+                >
                   Make Payment
                 </Button>
               </div>
@@ -112,6 +116,8 @@ const TenantUnitInformation = () => {
           handleClose={handleClose}
           propertyInfo={unitRes?.property}
           tenantId={unitRes?.tenantId}
+          dueRent={unitRes?.dueRent}
+          dueMonths={unitRes?.dueMonths}
         />
       </div>
     </div>

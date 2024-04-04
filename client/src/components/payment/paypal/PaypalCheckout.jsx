@@ -95,7 +95,12 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
 
         // Update order status in the database
         updateOrderInfo({
-          orderInfo: { orderId: orderData?.orderId, orderStatus: 'CONFIRMED', planType: 'PREMIUM' }
+          orderInfo: {
+            orderId: orderData?.orderId,
+            orderStatus: 'CONFIRMED',
+            planType: 'PREMIUM',
+            isRentPayment
+          }
         });
 
         // Navigate to payment done page
