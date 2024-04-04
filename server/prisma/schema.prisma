@@ -101,13 +101,11 @@ model Tenant {
 }
 
 model Property {
-  propertyId               String               @id @default(uuid())
-  owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
-  ownerId                  String
-  title                    String               @default("Property Title")
-  numOfBed                 Int                  @default(1)
-  numOfBath                Int                  @default(1)
-  monthlyRent              Int                  @default(1)
+  propertyId               String   @id @default(uuid())
+  title                    String   @default("Property Title")
+  numOfBed                 Int      @default(1)
+  numOfBath                Int      @default(1)
+  monthlyRent              Int      @default(1)
   address                  String
   description              String
   maintenanceCoveredTenant String
@@ -116,19 +114,23 @@ model Property {
   universities             String
   allowedPets              String
   images                   String[]
-  createdAt                DateTime             @default(now())
-  updatedAt                DateTime             @updatedAt
-  SavedItem                SavedItem[]
-  Tenant                   Tenant?
-  isRented                 Boolean              @default(false)
-  maintenanceRequests      MaintenanceRequest[]
-  serviceProviders         ServiceProvider[]
-  orderId                  String?
-  order                    Order?               @relation(fields: [orderId], references: [orderId], onDelete: SetNull)
+  isRented                 Boolean  @default(false)
+  planType                 PlanType @default(PENDING)
+  isActive                 Boolean  @default(true)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  ownerId String
+  owner   PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
+
+  SavedItem           SavedItem[]
+  Tenant              Tenant?
   // 
-  planType                 PlanType             @default(PENDING)
-  isActive                 Boolean              @default(true)
-  // 
+  maintenanceRequests MaintenanceRequest[]
+  serviceProviders    ServiceProvider[]
+
+  // Many to many relation with Order
+  orders Order[]
 
   @@map("properties")
 }
@@ -168,10 +170,10 @@ model Order {
   orderStatus        OrderStatus          @default(PENDING)
   // 
   ownerId            String?
-  owner              PropertyOwner?       @relation(fields: [ownerId], references: [propertyOwnerId])
+  owner              PropertyOwner?       @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
   // 
   tenantId           String?
-  tenant             Tenant?              @relation(fields: [tenantId], references: [tenantId])
+  tenant             Tenant?              @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   PaymentInformation PaymentInformation[]
