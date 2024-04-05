@@ -74,7 +74,7 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
       },
     });
 
-    if (!isAssigned) throw new ApiError(httpStatus.BAD_REQUEST, "You haven't assigned to unit");
+    if (!isAssigned) throw new ApiError(httpStatus.BAD_REQUEST, "You haven't assigned to any unit");
 
     //
     const res = await transactionClient.maintenanceRequest.findMany({

@@ -68,8 +68,8 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
 
     const total = await prisma.tenant.count({
@@ -150,8 +150,8 @@ const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: I
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
 
     const total = await prisma.tenant.count({
@@ -267,7 +267,6 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
         tenantId: true,
       },
     });
-    console.log(tenants, 'tenant unit information........')
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
     }
@@ -276,21 +275,19 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       where: {
         tenantId: tenantId,
         properties: {
-          some: { propertyId: propertyId }
+          some: { propertyId: propertyId },
         },
-        orderStatus: 'CONFIRMED',
-
+        orderStatus: "CONFIRMED",
       },
       select: {
         updatedAt: true,
       },
       orderBy: {
-        updatedAt: 'desc'
+        updatedAt: "desc",
       },
-      
-    })
-    console.log(orderData, 'oooooooooooo')
-    
+    });
+    console.log(orderData, "oooooooooooo");
+
     return tenants;
   });
 
