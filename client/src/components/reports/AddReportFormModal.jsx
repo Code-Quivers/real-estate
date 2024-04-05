@@ -80,6 +80,9 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                     <label htmlFor="">Select Property</label>
                     <Controller
                       name="propertyId"
+                      rules={{
+                        required: "Property Is Required !!",
+                      }}
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
@@ -125,7 +128,10 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                                 </div>
                               );
                             }}
-                          />
+                          />{" "}
+                          <Form.ErrorMessage show={(!!errors?.propertyId && !!errors?.propertyId?.message) || false} placement="topEnd">
+                            {errors?.propertyId?.message}
+                          </Form.ErrorMessage>
                         </div>
                       )}
                     />
