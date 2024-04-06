@@ -302,7 +302,10 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     });
 
     console.log("order data", orderData);
-    const dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+
+
+    
+    const dueMonths = orderData.length>0? differenceInMonths(orderData[0].updatedAt) : 1;
 
     const tenantUnitInfo = {
       ...tenants,
