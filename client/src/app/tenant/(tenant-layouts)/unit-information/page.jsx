@@ -21,7 +21,7 @@ const TenantUnitInformation = () => {
 
       {!isLoading && !isError && unitRes && (
         <div>
-          {console.log(unitRes, 'unit information of tenant')}
+          {console.log(unitRes, "unit information of tenant")}
 
           <div className="grid lg:grid-cols-6 max-lg:gap-5  grid-cols-1 lg:border border-[#707070] ">
             <div
@@ -96,9 +96,9 @@ const TenantUnitInformation = () => {
         </div>
       )}
 
-      {!isLoading && isError && unitRes && (
+      {!isLoading && isError && !unitRes && (
         <div className="flex justify-center items-center h-[60vh]">
-          <h3 className="text-2xl font-semibold">{error?.message || "You haven`t assigned to any Unit"}</h3>
+          <h3 className="text-2xl font-semibold text-red-600">{error?.message || "You haven`t assigned to any Unit"}</h3>
         </div>
       )}
       {isLoading && (

@@ -3,19 +3,21 @@
 import { fileUrlKey } from "@/configs/envConfig";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import Image from "next/image";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { Button, Form, Input, InputNumber, Modal, SelectPicker } from "rsuite";
+import { Button, Form, InputNumber, Modal, SelectPicker } from "rsuite";
+import AddTaxFileUpload from "./AddTaxFileUpload";
 
 const AddReportFormModal = ({ isOpen, handleClose }) => {
+  const [reportType, setReportType] = useState("");
   const {
     control,
     formState: { errors },
     handleSubmit,
     reset: resetForm,
-    watch,
   } = useForm();
-  const { reportType } = watch();
+
   const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
 
   const handleAddReport = (data) => {
@@ -57,6 +59,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                           }))}
                           onChange={(e) => {
                             field.onChange(e);
+                            setReportType(e);
                           }}
                           searchable={false}
                           placeholder="Report Type"
@@ -70,8 +73,6 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                   />
                 </div>
               </div>
-
-              {/* if report type is annual or monthly */}
 
               {(reportType === "Annually" || reportType === "Monthly") && (
                 <div className="border-t border-b pt-3 space-y-2  pb-5">
@@ -87,6 +88,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
                           <SelectPicker
+                            loading={isLoadingMyUnits}
                             size="lg"
                             data={
                               myUnitsData?.data?.map((item) => ({
@@ -151,7 +153,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       }}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Collected Rent..." />
+                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Collected Rent..." />
                           <Form.ErrorMessage show={(!!errors?.collectedRent && !!errors?.collectedRent?.message) || false} placement="topEnd">
                             {errors?.collectedRent?.message}
                           </Form.ErrorMessage>
@@ -174,17 +176,51 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Expenses..." />
+                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Expenses..." />
                         </div>
                       )}
                     />
                   </div>
                 </div>
               )}
+              {/* if report type is tax */}
+              {reportType === "Tax" && (
+                <div>
+                  <div className="space-y-2 pb-2">
+                    <label htmlFor="reportType">Report Type</label>
+
+                    <div>
+                      <Controller
+                        name="taxDocumentFile"
+                        control={control}
+                        rules={{
+                          required: "Document File is Required !",
+                        }}
+                        render={({ field }) => (
+                          <div className="rs-form-control-wrapper ">
+                            <AddTaxFileUpload field={field} />
+                            <Form.ErrorMessage show={(!!errors?.taxDocumentFile && !!errors?.taxDocumentFile?.message) || false} placement="topEnd">
+                              {errors?.taxDocumentFile?.message}
+                            </Form.ErrorMessage>
+                          </div>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {/* submit or cancel */}
             <div className="flex justify-end items-center gap-5">
-              <button type="button" onClick={handleClose} className="hover:underline">
+              <button
+                type="button"
+                onClick={() => {
+                  handleClose();
+                  resetForm();
+                  setReportType("");
+                }}
+                className="hover:underline"
+              >
                 Close
               </button>
               <Button type="submit" className="!bg-primary !text-white !rounded-full !px-5 !py-2.5">

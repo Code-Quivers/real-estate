@@ -255,7 +255,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
-
 function differenceInMonths(date1: any, date2 = new Date()) {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
@@ -272,6 +271,9 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     const tenants = await transactionClient.tenant.findUnique({
       where: {
         tenantId,
+        property: {
+          isNot: null,
+        },
       },
       select: {
         property: true,
@@ -282,12 +284,6 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
     }
     const propertyId = tenants.property?.propertyId;
-
-    console.log(tenants, 'tenant unit information........')
-    // if (!tenants) {
-    //   throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
-    // }
-    const propertyId = tenants?.property?.propertyId;
 
     const orderData = await transactionClient.order.findMany({
       where: {
@@ -303,16 +299,20 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       orderBy: {
         updatedAt: "desc",
       },
+    });
+
+    console.log("order data", orderData);
 
 
-    })
     
     const dueMonths = orderData.length>0? differenceInMonths(orderData[0].updatedAt) : 1;
+
     const tenantUnitInfo = {
       ...tenants,
       dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
-      dueMonths: dueMonths
-    }
+      dueMonths: dueMonths,
+    };
+    console.log("due month", tenantUnitInfo);
 
     return tenantUnitInfo;
   });
