@@ -28,7 +28,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
     <div>
       <Modal dialogAs="div" size={700} overflow={false} className="bg-white mx-auto rounded-2xl mt-10" open={isOpen}>
         <Modal.Body className="p-10">
-          {/* title */}
+          {/* heading title */}
           <div className="flex justify-between items-center">
             <h2>Add New Report</h2>
             <button onClick={handleClose} className="hover:scale-125 duration-300">
@@ -73,7 +73,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                   />
                 </div>
               </div>
-
+              {/* if report type is annually or monthly */}
               {(reportType === "Annually" || reportType === "Monthly") && (
                 <div className="border-t border-b pt-3 space-y-2  pb-5">
                   {/* selected property */}
@@ -185,27 +185,24 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
               )}
               {/* if report type is tax */}
               {reportType === "Tax" && (
-                <div>
-                  <div className="space-y-2 pb-2">
-                    <label htmlFor="reportType">Report Type</label>
-
-                    <div>
-                      <Controller
-                        name="taxDocumentFile"
-                        control={control}
-                        rules={{
-                          required: "Document File is Required !",
-                        }}
-                        render={({ field }) => (
-                          <div className="rs-form-control-wrapper ">
-                            <AddTaxFileUpload field={field} />
-                            <Form.ErrorMessage show={(!!errors?.taxDocumentFile && !!errors?.taxDocumentFile?.message) || false} placement="topEnd">
-                              {errors?.taxDocumentFile?.message}
-                            </Form.ErrorMessage>
-                          </div>
-                        )}
-                      />
-                    </div>
+                <div className="space-y-2 pb-2">
+                  <label htmlFor="reportType">Report Type</label>
+                  <div>
+                    <Controller
+                      name="taxDocumentFile"
+                      control={control}
+                      rules={{
+                        required: "Document File is Required !",
+                      }}
+                      render={({ field }) => (
+                        <div className="rs-form-control-wrapper ">
+                          <AddTaxFileUpload field={field} />
+                          <Form.ErrorMessage show={(!!errors?.taxDocumentFile && !!errors?.taxDocumentFile?.message) || false} placement="topEnd">
+                            {errors?.taxDocumentFile?.message}
+                          </Form.ErrorMessage>
+                        </div>
+                      )}
+                    />
                   </div>
                 </div>
               )}
