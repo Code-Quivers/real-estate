@@ -39,7 +39,7 @@ model PropertyOwner {
   updatedAt            DateTime             @updatedAt @db.Timestamptz(0)
   userId               String               @unique
   user                 User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  Property             Property[]
+  properties           Property[]
   maintenanceRequests  MaintenanceRequest[]
   orders               Order[]
   reports              Report[]

@@ -31,6 +31,13 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
         options,
       );
       break;
+    case "PROPERTY":
+      result = await SavedItemServices.getSavedServiceProviders(
+        userId,
+        filters,
+        options,
+      );
+      break;
     case undefined:
       throw new ApiError(httpStatus.BAD_REQUEST, "itemType required!!!");
     default:

@@ -10,7 +10,7 @@ router.get(
   auth(
     UserRoles.SUPERADMIN,
     UserRoles.SERVICE_PROVIDER,
-    UserRoles.SERVICE_PROVIDER,
+    UserRoles.TENANT,
     UserRoles.PROPERTY_OWNER,
   ),
   SavedItemControllers.getSavedItems,
@@ -20,7 +20,7 @@ router.post(
   "/create",
   auth(
     UserRoles.SUPERADMIN,
-    UserRoles.SERVICE_PROVIDER,
+    UserRoles.TENANT,
     UserRoles.SERVICE_PROVIDER,
     UserRoles.PROPERTY_OWNER,
   ),
@@ -32,7 +32,7 @@ router.delete(
   auth(
     UserRoles.SUPERADMIN,
     UserRoles.SERVICE_PROVIDER,
-    UserRoles.SERVICE_PROVIDER,
+    UserRoles.TENANT,
     UserRoles.PROPERTY_OWNER,
   ),
   SavedItemControllers.removeSavedItem,

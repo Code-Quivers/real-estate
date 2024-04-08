@@ -144,6 +144,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   //
 
   const result = await prisma.$transaction(async (transactionClient) => {
+    console.log('-----------------------------------')
+    console.log(whereConditions)
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,

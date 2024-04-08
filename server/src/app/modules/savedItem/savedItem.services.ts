@@ -119,8 +119,8 @@ const getSavedTenants = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
       include: {
         tenant: true,
       },
@@ -205,8 +205,8 @@ const getSavedServiceProviders = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
       include: {
         serviceProvider: true,
       },
@@ -229,9 +229,84 @@ const getSavedServiceProviders = async (
   return result;
 };
 
+
+const getSavedItems = async (
+  userId: string,
+  filters: any,
+  options: IPaginationOptions,
+) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const { name, address, rent } = filters;
+  const orCondition: any[] = [];
+  if (name) {
+    orCondition.push({ firstName: { contains: name } });
+    orCondition.push({ lastName: { contains: name } });
+  }
+  const tenantFilteringCondition: any = {};
+  if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
+
+  if (address)
+    tenantFilteringCondition.presentAddress = { contains: filters.address };
+
+  if (rent)
+    tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
+
+  const whereConditions: Prisma.SavedItemWhereInput = {
+    AND: [
+      { userId, itemType: "TENANT" },
+      ...(!isEmptyObject(tenantFilteringCondition)
+        ? [{ tenant: tenantFilteringCondition }]
+        : []),
+    ],
+  };
+
+  //
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const savedItems = await transactionClient.savedItem.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+            createdAt: "desc",
+          },
+      include: {
+        tenant: true,
+      },
+    });
+
+    const total = await prisma.savedItem.count({
+      where: whereConditions,
+    });
+    const totalPage = Math.ceil(total / limit);
+
+    if (!savedItems) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        "Failed to retrieved saved items!!!",
+      );
+    }
+
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: savedItems,
+    };
+  });
+
+  return result;
+};
+
 export const SavedItemServices = {
   getSavedTenants,
   getSavedServiceProviders,
   createSavedItem,
   removeSavedItem,
+  getSavedItems
 };

@@ -51,7 +51,7 @@ const getPropertyOwnerMyProfile = catchAsync(
       await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
 
     sendResponse(res, {
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       success: true,
       message: "Property Owner my profile retrieved Successful",
       data: result,

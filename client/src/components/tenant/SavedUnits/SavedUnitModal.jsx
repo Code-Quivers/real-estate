@@ -5,7 +5,7 @@ import { Modal } from "rsuite";
 import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
 import Link from "next/link";
 
-const SavedUnitsModal = ({ open, setOpen, units }) => {
+const SavedUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
 
@@ -54,10 +54,10 @@ const SavedUnitsModal = ({ open, setOpen, units }) => {
         <Modal.Body>
           <div className="flex justify-between items-start p-2 -mb-5">
             <div className="w-2/5">
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={units?.image} alt="Tenant avialable units" />
-              <Image className="h-32 my-1 object-cover" width="full" src={units?.image} alt="Tenant avialable units" />
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={units?.image} alt="Tenant avialable units" />
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={units?.image} alt="Tenant avialable units" />
+              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
+              <Image className="h-32 my-1 object-cover" width="full" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
+              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
+              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
             </div>
             <div className="w-3/5 pl-3">
               <div className="flex justify-between items-start">
@@ -76,11 +76,11 @@ const SavedUnitsModal = ({ open, setOpen, units }) => {
               <hr className="border my-3 block" />
               <div className="flex justify-between items-center pl-5 mt-6">
                 <div>
-                  <h2 className="text-4xl mb-2">{units?.price}/month</h2>
+                  <h2 className="text-4xl mb-2">{unitInfo?.price}/month</h2>
                   <h2 className="text-xl">
-                    <span>{units?.bed}</span> <span>{units?.bath}</span>
+                    <span>{unitInfo?.bed}</span> <span>{unitInfo?.bath}</span>
                   </h2>
-                  <h2 className="text-xl">{units?.address}</h2>
+                  <h2 className="text-xl">{unitInfo?.address}</h2>
                 </div>
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">

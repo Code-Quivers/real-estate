@@ -81,8 +81,8 @@ const getAllPropertyOwners = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
 
     const total = await prisma.propertyOwner.count({
@@ -124,7 +124,7 @@ const getSinglePropertyOwner = async (
             userStatus: true,
           },
         },
-        Property: true,
+        properties: true,
       },
     });
 

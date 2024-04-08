@@ -4,7 +4,7 @@ import { useState } from "react";
 import { availableUnits } from "../AvailableUnits/AvailableUnitsCardFakeData";
 import SavedUnitsModal from "./SavedUnitModal";
 
-const SavedUnitsCard = () => {
+const SavedUnitsCard = ({ unitInfo }) => {
   const [units, setUnits] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -42,7 +42,7 @@ const SavedUnitsCard = () => {
         ))}
       </div>
       {/* modal */}
-      <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} />
+      <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} unitInfo={unitInfo} />
       {/* Available units card end */}
     </div>
   );
