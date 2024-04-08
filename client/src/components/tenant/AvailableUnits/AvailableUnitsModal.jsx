@@ -12,9 +12,9 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
 
   return (
     <div>
-      <Modal size="lg" open={open} onClose={handleClose}>
+      <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
-          <div className="grid grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
+          <div className="grid lg:grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
             <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
               {units?.images?.length
                 ? units?.images?.map((photo) => (
