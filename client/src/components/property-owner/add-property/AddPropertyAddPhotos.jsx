@@ -63,6 +63,7 @@ const AddPropertyAddPhotos = ({ property }) => {
       fileList={fileList}
       as="div"
       listType="picture"
+      // multiple   multiple is not working properly, I will fix it
       autoUpload={false}
       onChange={handleChangeImages}
       onRemove={handleRemove}

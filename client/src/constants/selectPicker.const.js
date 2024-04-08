@@ -1,6 +1,6 @@
 // sorting data
 export const sortingPicker = [
-  { label: "Newest", value: "dsc" },
+  { label: "Newest", value: "desc" },
   { label: "Oldest", value: "asc" },
 ].map((item) => ({
   label: item.label,

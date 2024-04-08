@@ -40,9 +40,9 @@ const getPropertyOwnerAllProperty = catchAsync(async (req: Request, res: Respons
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
   const profileId = (req.user as IRequestUser).profileId;
-    
+
   const result = await PropertiesService.getPropertyOwnerAllProperty(profileId, filters, options);
-    sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Properties Successfully fetched!!!",

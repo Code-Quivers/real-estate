@@ -12,7 +12,7 @@ const UnitPaymentPage = ({ params }) => {
   const router = useRouter();
   const toaster = useToaster();
   const [isOpenFreeTrial, setIsOpenFreeTrial] = useState(false);
-  const [monthlyChargePerProperty, setMonthlyChargePerProperty] = useState(20.00)
+  const [monthlyChargePerProperty, setMonthlyChargePerProperty] = useState(20.0);
   const {
     data: orderDetails,
     isLoading: isOrderLoading,
@@ -96,7 +96,7 @@ const UnitPaymentPage = ({ params }) => {
         <div className="mt-10">
           <div className="text-center space-y-3">
             <h2 className="text-xl ">Payment</h2>
-            <h2 className="text-xl ">You will be charged $XYZ/month for each property you add.</h2>
+            <h2 className="text-xl ">You will be charged {monthlyChargePerProperty}$/month for each property you add.</h2>
           </div>
           {/* paypal or payment method */}
           <div>

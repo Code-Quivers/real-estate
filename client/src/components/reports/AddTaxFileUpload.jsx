@@ -53,7 +53,7 @@ const AddTaxFileUpload = ({ field }) => {
           </div>
         </div>
       ) : (
-        <Uploader draggable fileListVisible={true} autoUpload={false} onChange={handleChangeImages} accept=".pdf">
+        <Uploader draggable fileListVisible={false} autoUpload={false} onChange={handleChangeImages} accept=".pdf">
           <div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span>Click or drag a PDF file here to upload</span>
           </div>

@@ -107,6 +107,7 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
+  // Search
   if (searchTerm) {
     andConditions.push({
       OR: propertiesSearchableFields.map((field: any) => ({
@@ -118,6 +119,7 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
     });
   }
 
+  // Filter
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map((key) => {
@@ -140,23 +142,24 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
 
   const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
+
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
       },
-      where: whereConditions,
+      where: { ...whereConditions, isRented: false },
       skip,
       take: limit,
       orderBy:
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "asc",
+            },
     });
     const total = await prisma.property.count({
-      where: whereConditions,
+      where: { ...whereConditions, isRented: false },
     });
 
     const totalPage = Math.ceil(total / limit);
@@ -221,7 +224,7 @@ const getPropertyOwnerAllProperty = async (
   //
 
   const result = await prisma.$transaction(async (transactionClient) => {
-        const properties = await transactionClient.property.findMany({
+    const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
         Tenant: true,
@@ -254,8 +257,8 @@ const getPropertyOwnerAllProperty = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
     const total = await prisma.property.count({
       where: {

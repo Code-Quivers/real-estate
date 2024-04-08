@@ -360,7 +360,7 @@ const AddProperty = () => {
 
           <div className="mt-10 flex justify-end">
             <Button loading={isLoading} onClick={handleCreateProperty} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
-              Click
+              Next
             </Button>
           </div>
         </div>

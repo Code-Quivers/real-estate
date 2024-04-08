@@ -106,7 +106,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                             }
                             onChange={(e) => field.onChange(e)}
                             className="w-full"
-                            placeholder="Select User"
+                            placeholder="Select your property"
                             renderMenuItem={(value, item) => {
                               return (
                                 <div className="  flex gap-5 border items-center">
