@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
-import { Prisma } from "@prisma/client";
+import { ItemType, Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 // import { ISavedItem } from "./savedItem.interfaces";
 import { isEmptyObject } from "../../../helpers/utils";
@@ -235,6 +235,7 @@ const getSavedItems = async (
   filters: any,
   options: IPaginationOptions,
 ) => {
+  console.log(filters, '*********************8')
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { name, address, rent } = filters;
   const orCondition: any[] = [];
@@ -242,21 +243,21 @@ const getSavedItems = async (
     orCondition.push({ firstName: { contains: name } });
     orCondition.push({ lastName: { contains: name } });
   }
-  const tenantFilteringCondition: any = {};
-  if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
+  // const tenantFilteringCondition: any = {};
+  // if (orCondition.length == 2) tenantFilteringCondition.OR = orCondition;
 
-  if (address)
-    tenantFilteringCondition.presentAddress = { contains: filters.address };
+  // if (address)
+  //   tenantFilteringCondition.presentAddress = { contains: filters.address };
 
-  if (rent)
-    tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
+  // if (rent)
+  //   tenantFilteringCondition.affordableRentAmount = { gte: filters.rent };
 
   const whereConditions: Prisma.SavedItemWhereInput = {
     AND: [
-      { userId, itemType: "TENANT" },
-      ...(!isEmptyObject(tenantFilteringCondition)
-        ? [{ tenant: tenantFilteringCondition }]
-        : []),
+      { userId: userId, ...filters },
+      // ...(!isEmptyObject(tenantFilteringCondition)
+      //   ? [{ tenant: tenantFilteringCondition }]
+      //   : []),
     ],
   };
 
@@ -273,7 +274,7 @@ const getSavedItems = async (
             createdAt: "desc",
           },
       include: {
-        tenant: true,
+        property: true,
       },
     });
 

@@ -39,12 +39,17 @@ class PaypalController {
   /**
    * Retrieves or creates an order ID for a new order.
    */
-  private static getOrderIdByCreateNewOrder = async (orderId: string, tenantId: string, propertyId: string): Promise<string> => {
+  private static getOrderIdByCreateNewOrder = async (orderId: string, profileId: string, tenantId: string, propertyId: string): Promise<string> => {
     if (orderId) return orderId;
 
-    const orderInfo = {
-      tenantId: tenantId,
+    const orderInfo: any = {
       properties: [propertyId]
+    }
+    if (tenantId) {
+      orderInfo['tenantId'] = tenantId;
+    }
+    else {
+      orderInfo['ownerId'] = profileId;
     }
     const newOrderData = await OrderServices.createOrder(orderInfo);
 
@@ -59,6 +64,7 @@ class PaypalController {
     const paypalOrderId = req.body?.paypalOrderId;
     let orderId: string = req.body?.orderId || "";
     const userId = (req.user as IRequestUser).userId;
+    const profileId = (req.user as IRequestUser).profileId;
     const tenantId: string = req.body?.tenantId || "";
     const propertyId: string = req.body?.propertyId || "";
 
@@ -67,7 +73,7 @@ class PaypalController {
     const capturedPaymentInfo = jsonResponse.purchase_units[0].payments.captures[0];
 
     // Get or create an order ID for the payment
-    orderId = await this.getOrderIdByCreateNewOrder(orderId, tenantId, propertyId);
+    orderId = await this.getOrderIdByCreateNewOrder(orderId, profileId, tenantId, propertyId);
 
     // Generate payment report based on PayPal API response
     const paymentReport = PaypalController.generatePaymentReport(jsonResponse, capturedPaymentInfo, orderId, userId);

@@ -21,6 +21,8 @@ const createOrder = async (orderInfo: any) => {
   // Execute transaction to create the order
   const result = await prisma.$transaction(async (transactionClient) => {
     // Create a new order using transaction
+    console.log('++++++++++++++++++++++++++++++')
+    console.log(data)
     const newOrder = await transactionClient.order.create({
       data: data
     })

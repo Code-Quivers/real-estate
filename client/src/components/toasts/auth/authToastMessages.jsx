@@ -58,3 +58,23 @@ export const savedItemServiceProvider = ({ type, header, message }) => {
     </Notification>
   );
 };
+
+export const savedItemUnit = ({ type, header, message }) => {
+  return (
+    <Notification type={type} header={header} closable>
+      <div>
+        <p className="text-lg font-semibold mb-2">{message}</p>
+      </div>
+    </Notification>
+  );
+};
+
+export const savedItemUnitFailed = ({ type, header, message }) => {
+  return (
+    <Notification type={type} header={header} closable>
+      <div>
+        <p className="text-lg font-semibold mb-2">{message}</p>
+      </div>
+    </Notification>
+  );
+};

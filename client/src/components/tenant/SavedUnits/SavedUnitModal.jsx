@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "rsuite";
 import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
 import Link from "next/link";
+import { fileUrlKey } from "@/configs/envConfig";
 
 const SavedUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);
@@ -47,17 +48,22 @@ const SavedUnitsModal = ({ open, setOpen, unitInfo }) => {
   ];
 
   const pets = ["Dogs", "Cats", "Birds"];
-
   return (
     <div>
       <Modal size={"lg"} open={open} onClose={handleClose}>
         <Modal.Body>
           <div className="flex justify-between items-start p-2 -mb-5">
             <div className="w-2/5">
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
-              <Image className="h-32 my-1 object-cover" width="full" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
-              <Image className="h-32 my-1 object-cover" width="full" objectFit="cover" src={unitInfo?.image} alt="Tenant avialable unitInfo" />
+              {
+                unitInfo?.images.map((unitImage) => <Image
+                  className="h-32 my-1 object-cover"
+                  width={500}
+                  height={500}
+                  src={`${fileUrlKey()}/${unitInfo?.images[0]}`}
+                  alt="Tenant avialable unitInfo"
+                />
+                )
+              }
             </div>
             <div className="w-3/5 pl-3">
               <div className="flex justify-between items-start">

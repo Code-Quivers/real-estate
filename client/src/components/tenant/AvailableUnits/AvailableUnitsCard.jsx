@@ -131,7 +131,7 @@ const AvailableUnitsCard = () => {
 
       {/* Available units card end */}
       {/* Available units details using popup start */}
-      <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} units={units} />
+      <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
       {/* Available units details using popup end */}
     </section>
   );

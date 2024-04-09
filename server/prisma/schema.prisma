@@ -260,6 +260,10 @@ model SavedItem {
   user              User             @relation(fields: [userId], references: [userId], onDelete: SetDefault)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
+
+  @@unique([userId, serviceProviderId])
+  @@unique([userId, tenantId])
+  @@unique([userId, propertyId])
 }
 
 model PaymentInformation {

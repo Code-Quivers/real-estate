@@ -9,14 +9,14 @@ import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedIt
 
 const page = () => {
 
-  // const [open, setOpen] = useState(false);
-  // const [modalData, setModalData] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
-  // const handleOpen = (selectData) => {
-  //   setModalData(selectData);
-  //   setOpen(true);
-  // };
-  // const handleClose = () => setOpen(false);
+  const handleOpen = (selectData) => {
+    setModalData(selectData);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   const query = {};
 
   const [itemType, setItemType] = useState("PROPERTY");
@@ -39,9 +39,8 @@ const page = () => {
   }
 
   if (!isError && !isLoading && data?.data?.data?.length > 0) {
-
     content = data?.data?.data?.map((unit) => (
-      <SavedUnitsCard unitInfo={unit} />
+      <SavedUnitsCard unitInfo={unit?.property} handleOpen={handleOpen} />
     ))
   }
 
@@ -57,7 +56,7 @@ const page = () => {
         {content}
       </div>
       {/* modal */}
-      {/* <SavedUnitsModal open={open} setOpen={setOpen} availableUnits={data} units={units} /> */}
+      <SavedUnitsModal open={open} setOpen={setOpen} unitInfo={modalData} />
       {/* Available units card end */}
     </section>
 

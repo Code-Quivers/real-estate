@@ -32,7 +32,7 @@ const getSavedItems = catchAsync(async (req: Request, res: Response) => {
       );
       break;
     case "PROPERTY":
-      result = await SavedItemServices.getSavedServiceProviders(
+      result = await SavedItemServices.getSavedItems(
         userId,
         filters,
         options,
