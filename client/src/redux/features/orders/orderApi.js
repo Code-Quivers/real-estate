@@ -3,13 +3,13 @@ import { tagTypes } from "@/redux/tag-types/tag-types";
 
 export const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    capturePaypalPayment: builder.query({
-      query: ({ orderId }) => ({
-        url: `/payment-paypal/capture/${orderId}`,
-        method: "POST",
-      }),
-      providesTags: [tagTypes.properties],
-    }),
+    // capturePaypalPayment: builder.query({
+    //   query: ({ orderId }) => ({
+    //     url: `/payment-paypal/capture/${orderId}`,
+    //     method: "POST",
+    //   }),
+    //   providesTags: [tagTypes.properties],
+    // }),
     getSingleOrder: builder.query({
       query: ({ orderId }) => ({
         url: `/orders/get-single-order/${orderId}`,
@@ -36,7 +36,7 @@ export const orderApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCapturePaypalPaymentQuery,
+  // useCapturePaypalPaymentQuery,
   useGetSingleOrderQuery,
   useUpdatePropertyTrialPeriodMutation,
   useUpdateOrderInfoMutation,

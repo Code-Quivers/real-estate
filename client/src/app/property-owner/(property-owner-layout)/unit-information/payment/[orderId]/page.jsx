@@ -1,6 +1,7 @@
 "use client";
 
 import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
+import StripeCheckout from "@/components/payment/stripe/StripeCheckout";
 import { useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } from "@/redux/features/orders/orderApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -101,10 +102,16 @@ const UnitPaymentPage = ({ params }) => {
           {/* paypal or payment method */}
           <div>
             {console.log(orderDetails)}
-            <PaypalCheckout
+            {/* <PaypalCheckout
               ownerOrdererId={orderDetails?.data?.orderId}
               amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
+            /> */}
+            <StripeCheckout
+             ownerOrderedId={orderDetails?.data?.orderId}
+             amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
+             orderData={orderDetails?.data}
             />
+
           </div>
           {/* activate a free trial */}
           <div className="mt-10 text-center">
