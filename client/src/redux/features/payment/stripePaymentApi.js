@@ -12,10 +12,17 @@ export const stripePaymentApi = baseApi.injectEndpoints({
       }),
       // invalidatesTags: [tagTypes.properties],
     }),
-    
+
+    retrivePaymentInfo: builder.mutation({
+      query: (data) => ({
+        url: `/payment-stripe/retrive-payment-info`,
+        method: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+      }),
+      // invalidatesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const {
-  useGetClientSecretMutation,
-} = stripePaymentApi;
+export const { useGetClientSecretMutation, useRetrivePaymentInfoMutation } = stripePaymentApi;

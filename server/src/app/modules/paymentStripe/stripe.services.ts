@@ -88,6 +88,17 @@ const createPaymentIntent = async (paymentInfo: any) => {
   };
 };
 
+const retriveStripePaymentInfo = async (paymentIntentId: string) => {
+  const paymentIntentInfo = await stripe.paymentIntents.retrieve(paymentIntentId);
+  if (!paymentIntentInfo) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Payment information retrivation failed!!!");
+  }
+  return {
+    jsonResponse: paymentIntentInfo,
+    httpStatusCode: 200,
+  };
+};
 export const StripeServices = {
   createPaymentIntent,
+  retriveStripePaymentInfo,
 };

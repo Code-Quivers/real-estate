@@ -1,6 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 
+import { useRetrivePaymentInfoMutation } from "@/redux/features/payment/stripePaymentApi";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,6 +10,10 @@ const PropetyPaymentDone = ({ params }) => {
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
   const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
+  const [retrievePaymentInfo, { data, isLoading, isError }] = useRetrivePaymentInfoMutation();
+  useEffect(() => {
+    retrievePaymentInfo({ orderId, paymentIntentId: payment_intent });
+  }, []);
 
   return (
     <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">

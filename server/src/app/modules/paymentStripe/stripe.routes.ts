@@ -10,8 +10,14 @@ const router = express.Router();
 // Stripe payment request route
 router.post(
   "/create-payment-intent",
-//   auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
+  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
   StripeController.createPaymentIntent,
+);
+
+router.post(
+  "/retrive-payment-info",
+  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
+  StripeController.retriveStripePaymentInformation,
 );
 
 export const StripeRoutes = router;
