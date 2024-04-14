@@ -1,14 +1,57 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
-import { Modal } from "rsuite";
-import PrimaryButtonForTenant from "../PrimaryButtonForTenant";
+import React, { useEffect, useState } from "react";
+import { Button, Modal, Notification, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
+import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 
 const AvailableUnitsModal = ({ open, setOpen, units }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
+
+  // ! save item
+
+  const [saveItem, { data: saveData, isSuccess, isLoading, isError, error, reset }] = useSaveItemMutation();
+
+  const saveUnitData = async () => {
+    const unitData = {
+      propertyId: units?.propertyId,
+      itemType: "PROPERTY",
+    };
+
+    await saveItem(unitData);
+  };
+
+  // !
+  const toaster = useToaster();
+  useEffect(() => {
+    if (isSuccess && !isError && !isLoading) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{saveData?.message || "Successfully Saved"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      reset();
+    }
+    if (isError && !isSuccess && error && !isLoading) {
+      toaster.push(
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{error?.message || "Failed to Saved"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+  }, [isSuccess, isSuccess, error, isLoading, toaster]);
 
   return (
     <div>
@@ -37,13 +80,11 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                 <div>
                   <h2>Logo</h2>
                 </div>
-                <div>
-                  <span className="mr-2.5">
-                    <PrimaryButtonForTenant title="Save" />
-                  </span>
-                  <span>
-                    <PrimaryButtonForTenant title="Contact" />
-                  </span>
+                <div className="flex gap-2.5 items-center">
+                  <Button onClick={saveUnitData} className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">
+                    Save
+                  </Button>
+                  <Button className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">Contact</Button>
                 </div>
               </div>
               <hr className="border   block" />

@@ -28,7 +28,7 @@ export const savedItemApi = baseApi.injectEndpoints({
         url: `${SAVE_ITEM}/remove?itemId=${itemId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.services, tagTypes.items, tagTypes.tenant],
+      invalidatesTags: [tagTypes.services, tagTypes.items, tagTypes.tenant, tagTypes.properties],
     }),
   }),
 });
