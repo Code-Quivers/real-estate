@@ -53,7 +53,12 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
       <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
           <div className="grid lg:grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
-            <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
+            {/* images */}
+            <div
+              className="col-span-2 w-full max-lg:flex max-lg:gap-0.5  overflow-x-scroll lg:overflow-y-scroll 
+            max-lg:w-full
+            lg:max-h-[70vh]  custom-scrollbar"
+            >
               {item?.property?.images?.length > 0
                 ? item?.property?.images?.map((photo) => (
                     <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
@@ -70,6 +75,8 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
                   ))
                 : ""}
             </div>
+
+            {/* others */}
             <div className="col-span-3 w-full overflow-y-scroll max-h-[70vh]  custom-scrollbar ">
               <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
                 <div>

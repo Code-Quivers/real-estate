@@ -32,7 +32,7 @@ const SavedUnitsCard = () => {
       )}
 
       {/* Available units card start */}
-      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 xl:gap-6">
+      <div className="mt-2 grid  lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 md:gap-2 xl:gap-6 max-lg:mx-1.5">
         {!isLoading &&
           availableUnits?.data?.data?.length > 0 &&
           availableUnits?.data?.data?.map((unit) => (
