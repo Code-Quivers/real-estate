@@ -22,7 +22,32 @@ export const stripePaymentApi = baseApi.injectEndpoints({
       }),
       // invalidatesTags: [tagTypes.properties],
     }),
+
+    createConnectedAccount: builder.mutation({
+      query: (data) => ({
+        url: `/payment-stripe/create-connected-account`,
+        method: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+      }),
+      // invalidatesTags: [tagTypes.properties],
+    }),
+
+    createAccountLink: builder.mutation({
+      query: (data) => ({
+        url: `/payment-stripe/create-account-link`,
+        method: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+      }),
+      // invalidatesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const { useGetClientSecretMutation, useRetrivePaymentInfoMutation } = stripePaymentApi;
+export const {
+  useGetClientSecretMutation,
+  useRetrivePaymentInfoMutation,
+  useCreateConnectedAccountMutation,
+  useCreateAccountLinkMutation,
+} = stripePaymentApi;

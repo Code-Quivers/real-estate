@@ -98,7 +98,80 @@ const retriveStripePaymentInfo = async (paymentIntentId: string) => {
     httpStatusCode: 200,
   };
 };
+
+const createConnectedAccount = async (paymentInfo: any, profileId: string) => {
+  const newAccount = await stripe.accounts.create({
+    type: 'standard',
+    business_type:'individual',
+    // email: 'jenny.rosen@example.com',
+    // capabilities: {
+    //   card_payments: {
+    //     requested: true,
+    //   },
+    //   transfers: {
+    //     requested: true,
+    //   },
+    // },
+    // tos_acceptance: {
+    //   service_agreement: 'recipient',
+    // },
+  });
+
+  if (!newAccount) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Payment information retrivation failed!!!");
+  }
+  console.log(newAccount, 'new Account created!!!!!!!!!!!!')
+  const updatedData = await prisma.propertyOwner.update({
+    where: {
+      propertyOwnerId: profileId
+    },
+    data: {
+      sConnectedAccount: newAccount.id
+    }
+  })
+
+  const accountLink = await stripe.accountLinks.create({
+    account: newAccount.id,
+    refresh_url: 'http://localhost:3000/property-owner/settings',
+    return_url: 'http://localhost:3000/property-owner/settings',
+    type: 'account_onboarding',
+  });
+
+  return {
+    jsonResponse: accountLink,
+    httpStatusCode: 200,
+  };
+};
+
+
+const createAccountLink = async (sConnectedAccount: any, profileId: string) => {
+
+  // const connectedAccountData = await prisma.propertyOwner.findUnique({
+  //   where: {
+  //     propertyOwnerId: profileId
+  //   },
+  //   select: {
+  //     sConnectedAccount: true
+  //   }
+  // })
+  // if (!connectedAccountData) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, "Failed to fetch connected account data!!!")
+  // }
+  const accountLink = await stripe.accountLinks.create({
+    account: sConnectedAccount,
+    refresh_url: 'http://localhost:3000/property-owner/settings',
+    return_url: 'http://localhost:3000/property-owner/settings',
+    type: 'account_onboarding',
+  });
+
+  return {
+    jsonResponse: accountLink,
+    httpStatusCode: 200,
+  };
+};
 export const StripeServices = {
   createPaymentIntent,
   retriveStripePaymentInfo,
+  createConnectedAccount,
+  createAccountLink,
 };

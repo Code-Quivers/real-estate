@@ -20,4 +20,19 @@ router.post(
   StripeController.retriveStripePaymentInformation,
 );
 
+router.post(
+  "/create-connected-account",
+  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
+  StripeController.createConnectedAccount,
+);
+
+router.post(
+  "/create-account-link",
+  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
+  StripeController.createAccountLink,
+);
+
+
+
+
 export const StripeRoutes = router;

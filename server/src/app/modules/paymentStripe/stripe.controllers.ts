@@ -105,6 +105,46 @@ class StripeController {
       userId,
     };
   }
+
+  static createConnectedAccount = catchAsync(async (req: Request, res: Response) => {
+    console.log("createConnectedAccount API hit..............");
+    const userId = (req.user as IRequestUser).userId;
+    const profileId = (req.user as IRequestUser).profileId;
+
+    const paymentInfo = req.body;
+    const { jsonResponse, httpStatusCode } = await StripeServices.createConnectedAccount(paymentInfo, profileId);
+
+    sendResponse(res, {
+      statusCode: httpStatusCode,
+      success: httpStatusCode === 201 ? true : false,
+      message:
+        httpStatusCode === 201
+          ? StripeController.orderCreationSuccessMessage
+          : StripeController.orderCreationFailedMessage,
+      data: jsonResponse,
+    });
+  });
+
+  static createAccountLink = catchAsync(async (req: Request, res: Response) => {
+    console.log("createAccountLink API hit..............");
+    const userId = (req.user as IRequestUser).userId;
+    const profileId = (req.user as IRequestUser).profileId;
+
+    const { sConnectedAccount } = req.body;
+    const { jsonResponse, httpStatusCode } = await StripeServices.createAccountLink(sConnectedAccount, profileId);
+
+    sendResponse(res, {
+      statusCode: httpStatusCode,
+      success: httpStatusCode === 201 ? true : false,
+      message:
+        httpStatusCode === 201
+          ? StripeController.orderCreationSuccessMessage
+          : StripeController.orderCreationFailedMessage,
+      data: jsonResponse,
+    });
+  });
 }
+
+
 
 export default StripeController;
