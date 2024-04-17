@@ -23,6 +23,7 @@ model User {
   serviceProvider    ServiceProvider?
   SavedItem          SavedItem[]
   PaymentInformation PaymentInformation[]
+  FinancialAccount   FinancialAccount?
 
   @@map("users")
 }
@@ -43,9 +44,6 @@ model PropertyOwner {
   maintenanceRequests  MaintenanceRequest[]
   orders               Order[]
   reports              Report[]
-
-  sConnectedAccount String @default("")
-
 
   @@map("propertyOwners")
 }
@@ -286,6 +284,23 @@ model PaymentInformation {
   user                   User     @relation(fields: [userId], references: [userId], onDelete: SetDefault)
   createdAt              DateTime @default(now()) @db.Timestamptz(0)
   updatedAt              DateTime @updatedAt @db.Timestamptz(0)
+}
+
+model FinancialAccount {
+  id               String  @id @default(uuid())
+  finOrgAccountId  String  @unique
+  email            String? @unique
+  externalAccount  Json?
+  payoutsEnable    Boolean @default(false)
+  chargesEnabled   Boolean @default(false)
+  transfers        Boolean @default(false)
+  isCustomAccount  Boolean @default(true)
+  detailsSubmitted Boolean @default(false)
+  userId           String  @unique
+  user             User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
 }
 
 enum PLATFORM {

@@ -10,6 +10,7 @@ import prisma from "../../../shared/prisma";
 import { errorLogger, logger } from "../../../shared/logger";
 import { OrderServices } from "../orders/orders.service";
 import { StripeServices } from "./stripe.services";
+import StripeAccountManager from "./services/AccountCreationService";
 
 /**
  * Controller handling PayPal related operations such as creating and capturing orders.
@@ -108,11 +109,15 @@ class StripeController {
 
   static createConnectedAccount = catchAsync(async (req: Request, res: Response) => {
     console.log("createConnectedAccount API hit..............");
-    const userId = (req.user as IRequestUser).userId;
-    const profileId = (req.user as IRequestUser).profileId;
+    const userId: string = (req.user as IRequestUser).userId || "";
+    const profileId: string = (req.user as IRequestUser).profileId || "";
 
-    const paymentInfo = req.body;
-    const { jsonResponse, httpStatusCode } = await StripeServices.createConnectedAccount(paymentInfo, profileId);
+    const accountInfo = {
+      ...req?.body,
+      userId,
+      profileId
+    }
+    const { jsonResponse, httpStatusCode } = await StripeAccountManager.createConnectedAccount(accountInfo)
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -130,8 +135,8 @@ class StripeController {
     const userId = (req.user as IRequestUser).userId;
     const profileId = (req.user as IRequestUser).profileId;
 
-    const { sConnectedAccount } = req.body;
-    const { jsonResponse, httpStatusCode } = await StripeServices.createAccountLink(sConnectedAccount, profileId);
+    const { sConnectedAccountId } = req.body;
+    const { jsonResponse, httpStatusCode } = await StripeAccountManager.createAccountLink(sConnectedAccountId);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
