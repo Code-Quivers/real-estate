@@ -57,6 +57,9 @@ class StripeAccountManager {
       refresh_url: 'http://localhost:3000/property-owner/settings',
       return_url: 'http://localhost:3000/property-owner/settings',
       type: 'account_onboarding',
+      collection_options: {
+        fields: 'eventually_due'
+      }
     });
 
     console.log(accountLink, 'linked account information-----------------')

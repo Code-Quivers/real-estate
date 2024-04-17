@@ -122,7 +122,20 @@ const getSinglePropertyOwner = async (
             _count: true,
             role: true,
             userStatus: true,
+            FinancialAccount: {
+              select: {
+                finOrgAccountId: true,
+                email: true,
+                externalAccount: true,
+                payoutsEnable: true,
+                chargesEnabled: true,
+                transfers: true,
+                isCustomAccount: true,
+                detailsSubmitted: true,
+              }
+            }
           },
+
         },
         properties: true,
       },
