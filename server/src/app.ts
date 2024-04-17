@@ -3,10 +3,11 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routes from "./app/routes";
-
 import cookieParser from "cookie-parser";
 import create_required_directories from "./tasks/directory_creation_task";
 import dbBackupTask from "./tasks/database_backup_task";
+import { setupSocket } from "./socket";
+import { createServer } from "http";
 
 const app: Application = express();
 
@@ -29,9 +30,14 @@ app.use(cookieParser());
 //parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Socket
+// call the socket io setup function
+const server = createServer(app);
+setupSocket(server);
+server.listen(4000, () => console.log("Socket is Running"));
 
+//
 app.use(express.static("data/uploads"));
-
 app.use("/api/v1", routes);
 
 //global error handler
