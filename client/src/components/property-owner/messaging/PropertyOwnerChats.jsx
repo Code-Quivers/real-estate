@@ -489,24 +489,30 @@ import { useSearchParams } from "next/navigation";
 import { Button, Input } from "rsuite";
 import SendIcon from "@rsuite/icons/Send";
 import Image from "next/image";
-import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import PropertyOwnerChatBubbleIncoming from "./PropertyOwnerChatBubbleIncoming";
 import PropertyOwnerChatBubbleOutgoing from "./PropertyOwnerChatBubbleOutgoing";
+import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 
 const PropertyOwnerChats = () => {
   const useSearch = useSearchParams();
   const chatId = useSearch.get("chat");
   const chatObj = conversations.find((conversation) => conversation.id === parseInt(chatId));
-  const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
+  const { data: dataResponse, isError, isLoading, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data } = dataResponse || {};
   return (
     <div className="flex flex-col h-[80vh]">
       <div className="bg-white shadow-lg px-3  sticky top-0 flex items-center gap-3 my-0.5">
         <div className="">
-          <Image height={50} width={50} className="rounded-full" src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo} />
+          <Image
+            alt=""
+            height={50}
+            width={50}
+            className="rounded-full"
+            src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
+          />
         </div>
         <div>
           <h2 className=" font-medium ">{chatObj?.user?.name ?? "--"}</h2>

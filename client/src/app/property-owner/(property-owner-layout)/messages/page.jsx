@@ -2,7 +2,10 @@
 
 import PropertyOwnerChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import PropertyOwnerChats from "@/components/property-owner/messaging/PropertyOwnerChats";
+import { getUserInfo } from "@/hooks/services/auth.service";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 const PropertyOwnerMessaging = () => {
   const conversations = [
@@ -472,6 +475,23 @@ const PropertyOwnerMessaging = () => {
   ];
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
+
+  const userDetails = getUserInfo();
+  // socket
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  const ENDPOINT = "http://localhost:4000";
+  let socket;
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", userDetails);
+    socket.on("connection", () => setSocketConnected(true));
+
+    return () => {
+      socket.disconnect(); // Disconnect socket when component unmounts
+    };
+  }, [socket]);
+
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       {/* section title */}
