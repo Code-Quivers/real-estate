@@ -3,6 +3,7 @@
 import PropertyOwnerChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import PropertyOwnerChats from "@/components/property-owner/messaging/PropertyOwnerChats";
 import { getUserInfo } from "@/hooks/services/auth.service";
+import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
@@ -473,6 +474,7 @@ const PropertyOwnerMessaging = () => {
     },
     // Add more conversation objects with messages as needed
   ];
+  const { data: allConversations, isLoading, isError } = useGetMyAllConversationsQuery();
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
 

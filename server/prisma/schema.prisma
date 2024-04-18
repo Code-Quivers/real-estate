@@ -263,7 +263,7 @@ model PaymentInformation {
 }
 
 model User {
-  userId             String               @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId             String               @id @default(uuid())
   email              String               @unique
   userName           String               @unique
   password           String
@@ -276,38 +276,35 @@ model User {
   serviceProvider    ServiceProvider?
   SavedItem          SavedItem[]
   PaymentInformation PaymentInformation[]
-  sentMessages       Messages[]           @relation("SentMessages")
-  receivedMessages   Messages[]           @relation("ReceivedMessages")
-  chats              Chats[]
+  messages           Message[]            @relation("sender")
+  conversations      Conversation[]
 
   @@map("users")
 }
 
-model Chats {
-  chatId      String     @id @default(uuid())
-  lastMessage String
-  userId      String
-  user        User       @relation(fields: [userId], references: [userId])
-  createdAt   DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt   DateTime   @updatedAt @db.Timestamptz(0)
-  messages    Messages[]
+model Conversation {
+  conversationId String    @id @default(uuid())
+  lastMessage    String    @default("Lets Say Hello")
+  perticipants   User[]
+  updatedAt      DateTime  @updatedAt @db.Timestamptz(0)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(0)
+  messages       Message[]
 
-  @@map("chats")
+  @@map("Conversations")
 }
 
-model Messages {
-  messageId  String   @id @default(uuid())
-  text       String
-  chatId     String
-  chat       Chats    @relation(fields: [chatId], references: [chatId])
-  senderId   String
-  sender     User     @relation("SentMessages", fields: [senderId], references: [userId])
-  receiverId String
-  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [userId])
-  createdAt  DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt  DateTime @updatedAt @db.Timestamptz(0)
+model Message {
+  messageId      String       @id @default(uuid())
+  text           String?
+  images         String[]
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [conversationId])
+  senderId       String
+  sender         User         @relation("sender", fields: [senderId], references: [userId])
+  createdAt      DateTime     @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime     @updatedAt @db.Timestamptz(0)
 
-  @@map("messages")
+  @@map("Messages")
 }
 
 // ! Enums---------------

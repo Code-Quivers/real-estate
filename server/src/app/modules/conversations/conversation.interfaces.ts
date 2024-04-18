@@ -1,6 +1,10 @@
 import { ServiceAvailabilityEnum, ServiceType } from "@prisma/client";
 
-export type IServiceUpdateRequest = {
+export type ISendMessage = {
+  text: string;
+};
+
+export type IChatUpdateRequest = {
   servicePriceRange?: string;
   serviceDescription?: string;
   serviceLocation?: string;
@@ -8,9 +12,7 @@ export type IServiceUpdateRequest = {
   serviceAvailability?: ServiceAvailabilityEnum;
   serviceType?: ServiceType;
 };
-export type IServiceFilterRequest = {
+export type IChatFilterRequest = {
   searchTerm?: string | undefined;
-  serviceId?: string | undefined;
-  ownerId?: string | undefined;
   createdAt?: string | undefined;
 };
