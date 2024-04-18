@@ -1,4 +1,4 @@
-export const servicesFilterableFields: string[] = [
+export const chatFilterableFields: string[] = [
   "serviceId",
   "searchTerm",
   "ownerId",
@@ -6,19 +6,14 @@ export const servicesFilterableFields: string[] = [
   "serviceAvailability",
 ];
 
-export const servicesSearchableFields: string[] = ["address", "description"];
+export const chatSearchableFields: string[] = ["address", "description"];
 
-export const servicesRelationalFields: string[] = ["ownerId"];
-export const servicesRelationalFieldsMapper: { [key: string]: string } = {
+export const chatRelationalFields: string[] = ["ownerId"];
+export const chatRelationalFieldsMapper: { [key: string]: string } = {
   ownerId: "ownerId",
 };
 
-export const ZodServiceAvailability = [
-  "LOW_PRIORITY",
-  "MEDIUM_PRIORITY",
-  "HIGH_PRIORITY",
-  "ALL_PRIORITIES",
-];
+export const ZodServiceAvailability = ["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY", "ALL_PRIORITIES"];
 export const ZodServiceType = [
   "TENANT_SCREENING",
   "MAINTENANCE_AND_REPAIR",

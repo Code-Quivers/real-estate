@@ -12,6 +12,7 @@ import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintena
 import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
 import { OrderRoutes } from "../modules/orders/orders.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
+import { ConversationRoutes } from "../modules/conversations/conversation.routes";
 
 const router = express.Router();
 
@@ -60,6 +61,10 @@ const moduleRoutes = [
   {
     path: "/orders",
     route: OrderRoutes,
+  },
+  {
+    path: "/conversations",
+    route: ConversationRoutes,
   },
 ];
 

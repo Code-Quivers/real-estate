@@ -135,6 +135,7 @@ const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: I
         user: {
           select: {
             email: true,
+            userId: true,
           },
         },
       },

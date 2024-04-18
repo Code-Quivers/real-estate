@@ -2,40 +2,65 @@ import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
-import { ServicesService } from "./conversation.service";
+import { ConversationService } from "./conversation.service";
 import pick from "../../../shared/pick";
-import { servicesFilterableFields } from "./conversation.constants";
+import { chatFilterableFields } from "./conversation.constants";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 
-// ! get messages
-const getAllServices = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, servicesFilterableFields);
-  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-
-  const result = await ServicesService.getAllServices(filters, options);
+// ! start new conversation
+const startNewConversation = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req.user as IRequestUser).userId;
+  const receiverId = req.params.receiverId;
+  const result = await ConversationService.startNewConversation(userId, receiverId, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Services retrieved successful",
+    message: "Message Sent Successfully",
     data: result,
   });
 });
-// ! get single service
-const getSingleService = catchAsync(async (req: Request, res: Response) => {
-  //
-  const serviceId = req.params?.serviceId;
 
-  const result = await ServicesService.getSingleService(serviceId);
+// ! Send message
+const sendMessage = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req.user as IRequestUser).userId;
+  const conversationId = req?.params?.conversationId;
+  const result = await ConversationService.sendMessage(userId, conversationId, req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Message Sent Successfully",
+    data: result,
+  });
+});
+
+// ! get getMyAllConversation
+const getMyAllConversation = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, chatFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const userId = (req.user as IRequestUser).userId;
+  const result = await ConversationService.getMyAllConversation(filters, options, userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Conversations Retrieved Successfully",
+    data: result,
+  });
+});
+// ! get single Chat
+const getSingleChat = catchAsync(async (req: Request, res: Response) => {
+  //
+  const conversationId = req.params?.serviceId;
+  const result = await ConversationService.getSingleChat(conversationId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Service information retrieved Successfully",
+    message: "Conversations Retrieved Successfully",
     data: result,
   });
 });
 
-export const ServicesController = {
-  getAllServices,
-  getSingleService,
-};
+export const ConversationController = { startNewConversation, sendMessage, getMyAllConversation, getSingleChat };
