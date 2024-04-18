@@ -19,7 +19,14 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.propertyOwner],
     }),
+    getFinancialInfo: builder.query({
+      query: () => ({
+        url: "/property-owners/financial-info",
+        method: "GET",
+      }),
+      // providesTags: [tagTypes.propertyOwner],
+    }),
   }),
 });
 
-export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation } = propertyOwnerApi;
+export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation, useGetFinancialInfoQuery } = propertyOwnerApi;

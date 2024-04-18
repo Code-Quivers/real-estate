@@ -72,20 +72,10 @@ class StripeAccountManager {
     };
   };
 
-  static updateFinancialAccountInfo = async (userId: string) => {
-    const finAcctData = await prisma.financialAccount.findUnique({
-      where: { userId },
-      select: {
-        finOrgAccountId: true
-      }
-    })
 
-    if (!finAcctData) {
-      console.log("Failed to fetch financial organization account id!")
-      throw new ApiError(httpStatus.BAD_REQUEST, "Something went wrong!");
-    }
+  static updateFinancialAccountInfo = async (finOrgAccountId: string) => {
 
-    const stripeAcctData = await stripe.accounts.retrieve(finAcctData.finOrgAccountId)
+    const stripeAcctData = await stripe.accounts.retrieve(finOrgAccountId)
     const toBeUpdate: any = {
       chargesEnabled: stripeAcctData.charges_enabled,
       payoutsEnable: stripeAcctData.payouts_enabled,
@@ -99,7 +89,7 @@ class StripeAccountManager {
     }
 
     const updatedFinAcctData = await prisma.financialAccount.update({
-      where: { userId },
+      where: { finOrgAccountId },
       data: toBeUpdate
     })
 
@@ -107,9 +97,32 @@ class StripeAccountManager {
       console.log("Failed to update the Financial Account Data!")
       throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to update!')
     }
-    return {
-      jsonResponse: updatedFinAcctData,
-      httpStatusCode: 200,
+
+    return updatedFinAcctData
+  }
+
+  static isAccountNeedToUpdate = async (userId: string) => {
+    const finAcctData = await prisma.financialAccount.findUnique({
+      where: { userId },
+      select: {
+        finOrgAccountId: true,
+        detailsSubmitted: true
+      }
+    })
+
+    if (!finAcctData) {
+      console.log("Failed to fetch financial account information from db!")
+      throw new ApiError(httpStatus.BAD_REQUEST, "Something went wrong!");
+    }
+
+    return finAcctData.detailsSubmitted ? "" : finAcctData.finOrgAccountId;
+
+  }
+
+  static conditionalUpdateOfFinancilaAccountInfo = async (userId: string) => {
+    const finOrgAccountId = await this.isAccountNeedToUpdate(userId)
+    if (finOrgAccountId) {
+      this.updateFinancialAccountInfo(finOrgAccountId)
     }
   }
 

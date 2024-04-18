@@ -6,6 +6,7 @@ import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import { propertyOwnerFilterableFields } from "./propertyOwner.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
+import StripeAccountManager from "../paymentStripe/services/AccountCreationService";
 
 // ! get all Property Owners
 const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
@@ -76,9 +77,33 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
+  console.log('Financial info getting api hit.....')
+  const userId = (req.user as IRequestUser).userId;
+  const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(userId);
+  console.log(finOrgAccountId)
+
+  let result = null;
+  if (finOrgAccountId) {
+    result = await StripeAccountManager.updateFinancialAccountInfo(finOrgAccountId)
+  }
+  else {
+    result = await PropertyOwnerServices.getFinancialAccountInfo(userId);
+
+  }
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Financial data fetching successful!",
+    data: result,
+  });
+});
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
   getPropertyOwnerMyProfile,
+  getFinancialAccount,
 };

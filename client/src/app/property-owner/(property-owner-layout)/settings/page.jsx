@@ -1,4 +1,5 @@
 "use client";
+import BankingCredentials from "@/components/property-owner/banking-credentials/BankingCredentials";
 import PropertyOwnerProfileEditModal from "@/components/property-owner/profile/PropertyOwnerProfileEditModal";
 import { useCreateAccountLinkMutation, useCreateConnectedAccountMutation } from "@/redux/features/payment/stripePaymentApi";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
@@ -7,27 +8,11 @@ import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 
 const PropertyOwnerSettingPage = () => {
-  const router = useRouter()
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
-  const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
-  const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
-  console.log(data, '--------')
-  console.log(data?.paypalMerchentId, 'dddddd')
-  console.log(data?.paypalBussinessEmail)
 
-  const handleCreateAccountForStripe = async () => {
-    let resp = null;
-    if (data?.data?.user?.FinancialAccount?.finOrgAccountId) {
-      resp = await createAccountLink({ sConnectedAccountId: data?.data?.user?.FinancialAccount?.finOrgAccountId })
-    } else {
-      resp = await createConnectedAccount({})
-    }
-    console.log(resp, "first-->>>>>>>>>>>>>>>>>>")
-    router.push(resp?.data?.data?.url)
-  }
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       <div className="flex justify-center  py-5">
@@ -72,36 +57,7 @@ const PropertyOwnerSettingPage = () => {
           </div>
         </div>
         <div className="border-t border-[#707070] p-5">
-          <div>
-            <h4 className="text-xl font-medium">Credentials of Getting Money</h4>
-          </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            {data?.data?.user?.FinancialAccount?.finOrgAccountId &&
-              <>
-                <h3 className="border p-3 rounded-2xl border-[#707070]">
-                  Email: {data?.data?.user?.FinancialAccount?.email}
-                </h3>
-                <h3 className="border p-3 rounded-2xl border-[#707070]">
-                  Account: {data?.data?.user?.FinancialAccount?.externalAccount}
-                </h3>
-                
-              </>
-            }
-
-            {!(data?.data?.user?.FinancialAccount?.finOrgAccountId) &&
-              <h3 className="border p-3 rounded-2xl border-[#707070]">
-                <button
-                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleCreateAccountForStripe}
-                >
-                  Create Account For Stripe
-                </button>
-              </h3>
-            }
-          </div>
-          {/* <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Paypal Merchent Id:{data?.data?.paypalMerchentId}</h3>
-          </div> */}
+          <BankingCredentials/>
 
         </div>
         {/* current plan */}

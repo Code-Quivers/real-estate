@@ -6,7 +6,7 @@ import {
   IPropertyOwnerFilterRequest,
   IPropertyOwnerUpdateRequest,
 } from "./propertyOwner.interfaces";
-import { Request } from "express";
+import { Request, json } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import fs from "fs";
 import { logger } from "../../../shared/logger";
@@ -235,8 +235,19 @@ const UpdatePropertyOwner = async (
   return result;
 };
 
+
+const getFinancialAccountInfo = async (userId: string) => {
+  const finAcctData = await prisma.financialAccount.findUnique({
+    where: { userId }
+  })
+  if (!finAcctData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")
+  }
+  return finAcctData
+}
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
+  getFinancialAccountInfo,
 };
