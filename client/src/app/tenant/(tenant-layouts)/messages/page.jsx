@@ -5,29 +5,52 @@ import ConversationChatPerson from "@/components/property-owner/messaging/Proper
 import { getUserInfo } from "@/hooks/services/auth.service";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const PropertyOwnerMessaging = () => {
-  const { data: allConversations, isLoading, isError } = useGetMyAllConversationsQuery();
+const TenantMessagingPage = () => {
+  const { data: allConversations, isLoading, isError, isSuccess, refetch } = useGetMyAllConversationsQuery();
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
 
-  const userDetails = getUserInfo();
+  const myDetails = getUserInfo();
   // socket
   const [socketConnected, setSocketConnected] = useState(false);
 
   const ENDPOINT = "http://localhost:4000";
   let socket;
+
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("setup", userDetails);
+    socket.emit("setup", myDetails);
     socket.on("connection", () => setSocketConnected(true));
 
+    if (allConversations && !isLoading && !isError && isSuccess && myDetails) {
+      socket.emit("join chat", { userId: myDetails?.userId });
+    }
+  }, [isLoading, isError, isSuccess, allConversations, myDetails]);
+
+  //
+  const handleMessageReceived = useCallback(
+    (newMessageReceived) => {
+      if (isLoading || isSuccess) {
+        console.log("Messenger Updated");
+        refetch(); // Only refetch if the query has been started
+      }
+    },
+    [isLoading, isSuccess, refetch],
+  );
+
+  useEffect(() => {
+    socket.on("message received", handleMessageReceived);
+
+    // Cleanup function to remove the event listener
     return () => {
-      socket.disconnect(); // Disconnect socket when component unmounts
+      socket.off("message received", handleMessageReceived);
     };
-  }, [socket]);
+  }, [socket, handleMessageReceived]);
+
+  // !
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
@@ -65,4 +88,4 @@ const PropertyOwnerMessaging = () => {
   );
 };
 
-export default PropertyOwnerMessaging;
+export default TenantMessagingPage;

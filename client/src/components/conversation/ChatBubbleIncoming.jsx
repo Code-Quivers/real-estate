@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import moment from "moment";
+import { getProfileImageUrl } from "@/utils/conversation.utils";
 
 const ChatBubbleIncoming = ({ message }) => {
   return (
@@ -9,11 +10,7 @@ const ChatBubbleIncoming = ({ message }) => {
       <div className="flex items-end gap-2">
         <div className="w-[50px]">
           <div className="relative w-12  h-12">
-            <Image
-              layout="fill"
-              className="rounded-full mt-1" // src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
-              src={profileLogo}
-            />
+            <Image alt="" priority height={100} width={100} className="rounded-full mt-1" src={getProfileImageUrl(message?.sender)} />
           </div>
         </div>
         <div className="flex-1 shadow-xl shadow-black/20 rounded-2xl rounded-bl-none bg-white px-4 py-2.5">
@@ -21,7 +18,7 @@ const ChatBubbleIncoming = ({ message }) => {
         </div>
       </div>
       <div className="flex justify-start mt-3 ml-14">
-        <p className="text-xs font-semibold">10:00 Am</p>
+        <p className="text-xs font-semibold">{moment(message?.createdAt).fromNow()}</p>
       </div>
     </div>
   );

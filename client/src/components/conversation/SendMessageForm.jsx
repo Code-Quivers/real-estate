@@ -1,24 +1,14 @@
 "use client";
+import { getUserInfo } from "@/hooks/services/auth.service";
 import { useSendMessageMutation } from "@/redux/features/conversations/conversationApi";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
 import { IoImages } from "react-icons/io5";
 import { Notification, useToaster } from "rsuite";
+import { io } from "socket.io-client";
 
 const SendMessageForm = ({ conversationId }) => {
-  const textareaRef = useRef(null);
-
-  const scrollToBottom = () => {
-    if (textareaRef.current) {
-      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom(); // Scroll to bottom on initial render
-  }, []); // Run only once on initial render
-
   // form
   const {
     control,
@@ -53,7 +43,31 @@ const SendMessageForm = ({ conversationId }) => {
     });
   };
 
-  // !
+  // !----------------------------
+  const userDetails = getUserInfo();
+  // socket
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  const ENDPOINT = "http://localhost:4000";
+  let socket;
+
+  //
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", userDetails);
+    socket.on("connection", () => setSocketConnected(true));
+
+    console.log("socket", socket);
+    // after sending message
+    if (socket && isSuccess && !isError && !isLoading && data) {
+      socket.emit("new message", data);
+    }
+  }, [isSuccess, isError, isLoading, data]);
+
+  //
+
+  // ! --------------------
   const toaster = useToaster();
   useEffect(() => {
     if (isSuccess && !isError && !isLoading) {
@@ -107,7 +121,6 @@ const SendMessageForm = ({ conversationId }) => {
                       <i className="fa fa-search text-gray-400 z-20 hover:text-gray-500"></i>
                     </div>
                     <textarea
-                      ref={textareaRef}
                       style={{
                         resize: "none",
                       }}

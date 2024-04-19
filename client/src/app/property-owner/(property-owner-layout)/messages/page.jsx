@@ -5,494 +5,52 @@ import ConversationChatPerson from "@/components/property-owner/messaging/Proper
 import { getUserInfo } from "@/hooks/services/auth.service";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 const PropertyOwnerMessaging = () => {
-  const conversations = [
-    {
-      id: 1,
-      user: {
-        name: "Property Owner 1",
-      },
-      messages: [
-        {
-          id: 1,
-          text: "Hi there!",
-          sender: "Property Owner 1",
-          timestamp: "2024-01-06T12:30:00",
-          incoming: false,
-        },
-        {
-          id: 2,
-          text: "How can I help you?",
-          sender: "Property Owner 1",
-          timestamp: "2024-01-06T12:35:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      user: {
-        name: "Property Owner 2",
-      },
-      messages: [
-        {
-          id: 3,
-          text: "Hello!",
-          sender: "You",
-          timestamp: "2024-01-06T13:00:00",
-          incoming: true,
-        },
-        {
-          id: 4,
-          text: "I'm interested in your property.",
-          sender: "You",
-          timestamp: "2024-01-06T13:05:00",
-          incoming: true,
-        },
-      ],
-    },
-    {
-      id: 3,
-      user: {
-        name: "Property Owner 3",
-      },
-      messages: [
-        {
-          id: 5,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 6,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      user: {
-        name: "Service Provider",
-      },
-      messages: [
-        {
-          id: 6,
-          text: "You're welcome!",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:00:00",
-          incoming: false,
-        },
-        {
-          id: 7,
-          text: "If you have any more questions, feel free to ask.",
-          sender: "Property Owner 3",
-          timestamp: "2024-01-06T14:05:00",
-          incoming: false,
-        },
-      ],
-    },
-    // Add more conversation objects with messages as needed
-  ];
-  const { data: allConversations, isLoading, isError } = useGetMyAllConversationsQuery();
+  const { data: allConversations, isLoading, isError, isSuccess, refetch } = useGetMyAllConversationsQuery();
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
 
-  const userDetails = getUserInfo();
+  const myDetails = getUserInfo();
   // socket
   const [socketConnected, setSocketConnected] = useState(false);
 
   const ENDPOINT = "http://localhost:4000";
   let socket;
+
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("setup", userDetails);
+    socket.emit("setup", myDetails);
     socket.on("connection", () => setSocketConnected(true));
 
+    if (allConversations && !isLoading && !isError && isSuccess && myDetails) {
+      socket.emit("join chat", { userId: myDetails?.userId });
+    }
+  }, [isLoading, isError, isSuccess, allConversations, myDetails]);
+
+  //
+  const handleMessageReceived = useCallback(
+    (newMessageReceived) => {
+      if (isLoading || isSuccess) {
+        console.log("Messenger Updated");
+        refetch(); // Only refetch if the query has been started
+      }
+    },
+    [isLoading, isSuccess, refetch],
+  );
+
+  useEffect(() => {
+    socket.on("message received", handleMessageReceived);
+
+    // Cleanup function to remove the event listener
     return () => {
-      socket.disconnect(); // Disconnect socket when component unmounts
+      socket.off("message received", handleMessageReceived);
     };
-  }, [socket]);
+  }, [socket, handleMessageReceived]);
+
+  // !
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
@@ -512,7 +70,7 @@ const PropertyOwnerMessaging = () => {
               <div
                 key={singleConversation?.conversationId}
                 className={`py-3 px-3  cursor-pointer hover:bg-[#29429f] hover:text-white
-                ${index !== conversations.length - 1 && "border-b border-black "}
+                ${index !== allConversations?.data?.meta?.total && "border-b border-black "}
                 ${paramsChatId === singleConversation?.conversationId && "bg-[#29429f] text-white"}
                 
                 `}

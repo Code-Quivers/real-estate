@@ -66,41 +66,61 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
 // ! send new message
 const sendMessage = async (userId: string, conversationId: string, req: Request) => {
   // Extract new images paths
-  const imagesPath: string[] = ((req.files as IUploadFile[]) || []).map(
+  const imagesPath: string[] = ((req?.files as IUploadFile[]) || []).map(
     (item: IUploadFile) => `conversations/${item?.filename}`,
   );
 
   const { text } = req?.body as ISendMessage;
 
-  // Check if the conversation exists and the user is a participant
-  const existingConversation = await prisma.conversation.findFirst({
-    where: {
-      AND: [{ conversationId }, { perticipants: { some: { userId } } }],
-    },
+  // Start Prisma transaction
+  return prisma.$transaction(async (transactionClient) => {
+    // Check if the conversation exists and the user is a participant
+    const existingConversation = await transactionClient.conversation.findFirst({
+      where: {
+        AND: [{ conversationId }, { perticipants: { some: { userId } } }],
+      },
+    });
+
+    if (!existingConversation) {
+      throw new Error("Conversation not found");
+    }
+
+    // Create message data
+    const messageData = {
+      text,
+      images: imagesPath,
+      conversationId,
+      senderId: userId,
+    };
+
+    // Create the message
+    const newMessage = await transactionClient.message.create({
+      data: messageData,
+      include: {
+        conversation: {
+          select: {
+            perticipants: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!newMessage) {
+      throw new Error("Failed to send message");
+    }
+
+    // Update the last message in the conversation
+    await transactionClient.conversation.update({
+      where: { conversationId },
+      data: { lastMessage: messageData?.text },
+    });
+
+    return newMessage;
   });
-
-  if (!existingConversation) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Conversation not found");
-  }
-
-  // Create message data
-  const messageData = {
-    text,
-    images: imagesPath,
-    conversationId,
-    senderId: userId,
-  };
-
-  // Create the message
-  const newMessage = await prisma.message.create({
-    data: messageData,
-  });
-
-  if (!newMessage) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to send message");
-  }
-
-  return newMessage;
 };
 
 // ! getMyAllConversation
@@ -201,7 +221,7 @@ const getMyAllConversation = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
+              updatedAt: "desc",
             },
     });
 

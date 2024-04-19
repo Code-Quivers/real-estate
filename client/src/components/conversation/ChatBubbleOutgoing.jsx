@@ -13,7 +13,7 @@ const ChatBubbleOutgoing = ({ message }) => {
         </div>
         <div className="w-[50px]">
           <div className="relative w-12  h-12">
-            <Image layout="fill" className="rounded-full mt-1" src={getProfileImageUrl(message?.sender)} />
+            <Image alt="" priority height={100} width={100} className="rounded-full mt-1" src={getProfileImageUrl(message?.sender)} />
           </div>
         </div>
       </div>
