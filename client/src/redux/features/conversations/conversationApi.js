@@ -13,7 +13,14 @@ export const ConversationApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.conversation],
     }),
-    // get My all getMyAllConversations "/get-my-all-conversations",
+    sendMessage: builder.mutation({
+      query: ({ data, conversationId }) => ({
+        url: `${CONVERSATION_ROUTE}/send-message/${conversationId}`,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.conversation],
+    }),
     getMyAllConversations: builder.query({
       query: (arg) => ({
         url: `${CONVERSATION_ROUTE}/get-my-all-conversations`,
@@ -33,4 +40,5 @@ export const ConversationApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useStartNewConversationMutation, useGetMyAllConversationsQuery, useGetSingleConversationQuery } = ConversationApi;
+export const { useStartNewConversationMutation, useSendMessageMutation, useGetMyAllConversationsQuery, useGetSingleConversationQuery } =
+  ConversationApi;

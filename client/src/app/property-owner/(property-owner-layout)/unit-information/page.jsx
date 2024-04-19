@@ -3,7 +3,7 @@ import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { Button, IconButton, Placeholder } from "rsuite";
-import { FaPencilAlt, FaPlus } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";

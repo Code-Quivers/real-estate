@@ -1,19 +1,20 @@
 "use client";
 
+import { getParticipantName } from "@/utils/conversation.utils";
 import Link from "next/link";
 
-const PropertyOwnerChatPerson = ({ personName, chatId }) => {
+const ConversationChatPerson = ({ participant, conversationId }) => {
   return (
     <div className="">
       <Link
         href={{
-          query: { chat: chatId },
+          query: { chat: conversationId },
         }}
       >
-        <h2>{personName}</h2>
+        <h2>{getParticipantName(participant)}</h2>
       </Link>
     </div>
   );
 };
 
-export default PropertyOwnerChatPerson;
+export default ConversationChatPerson;

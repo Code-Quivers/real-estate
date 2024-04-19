@@ -36,7 +36,7 @@ const SendMessagePopOver = ({ receiverId }) => {
           placement: "bottomStart",
         },
       );
-      router.push(`/property-owner/messages/${data?.data?.conversationId}`);
+      router.push(`/property-owner/messages?chat=${data?.data?.conversationId}`);
     }
     if (isError && !isSuccess && error && !isLoading) {
       toaster.push(

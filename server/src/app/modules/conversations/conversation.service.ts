@@ -20,7 +20,6 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
       AND: [{ perticipants: { some: { userId: userId } } }, { perticipants: { some: { userId: receiverId } } }],
     },
   });
-  console.log(payload);
 
   // If conversation exists, send message only
   if (existingConversation) {
@@ -40,8 +39,6 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
 
     return existingConversation;
   }
-
-  console.log(payload);
 
   // Create a new conversation with the specified sender and receiver
   const newConversation = await prisma.conversation.create({
@@ -227,8 +224,8 @@ const getMyAllConversation = async (
 };
 
 // ! createOrUpdateService
-const getSingleChat = async (conversationId: string): Promise<Conversation> => {
-  // !
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const getSingleChat = async (conversationId: string, userId: string): Promise<Conversation> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     //
     const chatMessages = await transactionClient.conversation.findUnique({
@@ -239,12 +236,70 @@ const getSingleChat = async (conversationId: string): Promise<Conversation> => {
       include: {
         _count: true,
         messages: {
+          include: {
+            sender: {
+              select: {
+                userId: true,
+                role: true,
+                tenant: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    profileImage: true,
+                  },
+                },
+                serviceProvider: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    profileImage: true,
+                  },
+                },
+                propertyOwner: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    profileImage: true,
+                  },
+                },
+              },
+            },
+          },
           orderBy: {
             createdAt: "desc",
           },
         },
-
-        perticipants: true,
+        perticipants: {
+          where: {
+            userId: {
+              not: userId,
+            },
+          },
+          select: {
+            tenant: {
+              select: {
+                firstName: true,
+                lastName: true,
+                profileImage: true,
+              },
+            },
+            serviceProvider: {
+              select: {
+                firstName: true,
+                lastName: true,
+                profileImage: true,
+              },
+            },
+            propertyOwner: {
+              select: {
+                firstName: true,
+                lastName: true,
+                profileImage: true,
+              },
+            },
+            role: true,
+          },
+        },
       },
     });
     if (!chatMessages) {

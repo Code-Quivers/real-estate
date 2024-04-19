@@ -1,7 +1,7 @@
 "use client";
 
-import PropertyOwnerChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
-import PropertyOwnerChats from "@/components/property-owner/messaging/PropertyOwnerChats";
+import ConversationMessagingChats from "@/components/conversation/ConversationMessagingChats";
+import ConversationChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
@@ -508,21 +508,21 @@ const PropertyOwnerMessaging = () => {
         {/* messages */}
         <div className="grid grid-cols-6 h-[80vh]">
           <div className="col-span-2 border border-black overflow-y-scroll  ">
-            {conversations.map((singleConversation, index) => (
+            {allConversations?.data?.data?.map((singleConversation, index) => (
               <div
-                key={Math.random()}
+                key={singleConversation?.conversationId}
                 className={`py-3 px-3  cursor-pointer hover:bg-[#29429f] hover:text-white
                 ${index !== conversations.length - 1 && "border-b border-black "}
-                ${Number(paramsChatId) === singleConversation.id && "bg-[#29429f] text-white"}
+                ${paramsChatId === singleConversation?.conversationId && "bg-[#29429f] text-white"}
                 
                 `}
               >
-                <PropertyOwnerChatPerson personName={singleConversation?.user?.name} chatId={singleConversation?.id} />
+                <ConversationChatPerson participant={singleConversation?.perticipants[0]} conversationId={singleConversation?.conversationId} />
               </div>
             ))}
           </div>
           <div className="col-span-4 border border-l-0 border-black">
-            <PropertyOwnerChats />
+            <ConversationMessagingChats />
           </div>
         </div>
       </div>
