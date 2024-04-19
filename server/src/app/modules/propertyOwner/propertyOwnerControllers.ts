@@ -80,8 +80,8 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
 
 const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
   console.log('Financial info getting api hit.....')
-  const userId = (req.user as IRequestUser).userId;
-  const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(userId);
+  const ownerId = (req.user as IRequestUser).profileId;
+  const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(ownerId);
   console.log(finOrgAccountId)
 
   let result = null;
@@ -89,7 +89,7 @@ const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
     result = await StripeAccountManager.updateFinancialAccountInfo(finOrgAccountId)
   }
   else {
-    result = await PropertyOwnerServices.getFinancialAccountInfo(userId);
+    result = await PropertyOwnerServices.getFinancialAccountInfo(ownerId);
 
   }
   sendResponse(res, {

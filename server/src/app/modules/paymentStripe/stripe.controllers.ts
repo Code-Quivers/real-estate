@@ -110,12 +110,12 @@ class StripeController {
   static createConnectedAccount = catchAsync(async (req: Request, res: Response) => {
     console.log("createConnectedAccount API hit..............");
     const userId: string = (req.user as IRequestUser).userId || "";
-    const profileId: string = (req.user as IRequestUser).profileId || "";
+    const ownerId: string = (req.user as IRequestUser).profileId || "";
 
     const accountInfo = {
       ...req?.body,
       userId,
-      profileId
+      ownerId
     }
     const { jsonResponse, httpStatusCode } = await StripeAccountManager.createConnectedAccount(accountInfo)
 

@@ -28,27 +28,32 @@ class StripeAccountManager {
     // },
   }
   static createConnectedAccount = async (accountInfo: any) => {
-    const newAccount = await stripe.accounts.create(this.initialAcctInfo);
+    try {
+      const newAccount = await stripe.accounts.create(this.initialAcctInfo);
 
-    if (!newAccount) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create connected account');
+      if (!newAccount) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create connected account');
+      }
+
+      console.log('New account created:', newAccount.id);
+      const ownerId: string = accountInfo?.ownerId || "";
+      const finAcctData = {
+        finOrgAccountId: newAccount.id,
+        ownerId: ownerId
+      }
+      const newFinAcct = await prisma.financialAccount.create({
+        data: finAcctData
+      })
+
+      if (!newFinAcct) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Financial Account!')
+      }
+      const resp = await this.createAccountLink(newAccount.id)
+      return resp;
     }
-
-    console.log('New account created:', newAccount.id);
-    const ownerId: string = accountInfo?.ownerId || "";
-    const finAcctData = {
-      finOrgAccountId: newAccount.id,
-      ownerId: ownerId
-    }
-    const newFinAcct = await prisma.financialAccount.create({
-      data: finAcctData
-    })
-
-    if (!newFinAcct) {
+    catch (err) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create Financial Account!')
     }
-    const resp = await this.createAccountLink(newAccount.id)
-    return resp;
   };
 
   static createAccountLink = async (sConnectedAccountId: string) => {
@@ -102,21 +107,22 @@ class StripeAccountManager {
   }
 
   static isAccountNeedToUpdate = async (ownerId: string) => {
-    const finAcctData = await prisma.financialAccount.findUnique({
-      where: { ownerId },
-      select: {
-        finOrgAccountId: true,
-        detailsSubmitted: true
-      }
-    })
-
-    if (!finAcctData) {
+    try {
+      const finAcctData = await prisma.financialAccount.findUnique({
+        where: { ownerId },
+        select: {
+          finOrgAccountId: true,
+          detailsSubmitted: true
+        }
+      })
+      if (finAcctData === null || finAcctData?.detailsSubmitted) return "";
+      return finAcctData.finOrgAccountId
+    }
+    catch (err) {
+      console.log(err)
       console.log("Failed to fetch financial account information from db!")
       throw new ApiError(httpStatus.BAD_REQUEST, "Something went wrong!");
     }
-
-    return finAcctData.detailsSubmitted ? "" : finAcctData.finOrgAccountId;
-
   }
 
   static conditionalUpdateOfFinancilaAccountInfo = async (ownerId: string) => {

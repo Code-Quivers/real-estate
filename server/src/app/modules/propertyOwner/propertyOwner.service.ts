@@ -122,18 +122,6 @@ const getSinglePropertyOwner = async (
             _count: true,
             role: true,
             userStatus: true,
-            FinancialAccount: {
-              select: {
-                finOrgAccountId: true,
-                email: true,
-                externalAccount: true,
-                payoutsEnable: true,
-                chargesEnabled: true,
-                transfers: true,
-                isCustomAccount: true,
-                detailsSubmitted: true,
-              }
-            }
           },
 
         },
@@ -237,13 +225,16 @@ const UpdatePropertyOwner = async (
 
 
 const getFinancialAccountInfo = async (ownerId: string) => {
-  const finAcctData = await prisma.financialAccount.findUnique({
-    where: { ownerId }
-  })
-  if (!finAcctData) {
+  try {
+    const finAcctData = await prisma.financialAccount.findUnique({
+      where: { ownerId }
+    })
+    return finAcctData
+  }
+  catch (err) {
+    console.log(err)
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")
   }
-  return finAcctData
 }
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
