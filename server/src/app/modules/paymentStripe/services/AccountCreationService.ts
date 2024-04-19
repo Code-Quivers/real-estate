@@ -35,10 +35,10 @@ class StripeAccountManager {
     }
 
     console.log('New account created:', newAccount.id);
-    const userId: string = accountInfo?.userId || "";
+    const ownerId: string = accountInfo?.ownerId || "";
     const finAcctData = {
       finOrgAccountId: newAccount.id,
-      userId: userId
+      ownerId: ownerId
     }
     const newFinAcct = await prisma.financialAccount.create({
       data: finAcctData
@@ -101,9 +101,9 @@ class StripeAccountManager {
     return updatedFinAcctData
   }
 
-  static isAccountNeedToUpdate = async (userId: string) => {
+  static isAccountNeedToUpdate = async (ownerId: string) => {
     const finAcctData = await prisma.financialAccount.findUnique({
-      where: { userId },
+      where: { ownerId },
       select: {
         finOrgAccountId: true,
         detailsSubmitted: true
@@ -119,16 +119,16 @@ class StripeAccountManager {
 
   }
 
-  static conditionalUpdateOfFinancilaAccountInfo = async (userId: string) => {
-    const finOrgAccountId = await this.isAccountNeedToUpdate(userId)
+  static conditionalUpdateOfFinancilaAccountInfo = async (ownerId: string) => {
+    const finOrgAccountId = await this.isAccountNeedToUpdate(ownerId)
     if (finOrgAccountId) {
       this.updateFinancialAccountInfo(finOrgAccountId)
     }
   }
 
-  static financialAccountStatus = async (userId: string) => {
+  static financialAccountStatus = async (ownerId: string) => {
     const finAcctData = await prisma.financialAccount.findUnique({
-      where: { userId: userId },
+      where: { ownerId: ownerId },
       select: {
         payoutsEnable: true,
         detailsSubmitted: true

@@ -236,9 +236,9 @@ const UpdatePropertyOwner = async (
 };
 
 
-const getFinancialAccountInfo = async (userId: string) => {
+const getFinancialAccountInfo = async (ownerId: string) => {
   const finAcctData = await prisma.financialAccount.findUnique({
-    where: { userId }
+    where: { ownerId }
   })
   if (!finAcctData) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")

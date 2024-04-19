@@ -23,7 +23,6 @@ model User {
   serviceProvider    ServiceProvider?
   SavedItem          SavedItem[]
   PaymentInformation PaymentInformation[]
-  FinancialAccount   FinancialAccount?
 
   @@map("users")
 }
@@ -44,6 +43,7 @@ model PropertyOwner {
   maintenanceRequests  MaintenanceRequest[]
   orders               Order[]
   reports              Report[]
+  FinancialAccount     FinancialAccount?
 
   @@map("propertyOwners")
 }
@@ -287,17 +287,19 @@ model PaymentInformation {
 }
 
 model FinancialAccount {
-  id               String  @id @default(uuid())
-  finOrgAccountId  String  @unique
-  email            String? @unique
+  id               String        @id @default(uuid())
+  finOrgAccountId  String        @unique
+  email            String?       @unique
   externalAccount  Json?
-  payoutsEnable    Boolean @default(false)
-  chargesEnabled   Boolean @default(false)
-  transfers        Boolean @default(false)
-  isCustomAccount  Boolean @default(true)
-  detailsSubmitted Boolean @default(false)
-  userId           String  @unique
-  user             User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  payoutsEnable    Boolean       @default(false)
+  chargesEnabled   Boolean       @default(false)
+  transfers        Boolean       @default(false)
+  isCustomAccount  Boolean       @default(true)
+  detailsSubmitted Boolean       @default(false)
+  // userId           String  @unique
+  // user             User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  ownerId          String        @unique
+  propertyOwner    PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
 
   createdAt DateTime @default(now()) @db.Timestamptz(0)
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
