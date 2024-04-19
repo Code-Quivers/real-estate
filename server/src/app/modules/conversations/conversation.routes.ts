@@ -17,7 +17,7 @@ router.post(
 
 // ! send message
 router.post(
-  "/send-message",
+  "/send-message/:conversationId",
   auth(UserRoles.PROPERTY_OWNER, UserRoles.TENANT, UserRoles.SERVICE_PROVIDER),
   ConversationFileUploadHelper.uploadPropertyImages.array("files"),
   (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +29,7 @@ router.post(
 // ! get my all conversations
 router.get(
   "/get-my-all-conversations",
-  auth(UserRoles.PROPERTY_OWNER, UserRoles.SUPERADMIN),
+  auth(UserRoles.PROPERTY_OWNER, UserRoles.SUPERADMIN, UserRoles.TENANT),
   ConversationController.getMyAllConversation,
 );
 router.get(

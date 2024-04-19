@@ -52,8 +52,9 @@ const getMyAllConversation = catchAsync(async (req: Request, res: Response) => {
 // ! get single Chat
 const getSingleChat = catchAsync(async (req: Request, res: Response) => {
   //
-  const conversationId = req.params?.serviceId;
-  const result = await ConversationService.getSingleChat(conversationId);
+  const conversationId = req.params?.conversationId;
+  const userId = (req.user as IRequestUser).userId;
+  const result = await ConversationService.getSingleChat(conversationId, userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

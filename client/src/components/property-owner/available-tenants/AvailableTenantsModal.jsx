@@ -57,6 +57,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
     });
   };
 
+  // !
   useEffect(() => {
     if (!isLoadingAssign && !isErrorAssign && isSuccessAssign && !errorAssign) {
       toaster.push(
