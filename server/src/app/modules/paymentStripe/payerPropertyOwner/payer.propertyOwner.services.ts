@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import httpStatus from "http-status";
 import ApiError from "../../../../errors/ApiError";
 
-
 /**
  * Creates a PayPal order for processing payment.
  */
@@ -17,36 +16,33 @@ class PropertyOwnerPaymentProcessor {
   private static intentObject = {
     amount: 0.0,
     currency: "usd",
-  }
+    payment_method_types: ["card"],
+  };
 
   private static fixAmountToTwoDecimal = (amount: number) => {
     // Multiply by 100 in last cause, Stripe receive payment in cents
     return parseFloat((Math.ceil(amount * 100) / 100).toFixed(2)) * 100;
-  }
+  };
   static createPaymentIntent = async (amount: number) => {
-
     try {
-      const paymentIntent = await stripe.paymentIntents.create(
-        {
-          ...this.intentObject,
-          amount: this.fixAmountToTwoDecimal(amount)
-        },
-      );
+      const paymentIntent = await stripe.paymentIntents.create({
+        ...this.intentObject,
+        amount: this.fixAmountToTwoDecimal(amount),
+      });
 
       if (!paymentIntent?.client_secret) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get client secret from Stripe!!!");
       }
 
       return {
-        jsonResponse: { clientSecret: paymentIntent.client_secret, },
+        jsonResponse: { clientSecret: paymentIntent.client_secret },
         httpStatusCode: 201,
       };
-    }
-    catch (err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get client secret from Stripe!!!");
     }
-  }
+  };
 
   static retriveStripePaymentInfo = async (paymentIntentId: string) => {
     const paymentIntentInfo = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -59,7 +55,5 @@ class PropertyOwnerPaymentProcessor {
     };
   };
 }
-
-
 
 export default PropertyOwnerPaymentProcessor;

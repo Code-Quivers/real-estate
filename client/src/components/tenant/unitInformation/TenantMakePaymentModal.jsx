@@ -20,7 +20,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
       >
         <Modal.Body className=" ">
           <div className="flex px-5 justify-between items-center">
-            {console.log(propertyInfo, 'from modal')}
+            {console.log(propertyInfo, "from modal")}
 
             <h3 className="text-lg font-semibold">Payment</h3>
             <button
