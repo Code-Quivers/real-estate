@@ -1,16 +1,14 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import catchAsync from "../../../../shared/catchAsync";
+import PropertyOwnerPaymentProcessor from "./payer.propertyOwner.services";
+import sendResponse from "../../../../shared/sendResponse";
+import { IRequestUser } from "../../../interfaces/global.interfaces";
+import { PaymentServices } from "../../payment/payment.services";
+import { OrderServices } from "../../orders/orders.service";
+import StripeAccountManager from "./AccountCreationService";
 
-import catchAsync from "../../../shared/catchAsync";
-import sendResponse from "../../../shared/sendResponse";
-import { IRequestUser } from "../../interfaces/global.interfaces";
-import { PaymentServices } from "../payment/payment.services";
 
-import prisma from "../../../shared/prisma";
-import { errorLogger, logger } from "../../../shared/logger";
-import { OrderServices } from "../orders/orders.service";
-import { StripeServices } from "./stripe.services";
-import StripeAccountManager from "./services/AccountCreationService";
 
 /**
  * Controller handling PayPal related operations such as creating and capturing orders.
@@ -23,10 +21,8 @@ class StripeController {
    * Handles payment for an order.
    */
   static createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-    console.log("Order API hit..............");
-
-    const paymentInfo = req.body;
-    const { jsonResponse, httpStatusCode } = await StripeServices.createPaymentIntent(paymentInfo);
+    const { amountToPaid } = req.body;
+    const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.createPaymentIntent(amountToPaid);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -46,7 +42,7 @@ class StripeController {
     const tenantId: string = req.body?.tenantId || "";
     const propertyId: string = req.body?.propertyId || "";
 
-    const { jsonResponse, httpStatusCode } = await StripeServices.retriveStripePaymentInfo(paymentIntentId);
+    const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.retriveStripePaymentInfo(paymentIntentId);
     const paymentReport = StripeController.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
@@ -95,8 +91,8 @@ class StripeController {
     return {
       platform: "STRIPE",
       paymentStatus: retrievedPaymentInfo.status,
-      amountToPay: parseFloat(retrievedPaymentInfo.amount),
-      amountPaid: parseFloat(retrievedPaymentInfo.amount_received),
+      amountToPay: parseFloat(retrievedPaymentInfo.amount) / 100.00,
+      amountPaid: parseFloat(retrievedPaymentInfo.amount_received)/100.00,
       currency: retrievedPaymentInfo.currency,
       platformFee: parseFloat("0.0"),
       netAmount: parseFloat("0.0"),

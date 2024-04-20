@@ -2,6 +2,7 @@
 import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
 import { IoClose } from "react-icons/io5";
 import { Modal } from "rsuite";
+import TenantStripeCheckout from "../payment/TenantStripePayment";
 
 const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, dueRent, dueMonths }) => {
   return (
@@ -32,7 +33,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
             </button>
           </div>
           <div className="p-5">
-            <PaypalCheckout
+            <TenantStripeCheckout
               isRentPayment={true}
               amountToPaid={dueRent}
               propertyId={propertyInfo?.propertyId}

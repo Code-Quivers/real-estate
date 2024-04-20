@@ -1,6 +1,5 @@
 "use client";
 
-import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
 import StripeCheckout from "@/components/payment/stripe/StripeCheckout";
 import { useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } from "@/redux/features/orders/orderApi";
 import { useRouter } from "next/navigation";

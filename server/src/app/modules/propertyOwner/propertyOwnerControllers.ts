@@ -6,7 +6,7 @@ import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import { propertyOwnerFilterableFields } from "./propertyOwner.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
-import StripeAccountManager from "../paymentStripe/services/AccountCreationService";
+import StripeAccountManager from "../paymentStripe/payerPropertyOwner/AccountCreationService";
 
 // ! get all Property Owners
 const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {

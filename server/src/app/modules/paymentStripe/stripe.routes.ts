@@ -2,7 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 
 import auth from "../../middlewares/auth";
 import { UserRoles } from "@prisma/client";
-import StripeController from "./stripe.controllers";
+import PayerTenantController from "./payerTenant/payer.tenant.controller";
+import StripeController from "./payerPropertyOwner/payer.propertyOwner.controllers";
 // import { PaypalController } from "./paypal.controllers";
 
 const router = express.Router();
@@ -14,10 +15,23 @@ router.post(
   StripeController.createPaymentIntent,
 );
 
+// Stripe payment request route
+router.post(
+  "/create-tenant-payment-intent",
+  auth(UserRoles.TENANT),
+  PayerTenantController.createTenantPaymentIntent,
+);
+
 router.post(
   "/retrive-payment-info",
   auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
   StripeController.retriveStripePaymentInformation,
+);
+
+router.post(
+  "/retrive-tenant-payment-info",
+  auth(UserRoles.TENANT),
+  PayerTenantController.retriveTenantPaymentInformation,
 );
 
 router.post(
