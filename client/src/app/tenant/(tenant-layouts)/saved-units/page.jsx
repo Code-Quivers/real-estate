@@ -5,32 +5,20 @@ import React, { useState } from "react";
 
 import SavedUnitsModal from "@/components/tenant/SavedUnits/SavedUnitModal";
 import SavedUnitsCard from "@/components/tenant/SavedUnits/SavedUnitsCard";
-import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
+
+export const metadata = {
+  title: "Saved Units",
+};
 
 const page = () => {
-
-  const [open, setOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
-
-  const handleOpen = (selectData) => {
-    setModalData(selectData);
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
-  const query = {};
-
-  const [itemType, setItemType] = useState("PROPERTY");
-
-  query["itemType"] = itemType;
-
-  const { data, isLoading, isError } = useGetAllSavedItemsQuery({ ...query });
-  let content = null;
-  if (isError) {
-    content = <p>Something went wrong!!!</p>
-  }
-  if (!isError && isLoading) {
-    content = <div className="py-5 flex justify-center">
-      <Loader size="lg" />
+  return (
+    <div className="max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
+      <div className="flex justify-center ">
+        <h2 className="text-3xl font-medium">Saved Units</h2>
+      </div>
+      <div>
+        <SavedUnitsCard />
+      </div>
     </div>
   }
   if (!isError && !isLoading && data && data?.data?.data?.length == 0) {
