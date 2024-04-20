@@ -2,13 +2,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import SavedUnitsModal from "./SavedUnitModal";
+
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
 import { Loader } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 
-const SavedUnitsCard = () => {
-  const [units, setUnits] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+
+const SavedUnitsCard = ({ unitInfo, handleOpen }) => {
 
   const query = {};
 
@@ -32,6 +32,7 @@ const SavedUnitsCard = () => {
       )}
 
       {/* Available units card start */}
+
       <div className="mt-2 grid  lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 md:gap-2 xl:gap-6 max-lg:mx-1.5">
         {!isLoading &&
           availableUnits?.data?.data?.length > 0 &&
@@ -71,7 +72,7 @@ const SavedUnitsCard = () => {
           ))}
       </div>
       {/* modal */}
-      <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} />
+      {/* <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} /> */}
       {/* Available units card end */}
     </div>
   );

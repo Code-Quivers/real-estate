@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
-import { Prisma } from "@prisma/client";
+import { ItemType, Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 import { isEmptyObject } from "../../../helpers/utils";
 import { ICreateSavedItem } from "./savedItem.interfaces";
@@ -121,8 +121,8 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
       include: {
         tenant: true,
       },
@@ -200,8 +200,8 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
       include: {
         serviceProvider: true,
       },
@@ -223,6 +223,7 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
 
   return result;
 };
+
 
 // ! get saved units
 const getSavedUnits = async (userId: string, filters: any, options: IPaginationOptions) => {
@@ -269,6 +270,7 @@ const getSavedUnits = async (userId: string, filters: any, options: IPaginationO
   // Combine all conditions into Prisma's whereConditions
   const whereConditions: Prisma.SavedItemWhereInput = {
     AND: [{ userId, itemType }, ...(andConditions.length > 0 ? [{ property: { AND: andConditions } }] : [])],
+
   };
 
   //
@@ -295,7 +297,9 @@ const getSavedUnits = async (userId: string, filters: any, options: IPaginationO
     const totalPage = Math.ceil(total / limit);
 
     if (!savedItems) {
+
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to retrieved saved items!!!");
+
     }
 
     return {
@@ -317,5 +321,6 @@ export const SavedItemServices = {
   getSavedServiceProviders,
   createSavedItem,
   removeSavedItem,
-  getSavedUnits,
+  getSavedItems
+
 };

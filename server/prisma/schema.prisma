@@ -20,11 +20,12 @@ model PropertyOwner {
   createdAt            DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt            DateTime             @updatedAt @db.Timestamptz(0)
   userId               String               @unique
-  user                 User                 @relation(fields: [userId], references: [userId])
-  Property             Property[]
+  user                 User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  properties           Property[]
   maintenanceRequests  MaintenanceRequest[]
   orders               Order[]
   reports              Report[]
+  FinancialAccount     FinancialAccount?
 
   @@map("propertyOwners")
 }
@@ -133,7 +134,7 @@ model Report {
   taxDocumentFile     String?
   // 
   propertyOwnerId     String
-  propertyOwner       PropertyOwner @relation(fields: [propertyOwnerId], references: [propertyOwnerId])
+  propertyOwner       PropertyOwner @relation(fields: [propertyOwnerId], references: [propertyOwnerId], onDelete: Cascade)
   // 
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
@@ -168,7 +169,7 @@ model ServiceProvider {
   userId              String               @unique
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
-  user                User                 @relation(fields: [userId], references: [userId])
+  user                User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
   Service             Service?
   SavedItem           SavedItem[]
   properties          Property[]
@@ -180,11 +181,11 @@ model ServiceProvider {
 model MaintenanceRequest {
   maintenanceRequestId String                         @id @default(uuid())
   propertyId           String
-  property             Property                       @relation(fields: [propertyId], references: [propertyId])
+  property             Property                       @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
   tenantId             String
-  tenant               Tenant                         @relation(fields: [tenantId], references: [tenantId])
+  tenant               Tenant                         @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
   ownerId              String
-  owner                PropertyOwner                  @relation(fields: [ownerId], references: [propertyOwnerId])
+  owner                PropertyOwner                  @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
   createdAt            DateTime                       @default(now())
   updatedAt            DateTime                       @updatedAt
   // 
@@ -199,7 +200,7 @@ model MaintenanceRequest {
   status               MaintenanceRequestStatus       @default(PENDING)
   // 
   serviceProviderId    String?
-  serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId])
+  serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId], onDelete: SetNull)
 
   @@map("maintenance_requests")
 }
@@ -216,7 +217,7 @@ model Service {
   serviceAvailability       ServiceAvailabilityEnum?
   serviceType               ServiceType?
   ownerId                   String?                  @unique
-  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId])
+  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId], onDelete: Cascade)
   createdAt                 DateTime                 @default(now())
   updatedAt                 DateTime                 @updatedAt
 
@@ -227,39 +228,57 @@ model SavedItem {
   itemId            String           @id @default(uuid())
   itemType          ItemType
   serviceProviderId String?
-  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId])
+  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId], onDelete: SetNull)
   tenantId          String?
-  tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId])
+  tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
   propertyId        String?
-  property          Property?        @relation(fields: [propertyId], references: [propertyId])
+  property          Property?        @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
   userId            String
-  user              User             @relation(fields: [userId], references: [userId])
+  user              User             @relation(fields: [userId], references: [userId], onDelete: SetDefault)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
+
+  @@unique([userId, serviceProviderId])
+  @@unique([userId, tenantId])
+  @@unique([userId, propertyId])
 }
 
 model PaymentInformation {
-  id                           String   @id @default(uuid())
-  platform                     PLATFORM
-  paymentStatus                String
-  amountToPay                  Float
-  amountPaid                   Float
-  currency                     String
-  platformFee                  Float
-  netAmount                    Float
-  paymentPlatformTransactionId String
-  paymentPlatformOrderId       String
-  refundLink                   String
-  transactionCreatedTime       DateTime
-  transactionUpdatedTime       DateTime
-  payerName                    String
-  payerEmailAddress            String
-  orderId                      String
-  order                        Order    @relation(fields: [orderId], references: [orderId])
-  userId                       String
-  user                         User     @relation(fields: [userId], references: [userId])
-  createdAt                    DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt                    DateTime @updatedAt @db.Timestamptz(0)
+  id                     String   @id @default(uuid())
+  platform               PLATFORM
+  paymentStatus          String
+  amountToPay            Float
+  amountPaid             Float
+  currency               String
+  platformFee            Float
+  netAmount              Float
+  paymentPlatformId      String
+  transactionCreatedTime DateTime
+  orderId                String
+  order                  Order    @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+  userId                 String
+  user                   User     @relation(fields: [userId], references: [userId], onDelete: SetDefault)
+  createdAt              DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt              DateTime @updatedAt @db.Timestamptz(0)
+}
+
+model FinancialAccount {
+  id               String        @id @default(uuid())
+  finOrgAccountId  String        @unique
+  email            String?       @unique
+  externalAccount  Json?
+  payoutsEnable    Boolean       @default(false)
+  chargesEnabled   Boolean       @default(false)
+  transfers        Boolean       @default(false)
+  isCustomAccount  Boolean       @default(true)
+  detailsSubmitted Boolean       @default(false)
+  // userId           String  @unique
+  // user             User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  ownerId          String        @unique
+  propertyOwner    PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
 }
 
 model User {
@@ -310,7 +329,7 @@ model Message {
 // ! Enums---------------
 enum PLATFORM {
   PAYPAL
-  KLARNA
+  STRIPE
 }
 
 // enums

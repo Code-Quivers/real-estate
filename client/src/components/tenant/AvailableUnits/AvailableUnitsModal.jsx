@@ -1,14 +1,42 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+
 import { Button, Modal, Notification, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 
-const AvailableUnitsModal = ({ open, setOpen, units }) => {
+
+const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
+  const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
+
+  const saveUnit = async (propertyId) => {
+    console.log(unitInfo, '888888888888888888')
+    const dateToSave = {
+      propertyId: propertyId,
+      itemType: "PROPERTY",
+    };
+
+    await saveItem(dateToSave);
+  };
+
+  useEffect(() => {
+    if (isSuccess && !isError && !isLoading) {
+      toaster.push(savedItemUnit("Successfully saved!!!"), {
+        placement: "bottomStart",
+      });
+    }
+    if (isError && !isSuccess && error && !isLoading) {
+      toaster.push(savedItemUnitFailed(error?.message), {
+        placement: "bottomStart",
+      });
+    }
+  }, [isSuccess, isSuccess, error]);
+
+
 
   // ! save item
 
@@ -59,20 +87,20 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
         <Modal.Body className="!p-0 !overflow-y-hidden">
           <div className="grid lg:grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
             <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
-              {units?.images?.length
-                ? units?.images?.map((photo) => (
-                    <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
-                      <div className=" ">
-                        <Image
-                          className="h-[200px]    w-full object-center object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
+              {unitInfo?.images?.length
+                ? unitInfo?.images?.map((photo) => (
+                  <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
+                    <div className=" ">
+                      <Image
+                        className="h-[200px]    w-full object-center object-cover"
+                        height={300}
+                        width={300}
+                        src={`${fileUrlKey()}/${photo}`}
+                        alt="Unit Photo"
+                      />
                     </div>
-                  ))
+                  </div>
+                ))
                 : ""}
             </div>
             <div className="col-span-3 w-full overflow-y-scroll max-h-[70vh]  custom-scrollbar ">
@@ -92,9 +120,9 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                 <div>
                   <h2 className="text-4xl mb-2">$1200/month</h2>
                   <h2 className="text-xl">
-                    <span>{units?.numOfBed ?? "0"} Bed</span> <span>{units?.numOfBath ?? "0"} Bath</span>
+                    <span>{unitInfo?.numOfBed ?? "0"} Bed</span> <span>{unitInfo?.numOfBath ?? "0"} Bath</span>
                   </h2>
-                  <h2 className="text-xl">{units?.address ? units?.address : "3 Belair Dr, Binghamton, NY 13901"}</h2>
+                  <h2 className="text-xl">{unitInfo?.address ? unitInfo?.address : "3 Belair Dr, Binghamton, NY 13901"}</h2>
                 </div>
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">
@@ -167,11 +195,11 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                       <h2 className="text-base font-bold capitalize">Description</h2>
 
                       <div className="ql-editor">
-                        {units?.description ? (
+                        {unitInfo?.description ? (
                           <div
                             className="whitespace-pre-wrap"
                             dangerouslySetInnerHTML={{
-                              __html: units.description,
+                              __html: unitInfo.description,
                             }}
                           />
                         ) : (
@@ -184,12 +212,12 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                     <div className="grid grid-cols-2   ">
                       <div className="col-span-1 border-r mr-3    p-1">
                         <h2 className="text-center font-semibold text-lg">Maintenance covered by Tenant</h2>
-                        <p className="mt-5 whitespace-pre-line">{units?.maintenanceCoveredTenant ? units?.maintenanceCoveredTenant : "--"}</p>
+                        <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredTenant ? unitInfo?.maintenanceCoveredTenant : "--"}</p>
                       </div>
 
                       <div className="col-span-1 p-1">
                         <h2 className="text-center font-semibold text-lg">Maintenance covered by Property Owner</h2>
-                        <p className="mt-5 whitespace-pre-line">{units?.maintenanceCoveredOwner ? units?.maintenanceCoveredOwner : "--"}</p>
+                        <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredOwner ? unitInfo?.maintenanceCoveredOwner : "--"}</p>
                       </div>
                     </div>
                   </div>
@@ -198,11 +226,11 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                       <h2 className="text-base font-bold capitalize">Schools near by</h2>
                       <div className="">
                         <div className="ql-editor">
-                          {units?.schools ? (
+                          {unitInfo?.schools ? (
                             <div
                               className="whitespace-pre-wrap"
                               dangerouslySetInnerHTML={{
-                                __html: units?.schools,
+                                __html: unitInfo?.schools,
                               }}
                             />
                           ) : (
@@ -214,11 +242,11 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                     <div>
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        {units?.universities ? (
+                        {unitInfo?.universities ? (
                           <div
                             className="whitespace-pre-wrap"
                             dangerouslySetInnerHTML={{
-                              __html: units?.universities,
+                              __html: unitInfo?.universities,
                             }}
                           />
                         ) : (
@@ -230,11 +258,11 @@ const AvailableUnitsModal = ({ open, setOpen, units }) => {
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
                     <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
                     <div className="">
-                      {units?.pets ? (
+                      {unitInfo?.pets ? (
                         <div
                           className="whitespace-pre-wrap"
                           dangerouslySetInnerHTML={{
-                            __html: units?.pets,
+                            __html: unitInfo?.pets,
                           }}
                         />
                       ) : (

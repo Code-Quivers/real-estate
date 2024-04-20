@@ -6,7 +6,7 @@ import {
   IPropertyOwnerFilterRequest,
   IPropertyOwnerUpdateRequest,
 } from "./propertyOwner.interfaces";
-import { Request } from "express";
+import { Request, json } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import fs from "fs";
 import { logger } from "../../../shared/logger";
@@ -81,8 +81,8 @@ const getAllPropertyOwners = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
-            },
+            createdAt: "desc",
+          },
     });
 
     const total = await prisma.propertyOwner.count({
@@ -123,8 +123,9 @@ const getSinglePropertyOwner = async (
             role: true,
             userStatus: true,
           },
+
         },
-        Property: true,
+        properties: true,
       },
     });
 
@@ -222,8 +223,22 @@ const UpdatePropertyOwner = async (
   return result;
 };
 
+
+const getFinancialAccountInfo = async (ownerId: string) => {
+  try {
+    const finAcctData = await prisma.financialAccount.findUnique({
+      where: { ownerId }
+    })
+    return finAcctData
+  }
+  catch (err) {
+    console.log(err)
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")
+  }
+}
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
+  getFinancialAccountInfo,
 };

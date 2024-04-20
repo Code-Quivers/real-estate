@@ -3,10 +3,12 @@ import { fileUrlKey } from "@/configs/envConfig";
 
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
+
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Notification, useToaster } from "rsuite";
 
 const SavedUnitsModal = ({ open, setOpen, units: item }) => {
+
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
   // ! save item
@@ -16,6 +18,7 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
   const handleRemoveUnit = async () => {
     await removeFromSavedItem({ itemId: item?.itemId });
   };
+
 
   // !
   const toaster = useToaster();
@@ -97,6 +100,7 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
                     <span>{item?.property?.numOfBed ?? "0"} Bed</span> <span>{item?.property?.numOfBath ?? "0"} Bath</span>
                   </h2>
                   <h2 className="text-xl">{item?.property?.address ?? "===="}</h2>
+
                 </div>
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">

@@ -33,4 +33,11 @@ router.patch(
   },
 );
 
+// ! update property owner
+router.get(
+  "/financial-info",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertyOwnerControllers.getFinancialAccount
+);
+
 export const PropertyOwnerRouter = router;

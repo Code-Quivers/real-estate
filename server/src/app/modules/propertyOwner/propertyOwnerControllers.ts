@@ -6,6 +6,7 @@ import catchAsync from "../../../shared/catchAsync";
 import pick from "../../../shared/pick";
 import { propertyOwnerFilterableFields } from "./propertyOwner.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
+import StripeAccountManager from "../paymentStripe/payerPropertyOwner/AccountCreationService";
 
 // ! get all Property Owners
 const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
@@ -51,7 +52,7 @@ const getPropertyOwnerMyProfile = catchAsync(
       await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
 
     sendResponse(res, {
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       success: true,
       message: "Property Owner my profile retrieved Successful",
       data: result,
@@ -76,9 +77,33 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
+  console.log('Financial info getting api hit.....')
+  const ownerId = (req.user as IRequestUser).profileId;
+  const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(ownerId);
+  console.log(finOrgAccountId)
+
+  let result = null;
+  if (finOrgAccountId) {
+    result = await StripeAccountManager.updateFinancialAccountInfo(finOrgAccountId)
+  }
+  else {
+    result = await PropertyOwnerServices.getFinancialAccountInfo(ownerId);
+
+  }
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Financial data fetching successful!",
+    data: result,
+  });
+});
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
   getPropertyOwnerMyProfile,
+  getFinancialAccount,
 };
