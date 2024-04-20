@@ -12,8 +12,6 @@ export function setupSocket(server: any) {
 
   // Socket.IO logic
   io.on("connection", (socket) => {
-    console.log(`Socket ${socket.id} connected`);
-
     //
     socket.on("setup", (userData) => {
       socket.join(userData?.userId);
@@ -22,14 +20,22 @@ export function setupSocket(server: any) {
     //
     socket.on("join chat", (room) => {
       socket.join(room);
-      console.log("room __", room);
     });
 
-    //
+    // socket typing
+    socket.on("typing", (room: any) => {
+      console.log("typing shuroooo", room);
+      socket.in(room).emit("typing");
+    });
+    socket.on("stop typing", (room: any) => {
+      console.log("typing shesh", room);
+      socket.in(room).emit("stop typing");
+    });
+
+    // for new message received
     socket.on("new message", (newMessageReceived) => {
-      // console.log("newMessageReceived", newMessageReceived);
       const participants = newMessageReceived?.data?.conversation?.perticipants;
-      console.log(participants);
+
       if (!participants?.length) return console.log("Chat.users not defined");
       else {
         participants?.forEach((user: any) => {
