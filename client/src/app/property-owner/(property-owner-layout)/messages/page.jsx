@@ -34,7 +34,6 @@ const PropertyOwnerMessaging = () => {
   const handleMessageReceived = useCallback(
     (newMessageReceived) => {
       if (isLoading || isSuccess) {
-        console.log("Messenger Updated");
         refetch(); // Only refetch if the query has been started
       }
     },

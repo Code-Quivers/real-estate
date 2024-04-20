@@ -13,14 +13,7 @@ export const ConversationApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.conversation],
     }),
-    sendMessage: builder.mutation({
-      query: ({ data, conversationId }) => ({
-        url: `${CONVERSATION_ROUTE}/send-message/${conversationId}`,
-        method: "POST",
-        data,
-      }),
-      invalidatesTags: [tagTypes.conversation],
-    }),
+
     getMyAllConversations: builder.query({
       query: (arg) => ({
         url: `${CONVERSATION_ROUTE}/get-my-all-conversations`,
@@ -29,16 +22,22 @@ export const ConversationApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.conversation],
     }),
-
-    getSingleConversation: builder.query({
+    getMessages: builder.query({
       query: ({ conversationId }) => ({
         url: `${CONVERSATION_ROUTE}/get-message/${conversationId}`,
         method: "GET",
       }),
       providesTags: [tagTypes.conversation],
     }),
+    sendMessage: builder.mutation({
+      query: ({ data, conversationId }) => ({
+        url: `${CONVERSATION_ROUTE}/send-message/${conversationId}`,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.conversation],
+    }),
   }),
 });
 
-export const { useStartNewConversationMutation, useSendMessageMutation, useGetMyAllConversationsQuery, useGetSingleConversationQuery } =
-  ConversationApi;
+export const { useStartNewConversationMutation, useSendMessageMutation, useGetMyAllConversationsQuery, useGetMessagesQuery } = ConversationApi;
