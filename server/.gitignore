@@ -6,3 +6,5 @@ dist
 logs
 data
 uploads
+
+/prisma/migrations
