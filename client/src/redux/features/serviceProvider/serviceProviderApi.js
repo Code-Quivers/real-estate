@@ -31,8 +31,4 @@ export const serviceProviderApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetAllServiceProvidersQuery,
-  useGetServiceProviderMyProfileQuery,
-  useUpdateServiceProviderMyProfileMutation,
-} = serviceProviderApi;
+export const { useGetAllServiceProvidersQuery, useGetServiceProviderMyProfileQuery, useUpdateServiceProviderMyProfileMutation } = serviceProviderApi;

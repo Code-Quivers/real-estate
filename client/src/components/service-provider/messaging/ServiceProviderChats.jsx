@@ -498,31 +498,15 @@ import ServiceProviderChatBubbleOutgoing from "./ServiceProviderChatBubbleOutgoi
 const ServiceProviderChats = () => {
   const useSearch = useSearchParams();
   const chatId = useSearch.get("chat");
-  const chatObj = conversations.find(
-    (conversation) => conversation.id === parseInt(chatId),
-  );
-  const {
-    data: dataResponse,
-    isError,
-    isLoading,
-    error,
-  } = useGetTenantMyProfileQuery();
+  const chatObj = conversations.find((conversation) => conversation.id === parseInt(chatId));
+  const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};
   return (
     <div className="flex flex-col h-[80vh]">
       <div className="bg-white shadow-lg px-3  sticky top-0 flex items-center gap-3 my-0.5">
         <div className="">
-          <Image
-            height={50}
-            width={50}
-            className="rounded-full"
-            src={
-              data?.profileImage
-                ? `${fileUrlKey()}/${data?.profileImage}`
-                : profileLogo
-            }
-          />
+          <Image height={50} width={50} className="rounded-full" src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo} />
         </div>
         <div>
           <h2 className=" font-medium ">{chatObj?.user?.name ?? "--"}</h2>
@@ -531,12 +515,7 @@ const ServiceProviderChats = () => {
       <div className="flex-1 overflow-y-scroll  pt-3">
         <div className="space-y-5 px-3">
           {chatObj?.messages?.map((message) => (
-            <div
-              key={Math.random()}
-              className={`flex w-full ${
-                message?.incoming === true ? "justify-start" : "justify-end"
-              }`}
-            >
+            <div key={Math.random()} className={`flex w-full ${message?.incoming === true ? "justify-start" : "justify-end"}`}>
               {message?.incoming === true ? (
                 <ServiceProviderChatBubbleIncoming message={message} />
               ) : (
@@ -548,11 +527,7 @@ const ServiceProviderChats = () => {
       </div>
       <div className="grid grid-cols-6  sticky bottom-0  px-2 bg-black/20 py-2 shadow-xl gap-2 ">
         <div className="col-span-5">
-          <Input
-            size="lg"
-            placeholder="Write Message...."
-            className="bg-black"
-          />
+          <Input size="lg" placeholder="Write Message...." className="bg-black" />
         </div>
         <div className="col-span-1">
           <Button size="lg" block className="w-full flex gap-2">

@@ -40,13 +40,12 @@ const AddProperty = () => {
     const propertiesWithoutFiles = (propertyList?.propertyList || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
 
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
+
     formData.append("data", newPropertyList);
     // Append all files with the same key "files"
     allFiles?.forEach((file, index) => {
       formData.append("files", file, file.name);
     });
-
-    console.log(allFiles);
 
     await addProperties({
       data: formData,
@@ -64,7 +63,7 @@ const AddProperty = () => {
         },
       );
       dispatch(resetPropertyList());
-      router.back();
+      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}`);
       resetReq();
     }
     if (!isLoading && isError && !isSuccess) {
@@ -87,8 +86,8 @@ const AddProperty = () => {
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
             <Button
-              as={Link}
-              href={"/"}
+              // as={Link}
+              // href={"/property-owner/unit-information/add-property"}
               type="button"
               className={`   h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
               size="md"
@@ -97,8 +96,8 @@ const AddProperty = () => {
               Property <br /> Information
             </Button>
             <Button
-              as={Link}
-              href={"/"}
+              // as={Link}
+              // href={"/"}
               type="button"
               className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
               size="lg"
@@ -131,7 +130,7 @@ const AddProperty = () => {
                   </button>
                 </div>
 
-                <div className="border rounded-2xl space-y-5 p-4 pt-3 shadow-lg">
+                <div className="border  space-y-5 p-5 ">
                   {/* property Profile ------------------------ */}
                   <div>
                     <div>
@@ -151,34 +150,26 @@ const AddProperty = () => {
 
                       {/* address and description */}
                       <div className="col-span-1 md:col-span-6">
+                        {/* title */}
+                        <div>
+                          <label className="text-sm font-medium">Title</label>
+                          <Input type="text" value={property.title} onChange={(value) => handleInputChange(property.id, "title", value)} />
+                        </div>
                         {/* address */}
                         <div>
                           <label className="text-sm font-medium">Address</label>
                           <Input type="text" value={property.address} onChange={(value) => handleInputChange(property.id, "address", value)} />
                         </div>
                         {/* description */}
-                        <div className="h-[200px]">
-                          <label className="text-sm font-medium">Description</label>
-                          <AddPropertyEditor
-                            propertyId={property?.id}
-                            value={property?.description}
-                            handleInputChange={handleInputChange}
-                            field="description"
-                          />
-
-                          {/* <Input
-                            as="textarea"
-                            rows={6}
-                            value={property.description}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "description",
-                                value,
-                              )
-                            }
-                          /> */}
-                        </div>
+                      </div>
+                      <div className="col-span-1 lg:col-span-12">
+                        <label className="text-sm font-medium">Description</label>
+                        <AddPropertyEditor
+                          propertyId={property?.id}
+                          value={property?.description}
+                          handleInputChange={handleInputChange}
+                          field="description"
+                        />
                       </div>
                       <div className="col-span-1 lg:col-span-12">
                         {/* number of beds and number of baths */}
@@ -369,7 +360,7 @@ const AddProperty = () => {
 
           <div className="mt-10 flex justify-end">
             <Button loading={isLoading} onClick={handleCreateProperty} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
-              Click
+              Next
             </Button>
           </div>
         </div>

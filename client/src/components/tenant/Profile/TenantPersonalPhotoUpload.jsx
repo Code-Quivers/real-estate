@@ -4,14 +4,7 @@ import { useState } from "react";
 import { fileUrlKey } from "@/configs/envConfig";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 
-const TenantPersonalProfileUpload = ({
-  field,
-  defaultImage,
-  setImagePreview,
-  imagePreview,
-  fileValue,
-  setFileValue,
-}) => {
+const TenantPersonalProfileUpload = ({ field, defaultImage, setImagePreview, imagePreview, fileValue, setFileValue }) => {
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
 
@@ -32,10 +25,7 @@ const TenantPersonalProfileUpload = ({
 
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
-      if (
-        latestFile.blobFile?.size &&
-        latestFile.blobFile?.size <= fileSizeLimit
-      ) {
+      if (latestFile.blobFile?.size && latestFile.blobFile?.size <= fileSizeLimit) {
         // Clear previous file information
 
         // Update the fileValue state to contain only the new file
@@ -73,21 +63,12 @@ const TenantPersonalProfileUpload = ({
   return (
     <div>
       <div>
-        <Uploader
-          fileListVisible={false}
-          listType="picture-text"
-          autoUpload={false}
-          onChange={handleChangeImages}
-          onRemove={clearImagePreview}
-        >
+        <Uploader fileListVisible={false} listType="picture-text" autoUpload={false} onChange={handleChangeImages} onRemove={clearImagePreview}>
           <div style={{ width: 200, height: 200, borderRadius: "50%" }}>
             {uploading && <Loader backdrop center />}
             {imagePreview ? (
               <div>
-                <img
-                  src={imagePreview}
-                  className="w-[200px] h-[200px] cursor-pointer rounded-xl object-cover "
-                />
+                <img src={imagePreview} className="w-[200px] h-[200px] cursor-pointer rounded-xl object-cover " />
               </div>
             ) : (
               <div className="!border hover:border-black cursor-pointer focus-within:scale-105 rounded-xl    ">
@@ -111,11 +92,7 @@ const TenantPersonalProfileUpload = ({
               <p className="text-wrap">{fileValue[0]?.blobFile?.name}</p>
             </div>
             <div className="z-10">
-              <button
-                onClick={handleRemoveFile}
-                className="text-[#f14e4e] hover:text-red-600"
-                type="button"
-              >
+              <button onClick={handleRemoveFile} className="text-[#f14e4e] hover:text-red-600" type="button">
                 <RiDeleteBin5Fill size={30} />
               </button>
             </div>

@@ -9,13 +9,7 @@ const page = () => {
       <h2 className="text-2xl mb-5">Requests you sent</h2>
       <div className="flex justify-between items-center border">
         <div className="flex justify-start items-center gap-5">
-          <Image
-            src={requestImage}
-            className="h-32 object-cover"
-            width={150}
-            objectFit="cover"
-            alt="Tenant avialable units"
-          />
+          <Image src={requestImage} className="h-32 object-cover" width={150} objectFit="cover" alt="Tenant avialable units" />
           <div className="text-start">
             <h2>Home Owner Name</h2>
             <h2>Home Owner Address</h2>

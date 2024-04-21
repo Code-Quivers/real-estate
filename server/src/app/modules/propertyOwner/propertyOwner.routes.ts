@@ -16,19 +16,11 @@ router.get(
 // ! get single property owner
 router.get(
   "/get-single-property-owner/:propertyOwnerId",
-  auth(
-    UserRoles.SUPERADMIN,
-    UserRoles.SERVICE_PROVIDER,
-    UserRoles.PROPERTY_OWNER,
-  ),
+  auth(UserRoles.SUPERADMIN, UserRoles.SERVICE_PROVIDER, UserRoles.PROPERTY_OWNER),
   PropertyOwnerControllers.getSinglePropertyOwner,
 );
 // ! get property owner  my profile
-router.get(
-  "/get-my-profile",
-  auth(UserRoles.PROPERTY_OWNER),
-  PropertyOwnerControllers.getPropertyOwnerMyProfile,
-);
+router.get("/get-my-profile", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getPropertyOwnerMyProfile);
 
 // ! update property owner
 router.patch(
@@ -36,11 +28,20 @@ router.patch(
   auth(UserRoles.PROPERTY_OWNER),
   FileUploadHelper.uploadUpdatedUserImage.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
-    req.body = PropertyOwnerValidation.updatePropertyOwner.parse(
-      JSON.parse(req.body.data),
-    );
+    req.body = PropertyOwnerValidation.updatePropertyOwner.parse(JSON.parse(req.body.data));
     return PropertyOwnerControllers.UpdatePropertyOwner(req, res, next);
   },
 );
 
+router.get(
+  "/financial-info",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertyOwnerControllers.getFinancialAccount
+);
+
+router.get(
+  "/dashboard-info",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertyOwnerControllers.getDashboardInfo
+);
 export const PropertyOwnerRouter = router;

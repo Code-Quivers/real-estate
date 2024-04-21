@@ -2,10 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* ! scrollbar */
 body::-webkit-scrollbar {
-  width: 0px;
+  width: 5px;
   /* width of the entire scrollbar */
 }
 
@@ -17,17 +16,13 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #29429F;
+  background-color: #29429f;
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid #29429F;
+  border: 3px solid #29429f;
   /* creates padding around scroll thumb */
 }
-
-
-
-
 
 /* !others */
 /* .rs-modal-wrapper {
@@ -37,13 +32,11 @@ body::-webkit-scrollbar-thumb {
 } */
 
 .rs-picker-toggle {
-
   border-radius: 0px !important;
-
 }
 
 .rs-btn-lg {
-  background-color: #29429F !important;
+  background-color: #29429f !important;
   color: white !important;
 }
 
@@ -80,14 +73,11 @@ body::-webkit-scrollbar-thumb {
   box-sizing: border-box;
 }
 
-
 /* pop over */
 .rs-popover {
-
   /* border-radius: 10px !important; */
 
   padding: 0px !important;
-
 }
 
 /* r suit input */
@@ -100,8 +90,6 @@ body::-webkit-scrollbar-thumb {
   border-radius: 0px !important;
 }
 
-
-
 /* Apply styles when the Input component gains focus */
 /* .rs-input:focus {
   border-color: #00f !important;
@@ -112,7 +100,6 @@ body::-webkit-scrollbar-thumb {
   border-color: rgba(0, 0, 255, 0.445) !important;
 
 } */
-
 
 /* scrollbar hide modal */
 .custom-scrollbar::-webkit-scrollbar {
@@ -132,12 +119,10 @@ body::-webkit-scrollbar-thumb {
   /* Adjust the background color as needed */
 }
 
-
 /* add property text editor */
 .ql-editor {
   background: white !important;
   border-radius: 0 !important;
-
 }
 
 .app .ql-container {
@@ -148,4 +133,11 @@ body::-webkit-scrollbar-thumb {
 
 .app .ql-editor {
   min-height: 10rem;
+}
+
+
+/* ! uploader */
+.rs-uploader-picture {
+  display: flex !important;
+  flex-direction: column-reverse !important;
 }

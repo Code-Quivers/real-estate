@@ -2,10 +2,7 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import {
-  IServiceProviderFilterRequest,
-  IServiceProviderUpdateRequest,
-} from "./serviceProvider.interfaces";
+import { IServiceProviderFilterRequest, IServiceProviderUpdateRequest } from "./serviceProvider.interfaces";
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import fs from "fs";
@@ -18,12 +15,10 @@ import {
   serviceProviderRelationalFieldsMapper,
   serviceProviderSearchableFields,
 } from "./serviceProvider.constants";
+import { filterUndefinedOrNullValues } from "./serviceProvider.utils";
 
 // ! get all Service Provider
-const getAllServiceProviders = async (
-  filters: IServiceProviderFilterRequest,
-  options: IPaginationOptions,
-) => {
+const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -60,34 +55,31 @@ const getAllServiceProviders = async (
     });
   }
 
-  const whereConditions: Prisma.ServiceProviderWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.ServiceProviderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
-    const allServiceProvider = await transactionClient.serviceProvider.findMany(
-      {
-        where: whereConditions,
-        include: {
-          user: {
-            select: {
-              email: true,
-              role: true,
-              userName: true,
-              userStatus: true,
-            },
+    const allServiceProvider = await transactionClient.serviceProvider.findMany({
+      where: whereConditions,
+      include: {
+        user: {
+          select: {
+            email: true,
+            role: true,
+            userName: true,
+            userStatus: true,
           },
-          Service: true,
         },
-        skip,
-        take: limit,
-        orderBy:
-          options.sortBy && options.sortOrder
-            ? { [options.sortBy]: options.sortOrder }
-            : {
-                createdAt: "desc",
-              },
+        Service: true,
       },
-    );
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+              createdAt: "desc",
+            },
+    });
 
     const total = await prisma.serviceProvider.count({
       where: whereConditions,
@@ -108,9 +100,7 @@ const getAllServiceProviders = async (
 };
 
 // ! get single Property Owner
-const getSingleServiceProvider = async (
-  serviceProviderId: string,
-): Promise<ServiceProvider | null> => {
+const getSingleServiceProvider = async (serviceProviderId: string): Promise<ServiceProvider | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const serviceProvider = await transactionClient.serviceProvider.findUnique({
       where: {
@@ -128,10 +118,7 @@ const getSingleServiceProvider = async (
     });
 
     if (!serviceProvider) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Service Provider Profile Not Found!!!",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Profile Not Found!!!");
     }
     return serviceProvider;
   });
@@ -139,9 +126,7 @@ const getSingleServiceProvider = async (
   return result;
 };
 // ! getServiceProviderMyProfile
-const getServiceProviderMyProfile = async (
-  serviceProviderId: string,
-): Promise<ServiceProvider | null> => {
+const getServiceProviderMyProfile = async (serviceProviderId: string): Promise<ServiceProvider | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const serviceProvider = await transactionClient.serviceProvider.findUnique({
       where: {
@@ -152,17 +137,18 @@ const getServiceProviderMyProfile = async (
           select: {
             email: true,
             createdAt: true,
+            userName: true,
+            userStatus: true,
           },
         },
         Service: true,
+        _count: true,
+        SavedItem: true,
       },
     });
 
     if (!serviceProvider) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Service Provider Profile Not Found!!!",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Profile Not Found!!!");
     }
     return serviceProvider;
   });
@@ -171,10 +157,7 @@ const getServiceProviderMyProfile = async (
 };
 
 // ! update service provider
-const UpdateServiceProvider = async (
-  serviceProviderId: string,
-  req: Request,
-) => {
+const UpdateServiceProvider = async (serviceProviderId: string, req: Request) => {
   const profileImage: IUploadFile = req.file as any;
   // const profileImagePath = profileImage?.path?.substring(13);
 
@@ -204,37 +187,26 @@ const UpdateServiceProvider = async (
 
   //!
   const result = await prisma.$transaction(async (transactionClient) => {
-    const isServiceProviderOwnerExists =
-      await transactionClient.serviceProvider.findUnique({
-        where: {
-          serviceProviderId,
-        },
-      });
+    const isServiceProviderOwnerExists = await transactionClient.serviceProvider.findUnique({
+      where: {
+        serviceProviderId,
+      },
+    });
 
     if (!isServiceProviderOwnerExists) {
-      throw new ApiError(
-        httpStatus.NOT_FOUND,
-        "Service Provider Profile Not Found!",
-      );
+      throw new ApiError(httpStatus.NOT_FOUND, "Service Provider Profile Not Found!");
     }
 
-    const updatedServiceProviderProfileData: Partial<ServiceProvider> = {};
-    if (firstName) updatedServiceProviderProfileData["firstName"] = firstName;
-    if (lastName) updatedServiceProviderProfileData["lastName"] = lastName;
-    if (phoneNumber)
-      updatedServiceProviderProfileData["phoneNumber"] = phoneNumber;
-    if (profileImagePath)
-      updatedServiceProviderProfileData["profileImage"] = profileImagePath;
-    if (companyAddress)
-      updatedServiceProviderProfileData["companyAddress"] = companyAddress;
-    if (companyEmailAddress)
-      updatedServiceProviderProfileData["companyEmailAddress"] =
-        companyEmailAddress;
-    if (companyName)
-      updatedServiceProviderProfileData["companyName"] = companyName;
-    if (companyPhoneNumber)
-      updatedServiceProviderProfileData["companyPhoneNumber"] =
-        companyPhoneNumber;
+    const updatedServiceProviderProfileData: Partial<ServiceProvider> = filterUndefinedOrNullValues({
+      firstName,
+      lastName,
+      phoneNumber,
+      profileImage: profileImagePath,
+      companyAddress,
+      companyEmailAddress,
+      companyName,
+      companyPhoneNumber,
+    });
 
     // ! updating
     const res = await transactionClient.serviceProvider.update({
@@ -245,10 +217,7 @@ const UpdateServiceProvider = async (
     });
 
     if (!res) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Service Provider Profile Updating Failed !",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Profile Updating Failed !");
     }
 
     return res;

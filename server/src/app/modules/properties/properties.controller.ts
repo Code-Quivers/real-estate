@@ -77,7 +77,7 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// ! assign tenant user to property or unit
+// ! assign tenant user to property or unit -----------------
 
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
   const profileId = (req.user as IRequestUser).profileId;
@@ -87,7 +87,36 @@ const assignTenantToProperty = catchAsync(async (req: Request, res: Response) =>
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Property created Successfully",
+    message: "Tenant Assigned Successfully",
+    data: result,
+  });
+});
+
+// ! remove  tenant user from property or unit -----------------
+const removeTenantFromProperty = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await PropertiesService.removeTenantFromProperty(profileId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Tenant remove Successfully",
+    data: result,
+  });
+});
+
+// ! assign Service Provider to property or unit
+
+const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Response) => {
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await PropertiesService.assignServiceProviderToProperty(profileId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Service Provider Assigned Successfully",
     data: result,
   });
 });
@@ -99,4 +128,6 @@ export const PropertiesController = {
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
+  assignServiceProviderToProperty,
+  removeTenantFromProperty,
 };

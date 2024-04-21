@@ -1,15 +1,6 @@
-export const propertiesFilterableFields: string[] = [
-  "propertyId",
-  "searchTerm",
-  "ownerId",
-  // 'numOfBed',
-  // 'numOfBath',
-  "createdAt",
-];
+export const propertiesFilterableFields: string[] = ["searchTerm"];
 
-export const propertiesSearchableFields: string[] = ["address", "description"];
+export const propertiesSearchableFields: string[] = ["address"];
 
-export const propertiesRelationalFields: string[] = ["ownerId"];
-export const propertiesRelationalFieldsMapper: { [key: string]: string } = {
-  ownerId: "ownerId",
-};
+export const propertiesRelationalFields: string[] = [""];
+export const propertiesRelationalFieldsMapper: { [key: string]: string } = {};

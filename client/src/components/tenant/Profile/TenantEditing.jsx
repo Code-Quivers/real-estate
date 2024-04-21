@@ -11,23 +11,10 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 import { convertToBoolean, convertToNumber } from "@/utils/tenantEditUtils";
 
-const TenantEditing = ({
-  setTabActive,
-  tabActive,
-  defaultImage,
-  tenantId,
-  data: responseData,
-}) => {
+const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: responseData }) => {
   const [fileValue, setFileValue] = useState([]);
-  const [imagePreview, setImagePreview] = useState(
-    fileValue?.length
-      ? null
-      : defaultImage
-        ? `${fileUrlKey()}/${defaultImage}`
-        : null,
-  );
-  const [updateTenantProfile, { isError, isLoading, isSuccess, error }] =
-    useUpdateTenantProfileMutation();
+  const [imagePreview, setImagePreview] = useState(fileValue?.length ? null : defaultImage ? `${fileUrlKey()}/${defaultImage}` : null);
+  const [updateTenantProfile, { isError, isLoading, isSuccess, error }] = useUpdateTenantProfileMutation();
   const {
     control,
     handleSubmit,
@@ -62,9 +49,7 @@ const TenantEditing = ({
       isPetVaccinated: convertToBoolean(isPetVaccinated),
       isHaveOtherMember: convertToBoolean(isHaveOtherMember),
       isSmoker: convertToBoolean(isSmoker),
-      isWillingToSignLeasingAgreement: convertToBoolean(
-        isWillingToSignLeasingAgreement,
-      ),
+      isWillingToSignLeasingAgreement: convertToBoolean(isWillingToSignLeasingAgreement),
     };
 
     // creating form data
@@ -74,8 +59,7 @@ const TenantEditing = ({
     delete obj.file;
     const updatedProfileData = JSON.stringify(obj);
     if (updateData?.file?.blobFile) obj["oldFilePath"] = defaultImage;
-    if (updateData?.file?.blobFile)
-      formData.append("file", updateData?.file?.blobFile);
+    if (updateData?.file?.blobFile) formData.append("file", updateData?.file?.blobFile);
     formData.append("data", updatedProfileData);
 
     const res = await updateTenantProfile({
@@ -99,30 +83,10 @@ const TenantEditing = ({
             responseData={responseData}
           />
         )}
-        {tabActive === 3 && (
-          <TenantRentalHistoryEdit
-            responseData={responseData}
-            control={control}
-          />
-        )}
-        {tabActive === 4 && (
-          <TenantIncomeInformationEdit
-            responseData={responseData}
-            control={control}
-          />
-        )}
-        {tabActive === 5 && (
-          <TenantPetsInformationEdit
-            responseData={responseData}
-            control={control}
-          />
-        )}
-        {tabActive === 6 && (
-          <TenantOtherInformationEdit
-            responseData={responseData}
-            control={control}
-          />
-        )}
+        {tabActive === 3 && <TenantRentalHistoryEdit responseData={responseData} control={control} />}
+        {tabActive === 4 && <TenantIncomeInformationEdit responseData={responseData} control={control} />}
+        {tabActive === 5 && <TenantPetsInformationEdit responseData={responseData} control={control} />}
+        {tabActive === 6 && <TenantOtherInformationEdit responseData={responseData} control={control} />}
 
         <div className="my-10">
           <div className=" flex justify-end gap-5 items-center">
@@ -157,11 +121,7 @@ const TenantEditing = ({
               </Button>
             )}
             {tabActive === 6 && (
-              <Button
-                size="lg"
-                type="submit"
-                className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
-              >
+              <Button size="lg" type="submit" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
                 SAVE
               </Button>
             )}

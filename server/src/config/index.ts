@@ -23,4 +23,8 @@ export default {
     cloud_api_key: process.env.CLOUD_API_KEY,
     cloud_api_secret: process.env.CLOUD_API_SECRET,
   },
+  paypalMode: process.env.PAYPAL_MODE,
+  paypalClientId: process.env.PAYPAL_CLIENT_ID,
+  paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET,
+  paypalBaseUrl: process.env.PAYPAL_BASE_URL,
 };

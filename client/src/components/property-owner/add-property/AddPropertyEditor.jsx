@@ -14,23 +14,10 @@ const modules = {
   ],
 };
 
-const formats = [
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "indent",
-  "list",
-  "bullet",
-  "size",
-  "align",
-];
+const formats = ["bold", "italic", "underline", "strike", "indent", "list", "bullet", "size", "align"];
 
 const MyComponent = ({ propertyId, value, handleInputChange, field }) => {
-  const ReactQuill = useMemo(
-    () => dynamic(() => import("react-quill"), { ssr: false }),
-    [],
-  );
+  const ReactQuill = useMemo(() => dynamic(() => import("react-quill"), { ssr: false }), []);
   return (
     <div className="relative">
       <ReactQuill

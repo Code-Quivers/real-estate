@@ -1,37 +1,26 @@
 {
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2021,
+    "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": "error",
     "prefer-const": "error",
     "no-unused-expressions": "error",
     "no-undef": "error",
     "no-console": "off",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "indent": "off", // Disable the indent rule
-    // Add other Prettier rules as needed
-    "trailingComma": "all",
-    "semi": "warn",
-    "tabWidth": 2,
-    "printWidth": 80,
-    "quoteProps": "as-needed"
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   "env": {
-    "node": true,
-    "es2021": true
-    // Adjust environments as needed
+    "browser": true,
+    "es2021": true,
+    "node": true
   },
   "globals": {
     "process": "readonly"
-    // Add other global variables as needed
   }
 }

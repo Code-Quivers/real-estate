@@ -8,13 +8,7 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
   const toaster = useToaster();
   const [uploading, setUploading] = useState(false);
   const [fileValue, setFileValue] = useState([]);
-  const [imagePreview, setImagePreview] = useState(
-    fileValue?.length
-      ? null
-      : defaultImage
-        ? `${fileUrlKey()}/${defaultImage}`
-        : null,
-  );
+  const [imagePreview, setImagePreview] = useState(fileValue?.length ? null : defaultImage ? `${fileUrlKey()}/${defaultImage}` : null);
 
   const clearImagePreview = () => {
     setImagePreview(`${fileUrlKey()}/${defaultImage}` || undefined);
@@ -32,10 +26,7 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
 
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
 
-      if (
-        latestFile.blobFile?.size &&
-        latestFile.blobFile?.size <= fileSizeLimit
-      ) {
+      if (latestFile.blobFile?.size && latestFile.blobFile?.size <= fileSizeLimit) {
         // Clear previous file information
 
         // Update the fileValue state to contain only the new file
@@ -93,10 +84,7 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
             {uploading && <Loader backdrop center />}
             {imagePreview ? (
               <div>
-                <img
-                  src={imagePreview}
-                  className="w-[200px] h-[200px] rounded-full object-cover "
-                />
+                <img src={imagePreview} className="w-[200px] h-[200px] rounded-full object-cover " />
               </div>
             ) : (
               <div className="!border hover:border-[#545454] focus-within:scale-105 rounded-full overflow-hidden flex justify-center  ">
@@ -118,16 +106,9 @@ const PropertyOwnerUploadImageEdit = ({ field, defaultImage }) => {
         {fileValue?.length > 0 && (
           <div className=" flex justify-between gap-5 items-center">
             <p className="text-wrap ">
-              {fileValue[0]?.blobFile?.name} -{" "}
-              <span className="font-medium">
-                {formatFileSize(fileValue[0]?.blobFile?.size)}
-              </span>
+              {fileValue[0]?.blobFile?.name} - <span className="font-medium">{formatFileSize(fileValue[0]?.blobFile?.size)}</span>
             </p>
-            <button
-              onClick={handleRemoveFile}
-              className="text-[#f14e4e] hover:text-red-600"
-              type="button"
-            >
+            <button onClick={handleRemoveFile} className="text-[#f14e4e] hover:text-red-600" type="button">
               <RiDeleteBin5Fill size={30} />
             </button>
           </div>

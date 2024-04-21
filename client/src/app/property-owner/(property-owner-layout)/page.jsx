@@ -2,12 +2,12 @@
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-import { IconButton } from "rsuite";
-import { FaPencilAlt } from "react-icons/fa";
+
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
 import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
+import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
 
 const PropertyOwnerInformation = () => {
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
@@ -21,19 +21,14 @@ const PropertyOwnerInformation = () => {
             <Image
               width={80}
               height={80}
-              src={
-                myProfileData?.profileImage
-                  ? `${fileUrlKey()}/${myProfileData?.profileImage}`
-                  : profileLogo
-              }
+              src={myProfileData?.profileImage ? `${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
               className="w-[100px] h-[100px] md:w-[80px] md:h-[80px] object-cover rounded-lg select-none"
               alt="Profile Image"
             />
           </div>
           <div>
             <h4>
-              Name : {myProfileData?.firstName ?? "--"}{" "}
-              {myProfileData?.lastName ?? "--"}
+              Name : {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
             </h4>
             <h4>Email Address : {myProfileData?.user?.email ?? "--"}</h4>
             <h4>Phone Number : {myProfileData?.phoneNumber ?? "--"}</h4>
@@ -61,41 +56,7 @@ const PropertyOwnerInformation = () => {
             <h2 className="text-2xl font-medium">Dashboard</h2>
           </div>
           <div className="grid md:grid-cols-1   lg:grid-cols-6 gap-5 mt-5 items-center">
-            <div className="col-span-1 lg:col-span-3 space-y-3">
-              <div className=" flex border   bg-white items-center justify-between px-5 py-6 rounded-2xl">
-                <div className="flex gap-3 items-center">
-                  <h2 className="text-4xl font-semibold">1</h2>
-                  <p className="text-xl font-medium">Rented Unit</p>
-                </div>
-
-                <div className=" outline outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[50px] h-[50px]">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span>1</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span>1</span>
-                  </div>
-                </div>
-              </div>
-              <div className="  border bg-white  px-5 py-6   rounded-2xl">
-                <h2 className="text-2xl font-semibold">$1900</h2>
-                <p className="text-xl font-medium">
-                  Rented Collected this month
-                </p>
-              </div>
-              <div className="  border flex justify-between items-start    px-5 py-6  rounded-2xl bg-white">
-                <div>
-                  <h2 className="text-2xl font-semibold">$230</h2>
-                  <p className="text-xl font-medium">Cost this month</p>
-                </div>
-                <div>
-                  <IconButton
-                    icon={<FaPencilAlt size={20} />}
-                    appearance="subtle"
-                    circle
-                  />
-                </div>
-              </div>
-            </div>
+            <DashboardInfo/>
             <div className="col-span-1 lg:col-span-3 space-y-5">
               <PropertyOwnerChart />
               <PropertyOwnerChart />
@@ -110,29 +71,20 @@ const PropertyOwnerInformation = () => {
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Full Name</h2>
               <p className="text-lg font-medium">
-                {myProfileData?.firstName ?? "--"}{" "}
-                {myProfileData?.lastName ?? "--"}
+                {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
               </p>
             </div>
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Phone Number</h2>
-              <p className="text-lg font-medium">
-                {myProfileData?.phoneNumber ?? "--"}
-              </p>
+              <p className="text-lg font-medium">{myProfileData?.phoneNumber ?? "--"}</p>
             </div>
             <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">
-                Account Registered Date
-              </h2>
-              <p className="text-lg font-medium">
-                {moment(myProfileData?.createdAt).format("ll")}
-              </p>
+              <h2 className="font-bold text-xl 2xl:text-2xl">Account Registered Date</h2>
+              <p className="text-lg font-medium">{moment(myProfileData?.createdAt).format("ll")}</p>
             </div>
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Total Property</h2>
-              <p className="text-lg font-medium">
-                {myProfileData?._count?.Property ?? "--"}
-              </p>
+              <p className="text-lg font-medium">{myProfileData?._count?.Property ?? "--"}</p>
             </div>
           </div>
         </div>

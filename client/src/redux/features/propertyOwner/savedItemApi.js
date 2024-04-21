@@ -21,26 +21,16 @@ export const savedItemApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [
-        tagTypes.services,
-        tagTypes.serviceProvider,
-        tagTypes.user,
-        tagTypes.tenant,
-        tagTypes.items,
-      ],
+      invalidatesTags: [tagTypes.services, tagTypes.serviceProvider, tagTypes.user, tagTypes.tenant, tagTypes.items],
     }),
     removeFromSavedItem: builder.mutation({
       query: ({ itemId }) => ({
         url: `${SAVE_ITEM}/remove?itemId=${itemId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.services, tagTypes.items, tagTypes.tenant],
+      invalidatesTags: [tagTypes.services, tagTypes.items, tagTypes.tenant, tagTypes.properties],
     }),
   }),
 });
 
-export const {
-  useGetAllSavedItemsQuery,
-  useSaveItemMutation,
-  useRemoveFromSavedItemMutation,
-} = savedItemApi;
+export const { useGetAllSavedItemsQuery, useSaveItemMutation, useRemoveFromSavedItemMutation } = savedItemApi;

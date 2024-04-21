@@ -10,10 +10,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
         <div className="px-5 py-2 bg-[#29439f23]  flex justify-between items-center">
           <h2 className="text-xl font-medium ">Profile Details</h2>
 
-          <button
-            onClick={() => setTabActive(2)}
-            className="p-2  hover:bg-[#29429f] hover:text-white text-[#29429f]  hover:border-black/50"
-          >
+          <button onClick={() => setTabActive(2)} className="p-2  hover:bg-[#29429f] hover:text-white text-[#29429f]  hover:border-black/50">
             <MdEdit size={25} />
           </button>
         </div>
@@ -26,9 +23,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div>
             <h2 className="font-semibold text-lg">Date Of Birth</h2>
-            <p className="font-medium">
-              {moment(data?.dateOfBirth).format("MMMM Do YYYY") ?? "--"}
-            </p>
+            <p className="font-medium">{moment(data?.dateOfBirth).format("MMMM Do YYYY") ?? "--"}</p>
           </div>
           <div>
             <h2 className="font-semibold text-lg">Social Security Number</h2>
@@ -51,18 +46,10 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
             <p className="font-medium">{data?.user?.email}</p>
           </div>
           <div>
-            <h2 className="font-semibold text-lg">
-              Do you have a criminal record?
-            </h2>
+            <h2 className="font-semibold text-lg">Do you have a criminal record?</h2>
             <p className="font-medium">
-              {data?.isCriminalRecord === true
-                ? "Yes,"
-                : data?.isCriminalRecord === false
-                  ? "No"
-                  : "--"}{" "}
-              {data?.criminalRecordDescription
-                ? `(${data?.criminalRecordDescription})`
-                : ""}
+              {data?.isCriminalRecord === true ? "Yes," : data?.isCriminalRecord === false ? "No" : "--"}{" "}
+              {data?.criminalRecordDescription ? `(${data?.criminalRecordDescription})` : ""}
             </p>
           </div>
         </div>

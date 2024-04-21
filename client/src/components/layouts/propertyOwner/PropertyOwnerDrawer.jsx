@@ -21,12 +21,7 @@ const PropertyOwnerDrawer = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const {
-    data: dataResponse,
-    isError,
-    isLoading,
-    error,
-  } = useGetPropertyOwnerMyProfileQuery();
+  const { data: dataResponse, isError, isLoading, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
 
@@ -41,12 +36,7 @@ const PropertyOwnerDrawer = () => {
     <div>
       <div className="border-b py-1 shadow-lg flex justify-between items-center pr-3">
         <div>
-          <IconButton
-            circle
-            icon={<GiHamburgerMenu size={30} />}
-            size="xs"
-            onClick={() => handleOpen()}
-          />
+          <IconButton circle icon={<GiHamburgerMenu size={30} />} size="xs" onClick={() => handleOpen()} />
         </div>
         <div>
           <p className="font-semibold">
@@ -55,14 +45,7 @@ const PropertyOwnerDrawer = () => {
         </div>
       </div>
       <div>
-        <Drawer
-          placement="left"
-          open={open}
-          onClose={() => setOpen(false)}
-          closeButton={false}
-          dialogAs="div"
-          className="max-w-xs"
-        >
+        <Drawer placement="left" open={open} onClose={() => setOpen(false)} closeButton={false} dialogAs="div" className="max-w-xs">
           {/* <Drawer.Header style={{ backgroundColor: "#29429f" }}>
             <Drawer.Title className="!text-white">
               <span className="text-white text-xl font-semibold">Menu</span>
@@ -79,9 +62,7 @@ const PropertyOwnerDrawer = () => {
                   "
                   >
                     <div className="flex justify-between  items-center">
-                      <h3 className="text-white text-2xl font-semibold">
-                        Menu
-                      </h3>
+                      <h3 className="text-white text-2xl font-semibold">Menu</h3>
                       <button
                         onClick={() => setOpen(false)}
                         // border-transparent hover:
@@ -95,34 +76,24 @@ const PropertyOwnerDrawer = () => {
                         <Image
                           width={100}
                           height={100}
-                          src={
-                            myProfileData?.profileImage
-                              ? `${fileUrlKey()}/${myProfileData?.profileImage}`
-                              : profileLogo
-                          }
+                          src={myProfileData?.profileImage ? `${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
                           className="w-[100px] h-[100px] object-cover rounded-full select-none"
                           alt="Profile Image"
                         />
                         <h2 className="text-white mt-3 ">
-                          {myProfileData?.firstName ?? "--"}{" "}
-                          {myProfileData?.lastName ?? "--"}
+                          {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
                         </h2>
                       </div>
                     </div>
                   </div>
 
-                  <Nav
-                    appearance="subtle"
-                    className="divide-y-2 border-t-2 border-black divide-black"
-                  >
+                  <Nav appearance="subtle" className="divide-y-2 border-t-2 border-black divide-black">
                     <Nav.Item
                       as={Link}
                       href="/property-owner"
                       eventKey="1"
                       icon={<DashboardIcon />}
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner" && "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                         borderTop: "2px solid #000 !important",
@@ -134,10 +105,7 @@ const PropertyOwnerDrawer = () => {
                       eventKey="2"
                       as={Link}
                       href="/property-owner/available-tenants"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/available-tenants" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/available-tenants" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
@@ -148,10 +116,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/saved-tenants"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/saved-tenants" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-tenants" && "!bg-[#17318f]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="3"
                       icon={<GroupIcon />}
@@ -161,22 +126,14 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/unit-information"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/unit-information" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/unit-information" && "!bg-[#17318f]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="4"
                       icon={<GroupIcon />}
                     >
                       Unit Information
                     </Nav.Item>
-                    <Nav.Item
-                      style={{ backgroundColor: "#29429f" }}
-                      eventKey="5"
-                      className="hover:!bg-[#1b3697]"
-                      icon={<GroupIcon />}
-                    >
+                    <Nav.Item style={{ backgroundColor: "#29429f" }} eventKey="5" className="hover:!bg-[#1b3697]" icon={<GroupIcon />}>
                       Documents
                     </Nav.Item>
                     <Nav.Item
@@ -192,10 +149,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/service-providers"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/service-providers" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/service-providers" && "!bg-[#17318f]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="7"
                       icon={<GroupIcon />}
@@ -205,11 +159,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/saved-service-providers"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink ===
-                          "/property-owner/saved-service-providers" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-service-providers" && "!bg-[#17318f]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="8"
                       icon={<GroupIcon />}
@@ -219,10 +169,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/reports"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/reports" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/reports" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
@@ -234,10 +181,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/settings"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/settings" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
@@ -249,10 +193,7 @@ const PropertyOwnerDrawer = () => {
                     <Nav.Item
                       as={Link}
                       href="/property-owner/maintenance-requests"
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/maintenance-requests" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
@@ -263,10 +204,7 @@ const PropertyOwnerDrawer = () => {
                     </Nav.Item>
                     <Nav.Item
                       onClick={logOut}
-                      className={`hover:!bg-[#1b3697] ${
-                        activeLink === "/property-owner/maintenance-requests" &&
-                        "!bg-[#17318f]"
-                      }`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#17318f]"}`}
                       style={{
                         backgroundColor: "#29429f",
                         borderBottom: "2px solid #000",

@@ -20,6 +20,20 @@ const getAllTenants = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! get all available  tenants
+const getAllAvailableTenants = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, tenantsFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await TenantServices.getAllAvailableTenants(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Tenants fetching successful",
+    data: result,
+  });
+});
 // ! get single tenant
 const getSingleTenant = catchAsync(async (req: Request, res: Response) => {
   const tenantId = req.params?.tenantId;
@@ -57,9 +71,25 @@ const updateTenantProfile = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+// ! get  tenant my unit Information
+const getMyUnitInformation = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = (req.user as IRequestUser).profileId;
+  const result = await TenantServices.getMyUnitInformation(tenantId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "My Unit Information retrieved Successful",
+    data: result,
+  });
+});
+
 export const TenantsControllers = {
   getAllTenants,
   updateTenantProfile,
   getTenantMyProfile,
   getSingleTenant,
+  getAllAvailableTenants,
+  getMyUnitInformation,
 };

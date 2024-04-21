@@ -11,12 +11,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
-  const {
-    data: dataResponse,
-    isError,
-    isLoading,
-    error,
-  } = useGetTenantMyProfileQuery();
+  const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};
 
@@ -29,11 +24,7 @@ const TenantProfile = () => {
             <Image
               height={150}
               width={150}
-              src={
-                data?.profileImage
-                  ? `${fileUrlKey()}/${data?.profileImage}`
-                  : profileLogo
-              }
+              src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
               className="max-md:w-[80px] md:w-[150px] md:h-[150px]  rounded-full object-cover select-none"
               alt="Profile Image"
             />
@@ -126,17 +117,9 @@ const TenantProfile = () => {
         </div>
       </div>
 
-      {tabActive === 1 && (
-        <TenantProfileInformation setTabActive={setTabActive} data={data} />
-      )}
+      {tabActive === 1 && <TenantProfileInformation setTabActive={setTabActive} data={data} />}
       {tabActive !== 1 && (
-        <TenantEditing
-          setTabActive={setTabActive}
-          tabActive={tabActive}
-          data={data}
-          tenantId={data?.tenantId}
-          defaultImage={data?.profileImage}
-        />
+        <TenantEditing setTabActive={setTabActive} tabActive={tabActive} data={data} tenantId={data?.tenantId} defaultImage={data?.profileImage} />
       )}
     </section>
   );
