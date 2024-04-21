@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
-const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
+const SendMessagePopOverFromTenant = ({ receiverId }) => {
   const [startNewConversation, { data, isLoading, isSuccess, isError, error }] = useStartNewConversationMutation();
   const [textMessage, setTextMessage] = useState("");
 
@@ -36,7 +36,7 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
           placement: "bottomStart",
         },
       );
-      router.push(`/property-owner/messages?chat=${data?.data?.conversationId}`);
+      router.push(`/tenant/messages?chat=${data?.data?.conversationId}`);
     }
     if (isError && !isSuccess && error && !isLoading) {
       toaster.push(
@@ -92,4 +92,4 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
   );
 };
 
-export default SendMessagePopOverFromPropertyOwner;
+export default SendMessagePopOverFromTenant;
