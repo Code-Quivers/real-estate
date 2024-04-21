@@ -100,15 +100,17 @@ body::-webkit-scrollbar-thumb {
   border-color: rgba(0, 0, 255, 0.445) !important;
 
 } */
+.custom-scrollbar {
+  overflow: auto;
+}
 
-/* scrollbar hide modal */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 2px !important;
+  width: 5px !important;
   /* Adjust the width as needed */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #0252dd !important;
+  background-color: #0252dd7c !important;
   /* Adjust the color as needed */
   border-radius: 4px;
   /* Adjust the border radius as needed */

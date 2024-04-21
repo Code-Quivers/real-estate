@@ -11,7 +11,6 @@ import { getParticipantName, getProfileImageUrl } from "@/utils/conversation.uti
 import { useToaster } from "rsuite";
 import { Controller, useForm } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
-import { IoImages } from "react-icons/io5";
 import useSocket from "../../hooks/useSocket";
 import { SendMessageErrorMessage } from "../toasts/notifications/ToastNotificationMessages";
 
@@ -129,23 +128,23 @@ const ConversationMessagingChats = () => {
   }, [dataResponse]);
 
   return (
-    <div className="flex flex-col h-[80vh]">
+    <div className="flex flex-col h-[80vh] border  rounded-lg  bg-white shadow-lg">
       {conversationId && !isError ? (
         <>
-          <div className="bg-white shadow-lg px-3  sticky top-0 flex items-center gap-3 my-0.5">
+          <div className="  py-2  border-b px-3  sticky top-0 flex items-center gap-3 ">
             <div className="">
-              <Image alt="" height={50} width={50} className="rounded-full" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
+              <Image alt="" height={45} width={45} className="rounded-full" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
             </div>
             <div>
               <h2>{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
             </div>
           </div>
-          <div className="flex-1 overflow-y-scroll  py-3" ref={messagesContainerRef}>
+          <div className="flex-1 m-1 overflow-y-scroll custom-scrollbar py-3 rounded-md bg-[#02020200]" ref={messagesContainerRef}>
             <div className="space-y-5 flex flex-col-reverse px-3">
               {dataResponse?.data?.messages?.map((message) => (
                 <div
                   key={Math.random()}
-                  className={`flex  w-full ${message?.sender?.userId !== myDetails?.userId ? "justify-start" : "justify-end"}`}
+                  className={`flex  w-full   ${message?.sender?.userId !== myDetails?.userId ? "justify-start" : "justify-end"}`}
                 >
                   {message?.sender?.userId !== myDetails?.userId ? (
                     <ChatBubbleIncoming message={message} />
