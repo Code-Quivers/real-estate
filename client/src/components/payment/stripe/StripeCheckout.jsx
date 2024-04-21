@@ -13,7 +13,7 @@ import { useGetClientSecretMutation } from "@/redux/features/payment/stripePayme
 // Sign in to see your own test API key embedded in code samples.
 const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
 
-const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData }) => {
+const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, monthlyChargePerProperty }) => {
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
 
@@ -41,7 +41,7 @@ const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData }) => {
     <div>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <StripeCheckoutForm orderData={orderData} />
+          <StripeCheckoutForm orderData={orderData} monthlyChargePerProperty={monthlyChargePerProperty} amountToPaid={amountToPaid} />
         </Elements>
       )}
     </div>

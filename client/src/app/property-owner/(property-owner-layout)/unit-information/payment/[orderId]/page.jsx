@@ -106,11 +106,11 @@ const UnitPaymentPage = ({ params }) => {
               amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
             /> */}
             <StripeCheckout
-             ownerOrderedId={orderDetails?.data?.orderId}
-             amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
-             orderData={orderDetails?.data}
+              ownerOrderedId={orderDetails?.data?.orderId}
+              amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
+              orderData={orderDetails?.data}
+              monthlyChargePerProperty={monthlyChargePerProperty}
             />
-
           </div>
           {/* activate a free trial */}
           <div className="mt-10 text-center">
@@ -127,65 +127,65 @@ const UnitPaymentPage = ({ params }) => {
                 backdrop={true}
                 size={800}
               >
-                <Modal.Body className="!p-5">
+                <Modal.Body>
                   <div>
-                    <h2>Free Trial Activation</h2>
-                  </div>
-                  <div>
-                    <h2>Trial Period:</h2>
-                    <ul className="list-disc">
-                      <li>{`Your trial period will last for 30 days from today's date.`}</li>
-                      <li>During this time, you can explore and utilize all functionalities without any restrictions.</li>
-                    </ul>
-                  </div>
+                    <h2 className="text-center text-xl pt-5 font-bold text-gray-900">Free Trial Activation</h2>
+                    <div className="pl-10 mb-1">
+                      <h2 className="font-semibold">Trial Period:</h2>
+                      <ul className="list-disc">
+                        <li>{`Your trial period will last for 30 days from today's date.`}</li>
+                        <li>During this time, you can explore and utilize all functionalities without any restrictions.</li>
+                      </ul>
+                    </div>
 
-                  <div>
-                    <h2>Activation Details:</h2>
-                    <ul className="list-disc">
-                      <li>Your free trial is now active and will be valid starting from this moment.</li>
-                      <li>You have full access to all features and properties for the duration of the trial period.</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h2>Important Note:</h2>{" "}
-                    <ul className="list-disc">
-                      <li>
-                        {`
+                    <div className="pl-10 mb-1">
+                      <h2 className="font-semibold">Activation Details:</h2>
+                      <ul className="list-disc">
+                        <li>Your free trial is now active and will be valid starting from this moment.</li>
+                        <li>You have full access to all features and properties for the duration of the trial period.</li>
+                      </ul>
+                    </div>
+                    <div className="pl-10 mb-1">
+                      <h2 className="font-semibold">Important Note:</h2>{" "}
+                      <ul className="list-disc">
+                        <li>
+                          {`
                       After the trial period ends, you won't be able to update or make changes to any properties or settings associated with your
                       account.
                      
                      `}
-                      </li>
-                      <li>
-                        However, you can choose to subscribe at any time to unlock full access and continue using the service without interruption.
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="mt-5">
-                    <span className="text-xs">
-                      {`
+                        </li>
+                        <li>
+                          However, you can choose to subscribe at any time to unlock full access and continue using the service without interruption.
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="mt-3 ml-10">
+                      <span className="text-xs">
+                        {`
                     We'll remind you before your trial ends, so you can decide whether to subscribe and keep enjoying our services hassle-free.
                     `}
-                    </span>
-                  </div>
-                  {/*  */}
+                      </span>
+                    </div>
+                    {/*  */}
 
-                  <div className="mt-10 flex justify-center items-center gap-5">
-                    <button onClick={() => setIsOpenFreeTrial(false)} className="border px-5 py-2 rounded-full">
-                      Back
-                    </button>
-                    <Button
-                      disabled={!params?.orderId}
-                      loading={isLoadingTrial}
-                      onClick={() => {
-                        updatePropertyTrialPeriod({
-                          orderId: params.orderId,
-                        });
-                      }}
-                      className="!bg-primary !px-5 !py-2.5 !text-white !rounded-full"
-                    >
-                      Confirm
-                    </Button>
+                    <div className="mt-10 flex justify-center items-center gap-5">
+                      <button onClick={() => setIsOpenFreeTrial(false)} className="border-gray-400 border px-5 py-2 rounded-full">
+                        Back
+                      </button>
+                      <Button
+                        disabled={!params?.orderId}
+                        loading={isLoadingTrial}
+                        onClick={() => {
+                          updatePropertyTrialPeriod({
+                            orderId: params.orderId,
+                          });
+                        }}
+                        className="!bg-primary !px-5 !py-2.5 !text-white !rounded-full"
+                      >
+                        Confirm
+                      </Button>
+                    </div>
                   </div>
                 </Modal.Body>
               </Modal>

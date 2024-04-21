@@ -22,7 +22,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
           <div className="flex px-5 justify-between items-center">
             {console.log(propertyInfo, "from modal")}
 
-            <h3 className="text-lg font-semibold">Payment</h3>
+            <h3 className="text-lg ml-24 font-semibold">Payment</h3>
             <button
               className="hover:text-rose-600 hover:scale-125 duration-300 transition-all "
               onClick={() => {
