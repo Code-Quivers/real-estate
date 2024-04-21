@@ -2,41 +2,16 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, Notification, useToaster } from "rsuite";
+import { Button, Modal, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
-
+import { SaveUnitNotificationError, SaveUnitNotificationSuccess } from "@/components/toasts/notifications/ToastNotification";
+import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOver";
 
 const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
-  const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
-
-  const saveUnit = async (propertyId) => {
-    console.log(unitInfo, '888888888888888888')
-    const dateToSave = {
-      propertyId: propertyId,
-      itemType: "PROPERTY",
-    };
-
-    await saveItem(dateToSave);
-  };
-
-  useEffect(() => {
-    if (isSuccess && !isError && !isLoading) {
-      toaster.push(savedItemUnit("Successfully saved!!!"), {
-        placement: "bottomStart",
-      });
-    }
-    if (isError && !isSuccess && error && !isLoading) {
-      toaster.push(savedItemUnitFailed(error?.message), {
-        placement: "bottomStart",
-      });
-    }
-  }, [isSuccess, isSuccess, error]);
-
-
 
   // ! save item
 
@@ -44,40 +19,26 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
 
   const saveUnitData = async () => {
     const unitData = {
-      propertyId: units?.propertyId,
+      propertyId: unitInfo?.propertyId,
       itemType: "PROPERTY",
     };
 
     await saveItem(unitData);
   };
-
+  console.log("unitInfo", unitInfo);
   // !
   const toaster = useToaster();
   useEffect(() => {
     if (isSuccess && !isError && !isLoading) {
-      toaster.push(
-        <Notification type="success" header="success" closable>
-          <div>
-            <p className="text-lg font-semibold mb-2">{saveData?.message || "Successfully Saved"}</p>
-          </div>
-        </Notification>,
-        {
-          placement: "bottomStart",
-        },
-      );
+      toaster.push(SaveUnitNotificationSuccess(saveData?.message), {
+        placement: "bottomStart",
+      });
       reset();
     }
     if (isError && !isSuccess && error && !isLoading) {
-      toaster.push(
-        <Notification type="error" header="error" closable>
-          <div>
-            <p className="text-lg font-semibold mb-2">{error?.message || "Failed to Saved"}</p>
-          </div>
-        </Notification>,
-        {
-          placement: "bottomStart",
-        },
-      );
+      toaster.push(SaveUnitNotificationError(error?.message), {
+        placement: "bottomStart",
+      });
     }
   }, [isSuccess, isSuccess, error, isLoading, toaster]);
 
@@ -89,18 +50,18 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
             <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
               {unitInfo?.images?.length
                 ? unitInfo?.images?.map((photo) => (
-                  <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
-                    <div className=" ">
-                      <Image
-                        className="h-[200px]    w-full object-center object-cover"
-                        height={300}
-                        width={300}
-                        src={`${fileUrlKey()}/${photo}`}
-                        alt="Unit Photo"
-                      />
+                    <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
+                      <div className=" ">
+                        <Image
+                          className="h-[200px]    w-full object-center object-cover"
+                          height={300}
+                          width={300}
+                          src={`${fileUrlKey()}/${photo}`}
+                          alt="Unit Photo"
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))
                 : ""}
             </div>
             <div className="col-span-3 w-full overflow-y-scroll max-h-[70vh]  custom-scrollbar ">
@@ -109,10 +70,14 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   <h2>Logo</h2>
                 </div>
                 <div className="flex gap-2.5 items-center">
-                  <Button onClick={saveUnitData} className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">
-                    Save
-                  </Button>
-                  <Button className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">Contact</Button>
+                  <div>
+                    <Button onClick={saveUnitData} className="!bg-primary w-full !text-white !px-3.5 !py-1 !text-base !rounded-none ">
+                      Save
+                    </Button>
+                  </div>
+                  <div>
+                    <SendMessagePopOver receiverId={unitInfo?.owner?.userId} />
+                  </div>
                 </div>
               </div>
               <hr className="border   block" />

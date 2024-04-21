@@ -8,7 +8,8 @@ import { useEffect } from "react";
 import { Button, Modal, Notification, Placeholder, Popover, Progress, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import SendMessagePopOver from "./SendMessagePopOver";
+import SendMessagePopOver from "../../Shared/modal/SendMessagePopOver";
+import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -139,7 +140,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
 
               {/* Contact  */}
               <div>
-                <SendMessagePopOver receiverId={modalData?.user?.userId} />
+                <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
               </div>
               {/*  */}
               <div>

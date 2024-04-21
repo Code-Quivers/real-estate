@@ -10,32 +10,31 @@ datasource db {
 // Prisma schema
 
 model PropertyOwner {
-  propertyOwnerId      String               @id @default(uuid())
-  firstName            String
-  lastName             String
-  phoneNumber          String?
-  profileImage         String?
-  paypalBussinessEmail String?              @unique
-  paypalMerchentId     String?              @unique
-  createdAt            DateTime             @default(now()) @db.Timestamptz(0)
-  updatedAt            DateTime             @updatedAt @db.Timestamptz(0)
-  userId               String               @unique
-  user                 User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  properties           Property[]
-  maintenanceRequests  MaintenanceRequest[]
-  orders               Order[]
-  reports              Report[]
-  FinancialAccount     FinancialAccount?
+  propertyOwnerId     String               @id @default(uuid())
+  firstName           String
+  lastName            String
+  phoneNumber         String?
+  profileImage        String?
+  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
+  userId              String               @unique
+  user                User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  properties          Property[]
+  maintenanceRequests MaintenanceRequest[]
+  orders              Order[]
+  reports             Report[]
+  FinancialAccount    FinancialAccount?
 
   @@map("propertyOwners")
 }
 
 model Tenant {
-  tenantId                             String               @id @default(uuid()) // Change uuid() to auto() for the primary key
-  userId                               String               @unique
+  tenantId  String @id @default(uuid()) // Change uuid() to auto() for the primary key
+  userId    String @unique
   // personal information
-  firstName                            String
-  lastName                             String
+  firstName String
+  lastName  String
+
   profileImage                         String?
   dateOfBirth                          DateTime?
   socialSecurityNumber                 String?
