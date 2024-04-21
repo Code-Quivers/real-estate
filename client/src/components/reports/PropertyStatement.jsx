@@ -31,26 +31,38 @@ const PropertyStatement = () => {
                   </div>
                 </div>
               </div>
-              <section className="mt-10">
+              
+              <section className="mt-10 space-y-3">
                 <div className="flex gap-14">
-                  <div className="flex w-1/2 border p-3 rounded-lg">
+                  <div className="flex w-1/2 border py-3 px-10 rounded-lg justify-between bg-white shadow-sm">
                     <p>Monthly Rent</p>
                     <p>$1200</p>
                   </div>
-                  <div className="flex w-1/2 border p-3 rounded-lg">
+                  <div className="flex w-1/2 border py-3 px-10 rounded-lg justify-between bg-white shadow-sm">
                     <p>Monthly Expense</p>
                     <p>$350</p>
                   </div>
                 </div>
                 <div className="flex gap-14">
-                  <div className="flex w-1/2 border p-3 rounded-lg">
+                  <div className="flex w-1/2 border py-3 px-10 rounded-lg justify-between bg-white shadow-sm">
                     <p>Monthly Rent</p>
                     <p>$1200</p>
                   </div>
-                  <div className="flex w-1/2 border p-3 rounded-lg">
+                  <div className="flex w-1/2 border py-3 px-10 rounded-lg justify-between bg-white shadow-sm">
                     <p>Monthly Expense</p>
                     <p>$350</p>
                   </div>
+                </div>
+              </section>
+
+              {/*  */}
+              <section className="my-6">
+                <h1 className="text-center text-xl">
+                  You are <span className="text-green-500">profitable</span>
+                </h1>
+                <div className="flex gap-40 text-white mt-6">
+                  <button className="bg-[#29429F] w-1/2 p-4 rounded-full">Download</button>
+                  <button className="bg-[#29429F] w-1/2 p-4 rounded-full">Edit</button>
                 </div>
               </section>
             </div>
