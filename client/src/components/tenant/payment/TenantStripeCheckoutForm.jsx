@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Loader } from "rsuite";
 
 const TenantStripeCheckoutForm = ({ orderInfo }) => {
   const stripe = useStripe();
@@ -78,11 +79,24 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button className="border p-3" disabled={isLoading || !stripe || !elements} id="submit">
-        <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}</span>
-      </button>
+      {isLoading ? (
+        <button className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full" id="submit">
+          <Loader size="sm" />
+        </button>
+      ) : (
+        <button className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full" id="submit">
+          Pay now
+        </button>
+      )}
+      {/* <button className="border p-3" disabled={isLoading || !stripe || !elements} id="submit">
+        Pay now
+      </button> */}
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {/* {message && (
+        <div id="payment-message" className="text-red-600">
+          {message}
+        </div>
+      )} */}
     </form>
   );
 };

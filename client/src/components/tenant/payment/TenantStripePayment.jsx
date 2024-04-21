@@ -68,7 +68,7 @@ const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantI
   }
 
   return (
-    <div>
+    <div className="max-w-xl mx-auto">
       <div>{content}</div>
     </div>
   );
