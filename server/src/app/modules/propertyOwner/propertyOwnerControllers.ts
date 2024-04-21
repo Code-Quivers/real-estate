@@ -100,10 +100,23 @@ const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getDashboardInfo = catchAsync(async (req: Request, res: Response) => {
+  const ownerId = (req.user as IRequestUser).profileId;
+  const result = await PropertyOwnerServices.getDashboardInfo(ownerId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dashboard information collection successful!",
+    data: result
+  })
+})
+
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
   getPropertyOwnerMyProfile,
   getFinancialAccount,
+  getDashboardInfo,
 };

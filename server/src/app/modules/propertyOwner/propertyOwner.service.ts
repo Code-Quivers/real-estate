@@ -236,9 +236,83 @@ const getFinancialAccountInfo = async (ownerId: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")
   }
 }
+
+const getDashboardInfo = async (ownerId: string) => {
+
+  try {
+    // Find number of rented unit for the owner
+    const numOfRentedUnit = await prisma.property.aggregate({
+      where: {
+        ownerId: ownerId,
+        isRented: true,
+        isActive: true,
+      },
+      _count: true
+    })
+
+    // Calculate collected amount of rent for the current month.
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
+
+    const data = await prisma.property.aggregate({
+      _sum: {
+        monthlyRent: true
+      },
+      where: {
+        ownerId: ownerId,
+        isRented: true,
+        isActive: true,
+        orders: {
+          some: {
+            createdAt: {
+              gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+              lt: new Date(currentDate.getFullYear(), currentMonth, 1) // Beginning of the next month
+            }
+          }
+        }
+      },
+    })
+    const collectedRentOfCurrentMonth: number = data?._sum?.monthlyRent || 0;
+
+    // Calculate cost of the owner for the current month
+    const paymentItems = await prisma.order.findMany({
+      where: {
+        ownerId: ownerId,
+        createdAt: {
+          gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+          lt: new Date(currentDate.getFullYear(), currentMonth, 1) // Beginning of the next month
+        },
+      },
+      select: {
+        PaymentInformation: {
+          select: {
+            amountPaid: true
+          }
+        }
+      }
+    })
+
+    const costOfCurretntMonth = paymentItems.reduce((acc, item) => {
+      return acc + (item?.PaymentInformation?.amountPaid || 0);
+    }, 0);
+
+    return {
+      numOfRentedUnit: numOfRentedUnit?._count || 0,
+      collectedRentOfCurrentMonth,
+      costOfCurretntMonth
+    }
+  }
+  catch (err) {
+    console.log(err)
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get dashboard info")
+  }
+
+}
+
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
   UpdatePropertyOwner,
   getFinancialAccountInfo,
+  getDashboardInfo,
 };

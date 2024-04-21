@@ -2,12 +2,12 @@
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-import { IconButton } from "rsuite";
-import { FaPencilAlt } from "react-icons/fa";
+
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
 import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
+import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
 
 const PropertyOwnerInformation = () => {
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
@@ -56,35 +56,7 @@ const PropertyOwnerInformation = () => {
             <h2 className="text-2xl font-medium">Dashboard</h2>
           </div>
           <div className="grid md:grid-cols-1   lg:grid-cols-6 gap-5 mt-5 items-center">
-            <div className="col-span-1 lg:col-span-3 space-y-3">
-              <div className=" flex border   bg-white items-center justify-between px-5 py-6 rounded-2xl">
-                <div className="flex gap-3 items-center">
-                  <h2 className="text-4xl font-semibold">1</h2>
-                  <p className="text-xl font-medium">Rented Unit</p>
-                </div>
-
-                <div className=" outline outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[50px] h-[50px]">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span>1</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span>1</span>
-                  </div>
-                </div>
-              </div>
-              <div className="  border bg-white  px-5 py-6   rounded-2xl">
-                <h2 className="text-2xl font-semibold">$1900</h2>
-                <p className="text-xl font-medium">Rented Collected this month</p>
-              </div>
-              <div className="  border flex justify-between items-start    px-5 py-6  rounded-2xl bg-white">
-                <div>
-                  <h2 className="text-2xl font-semibold">$230</h2>
-                  <p className="text-xl font-medium">Cost this month</p>
-                </div>
-                <div>
-                  <IconButton icon={<FaPencilAlt size={20} />} appearance="subtle" circle />
-                </div>
-              </div>
-            </div>
+            <DashboardInfo/>
             <div className="col-span-1 lg:col-span-3 space-y-5">
               <PropertyOwnerChart />
               <PropertyOwnerChart />

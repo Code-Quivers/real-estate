@@ -26,7 +26,16 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
       }),
       // providesTags: [tagTypes.propertyOwner],
     }),
+
+    getDashboardInfo: builder.query({
+      query: () => ({
+        url: "/property-owners/dashboard-info",
+        method: "GET",
+      }),
+      // providesTags: [tagTypes.propertyOwner],
+    }),
+
   }),
 });
 
-export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation, useGetFinancialInfoQuery } = propertyOwnerApi;
+export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation, useGetFinancialInfoQuery, useGetDashboardInfoQuery } = propertyOwnerApi;

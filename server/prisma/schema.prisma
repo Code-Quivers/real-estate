@@ -142,18 +142,18 @@ model Report {
 
 model Order {
   // 
-  orderId            String               @id @default(uuid())
+  orderId            String              @id @default(uuid())
   properties         Property[]
-  orderStatus        OrderStatus          @default(PENDING)
+  orderStatus        OrderStatus         @default(PENDING)
   // 
   ownerId            String?
-  owner              PropertyOwner?       @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  owner              PropertyOwner?      @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
   // 
   tenantId           String?
-  tenant             Tenant?              @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  PaymentInformation PaymentInformation[]
+  tenant             Tenant?             @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  PaymentInformation PaymentInformation?
 }
 
 model ServiceProvider {
@@ -254,7 +254,7 @@ model PaymentInformation {
   netAmount              Float
   paymentPlatformId      String
   transactionCreatedTime DateTime
-  orderId                String
+  orderId                String   @unique
   order                  Order    @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
   userId                 String
   user                   User     @relation(fields: [userId], references: [userId], onDelete: SetDefault)
