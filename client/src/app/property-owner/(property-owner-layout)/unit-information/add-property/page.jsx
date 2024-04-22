@@ -1,54 +1,31 @@
 /* eslint-disable no-unused-vars */
 "use client";
-import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
+import AddPropertyUploadPhotos from "@/components/property-owner/add-property/AddPropertyUploadPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
-import { addNewProperty, removeProperty, resetPropertyList, updateProperty } from "@/redux/features/propertyOwner/addPropertySlice";
-import { useAppSelector } from "@/redux/hook";
 import { FaPlus } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { Button, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
+import { Button, Form, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
 import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
 import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
 import { useRouter } from "next/navigation";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 const AddProperty = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalValue, setModalValue] = useState("");
-  const dispatch = useDispatch();
-  const propertyList = useAppSelector((state) => state?.propertyList);
   const toaster = useToaster();
   const router = useRouter();
-  // !
-  const handleInputChange = (propertyId, field, value) => {
-    dispatch(updateProperty({ propertyId, field, value }));
-  };
+
+  // ! ===============================
+
   const handleClose = () => {
     setIsOpenModal(false);
     setModalValue("");
   };
   const [addProperties, { isLoading, isError, isSuccess, error, reset: resetReq, data }] = useAddPropertiesMutation();
 
-  const handleCreateProperty = async () => {
-    // creating form data
-    const formData = new FormData();
-    const allFiles = (propertyList?.propertyList || [])?.flatMap((property) => property?.files || []);
-    const propertiesWithoutFiles = (propertyList?.propertyList || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
-
-    const newPropertyList = JSON.stringify(propertiesWithoutFiles);
-
-    formData.append("data", newPropertyList);
-    // Append all files with the same key "files"
-    allFiles?.forEach((file, index) => {
-      formData.append("files", file, file.name);
-    });
-
-    await addProperties({
-      data: formData,
-    });
-  };
   // ! side effect
   useEffect(() => {
     if (!isLoading && !isError && isSuccess && !error) {
@@ -57,11 +34,11 @@ const AddProperty = () => {
           {data?.message || "Successfully Created"}
         </Message>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 3000,
         },
       );
-      dispatch(resetPropertyList());
+
       router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}`);
       resetReq();
     }
@@ -71,12 +48,50 @@ const AddProperty = () => {
           {error?.message || "Failed to Created"}
         </Message>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 3000,
         },
       );
     }
   }, [isLoading, isError, isSuccess, error, router, resetReq, toaster]);
+
+  // !---------------------------------------------------------------------------
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({});
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "properties",
+  });
+
+  const handleSubmitCreateUnit = async (dataGet) => {
+    const formData = new FormData();
+    const allFiles = (dataGet?.properties || [])?.flatMap((property) => property?.files || []);
+    const propertiesWithoutFiles = (dataGet?.properties || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
+
+    const newPropertyList = JSON.stringify(propertiesWithoutFiles);
+
+    formData.append("data", newPropertyList);
+    // Append all files with the same key "files"
+    allFiles?.forEach((file, index) => {
+      formData.append("files", file, file?.name);
+    });
+
+    await addProperties({
+      data: formData,
+    });
+  };
+
+  const removeProperty = (id) => {
+    const index = fields.findIndex((property) => property.id === id);
+    if (index !== -1) {
+      remove(index);
+      setIsOpenModal(false);
+    }
+  };
 
   return (
     <>
@@ -105,267 +120,401 @@ const AddProperty = () => {
               Payment
             </Button>
           </div>
-          {/* Rental History */}
         </div>
-
+        {/*  forms*/}
         <div className="mt-5 pb-10">
+          {/* Section title */}
           <div className="flex justify-center">
             <h4 className="font-medium ">Property Information</h4>
           </div>
+          {/* main section */}
+          <form onSubmit={handleSubmit(handleSubmitCreateUnit)}>
+            <div className="space-y-5 mt-5">
+              {fields?.map((property, idx) => (
+                <div key={property.id}>
+                  <div className="pb-2 flex justify-between items-center">
+                    <h3 className="font-semibold">Property {idx + 1}</h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsOpenModal(true);
+                        setModalValue(property.id);
+                      }}
+                      className={`border rounded-full p-1 hover:bg-[#29429f] hover:border-transparent hover:text-white flex justify-center items-center  ${globalTailwindAnimation}`}
+                    >
+                      <IoClose size={30} />
+                    </button>
+                  </div>
+                  {/* other */}
 
-          <div className="grid grid-cols-1  gap-10 mt-5">
-            {propertyList?.propertyList?.map((property, idx) => (
-              <div key={property.id}>
-                <div className="pb-2 flex justify-between items-center">
-                  <h3 className="font-semibold">Property {idx + 1}</h3>
-                  <button
-                    onClick={() => {
-                      setIsOpenModal(true);
-                      setModalValue(property.id);
-                    }}
-                    className={`border rounded-full p-1 hover:bg-[#29429f] hover:border-transparent hover:text-white flex justify-center items-center  ${globalTailwindAnimation}`}
-                  >
-                    <IoClose size={30} />
-                  </button>
-                </div>
-
-                <div className="border  space-y-5 p-5 ">
-                  {/* property Profile ------------------------ */}
-                  <div>
+                  <div className="border space-y-5 p-5">
+                    {/* property Profile ------------------------ */}
                     <div>
-                      <h3 className="font-bold">Property Profile</h3>
-                    </div>
-                    {/*   */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10">
-                      {/* add photos */}
-                      <div className="col-span-1 md:col-span-6  ">
-                        <div>
-                          <label className="text-sm font-medium">Add Photos</label>
+                      <div>
+                        <h3 className="font-bold">Property Profile</h3>
+                      </div>
+                      {/*   */}
+                      <div className="lg:grid lg:grid-cols-12 gap-5 lg:gap-10">
+                        {/* add photos */}
+                        <div className=" md:col-span-6    ">
                           <div>
-                            <AddPropertyAddPhotos property={property} />
+                            <label className="text-sm font-medium">Add Photos</label>
+                            <div>
+                              <Controller
+                                name={`properties[${idx}].files`}
+                                control={control}
+                                rules={{ required: "Images is required" }}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper  ">
+                                    <AddPropertyUploadPhotos field={field} propertyId={property?.fieldId} />
+                                    <Form.ErrorMessage show={!!errors?.properties?.[idx]?.files} placement="topEnd">
+                                      {errors?.properties?.[idx]?.files?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* address and description */}
-                      <div className="col-span-1 md:col-span-6">
-                        {/* title */}
-                        <div>
-                          <label className="text-sm font-medium">Title</label>
-                          <Input type="text" value={property.title} onChange={(value) => handleInputChange(property.id, "title", value)} />
-                        </div>
-                        {/* address */}
-                        <div>
-                          <label className="text-sm font-medium">Address</label>
-                          <Input type="text" value={property.address} onChange={(value) => handleInputChange(property.id, "address", value)} />
+                        {/* address  && title */}
+                        <div className=" max-lg:space-y-4   md:col-span-6">
+                          {/* title */}
+                          <div className="space-y-4 lg:space-y-2 max-lg:mt-5 ">
+                            <label className="text-sm font-medium">Title</label>
+                            <div>
+                              <Controller
+                                name={`properties[${idx}].title`}
+                                control={control}
+                                rules={{ required: "Title is required" }}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper ">
+                                    <Input className="!w-full !rounded-xl" {...field} type="text" />
+                                    <Form.ErrorMessage show={!!errors?.properties?.[idx]?.title} placement="topEnd">
+                                      {errors?.properties?.[idx]?.title?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                          </div>
+                          {/* address */}
+                          <div className="space-y-4 lg:space-y-2">
+                            <label className="text-sm font-medium">Address</label>
+                            <div>
+                              <Controller
+                                name={`properties[${idx}].address`}
+                                control={control}
+                                rules={{ required: "Address is required" }}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper">
+                                    <Input className="!w-full !rounded-xl" {...field} type="text" />
+                                    <Form.ErrorMessage show={errors?.properties?.[idx]?.address !== undefined} placement="topEnd">
+                                      {errors?.properties?.[idx]?.address?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                          </div>
                         </div>
                         {/* description */}
-                      </div>
-                      <div className="col-span-1 lg:col-span-12">
-                        <label className="text-sm font-medium">Description</label>
-                        <AddPropertyEditor
-                          propertyId={property?.id}
-                          value={property?.description}
-                          handleInputChange={handleInputChange}
-                          field="description"
-                        />
-                      </div>
-                      <div className="col-span-1 lg:col-span-12">
-                        {/* number of beds and number of baths */}
-                        <div className="lg:flex lg:gap-10 max-lg:space-y-3  ">
-                          {/* number of beds */}
-                          <div className="w-full">
-                            <label className="text-sm font-medium">Number of Beds</label>
-                            <InputNumber
-                              min={0}
-                              value={property.numOfBed}
-                              onChange={(value) => handleInputChange(property.id, "numOfBed", parseInt(value))}
-                            />
-                          </div>
-                          {/* number of baths */}
-                          <div className="w-full">
-                            <label className="text-sm font-medium">Number of Baths</label>
-                            <InputNumber
-                              min={0}
-                              value={property.numOfBath}
-                              onChange={(value) => handleInputChange(property.id, "numOfBath", parseInt(value))}
-                            />
-                          </div>
-                          {/* Price of Property */}
-                          <div className="w-full">
-                            <label className="text-sm font-medium">Monthly Rent $</label>
-                            <InputNumber
-                              min={1}
-                              value={property.monthlyRent}
-                              onChange={(value) => handleInputChange(property.id, "monthlyRent", parseInt(value))}
+                        <div className=" lg:col-span-12">
+                          <div className="max-lg:space-y-3">
+                            <label className="text-sm font-medium">Description</label>
+                            <Controller
+                              rules={{
+                                required: "Description is Required",
+                              }}
+                              name={`properties[${idx}].description`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <AddPropertyEditor field={field} />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.description !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.description?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
                             />
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Maintenance --------------------------------- */}
-                  <hr />
-                  <div>
-                    <div>
-                      <h3 className="font-bold">Maintenance</h3>
-                    </div>
-                    {/*   */}
-                    <div className="grid lg:grid-cols-12 gap-10">
-                      {/* maintenance covered by tenant */}
-                      <div className="col-span-6">
-                        <div>
-                          <label className="text-sm font-medium">Maintenance covered by Tenant</label>
-                          <Input
-                            as="textarea"
-                            rows={8}
-                            type="text"
-                            value={property.maintenanceCoveredTenant}
-                            onChange={(value) => handleInputChange(property.id, "maintenanceCoveredTenant", value)}
-                          />
-                        </div>
-                      </div>
-                      {/* maintenance covered by property owner */}
-                      <div className="col-span-6">
-                        <div>
-                          <label className="text-sm font-medium">Maintenance covered by Property Owner</label>
-                          <Input
-                            as="textarea"
-                            rows={8}
-                            type="text"
-                            value={property.maintenanceCoveredOwner}
-                            onChange={(value) => handleInputChange(property.id, "maintenanceCoveredOwner", value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>{" "}
-                  <hr />
-                  {/* Schools --------------------------------- */}
-                  <div>
-                    <div>
-                      <h3 className="font-bold">Schools</h3>
-                    </div>
-                    {/*   */}
-                    <div className="grid lg:grid-cols-12 gap-10">
-                      {/* What are the schools next to your house? */}
-                      <div className="col-span-6">
-                        <div>
-                          <label className="text-sm font-medium">What are the schools next to your house?</label>
-                          {/* <Input
-                            as="textarea"
-                            rows={8}
-                            type="text"
-                            value={property.schools}
-                            onChange={(value) =>
-                              handleInputChange(property.id, "schools", value)
-                            }
-                          /> */}
-                          <AddPropertyEditor
-                            propertyId={property?.id}
-                            value={property?.schools}
-                            handleInputChange={handleInputChange}
-                            field="schools"
-                          />
-                        </div>
-                      </div>
-                      {/* What are the universities next to your house? */}
-                      <div className="col-span-6">
-                        <div>
-                          <label className="text-sm font-medium">What are the universities next to your house?</label>
-                          {/* <Input
-                            as="textarea"
-                            rows={8}
-                            type="text"
-                            value={property.universities}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "universities",
-                                value,
-                              )
-                            }
-                          /> */}
 
-                          <AddPropertyEditor
-                            propertyId={property?.id}
-                            value={property?.universities}
-                            handleInputChange={handleInputChange}
-                            field="universities"
-                          />
+                        {/* number of beds and number of baths  && monthly rent*/}
+                        <div className=" lg:col-span-12">
+                          <div className="lg:grid lg:grid-cols-3 lg:gap-5 xl:gap-10 max-lg:space-y-3 ">
+                            {/* number of beds */}
+                            <div className="w-full max-lg:space-y-3">
+                              <label className="text-sm font-medium">Number of Beds</label>
+                              <Controller
+                                rules={{
+                                  required: "Num Of Beds is Required",
+                                }}
+                                name={`properties[${idx}].numOfBed`}
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper">
+                                    <InputNumber
+                                      className="!w-full"
+                                      min={0}
+                                      max={200}
+                                      // {...field}
+                                      onChange={(e) => {
+                                        field.onChange(parseFloat(e));
+                                      }}
+                                    />
+                                    <Form.ErrorMessage show={errors?.properties?.[idx]?.numOfBed !== undefined} placement="topEnd">
+                                      {errors?.properties?.[idx]?.numOfBed?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                            {/* number of baths */}
+                            <div className="w-full max-lg:space-y-3">
+                              <label className="text-sm font-medium">Number of Baths</label>
+                              <Controller
+                                rules={{
+                                  required: "Num Of Bath is Required",
+                                }}
+                                name={`properties[${idx}].numOfBath`}
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper">
+                                    <InputNumber
+                                      onChange={(e) => {
+                                        field.onChange(parseFloat(e));
+                                      }}
+                                      className="!w-full"
+                                      min={0}
+                                      max={200}
+                                      // {...field}
+                                    />
+                                    <Form.ErrorMessage show={errors?.properties?.[idx]?.numOfBath !== undefined} placement="topEnd">
+                                      {errors?.properties?.[idx]?.numOfBath?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                            {/* Price of Property */}
+                            <div className="w-full max-lg:space-y-3">
+                              <label className="text-sm font-medium">Monthly Rent $</label>
+
+                              <Controller
+                                rules={{
+                                  required: "Monthly Rent is Required",
+                                }}
+                                name={`properties[${idx}].monthlyRent`}
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="rs-form-control-wrapper">
+                                    <InputNumber
+                                      onChange={(e) => {
+                                        field.onChange(parseFloat(e));
+                                      }}
+                                      className="!w-full"
+                                      min={0}
+                                      max={200}
+                                      // {...field}
+                                    />
+                                    <Form.ErrorMessage show={errors?.properties?.[idx]?.monthlyRent !== undefined} placement="topEnd">
+                                      {errors?.properties?.[idx]?.monthlyRent?.message}
+                                    </Form.ErrorMessage>
+                                  </div>
+                                )}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <hr />
-                  {/* Pets --------------------------------- */}
-                  <div>
+                    {/* Maintenance --------------------------------- */}
+                    <hr />
                     <div>
-                      <h3 className="font-bold">Pets</h3>
+                      <div>
+                        <h3 className="font-bold">Maintenance</h3>
+                      </div>
+                      {/*   */}
+                      <div className="grid lg:grid-cols-12 gap-10">
+                        {/* maintenance covered by tenant */}
+                        <div className="col-span-6">
+                          <div>
+                            <label className="text-sm font-medium">Maintenance covered by Tenant</label>
+                            <Controller
+                              rules={{
+                                required: "Maintenance Covered By Tenant is Required",
+                              }}
+                              name={`properties[${idx}].maintenanceCoveredTenant`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <Input as="textarea" rows={6} {...field} style={{ resize: "none" }} className="!w-full" />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredTenant !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.maintenanceCoveredTenant?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                        {/* maintenance covered by property owner */}
+                        <div className="col-span-6">
+                          <div>
+                            <label className="text-sm font-medium">Maintenance covered by Property Owner</label>
+                            <Controller
+                              rules={{
+                                required: "Maintenance Covered By Owner is Required",
+                              }}
+                              name={`properties[${idx}].maintenanceCoveredOwner`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <Input as="textarea" rows={6} style={{ resize: "none" }} {...field} className="!w-full" />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredOwner !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.maintenanceCoveredOwner?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>{" "}
+                    <hr />
+                    {/* Schools --------------------------------- */}
+                    <div>
+                      <div>
+                        <h3 className="font-bold">Schools</h3>
+                      </div>
+                      {/*   */}
+                      <div className="grid lg:grid-cols-12 gap-10">
+                        {/* What are the schools next to your house? */}
+                        <div className="col-span-6">
+                          <div>
+                            <label className="text-sm font-medium">What are the schools next to your house?</label>
+                            <Controller
+                              rules={{
+                                required: "Schools is Required",
+                              }}
+                              name={`properties[${idx}].schools`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <AddPropertyEditor field={field} />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.schools !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.schools?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                        {/* What are the universities next to your house? */}
+                        <div className="col-span-6">
+                          <div>
+                            <label className="text-sm font-medium">What are the universities next to your house?</label>
+                            <Controller
+                              rules={{
+                                required: "Universities is Required",
+                              }}
+                              name={`properties[${idx}].universities`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <AddPropertyEditor field={field} />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.universities !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.universities?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    {/*   */}
-                    <div className="grid lg:grid-cols-12 gap-10">
-                      {/* What pets do you allow in your house?*/}
-                      <div className="col-span-6">
-                        <div>
-                          <label className="text-sm font-medium">What pets do you allow in your house?</label>
-                          <AddPropertyEditor
-                            propertyId={property?.id}
-                            value={property?.allowedPets}
-                            handleInputChange={handleInputChange}
-                            field="allowedPets"
-                          />
+                    <hr />
+                    {/* Pets --------------------------------- */}
+                    <div>
+                      <div>
+                        <h3 className="font-bold">Pets</h3>
+                      </div>
+                      {/*   */}
+                      <div className="grid lg:grid-cols-12 gap-10">
+                        {/* What pets do you allow in your house?*/}
+                        <div className="col-span-6">
+                          <div>
+                            <label className="text-sm font-medium">What pets do you allow in your house?</label>
 
-                          {/* <Input
-                            as="textarea"
-                            rows={8}
-                            type="text"
-                            value={property.allowedPets}
-                            onChange={(value) =>
-                              handleInputChange(
-                                property.id,
-                                "allowedPets",
-                                value,
-                              )
-                            }
-                          /> */}
+                            <Controller
+                              rules={{
+                                required: "Pets is Required",
+                              }}
+                              name={`properties[${idx}].allowedPets`}
+                              control={control}
+                              render={({ field }) => (
+                                <div className="rs-form-control-wrapper">
+                                  <AddPropertyEditor field={field} />
+                                  <Form.ErrorMessage show={errors?.properties?.[idx]?.allowedPets !== undefined} placement="topEnd">
+                                    {errors?.properties?.[idx]?.allowedPets?.message}
+                                  </Form.ErrorMessage>
+                                </div>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          {/* button */}
-          <div className="mt-10 border w-full flex  flex-col items-center justify-center py-5">
-            <div>
-              <button
-                size="lg"
-                onClick={() => {
-                  dispatch(addNewProperty());
-                }}
-                className="flex flex-col items-center space-y-2  justify-center"
-              >
-                <span
-                  className={`border hover:bg-[#333333] hover:border-transparent hover:text-white text-[#333333] rounded-full p-2  ${globalTailwindAnimation}`}
-                >
-                  <FaPlus size={20} />
-                </span>
-                <span className="hover:underline text-sm">Add New Property</span>
-              </button>
+              ))}
             </div>
-          </div>
+            {/* button */}
+            {/*  add new property field */}
+            <div className="mt-10 border w-full flex  flex-col items-center justify-center py-5">
+              <div>
+                <button
+                  type="button"
+                  size="lg"
+                  onClick={() => {
+                    append({
+                      fieldId: new Date().getTime(),
+                      numOfBed: 0,
+                      numOfBath: 0,
+                      monthlyRent: 1,
+                      address: "",
+                      description: "",
+                      maintenanceCoveredTenant: "",
+                      maintenanceCoveredOwner: "",
+                      schools: "",
+                      universities: "",
+                      allowedPets: "",
+                      files: [],
+                    }); // Append a new property
+                  }}
+                  className="flex flex-col items-center space-y-2  justify-center"
+                >
+                  <span
+                    className={`border hover:bg-[#333333] hover:border-transparent hover:text-white text-[#333333] rounded-full p-2  ${globalTailwindAnimation}`}
+                  >
+                    <FaPlus size={20} />
+                  </span>
+                  <span className="hover:underline text-sm">Add New Property</span>
+                </button>
+              </div>
+            </div>
+            {/* submit */}
 
-          <div className="mt-10 flex justify-end">
-            <Button loading={isLoading} onClick={handleCreateProperty} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
-              Next
-            </Button>
-          </div>
+            <div className="mt-10 flex justify-end">
+              <Button type="submit" loading={isLoading} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
+                Next
+              </Button>
+            </div>
+          </form>
         </div>
       </section>
-      {/* alert modal */}
-      <Modal backdrop="static" role="alertdialog" open={isOpenModal} onClose={handleClose} size="xs">
+      {/* delete alert modal */}
+      <Modal backdrop="static" overflow={false} role="alertdialog" open={isOpenModal} onClose={handleClose} size="xs">
         <Modal.Body>
           <div className="px-10 pt-5 ">
             <div className="flex justify-center">
@@ -380,10 +529,8 @@ const AddProperty = () => {
 
             <div className="space-y-2.5 mt-5">
               <button
-                onClick={() => {
-                  dispatch(removeProperty(modalValue));
-                  setIsOpenModal(false);
-                }}
+                onClick={() => removeProperty(modalValue)}
+                type="button"
                 className="bg-[#e42451] hover:bg-[#df1140] py-2 text-white  rounded-lg w-full duration-300"
               >
                 Delete Property

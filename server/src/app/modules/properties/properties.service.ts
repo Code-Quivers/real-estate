@@ -40,8 +40,8 @@ const createNewProperty = async (profileId: string, req: Request) => {
   });
 
   // Process property info
-  const propertyInfo: IPropertyData[] = data.map((item: any) => {
-    const propId: number = item.id;
+  const propertyInfo: IPropertyData[] = data?.map((item: any) => {
+    const propId: number = item?.fieldId;
     const imagesForId: string[] = imagesPath[propId] || []; // Handle case when no images found for property id
 
     return {
@@ -53,7 +53,7 @@ const createNewProperty = async (profileId: string, req: Request) => {
 
   // Remove the 'id' property from each item in propertyInfo
   propertyInfo.forEach((item: any) => {
-    delete item["id"];
+    delete item["fieldId"];
   });
   // if property is created , creating a new order
 
@@ -144,8 +144,8 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   //
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    console.log('-----------------------------------')
-    console.log(whereConditions)
+    console.log("-----------------------------------");
+    console.log(whereConditions);
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,

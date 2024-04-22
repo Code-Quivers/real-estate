@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const createProperty = z.object({
-  id: z.number({
+  fieldId: z.number({
     required_error: "id (propertyId) is Required",
   }),
   title: z.string({}),
