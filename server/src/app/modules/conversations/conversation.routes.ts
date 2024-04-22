@@ -29,7 +29,7 @@ router.post(
 // ! get my all conversations
 router.get(
   "/get-my-all-conversations",
-  auth(UserRoles.PROPERTY_OWNER, UserRoles.SUPERADMIN, UserRoles.TENANT),
+  auth(UserRoles.PROPERTY_OWNER, UserRoles.TENANT, UserRoles.SERVICE_PROVIDER),
   ConversationController.getMyAllConversation,
 );
 router.get(

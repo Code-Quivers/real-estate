@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Button, Modal, Notification, Popover, Progress, Whisper, useToaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 
 const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -184,72 +185,73 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
               </div>
             </div>
             {/* action */}
-            <div className="flex justify-center gap-5 items-center mt-10">
-              <Button
-                onClick={handleSaveServiceProvider}
-                loading={isLoading}
-                type="button"
-                className={`!px-12 !py-3 !bg-[#29429f] !text-white !rounded-none `}
-                size="lg"
-                appearance="default"
-              >
-                Save
-              </Button>
-              <Button type={"button"} className={`!px-12 !py-3 !bg-[#29429f] !text-white !rounded-none `} size="lg" appearance="default">
-                Contact
-              </Button>
 
-              {/* add service provider to property */}
-
-              <Whisper
-                placement="bottomStart"
-                trigger="click"
-                speaker={
-                  <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                    <div className="p-3 space-y-2">
-                      {unitRes?.data?.length > 0
-                        ? unitRes?.data?.map((singleUnit) => (
-                            <div key={Math.random()}>
-                              <button
-                                onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                                className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
-                              >
-                                <div>
-                                  <Image
-                                    width={120}
-                                    height={120}
-                                    className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
-                                    src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
-                                    alt="photo"
-                                  />
-                                </div>
-                                <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                                  <h3>${singleUnit?.monthlyRent}</h3>
-                                  <h3>
-                                    {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
-                                  </h3>
-                                  <h3>{singleUnit?.address}</h3>
-                                </div>
-                              </button>
-
-                              {/* <AvailableServiceProviderPopover singleUnit={singleUnit} serviceProviderId={modalData?.serviceProviderId} /> */}
-                            </div>
-                          ))
-                        : "No Unit Found"}
-                    </div>
-                  </Popover>
-                }
-              >
+            <div className="flex justify-center gap-3  mx-auto max-w-md mt-10">
+              <div>
                 <Button
-                  loading={isLoadingUnits}
-                  type={"button"}
-                  className={`!px-12 !py-3 !bg-[#29429f] !text-white !rounded-none `}
-                  size="lg"
-                  appearance="default"
+                  loading={isLoading}
+                  onClick={handleSaveServiceProvider}
+                  className="!bg-primary w-full !text-white !px-5 !py-1 !text-base !rounded-none "
                 >
-                  Add
+                  Save
                 </Button>
-              </Whisper>
+              </div>
+
+              {/* Contact  */}
+              <div>
+                <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
+              </div>
+              {/*  */}
+              <div>
+                <Whisper
+                  placement="bottomStart"
+                  trigger="click"
+                  speaker={
+                    <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                      <div className="p-3 space-y-2">
+                        {unitRes?.data?.length > 0
+                          ? unitRes?.data?.map((singleUnit) => (
+                              <div key={Math.random()}>
+                                <button
+                                  onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                                  className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                                >
+                                  <div>
+                                    <Image
+                                      width={120}
+                                      height={120}
+                                      className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                                      src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
+                                      alt="photo"
+                                    />
+                                  </div>
+                                  <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
+                                    <h3>${singleUnit?.monthlyRent}</h3>
+                                    <h3>
+                                      {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
+                                    </h3>
+                                    <h3>{singleUnit?.address}</h3>
+                                  </div>
+                                </button>
+
+                                {/* <AvailableServiceProviderPopover singleUnit={singleUnit} serviceProviderId={modalData?.serviceProviderId} /> */}
+                              </div>
+                            ))
+                          : "No Unit Found"}
+                      </div>
+                    </Popover>
+                  }
+                >
+                  <Button
+                    loading={isLoadingUnits}
+                    type={"button"}
+                    className="!bg-primary w-full !text-white !px-5 !py-1 !text-base !rounded-none "
+                    appearance="default"
+                  >
+                    Add
+                  </Button>
+                </Whisper>
+              </div>
             </div>
           </div>
         </Modal.Body>

@@ -24,11 +24,9 @@ export function setupSocket(server: any) {
 
     // socket typing
     socket.on("typing", (room: any) => {
-      console.log("typing shuroooo", room);
       socket.in(room).emit("typing");
     });
     socket.on("stop typing", (room: any) => {
-      console.log("typing shesh", room);
       socket.in(room).emit("stop typing");
     });
 
