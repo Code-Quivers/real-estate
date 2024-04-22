@@ -7,8 +7,8 @@ import dynamic from "next/dynamic";
 
 const modules = {
   toolbar: [
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ size: ["small", true, "large", "huge"] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ size: ["small", "large"] }], // Only "normal" and "large" text sizes
     [{ list: "ordered" }, { list: "bullet" }],
     [{ align: [] }],
   ],
@@ -16,21 +16,26 @@ const modules = {
 
 const formats = ["bold", "italic", "underline", "strike", "indent", "list", "bullet", "size", "align"];
 
-const MyComponent = ({ propertyId, value, handleInputChange, field }) => {
+const AddPropertyEditor = ({ field }) => {
   const ReactQuill = useMemo(() => dynamic(() => import("react-quill"), { ssr: false }), []);
+
   return (
     <div className="relative">
       <ReactQuill
+        // {...field}
+        // value={field ? field?.value : defaultValue}
+        {...field}
+        onChange={(value) => {
+          field?.onChange(value);
+        }}
         style={{ backgroundColor: "white", borderRadius: "0" }}
-        className="w-full h-32 !rounded-none focus:outline-none !border"
-        value={value}
-        onChange={(e) => handleInputChange(propertyId, field, e)}
+        className="!w-full h-32 !rounded-none  !-z-10 focus:outline-none !border"
         modules={modules}
         formats={formats}
-        theme="bubble" // Set the theme to "bubble"
+        theme="bubble"
       />
     </div>
   );
 };
 
-export default MyComponent;
+export default AddPropertyEditor;
