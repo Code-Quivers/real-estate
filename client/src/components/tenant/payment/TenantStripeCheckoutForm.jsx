@@ -80,7 +80,10 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       {isLoading ? (
-        <button className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full" id="submit">
+        <button
+          disabled={isLoading}
+          className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full disabled:cursor-not-allowed disabled:opacity-35"
+        >
           <Loader size="sm" />
         </button>
       ) : (
