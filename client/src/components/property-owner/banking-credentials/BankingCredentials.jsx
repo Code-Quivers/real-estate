@@ -12,17 +12,17 @@ const BankingCredentials = () => {
     console.log(data, 'inside of bankgin details...........')
     const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
     const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
-    console.log(data, '--------')
 
 
     const handleCreateAccountForStripe = async () => {
         let resp = null;
-        if (data?.data?.user?.FinancialAccount?.finOrgAccountId) {
-            resp = await createAccountLink({ sConnectedAccountId: data?.data?.user?.FinancialAccount?.finOrgAccountId })
+        if (data?.data?.finOrgAccountId) {
+
+            resp = await createAccountLink({ sConnectedAccountId: data?.data?.finOrgAccountId })
         } else {
+
             resp = await createConnectedAccount({})
         }
-        console.log(resp, "first-->>>>>>>>>>>>>>>>>>")
         router.push(resp?.data?.data?.url)
     }
     return (
