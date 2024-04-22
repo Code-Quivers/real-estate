@@ -82,8 +82,11 @@ const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid 
         <div className="md:col-span-7 max-md:order-2">
           <PaymentElement id="payment-element" options={paymentElementOptions} />
           {isLoading ? (
-            <button className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full">
-              <Loader size="sm" content="" />
+            <button
+              disabled={isLoading}
+              className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full disabled:opacity-35 disabled:cursor-not-allowed"
+            >
+              <Loader size="sm" />
             </button>
           ) : (
             <button
@@ -96,7 +99,7 @@ const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid 
             </button>
           )}
           {/* Show any error or success messages */}
-          {message && <div id="payment-message">{message}</div>}
+          {/* {message && <div id="payment-message">{message}</div>} */}
         </div>
         <div className="md:col-span-5 max-md:order-1 md:border-l md:border-gray-300 pl-5">
           {orderData?.properties?.map((item, index) => (

@@ -16,9 +16,9 @@ const PropetyPaymentDone = ({ params }) => {
   }, []);
 
   return (
-    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
-      <div className="bg-gray-100 h-screen">
-        <div className="bg-white p-6  md:mx-auto">
+    <section className="max-w-6xl max-lg:px-3 pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5 2xl:px-0 ">
+      <div>
+        <div className="p-6  md:mx-auto">
           <svg viewBox="0 0 24 24" className="text-green-600 w-16 h-16 mx-auto my-6">
             <path
               fill="currentColor"
@@ -30,7 +30,7 @@ const PropetyPaymentDone = ({ params }) => {
             <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
             <p> Have a great day! </p>
             <div className="py-10 text-center">
-              <a href="/property-owner/unit-information" className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
+              <a href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">
                 GO BACK
               </a>
             </div>
