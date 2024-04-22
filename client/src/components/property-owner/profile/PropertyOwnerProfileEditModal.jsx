@@ -46,7 +46,7 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
       // classPrefix="!rounded-2xl"
       onClose={handleClose}
       dialogAs="div"
-      className="bg-white rounded-xl border border-black/50 flex mx-auto justify-center items-center  "
+      className="bg-white rounded-xl mt-5 flex mx-auto justify-center items-center  "
     >
       <Modal.Body className="p-3  min-h-[750px] md:min-h-[620px] " classPrefix=" !w-full">
         <div className="  border   rounded-xl p-3">

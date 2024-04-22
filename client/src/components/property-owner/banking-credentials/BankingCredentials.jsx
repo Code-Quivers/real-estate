@@ -1,97 +1,76 @@
 "use client";
 
-import { useCreateAccountLinkMutation, useCreateConnectedAccountMutation } from '@/redux/features/payment/stripePaymentApi';
-import { useGetFinancialInfoQuery } from '@/redux/features/propertyOwner/propertyOwnerApi';
-import { useRouter } from 'next/navigation';
-import React from 'react'
+import { useCreateAccountLinkMutation, useCreateConnectedAccountMutation } from "@/redux/features/payment/stripePaymentApi";
+import { useGetFinancialInfoQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { Placeholder } from "rsuite";
 
 const BankingCredentials = () => {
-    const router = useRouter()
+  const router = useRouter();
+  const { data, isLoading, isError } = useGetFinancialInfoQuery();
+  console.log(data, "inside of bankgin details...........");
+  const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
+  const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
 
-    const { data, isLoading, isError } = useGetFinancialInfoQuery()
-    console.log(data, 'inside of bankgin details...........')
-    const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
-    const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
-
-
-    const handleCreateAccountForStripe = async () => {
-        let resp = null;
-        if (data?.data?.finOrgAccountId) {
-
-            resp = await createAccountLink({ sConnectedAccountId: data?.data?.finOrgAccountId })
-        } else {
-
-            resp = await createConnectedAccount({})
-        }
-        router.push(resp?.data?.data?.url)
+  const handleCreateAccountForStripe = async () => {
+    let resp = null;
+    if (data?.data?.finOrgAccountId) {
+      resp = await createAccountLink({ sConnectedAccountId: data?.data?.finOrgAccountId });
+    } else {
+      resp = await createConnectedAccount({});
     }
-    return (
-        <>
-            <div>
-                <h4 className="text-xl font-medium">Credentials of Getting Money</h4>
-            </div>
-            <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-                {console.log(data?.data?.finOrgAccountId)}
-                {data?.data?.finOrgAccountId &&
-                    <>
-                        <h3 className="border p-3 rounded-2xl border-[#707070]">
-                            Email: {data?.data?.email}
-                        </h3>
-                        {/* <h3 className="border p-3 rounded-2xl border-[#707070]">
+    router.push(resp?.data?.data?.url);
+  };
+  return (
+    <>
+      <div className="flex justify-between items-center">
+        <h4 className="text-xl font-medium">Credentials of Getting Money</h4>
+        <p className="font-medium max-lg:hidden">Card Information</p>
+      </div>
+      <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-8">
+        {console.log(data?.data?.finOrgAccountId)}
+        {!isLoading && data?.data?.finOrgAccountId && (
+          <>
+            {data?.data?.externalAccount?.bank_name && <h3 className="border p-3 rounded-2xl border-[#707070]">Email: {data?.data?.email}</h3>}
+            {/* <h3 className="border p-3 rounded-2xl border-[#707070]">
                             Account: {data?.data?.externalAccount}
                         </h3> */}
-                        {
-                            data?.data?.externalAccount?.bank_name &&
-                            (<h3 className="border p-3 rounded-2xl border-[#707070]">
-                                Bank Name: {data?.data?.externalAccount.bank_name}
-                            </h3>
-                            )
-                        }
-                        {
-                            data?.data?.externalAccount?.account &&
-                            (<h3 className="border p-3 rounded-2xl border-[#707070]">
-                                Account No: {data?.data?.externalAccount.account}
-                            </h3>
-                            )
-                        }
-                        {
-                            data?.data?.externalAccount?.routing_number &&
-                            (<h3 className="border p-3 rounded-2xl border-[#707070]">
-                                Routing No: {data?.data?.externalAccount.routing_number}
-                            </h3>
-                            )
-                        }
-                        {
-                            (data?.data?.detailsSubmitted) ||
-                            (<button
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={handleCreateAccountForStripe}
-                            >
-                                Complete Stripe Account Onboarding
-                            </button>
-                            )
-                        }
+            {data?.data?.externalAccount?.bank_name && (
+              <h3 className="border p-3 rounded-2xl border-[#707070]">Bank Name: {data?.data?.externalAccount.bank_name}</h3>
+            )}
+            {data?.data?.externalAccount?.account && (
+              <h3 className="border p-3 rounded-2xl border-[#707070]">Account No: {data?.data?.externalAccount.account}</h3>
+            )}
+            {data?.data?.externalAccount?.routing_number && (
+              <h3 className="border p-3 rounded-2xl border-[#707070]">Routing No: {data?.data?.externalAccount.routing_number}</h3>
+            )}
+            {data?.data?.detailsSubmitted || (
+              <button className="bg-primary/90 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
+                Complete Stripe Account Onboarding
+              </button>
+            )}
+          </>
+        )}
 
-
-                    </>
-                }
-
-                {!(data?.data?.finOrgAccountId) &&
-                    <h3 className="border p-3 rounded-2xl border-[#707070]">
-                        <button
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={handleCreateAccountForStripe}
-                        >
-                            Create Account For Stripe
-                        </button>
-                    </h3>
-                }
-            </div>
-            {/* <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
+        {!isLoading && !data?.data?.finOrgAccountId && (
+          <h3 className="border p-3 rounded-2xl border-[#707070]">
+            <button className="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
+              Create Account For Stripe
+            </button>
+          </h3>
+        )}
+        {isLoading && (
+          <div>
+            <Placeholder active={true} />
+          </div>
+        )}
+      </div>
+      {/* <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
             <h3 className="border p-3 rounded-2xl border-[#707070]">Paypal Merchent Id:{data?.data?.paypalMerchentId}</h3>
           </div> */}
-        </>
-    )
-}
+    </>
+  );
+};
 
-export default BankingCredentials
+export default BankingCredentials;
