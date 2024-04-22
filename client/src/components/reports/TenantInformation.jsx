@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 const TenantInformation = () => {
   return (
     <>
-      <div className="border-stone-300 shadow rounded-md border h-60 p-2 bg-white flex flex-col lg:flex lg:flex-row gap-10">
+      <div className="border-stone-300 m-6 shadow rounded-md border h-60 p-2 bg-white flex flex-col lg:flex lg:flex-row gap-10">
         <Image className="h-full w-2/5 object-cover rounded-md" src={apartment} alt="apartment" />
         <div className="py-6 w-3/5 space-y-2">
           <p>$1200</p>

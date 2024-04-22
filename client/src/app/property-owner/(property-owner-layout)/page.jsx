@@ -56,7 +56,7 @@ const PropertyOwnerInformation = () => {
             <h2 className="text-2xl font-medium">Dashboard</h2>
           </div>
           <div className="grid md:grid-cols-1   lg:grid-cols-6 gap-5 mt-5 items-center">
-            <DashboardInfo/>
+            <DashboardInfo />
             <div className="col-span-1 lg:col-span-3 space-y-5">
               <PropertyOwnerChart />
               <PropertyOwnerChart />
@@ -70,6 +70,7 @@ const PropertyOwnerInformation = () => {
           <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Full Name</h2>
+              {console.log(myProfileData)}
               <p className="text-lg font-medium">
                 {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
               </p>

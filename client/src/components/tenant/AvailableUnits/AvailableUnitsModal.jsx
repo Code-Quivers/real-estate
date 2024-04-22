@@ -53,7 +53,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
                       <div className=" ">
                         <Image
-                          className="h-[200px]    w-full object-center object-cover"
+                          className="h-[200px] p-3 w-full object-cover"
                           height={300}
                           width={300}
                           src={`${fileUrlKey()}/${photo}`}

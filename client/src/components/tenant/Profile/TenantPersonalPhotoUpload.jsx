@@ -71,7 +71,7 @@ const TenantPersonalProfileUpload = ({ field, defaultImage, setImagePreview, ima
                 <img src={imagePreview} className="w-[200px] h-[200px] cursor-pointer rounded-xl object-cover " />
               </div>
             ) : (
-              <div className="!border hover:border-black cursor-pointer focus-within:scale-105 rounded-xl    ">
+              <div className="!border hover:border-black cursor-pointer focus-within:scale-105 rounded-xl">
                 <AvatarIcon
                   style={{
                     width: 200,

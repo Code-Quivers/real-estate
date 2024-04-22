@@ -77,7 +77,7 @@ const PropertyOwnerUnitInformation = () => {
                             </h3>
                             <h3 className="text-lg font-medium">{singleProperty?.address}</h3>
                           </div>
-                          <div>
+                          <div className="pt-2 pr-2">
                             <IconButton
                               disabled={
                                 singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
@@ -86,7 +86,7 @@ const PropertyOwnerUnitInformation = () => {
                                 setIsOpenEdit(true);
                                 setEditData(singleProperty);
                               }}
-                              icon={<FaPencilAlt size={30} color="#030303" />}
+                              icon={<FaPencilAlt size={18} color="#030303" />}
                               appearance="subtle"
                               circle
                             />
