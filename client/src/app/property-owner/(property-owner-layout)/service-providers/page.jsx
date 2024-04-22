@@ -72,38 +72,38 @@ const AvailableServiceProviders = () => {
         <h2 className="text-4xl ">Service Providers</h2>
       </div>
       {/* search with price section start */}
-      <div className="grid grid-cols-5 max-lg:gap-2 lg:flex w-full border  mt-5 lg:mt-10 gap-0.5   ">
-        <div className="max-lg:col-span-3">
-          <InputGroup size="lg" inside className="lg:!w-[400px]" style={{ borderRadius: "0 !important" }}>
+      <div className="grid grid-cols-12 gap-3 mt-2">
+        <div className="lg:col-span-3 col-span-6">
+          <InputGroup size="lg" inside>
             <AutoComplete onChange={(e) => setSearchTerm(e)} placeholder="Service Provider" size="lg" data={datas} />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
-              <FaSearch size={20} />
+              <FaSearch size={15} />
             </InputGroup.Addon>
           </InputGroup>
         </div>
-        <div className="max-lg:col-span-2">
+        <div className="lg:col-span-3 col-span-6">
           <SelectPicker
             placement="bottomEnd"
             size="lg"
             searchable={false}
+            className="w-full"
             placeholder="Service Type"
             onChange={(value) => setSelectedServiceType(value)}
             data={serviceTypes}
-            style={{
-              borderRadius: "0px !important",
-              width: "210px !important",
-            }}
+            // style={{
+            //   borderRadius: "0px !important",
+            // }}
           />
         </div>
-        <div className="max-lg:col-span-3">
-          <InputGroup size="lg" inside className="max-lg:!w-full lg:!w-[200px] rounded-none" style={{ borderRadius: "0 !important" }}>
+        <div className="lg:col-span-3 col-span-6">
+          <InputGroup size="lg" inside className="rounded-none">
             <AutoComplete size="lg" placeholder="Price" data={datas} />
             <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
-              <FaSearch size={20} />
+              <FaSearch size={15} />
             </InputGroup.Addon>
           </InputGroup>
         </div>
-        <div className="max-lg:col-span-2">
+        <div className="lg:col-span-3 col-span-6">
           <SelectPicker
             size="lg"
             searchable={false}
@@ -111,10 +111,7 @@ const AvailableServiceProviders = () => {
             placement="bottomEnd"
             placeholder="Priority Availability"
             data={serviceAvailability}
-            style={{
-              borderRadius: "0px !important",
-              width: "200px !important",
-            }}
+            className="w-full"
           />
         </div>
       </div>
