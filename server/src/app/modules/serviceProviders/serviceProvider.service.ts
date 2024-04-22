@@ -67,6 +67,7 @@ const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, op
             role: true,
             userName: true,
             userStatus: true,
+            userId: true,
           },
         },
         Service: true,

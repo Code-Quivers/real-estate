@@ -7,6 +7,7 @@ import useSocket from "@/hooks/useSocket";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";
+import { Placeholder } from "rsuite";
 
 const PropertyOwnerMessaging = () => {
   const { data: allConversations, isLoading, isError, isSuccess, refetch } = useGetMyAllConversationsQuery();
@@ -56,18 +57,34 @@ const PropertyOwnerMessaging = () => {
           <h2 className="font-semibold text-2xl">Conversations</h2>
         </div>
         {/* messages */}
+        {/* conversation */}
         <div className="grid grid-cols-6 gap-2 h-[80vh]">
           <div className="col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
-            {allConversations?.data?.data?.map((singleConversation) => (
-              <div key={singleConversation?.conversationId}>
-                <ConversationChatPerson
-                  singleConversation={singleConversation}
-                  paramsChatId={paramsChatId}
-                  participant={singleConversation?.perticipants[0]}
-                  conversationId={singleConversation?.conversationId}
-                />
+            {!isLoading &&
+              allConversations?.data?.data?.length > 0 &&
+              allConversations?.data?.data?.map((singleConversation) => (
+                <div key={singleConversation?.conversationId}>
+                  <ConversationChatPerson
+                    singleConversation={singleConversation}
+                    paramsChatId={paramsChatId}
+                    participant={singleConversation?.perticipants[0]}
+                    conversationId={singleConversation?.conversationId}
+                  />
+                </div>
+              ))}
+            {isLoading && (
+              <div className="space-y-3">
+                <Placeholder active />
+                <Placeholder active />
+                <Placeholder active />
+                <Placeholder active />
               </div>
-            ))}
+            )}
+            {!isLoading && !allConversations?.data?.data?.length > 0 && (
+              <div className="space-y-3 flex justify-center items-center min-h-[60vh]">
+                <h2>No Conversation Found</h2>
+              </div>
+            )}
           </div>
           <div className="col-span-4 ">
             <ConversationMessagingChats />
