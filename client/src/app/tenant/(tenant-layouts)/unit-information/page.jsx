@@ -63,11 +63,11 @@ const TenantUnitInformation = () => {
                   <span>{unitRes?.dueRent}</span>
                 </p>
                 <Button
-                  className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full"
+                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-50"
                   onClick={() => setIsOpenMakePayment(true)}
                   disabled={unitRes?.dueRent == 0 ? true : false}
                 >
-                  Make Payment
+                  {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}
                 </Button>
               </div>
             </div>
@@ -81,7 +81,7 @@ const TenantUnitInformation = () => {
                 <Button
                   as={Link}
                   href="/tenant/unit-information/request-maintenance"
-                  className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full"
+                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full"
                 >
                   Send Request
                 </Button>
