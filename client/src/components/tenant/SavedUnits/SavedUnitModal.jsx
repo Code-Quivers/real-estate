@@ -1,24 +1,18 @@
 "use client";
+import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 import { fileUrlKey } from "@/configs/envConfig";
-
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal, Notification, useToaster } from "rsuite";
 
-const SavedUnitsModal = ({ open, setOpen, units: item }) => {
-
-  const handleClose = () => setOpen(false);
+const SavedUnitsModal = ({ open, handleClose, units: item }) => {
   const [openTab, setOpenTab] = useState(1);
   // ! save item
-
   const [removeFromSavedItem, { data, isLoading, isSuccess, isError, error, reset: resetReq }] = useRemoveFromSavedItemMutation();
-
   const handleRemoveUnit = async () => {
     await removeFromSavedItem({ itemId: item?.itemId });
   };
-
 
   // !
   const toaster = useToaster();
@@ -86,10 +80,15 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
                   <h2>Logo</h2>
                 </div>
                 <div className="flex gap-2.5 items-center">
-                  <Button loading={isLoading} onClick={handleRemoveUnit} className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">
-                    Remove
-                  </Button>
-                  <Button className="!bg-primary !px-6 !py-2.5 !text-white !rounded-none">Contact</Button>
+                  <div>
+                    <Button onClick={handleRemoveUnit} className="!bg-primary w-full !text-white !px-3.5 !py-1 !text-base !rounded-none ">
+                      Remove
+                    </Button>
+                  </div>
+
+                  <div>
+                    <SendMessagePopOverFromTenant receiverId={item?.property?.owner?.userId} />
+                  </div>
                 </div>
               </div>
               <hr className="border   block" />
@@ -100,7 +99,6 @@ const SavedUnitsModal = ({ open, setOpen, units: item }) => {
                     <span>{item?.property?.numOfBed ?? "0"} Bed</span> <span>{item?.property?.numOfBath ?? "0"} Bath</span>
                   </h2>
                   <h2 className="text-xl">{item?.property?.address ?? "===="}</h2>
-
                 </div>
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">

@@ -7,13 +7,12 @@ import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedIt
 import { Loader } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 
-
-const SavedUnitsCard = ({ unitInfo, handleOpen }) => {
-
+const SavedUnitsCard = () => {
+  const [isOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const handleClose = () => setModalOpen(false);
   const query = {};
-
   query["itemType"] = "PROPERTY";
-
   const { data: availableUnits, isLoading } = useGetAllSavedItemsQuery({ ...query });
 
   return (
@@ -40,7 +39,7 @@ const SavedUnitsCard = ({ unitInfo, handleOpen }) => {
             <div
               onClick={() => {
                 setModalOpen(true);
-                setUnits(unit);
+                setModalData(unit);
               }}
               key={Math.random()}
               className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
@@ -54,11 +53,11 @@ const SavedUnitsCard = ({ unitInfo, handleOpen }) => {
               />
               <div className="flex  justify-between items-start mt-2 px-2.5 py-1">
                 <div>
-                  <h2 className="text-sm">{unit.price}</h2>
+                  <h2 className="text-sm">$ {unit?.property?.monthlyRent}</h2>
                   <h2 className="text-sm">
-                    <span>{unit.bed}</span> <span>{unit.bath}</span>
+                    <span>{unit?.property?.numOfBed}</span> <span>{unit?.property?.numOfBath}</span>
                   </h2>
-                  <h2 className="text-sm">{unit.address}</h2>
+                  <h2 className="text-sm">{unit?.property?.address}</h2>
                 </div>
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">
@@ -72,8 +71,7 @@ const SavedUnitsCard = ({ unitInfo, handleOpen }) => {
           ))}
       </div>
       {/* modal */}
-      {/* <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} /> */}
-      {/* Available units card end */}
+      <SavedUnitsModal open={isOpen} handleClose={handleClose} units={modalData} />
     </div>
   );
 };

@@ -285,7 +285,15 @@ const getSavedUnits = async (userId: string, filters: any, options: IPaginationO
               createdAt: "desc",
             },
       include: {
-        property: true,
+        property: {
+          include: {
+            owner: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
       },
     });
 

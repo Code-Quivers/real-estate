@@ -3,9 +3,7 @@
 import AddPropertyAddPhotos from "@/components/property-owner/add-property/AddPropertyAddPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
 import { addNewProperty, removeProperty, resetPropertyList, updateProperty } from "@/redux/features/propertyOwner/addPropertySlice";
-
 import { useAppSelector } from "@/redux/hook";
-import Link from "next/link";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Button, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
@@ -51,6 +49,7 @@ const AddProperty = () => {
       data: formData,
     });
   };
+  // ! side effect
   useEffect(() => {
     if (!isLoading && !isError && isSuccess && !error) {
       toaster.push(

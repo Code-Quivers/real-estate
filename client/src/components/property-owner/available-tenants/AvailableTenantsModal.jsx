@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Button, Modal, Notification, Placeholder, Popover, Progress, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import SendMessagePopOver from "../../Shared/modal/SendMessagePopOver";
+import SendMessagePopOver from "../../Shared/modal/SendMessagePopOverFromTenant";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
