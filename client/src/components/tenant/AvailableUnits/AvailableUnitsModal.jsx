@@ -7,7 +7,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import { SaveUnitNotificationError, SaveUnitNotificationSuccess } from "@/components/toasts/notifications/ToastNotification";
-import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOver";
+import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 
 const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);

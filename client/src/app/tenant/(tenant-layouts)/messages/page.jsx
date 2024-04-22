@@ -46,7 +46,7 @@ const TenantMessagingPage = () => {
   // !
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]  mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       {/* section title */}
       <div className="flex justify-center">
         <h1 className="text-xl font-medium">Messages</h1>

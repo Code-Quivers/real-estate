@@ -14,53 +14,65 @@ import { Request } from "express";
 
 // ! start new conversation
 const startNewConversation = async (userId: string, receiverId: string, payload: any): Promise<Conversation> => {
-  // Check if a conversation already exists between the users
-  const existingConversation = await prisma.conversation.findFirst({
-    where: {
-      AND: [{ perticipants: { some: { userId: userId } } }, { perticipants: { some: { userId: receiverId } } }],
-    },
-  });
+  return await prisma.$transaction(async (transactionClient) => {
+    //  check is exist receiver
 
-  // If conversation exists, send message only
-  if (existingConversation) {
-    await prisma.message.create({
-      data: {
-        text: payload.text,
-        senderId: userId,
-        conversationId: existingConversation.conversationId,
+    const isExistReceiver = await transactionClient.user.findUnique({
+      where: {
+        userId: receiverId,
+      },
+    });
+    if (!isExistReceiver) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Receiver Not Found");
+    }
+
+    // Check if a conversation already exists between the users
+    const existingConversation = await transactionClient.conversation.findFirst({
+      where: {
+        AND: [{ perticipants: { some: { userId: userId } } }, { perticipants: { some: { userId: receiverId } } }],
       },
     });
 
-    // Update the last message in the conversation
-    await prisma.conversation.update({
-      where: { conversationId: existingConversation.conversationId },
-      data: { lastMessage: payload.text },
-    });
-
-    return existingConversation;
-  }
-
-  // Create a new conversation with the specified sender and receiver
-  const newConversation = await prisma.conversation.create({
-    data: {
-      perticipants: {
-        connect: [{ userId: userId }, { userId: receiverId }],
-      },
-      lastMessage: payload.text,
-      messages: {
-        create: {
+    // If conversation exists, send message only
+    if (existingConversation) {
+      await transactionClient.message.create({
+        data: {
           text: payload.text,
           senderId: userId,
+          conversationId: existingConversation.conversationId,
         },
-      },
-    },
+      });
+
+      // Update the last message in the conversation
+      await transactionClient.conversation.update({
+        where: { conversationId: existingConversation.conversationId },
+        data: { lastMessage: payload.text },
+      });
+
+      return existingConversation;
+    } else {
+      // Create a new conversation with the specified sender and receiver
+      const newConversation = await transactionClient.conversation.create({
+        data: {
+          perticipants: {
+            connect: [{ userId: userId }, { userId: receiverId }],
+          },
+          lastMessage: payload.text,
+          messages: {
+            create: {
+              text: payload.text,
+              senderId: userId,
+            },
+          },
+        },
+      });
+
+      if (!newConversation) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to start conversation");
+      }
+      return newConversation;
+    }
   });
-
-  if (!newConversation) {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to start conversation");
-  }
-
-  return newConversation;
 };
 
 // ! send new message

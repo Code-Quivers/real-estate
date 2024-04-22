@@ -56,23 +56,7 @@ const PropertyOwnerMessaging = () => {
           <h2 className="font-semibold text-2xl">Conversations</h2>
         </div>
         {/* messages */}
-        <div className="grid grid-cols-6 gap-2 h-[80vh]">
-          <div className="col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
-            {allConversations?.data?.data?.map((singleConversation) => (
-              <div key={singleConversation?.conversationId}>
-                <ConversationChatPerson
-                  singleConversation={singleConversation}
-                  paramsChatId={paramsChatId}
-                  participant={singleConversation?.perticipants[0]}
-                  conversationId={singleConversation?.conversationId}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="col-span-4 ">
-            <ConversationMessagingChats />
-          </div>
-        </div>
+        5h
       </div>
     </section>
   );
