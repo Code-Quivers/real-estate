@@ -2,11 +2,8 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import {
-  IPropertyOwnerFilterRequest,
-  IPropertyOwnerUpdateRequest,
-} from "./propertyOwner.interfaces";
-import { Request, json } from "express";
+import { IPropertyOwnerFilterRequest, IPropertyOwnerUpdateRequest } from "./propertyOwner.interfaces";
+import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
 import fs from "fs";
 import { logger } from "../../../shared/logger";
@@ -22,10 +19,7 @@ import bcrypt from "bcrypt";
 import config from "../../../config";
 
 // ! get all property owners
-const getAllPropertyOwners = async (
-  filters: IPropertyOwnerFilterRequest,
-  options: IPaginationOptions,
-) => {
+const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -62,8 +56,7 @@ const getAllPropertyOwners = async (
     });
   }
 
-  const whereConditions: Prisma.PropertyOwnerWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.PropertyOwnerWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allPropertyOwner = await transactionClient.propertyOwner.findMany({
@@ -81,8 +74,8 @@ const getAllPropertyOwners = async (
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-            createdAt: "desc",
-          },
+              createdAt: "desc",
+            },
     });
 
     const total = await prisma.propertyOwner.count({
@@ -104,13 +97,16 @@ const getAllPropertyOwners = async (
 };
 
 // ! get single Property Owner
-const getSinglePropertyOwner = async (
-  propertyOwnerId: string,
-): Promise<PropertyOwner | null> => {
+const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<PropertyOwner | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const propertyOwner = await transactionClient.propertyOwner.findUnique({
       where: {
         propertyOwnerId,
+        user: {
+          userStatus: {
+            in: ["ACTIVE", "PAUSED"],
+          },
+        },
       },
       include: {
         _count: true,
@@ -119,21 +115,15 @@ const getSinglePropertyOwner = async (
             email: true,
             createdAt: true,
             userName: true,
-            _count: true,
             role: true,
             userStatus: true,
           },
-
         },
-        properties: true,
       },
     });
 
     if (!propertyOwner) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Property Owner Profile Not Found!!!",
-      );
+      throw new ApiError(httpStatus.UNAUTHORIZED, "Property Owner Profile Not Found!!!");
     }
     return propertyOwner;
   });
@@ -152,8 +142,7 @@ const UpdatePropertyOwner = async (
   const profileImagePath = profileImage?.path?.substring(13);
   // const profileImagePath = profileImage?.path;
 
-  const { firstName, lastName, phoneNumber, oldProfileImagePath, password } =
-    req.body as IPropertyOwnerUpdateRequest;
+  const { firstName, lastName, phoneNumber, oldProfileImagePath, password } = req.body as IPropertyOwnerUpdateRequest;
 
   // deleting old style Image
   const oldFilePaths = "uploads/" + oldProfileImagePath;
@@ -168,12 +157,11 @@ const UpdatePropertyOwner = async (
 
   //!
   const result = await prisma.$transaction(async (transactionClient) => {
-    const isPropertyOwnerExists =
-      await transactionClient.propertyOwner.findUnique({
-        where: {
-          propertyOwnerId,
-        },
-      });
+    const isPropertyOwnerExists = await transactionClient.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId,
+      },
+    });
 
     if (!isPropertyOwnerExists) {
       throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!");
@@ -182,10 +170,8 @@ const UpdatePropertyOwner = async (
     const updatedPropertyOwnerProfileData: Partial<PropertyOwner> = {};
     if (firstName) updatedPropertyOwnerProfileData["firstName"] = firstName;
     if (lastName) updatedPropertyOwnerProfileData["lastName"] = lastName;
-    if (phoneNumber)
-      updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
-    if (profileImagePath)
-      updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
+    if (phoneNumber) updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
+    if (profileImagePath) updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
 
     // ! if password
 
@@ -197,17 +183,11 @@ const UpdatePropertyOwner = async (
       data: updatedPropertyOwnerProfileData,
     });
     if (!res) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "Property Owner Updating Failed !",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Updating Failed !");
     }
 
     if (password) {
-      const hashedPassword = await bcrypt.hash(
-        password,
-        Number(config.bcrypt_salt_rounds),
-      );
+      const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {
           userId: res?.userId,
@@ -223,22 +203,19 @@ const UpdatePropertyOwner = async (
   return result;
 };
 
-
 const getFinancialAccountInfo = async (ownerId: string) => {
   try {
     const finAcctData = await prisma.financialAccount.findUnique({
-      where: { ownerId }
-    })
-    return finAcctData
+      where: { ownerId },
+    });
+    return finAcctData;
+  } catch (err) {
+    console.log(err);
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!");
   }
-  catch (err) {
-    console.log(err)
-    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!")
-  }
-}
+};
 
 const getDashboardInfo = async (ownerId: string) => {
-
   try {
     // Find number of rented unit for the owner
     const numOfRentedUnit = await prisma.property.aggregate({
@@ -247,8 +224,8 @@ const getDashboardInfo = async (ownerId: string) => {
         isRented: true,
         isActive: true,
       },
-      _count: true
-    })
+      _count: true,
+    });
 
     // Calculate collected amount of rent for the current month.
     const currentDate = new Date();
@@ -256,7 +233,7 @@ const getDashboardInfo = async (ownerId: string) => {
 
     const data = await prisma.property.aggregate({
       _sum: {
-        monthlyRent: true
+        monthlyRent: true,
       },
       where: {
         ownerId: ownerId,
@@ -266,12 +243,12 @@ const getDashboardInfo = async (ownerId: string) => {
           some: {
             createdAt: {
               gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-              lt: new Date(currentDate.getFullYear(), currentMonth, 1) // Beginning of the next month
-            }
-          }
-        }
+              lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
+            },
+          },
+        },
       },
-    })
+    });
     const collectedRentOfCurrentMonth: number = data?._sum?.monthlyRent || 0;
 
     // Calculate cost of the owner for the current month
@@ -280,17 +257,17 @@ const getDashboardInfo = async (ownerId: string) => {
         ownerId: ownerId,
         createdAt: {
           gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-          lt: new Date(currentDate.getFullYear(), currentMonth, 1) // Beginning of the next month
+          lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
         },
       },
       select: {
         PaymentInformation: {
           select: {
-            amountPaid: true
-          }
-        }
-      }
-    })
+            amountPaid: true,
+          },
+        },
+      },
+    });
 
     const costOfCurretntMonth = paymentItems.reduce((acc, item) => {
       return acc + (item?.PaymentInformation?.amountPaid || 0);
@@ -299,15 +276,13 @@ const getDashboardInfo = async (ownerId: string) => {
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
-      costOfCurretntMonth
-    }
+      costOfCurretntMonth,
+    };
+  } catch (err) {
+    console.log(err);
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get dashboard info");
   }
-  catch (err) {
-    console.log(err)
-    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get dashboard info")
-  }
-
-}
+};
 
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
