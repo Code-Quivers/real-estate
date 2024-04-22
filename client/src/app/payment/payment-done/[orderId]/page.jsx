@@ -10,7 +10,7 @@ const PropetyPaymentDone = ({ params }) => {
   const orderId = params.orderId;
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
-  const payment_intent_client_secret = (searchParams.className = "bg-gray-100 h-screen"("payment_intent_client_secret"));
+  const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
   const [retrievePaymentInfo, { data, isLoading, isError }] = useRetrivePaymentInfoMutation();
   useEffect(() => {
     retrievePaymentInfo({ orderId, paymentIntentId: payment_intent });
