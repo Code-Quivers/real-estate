@@ -49,7 +49,7 @@ const PropertyOwnerSettingPage = () => {
             <h4 className="text-xl font-medium">Current Plan</h4>
           </div>
           <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-xl ">Monthly Plan - 99$/month</h3>
+            <h3 className="border p-3 rounded-xl">Monthly Plan - 99$/month</h3>
           </div>
           <div>
             <button className="text-green-600 font-medium hover:underline">Change Plan</button>

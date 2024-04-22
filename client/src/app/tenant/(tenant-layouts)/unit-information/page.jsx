@@ -55,7 +55,7 @@ const TenantUnitInformation = () => {
               </div>
             </div>
 
-            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l   border-[#707070] p-20 max-lg:shadow-lg">
+            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
               <div>
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">

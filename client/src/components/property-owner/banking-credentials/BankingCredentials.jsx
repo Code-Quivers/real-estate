@@ -32,18 +32,14 @@ const BankingCredentials = () => {
         {console.log(data?.data?.finOrgAccountId)}
         {!isLoading && data?.data?.finOrgAccountId && (
           <>
-            {data?.data?.externalAccount?.bank_name && <h3 className="border p-3 rounded-2xl border-[#707070]">Email: {data?.data?.email}</h3>}
+            {data?.data?.externalAccount?.email && <h3 className="border p-3 rounded-2xl border-[#707070]">Email: {data?.data?.email}</h3>}
             {/* <h3 className="border p-3 rounded-2xl border-[#707070]">
                             Account: {data?.data?.externalAccount}
                         </h3> */}
-            {data?.data?.externalAccount?.bank_name && (
-              <h3 className="border p-3 rounded-2xl border-[#707070]">Bank Name: {data?.data?.externalAccount.bank_name}</h3>
-            )}
-            {data?.data?.externalAccount?.account && (
-              <h3 className="border p-3 rounded-2xl border-[#707070]">Account No: {data?.data?.externalAccount.account}</h3>
-            )}
+            {data?.data?.externalAccount?.bank_name && <h3 className="border p-3 rounded-2xl">Bank Name: {data?.data?.externalAccount.bank_name}</h3>}
+            {data?.data?.externalAccount?.account && <h3 className="border p-3 rounded-2xl">Account No: {data?.data?.externalAccount.account}</h3>}
             {data?.data?.externalAccount?.routing_number && (
-              <h3 className="border p-3 rounded-2xl border-[#707070]">Routing No: {data?.data?.externalAccount.routing_number}</h3>
+              <h3 className="border p-3 rounded-2xl">Routing No: {data?.data?.externalAccount.routing_number}</h3>
             )}
             {data?.data?.detailsSubmitted || (
               <button className="bg-primary/90 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
@@ -52,7 +48,7 @@ const BankingCredentials = () => {
             )}
           </>
         )}
-
+        {/*  */}
         {!isLoading && !data?.data?.finOrgAccountId && (
           <h3 className="border p-3 rounded-2xl border-[#707070]">
             <button className="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
@@ -60,6 +56,7 @@ const BankingCredentials = () => {
             </button>
           </h3>
         )}
+        {/*  */}
         {isLoading && (
           <div>
             <Placeholder active={true} />

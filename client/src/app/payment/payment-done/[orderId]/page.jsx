@@ -2,6 +2,7 @@
 "use client";
 
 import { useRetrivePaymentInfoMutation } from "@/redux/features/payment/stripePaymentApi";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,7 +10,7 @@ const PropetyPaymentDone = ({ params }) => {
   const orderId = params.orderId;
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
-  const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
+  const payment_intent_client_secret = (searchParams.className = "bg-gray-100 h-screen"("payment_intent_client_secret"));
   const [retrievePaymentInfo, { data, isLoading, isError }] = useRetrivePaymentInfoMutation();
   useEffect(() => {
     retrievePaymentInfo({ orderId, paymentIntentId: payment_intent });
@@ -30,9 +31,9 @@ const PropetyPaymentDone = ({ params }) => {
             <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
             <p> Have a great day! </p>
             <div className="py-10 text-center">
-              <a href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">
+              <Link href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">
                 GO BACK
-              </a>
+              </Link>
             </div>
           </div>
         </div>

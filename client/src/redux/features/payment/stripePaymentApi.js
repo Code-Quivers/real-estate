@@ -10,7 +10,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
         data: JSON.stringify(paymentInfo),
         contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
 
     getTenantClientSecret: builder.mutation({
@@ -20,7 +20,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
         data: JSON.stringify(paymentInfo),
         contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
 
     retrivePaymentInfo: builder.mutation({
