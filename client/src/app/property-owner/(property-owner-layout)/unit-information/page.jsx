@@ -15,7 +15,13 @@ import RemoveTenantModal from "@/components/property-owner/unit-information/Remo
 import moment from "moment";
 
 const PropertyOwnerUnitInformation = () => {
-  const { data, isLoading } = useGetMyAllUnitsQuery();
+  const { data, isLoading } = useGetMyAllUnitsQuery(
+    {},
+    {
+      refetchOnReconnect: true,
+      pollingInterval: 60000,
+    },
+  );
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
   const handleCloseEdit = () => setIsOpenEdit(false);
@@ -197,7 +203,8 @@ const PropertyOwnerUnitInformation = () => {
                     </div>
                     {/* all service Providers */}
                     <div className="">
-                      {singleProperty?.serviceProviders?.length > 0 &&
+                      {!isLoading &&
+                        singleProperty?.serviceProviders?.length > 0 &&
                         singleProperty?.serviceProviders?.map((serviceProvider) => (
                           <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
                             <div className=" ">
@@ -241,6 +248,11 @@ const PropertyOwnerUnitInformation = () => {
                             </div>
                           </div>
                         ))}
+                      {!isLoading && !singleProperty?.serviceProviders?.length > 0 && (
+                        <div className="mt-10 flex justify-center">
+                          <h2>No Service Providers added yet</h2>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -58,6 +58,7 @@ const createNewProperty = async (profileId: string, req: Request) => {
   // if property is created , creating a new order
 
   const createdData = await prisma.$transaction(async (transactionClient) => {
+    //
     const result = [];
     for (const singleProperty of propertyInfo) {
       const createdProperty = await transactionClient.property.create({
@@ -65,8 +66,6 @@ const createNewProperty = async (profileId: string, req: Request) => {
       });
       result.push(createdProperty.propertyId);
     }
-
-    console.log("Created properties:", result);
 
     // const results = await transactionClient.property.createMany({
     //   data: propertyInfo,
@@ -435,6 +434,22 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
   const { propertyId, tenantId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
+    // check financial account added or not
+    const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId: profileId,
+        FinancialAccount: {
+          is: {
+            detailsSubmitted: true,
+          },
+        },
+      },
+    });
+
+    if (!isFinancialAdded) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
+    }
+
     // check if owner or not
     const isOwner = await transactionClient.property.findUnique({
       where: {
@@ -444,10 +459,7 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
     });
 
     if (!isOwner) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "You are not the owner of this property or this property does not exist",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property does not exist");
     }
 
     // check if already assigned to other property
