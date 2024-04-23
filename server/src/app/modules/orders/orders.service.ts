@@ -3,8 +3,6 @@
 import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
-import { OrderStatus, PlanType } from "@prisma/client";
-
 
 /**
  * Creates a new order in the database.
@@ -16,16 +14,16 @@ const createOrder = async (orderInfo: any) => {
     properties: {
       connect: orderInfo.properties.map((propertyId: any) => ({ propertyId })),
     },
-  }
+  };
 
   // Execute transaction to create the order
   const result = await prisma.$transaction(async (transactionClient) => {
     // Create a new order using transaction
-    console.log('++++++++++++++++++++++++++++++')
-    console.log(data)
+    console.log("++++++++++++++++++++++++++++++");
+    console.log(data);
     const newOrder = await transactionClient.order.create({
-      data: data
-    })
+      data: data,
+    });
 
     // If no new order is created, throw an error
     if (!newOrder) throw new ApiError(httpStatus.BAD_REQUEST, "No Order Found");
@@ -36,8 +34,7 @@ const createOrder = async (orderInfo: any) => {
 
   // Return the result of the transaction
   return result;
-}
-
+};
 
 // ! get single order details
 const getSingleOrder = async (orderId: string) => {
@@ -132,28 +129,26 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
   return result;
 };
 
-
 // Update a specific order info
 const updateOrderInfo = async (orderId: string, orderInfo: any) => {
-
   const updatedInfo = await prisma.order.update({
     where: { orderId },
     data: orderInfo,
-  })
+  });
 
   if (!updatedInfo) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.")
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.");
   }
 
   return updatedInfo;
-}
+};
 
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
   const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedInfo = await transactionClient.order.update({
       where: {
-        orderId
+        orderId,
       },
       data: {
         orderStatus: orderStatus,
@@ -165,8 +160,8 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
         //     }
         //   }
         // }
-      }
-    })
+      },
+    });
 
     // if the order is for paying rent then return the result
     if (isRentPayment) return updatedInfo;
@@ -174,23 +169,23 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
     // When The order is for property payment
     const updatedProperty = await transactionClient.property.updateMany({
       where: {
-        orders: { some: { orderId } }
+        orders: { some: { orderId } },
       },
-      data: { planType }
-    })
+      data: { planType },
+    });
 
     if (!updatedInfo || !updatedProperty) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.")
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.");
     }
 
     return updatedInfo;
-  })
-  return result
-}
+  });
+  return result;
+};
 export const OrderServices = {
   createOrder,
   getSingleOrder,
   updatePropertyTrialPeriod,
   updateOrderInfo,
-  updateOrderStatusAndPropertyPlanType
+  updateOrderStatusAndPropertyPlanType,
 };

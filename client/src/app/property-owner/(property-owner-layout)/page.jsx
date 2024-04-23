@@ -2,7 +2,6 @@
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
@@ -63,8 +62,8 @@ const PropertyOwnerInformation = () => {
             </div>
           </div>
         </div>
-        <div className="border mt-10 shadow-lg">
-          <div className="px-5 py-2 bg-[#29439f23]  flex justify-between items-center">
+        <div className="border mt-10 shadow-md bg-white rounded-xl">
+          <div className="px-5 py-2   flex justify-between items-center">
             <h2 className="text-xl font-medium ">Profile Details</h2>
           </div>
           <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
@@ -80,12 +79,12 @@ const PropertyOwnerInformation = () => {
               <p className="text-lg font-medium">{myProfileData?.phoneNumber ?? "--"}</p>
             </div>
             <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Account Registered Date</h2>
-              <p className="text-lg font-medium">{moment(myProfileData?.createdAt).format("ll")}</p>
+              <h2 className="font-bold text-xl 2xl:text-2xl">Account Registered</h2>
+              <p className="text-lg font-medium">{moment(myProfileData?.createdAt).format("lll")}</p>
             </div>
             <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Total Property</h2>
-              <p className="text-lg font-medium">{myProfileData?._count?.Property ?? "--"}</p>
+              <h2 className="font-bold text-xl 2xl:text-2xl">Total Units</h2>
+              <p className="text-lg font-medium">{myProfileData?._count?.properties ?? "--"}</p>
             </div>
           </div>
         </div>

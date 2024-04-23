@@ -9,7 +9,7 @@ import { Placeholder } from "rsuite";
 const BankingCredentials = () => {
   const router = useRouter();
   const { data, isLoading, isError } = useGetFinancialInfoQuery();
-  console.log(data, "inside of bankgin details...........");
+  // console.log(data, "inside of bankgin details...........");
   const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
   const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
 
@@ -29,11 +29,10 @@ const BankingCredentials = () => {
         <p className="font-medium max-lg:hidden">Card Information</p>
       </div>
       <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-8">
-        {console.log(data?.data?.finOrgAccountId)}
         {!isLoading && data?.data?.finOrgAccountId && (
           <>
-            {data?.data?.externalAccount?.email && <h3 className="border p-3 rounded-2xl border-[#707070]">Email: {data?.data?.email}</h3>}
-            {/* <h3 className="border p-3 rounded-2xl border-[#707070]">
+            {data?.data?.externalAccount?.email && <h3 className="border p-3 rounded-2xl ">Email: {data?.data?.email}</h3>}
+            {/* <h3 className="border p-3 rounded-2xl ">
                             Account: {data?.data?.externalAccount}
                         </h3> */}
             {data?.data?.externalAccount?.bank_name && <h3 className="border p-3 rounded-2xl">Bank Name: {data?.data?.externalAccount.bank_name}</h3>}
@@ -50,8 +49,11 @@ const BankingCredentials = () => {
         )}
         {/*  */}
         {!isLoading && !data?.data?.finOrgAccountId && (
-          <h3 className="border p-3 rounded-2xl border-[#707070]">
-            <button className="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
+          <h3 className="border p-3 rounded-2xl ">
+            <button
+              className="bg-primary/80 hover:bg-primary duration-300 text-white font-bold py-2.5 px-4 rounded-xl"
+              onClick={handleCreateAccountForStripe}
+            >
               Create Account For Stripe
             </button>
           </h3>
@@ -64,7 +66,7 @@ const BankingCredentials = () => {
         )}
       </div>
       {/* <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Paypal Merchent Id:{data?.data?.paypalMerchentId}</h3>
+            <h3 className="border p-3 rounded-2xl ">Paypal Merchent Id:{data?.data?.paypalMerchentId}</h3>
           </div> */}
     </>
   );
