@@ -54,9 +54,11 @@ const PropertyOwnerInformation = () => {
           <div className="flex justify-center">
             <h2 className="text-2xl font-medium">Dashboard</h2>
           </div>
-          <div className="grid md:grid-cols-1   lg:grid-cols-6 gap-5 mt-5 items-center">
-            <DashboardInfo />
-            <div className="col-span-1 lg:col-span-3 space-y-5">
+          <div className="flex flex-col-reverse md:grid md:grid-cols-1   lg:grid-cols-6 gap-5 mt-5 items-center">
+            <div className="md:col-span-1  lg:col-span-3 ">
+              <DashboardInfo />
+            </div>
+            <div className="md:col-span-1 lg:col-span-3 space-y-5">
               <PropertyOwnerChart />
               <PropertyOwnerChart />
             </div>

@@ -15,6 +15,7 @@ model PropertyOwner {
   lastName            String
   phoneNumber         String?
   profileImage        String?
+  extraCost           Json[]
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
   userId              String               @unique
@@ -179,12 +180,12 @@ model ServiceProvider {
 
 model MaintenanceRequest {
   maintenanceRequestId String                         @id @default(uuid())
-  propertyId           String
-  property             Property                       @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
-  tenantId             String
-  tenant               Tenant                         @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
-  ownerId              String
-  owner                PropertyOwner                  @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  propertyId           String?
+  property             Property?                      @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
+  tenantId             String?
+  tenant               Tenant?                        @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  ownerId              String?
+  owner                PropertyOwner?                 @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
   createdAt            DateTime                       @default(now())
   updatedAt            DateTime                       @updatedAt
   // 
@@ -300,6 +301,7 @@ model User {
   @@map("users")
 }
 
+// conversations of messaging
 model Conversation {
   conversationId String    @id @default(uuid())
   lastMessage    String    @default("Lets Say Hello")

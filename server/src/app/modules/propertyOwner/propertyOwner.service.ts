@@ -269,19 +269,73 @@ const getDashboardInfo = async (ownerId: string) => {
       },
     });
 
-    const costOfCurretntMonth = paymentItems.reduce((acc, item) => {
+    const costOfCurrentMonth = paymentItems.reduce((acc, item) => {
       return acc + (item?.PaymentInformation?.amountPaid || 0);
     }, 0);
 
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
-      costOfCurretntMonth,
+      costOfCurrentMonth,
     };
   } catch (err) {
     console.log(err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get dashboard info");
   }
+};
+
+// ! get extra cost
+const getDashboardInfoExtraCost = async (ownerId: string) => {
+  // Calculate collected amount of rent for the current month.
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
+
+  const data = await prisma.property.aggregate({
+    _sum: {
+      monthlyRent: true,
+    },
+    where: {
+      ownerId: ownerId,
+      isRented: true,
+      isActive: true,
+      orders: {
+        some: {
+          createdAt: {
+            gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+            lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
+          },
+        },
+      },
+    },
+  });
+  const collectedRentOfCurrentMonth: number = data?._sum?.monthlyRent || 0;
+
+  // Calculate cost of the owner for the current month
+  const paymentItems = await prisma.order.findMany({
+    where: {
+      ownerId: ownerId,
+      createdAt: {
+        gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+        lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
+      },
+    },
+    select: {
+      PaymentInformation: {
+        select: {
+          amountPaid: true,
+        },
+      },
+    },
+  });
+
+  const costOfCurrentMonth = paymentItems.reduce((acc, item) => {
+    return acc + (item?.PaymentInformation?.amountPaid || 0);
+  }, 0);
+
+  return {
+    collectedRentOfCurrentMonth,
+    costOfCurrentMonth,
+  };
 };
 
 export const PropertyOwnerServices = {
@@ -290,4 +344,5 @@ export const PropertyOwnerServices = {
   UpdatePropertyOwner,
   getFinancialAccountInfo,
   getDashboardInfo,
+  getDashboardInfoExtraCost,
 };
