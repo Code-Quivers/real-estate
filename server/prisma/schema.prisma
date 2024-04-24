@@ -15,7 +15,7 @@ model PropertyOwner {
   lastName            String
   phoneNumber         String?
   profileImage        String?
-  extraCost           Json[]
+  extraCosts          Json[]
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
   userId              String               @unique

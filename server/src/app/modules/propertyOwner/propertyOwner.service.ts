@@ -167,7 +167,7 @@ const UpdatePropertyOwner = async (
       throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!");
     }
 
-    const updatedPropertyOwnerProfileData: Partial<PropertyOwner> = {};
+    const updatedPropertyOwnerProfileData: any = {};
     if (firstName) updatedPropertyOwnerProfileData["firstName"] = firstName;
     if (lastName) updatedPropertyOwnerProfileData["lastName"] = lastName;
     if (phoneNumber) updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
@@ -273,10 +273,37 @@ const getDashboardInfo = async (ownerId: string) => {
       return acc + (item?.PaymentInformation?.amountPaid || 0);
     }, 0);
 
+    // get extra cost
+    const getExtraCost = await prisma.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId: ownerId,
+      },
+      select: {
+        extraCosts: true,
+      },
+    });
+    const currentMonths = currentDate.getMonth(); // Month is zero-based
+    const currentYear = currentDate.getFullYear();
+    let extraCosts;
+
+    if (getExtraCost) {
+      // Find the index of the object corresponding to the current month
+      const currentMonthIndex = getExtraCost.extraCosts.findIndex((cost: any) => {
+        const costDate = new Date(cost.month);
+        return costDate.getMonth() === currentMonths && costDate.getFullYear() === currentYear;
+      });
+
+      // If the current month's object is found, assign it to extraCosts
+      if (currentMonthIndex !== -1) {
+        extraCosts = getExtraCost.extraCosts[currentMonthIndex];
+      }
+    }
+
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
       costOfCurrentMonth,
+      extraCost: extraCosts,
     };
   } catch (err) {
     console.log(err);
@@ -284,58 +311,82 @@ const getDashboardInfo = async (ownerId: string) => {
   }
 };
 
-// ! get extra cost
-const getDashboardInfoExtraCost = async (ownerId: string) => {
-  // Calculate collected amount of rent for the current month.
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
+// !update extra cost
+const updateExtraCost = async (propertyOwnerId: string, data: { cost: string }) => {
+  return await prisma.$transaction(async (transactionClient) => {
+    // Retrieve existing extraCosts
+    const previousCostDetails = await transactionClient.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId,
+      },
+      select: {
+        extraCosts: true,
+      },
+    });
 
-  const data = await prisma.property.aggregate({
-    _sum: {
-      monthlyRent: true,
-    },
-    where: {
-      ownerId: ownerId,
-      isRented: true,
-      isActive: true,
-      orders: {
-        some: {
-          createdAt: {
-            gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-            lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
-          },
+    if (!previousCostDetails) {
+      throw new Error("Cost Not found");
+    }
+
+    // Extract current month and year
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // Month is zero-based
+    const currentYear = currentDate.getFullYear();
+
+    // Check if a cost entry for the current month already exists
+    const isExistCurrentMonthCost = previousCostDetails.extraCosts.some((cost: any) => {
+      const costDate = new Date(cost.month);
+      return costDate.getMonth() === currentMonth && costDate.getFullYear() === currentYear;
+    });
+
+    // If a cost entry for the current month does not exist, add it
+    if (!isExistCurrentMonthCost) {
+      const updatedData: any = [
+        ...previousCostDetails.extraCosts,
+        {
+          month: new Date(),
+          cost: data.cost,
         },
-      },
-    },
-  });
-  const collectedRentOfCurrentMonth: number = data?._sum?.monthlyRent || 0;
+      ];
 
-  // Calculate cost of the owner for the current month
-  const paymentItems = await prisma.order.findMany({
-    where: {
-      ownerId: ownerId,
-      createdAt: {
-        gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-        lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
-      },
-    },
-    select: {
-      PaymentInformation: {
+      return await transactionClient.propertyOwner.update({
+        where: {
+          propertyOwnerId,
+        },
+        data: {
+          extraCosts: updatedData,
+        },
         select: {
-          amountPaid: true,
+          extraCosts: true,
         },
-      },
-    },
+      });
+    } else {
+      const currentMonthDataIndex = previousCostDetails.extraCosts.findIndex((cost: any) => {
+        const costDate = new Date(cost.month);
+        return costDate.getMonth() === currentMonth && costDate.getFullYear() === currentYear;
+      });
+
+      // If current month data exists, update it and push to updatedData array
+      if (currentMonthDataIndex !== -1) {
+        const updatedCurrentMonthData: any = previousCostDetails.extraCosts[currentMonthDataIndex];
+
+        // Perform the update operation on updatedCurrentMonthData as needed
+
+        updatedCurrentMonthData.cost = data.cost;
+        const updatedData: any = [...previousCostDetails.extraCosts];
+        updatedData[currentMonthDataIndex] = updatedCurrentMonthData;
+
+        return await transactionClient.propertyOwner.update({
+          where: {
+            propertyOwnerId,
+          },
+          data: {
+            extraCosts: updatedData,
+          },
+        });
+      }
+    }
   });
-
-  const costOfCurrentMonth = paymentItems.reduce((acc, item) => {
-    return acc + (item?.PaymentInformation?.amountPaid || 0);
-  }, 0);
-
-  return {
-    collectedRentOfCurrentMonth,
-    costOfCurrentMonth,
-  };
 };
 
 export const PropertyOwnerServices = {
@@ -344,5 +395,5 @@ export const PropertyOwnerServices = {
   UpdatePropertyOwner,
   getFinancialAccountInfo,
   getDashboardInfo,
-  getDashboardInfoExtraCost,
+  updateExtraCost,
 };

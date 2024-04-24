@@ -32,10 +32,23 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
         url: "/property-owners/dashboard-info",
         method: "GET",
       }),
-      // providesTags: [tagTypes.propertyOwner],
+      providesTags: [tagTypes.propertyOwner],
     }),
-
+    updateExtraCost: builder.mutation({
+      query: ({ data }) => ({
+        url: `/property-owners/update-extra-cost`,
+        method: "PATCH",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.propertyOwner],
+    }),
   }),
 });
 
-export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation, useGetFinancialInfoQuery, useGetDashboardInfoQuery } = propertyOwnerApi;
+export const {
+  useGetPropertyOwnerMyProfileQuery,
+  useUpdatePropertyOwnerProfileMutation,
+  useGetFinancialInfoQuery,
+  useGetDashboardInfoQuery,
+  useUpdateExtraCostMutation,
+} = propertyOwnerApi;
