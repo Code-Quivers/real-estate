@@ -13,10 +13,7 @@ const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertyOwnerFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-  const result = await PropertyOwnerServices.getAllPropertyOwners(
-    filters,
-    options,
-  );
+  const result = await PropertyOwnerServices.getAllPropertyOwners(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -28,46 +25,37 @@ const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
 
 // ! get single  property owner
 
-const getSinglePropertyOwner = catchAsync(
-  async (req: Request, res: Response) => {
-    const propertyOwnerId = req.params?.propertyOwnerId;
+const getSinglePropertyOwner = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = req.params?.propertyOwnerId;
 
-    const result =
-      await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
+  const result = await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Property Owner Profile Information retrieved successful!",
-      data: result,
-    });
-  },
-);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Owner Profile Information retrieved successful!",
+    data: result,
+  });
+});
 
 // ! get  property owner my profile
-const getPropertyOwnerMyProfile = catchAsync(
-  async (req: Request, res: Response) => {
-    const propertyOwnerId = (req.user as IRequestUser).profileId;
-    const result =
-      await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
+const getPropertyOwnerMyProfile = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await PropertyOwnerServices.getSinglePropertyOwner(propertyOwnerId);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Property Owner my profile retrieved Successful",
-      data: result,
-    });
-  },
-);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Owner my profile retrieved Successful",
+    data: result,
+  });
+});
 // ! update property owner
 
 const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
   const propertyOwnerId = req.params?.propertyOwnerId;
 
-  const result = await PropertyOwnerServices.UpdatePropertyOwner(
-    propertyOwnerId,
-    req,
-  );
+  const result = await PropertyOwnerServices.UpdatePropertyOwner(propertyOwnerId, req);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -77,20 +65,17 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
 const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
-  console.log('Financial info getting api hit.....')
+  console.log("Financial info getting api hit.....");
   const ownerId = (req.user as IRequestUser).profileId;
   const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(ownerId);
-  console.log(finOrgAccountId)
+  console.log(finOrgAccountId);
 
   let result = null;
   if (finOrgAccountId) {
-    result = await StripeAccountManager.updateFinancialAccountInfo(finOrgAccountId)
-  }
-  else {
+    result = await StripeAccountManager.updateFinancialAccountInfo(finOrgAccountId);
+  } else {
     result = await PropertyOwnerServices.getFinancialAccountInfo(ownerId);
-
   }
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -100,17 +85,17 @@ const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get dashboard info
 const getDashboardInfo = catchAsync(async (req: Request, res: Response) => {
   const ownerId = (req.user as IRequestUser).profileId;
   const result = await PropertyOwnerServices.getDashboardInfo(ownerId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Dashboard information collection successful!",
-    data: result
-  })
-})
-
+    message: "Dashboard information collection Successful!",
+    data: result,
+  });
+});
 
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,

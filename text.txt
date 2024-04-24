@@ -1,0 +1,44 @@
+Property Owner ===========================
+
+1.Name (10%)
+2.phoneNumber    (20%)      
+3. profileImage (10%)          
+4. FinancialAccount (30%) [detailsSubmitted =(true -> 30% || false -> 15%)]
+5. Properties (30%)
+
+
+
+
+Tenant =====================================
+
+---------total 66%--- each for 6%-------------
+1.Name 
+2.profileImage                         
+3.dateOfBirth                          
+4.socialSecurityNumber                 
+5.presentAddress                       
+6.phoneNumber                          
+7.drivingLicenseNumber                 
+8.isCriminalRecord                   
+9.criminalRecordDescription
+10.affordableRentAmount                 
+11.isPets    
+---------------------------
+baki gula 34%
+
+
+
+
+[
+  {
+    month: "April",
+    cost: 100,
+  },
+  {
+    month: "",
+    cost: 100,
+  }
+]
+
+
+
