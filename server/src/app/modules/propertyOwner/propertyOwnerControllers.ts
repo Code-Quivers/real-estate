@@ -96,6 +96,17 @@ const getDashboardInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! update extra cost
+const updateExtraCost = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await PropertyOwnerServices.updateExtraCost(propertyOwnerId, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Update Successful!",
+    data: result,
+  });
+});
 
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
@@ -104,4 +115,5 @@ export const PropertyOwnerControllers = {
   getPropertyOwnerMyProfile,
   getFinancialAccount,
   getDashboardInfo,
+  updateExtraCost,
 };

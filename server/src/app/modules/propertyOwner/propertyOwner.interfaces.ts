@@ -11,3 +11,7 @@ export type IPropertyOwnerFilterRequest = {
   propertyOwnerId?: string | undefined;
   createdAt?: string | undefined;
 };
+
+export type IExtraCostUpdate = {
+  cost: number;
+};

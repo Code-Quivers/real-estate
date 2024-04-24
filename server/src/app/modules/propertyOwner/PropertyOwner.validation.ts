@@ -23,6 +23,14 @@ const updatePropertyOwner = z.object({
     .optional(),
 });
 
+// update
+const updateExtraCost = z.object({
+  body: z.object({
+    cost: z.number().nonnegative(),
+  }),
+});
+
 export const PropertyOwnerValidation = {
   updatePropertyOwner,
+  updateExtraCost,
 };

@@ -4,6 +4,7 @@ import auth from "../../middlewares/auth";
 import { UserRoles } from "@prisma/client";
 import { FileUploadHelper } from "../../../helpers/FileUploadHelper";
 import { PropertyOwnerValidation } from "./PropertyOwner.validation";
+import validateRequest from "../../middlewares/validateRequest";
 
 const router = express.Router();
 // ! get all property owners
@@ -33,15 +34,14 @@ router.patch(
   },
 );
 
-router.get(
-  "/financial-info",
-  auth(UserRoles.PROPERTY_OWNER),
-  PropertyOwnerControllers.getFinancialAccount
-);
+router.get("/financial-info", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getFinancialAccount);
 
-router.get(
-  "/dashboard-info",
+router.get("/dashboard-info", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getDashboardInfo);
+// update cost
+router.patch(
+  "/update-extra-cost",
   auth(UserRoles.PROPERTY_OWNER),
-  PropertyOwnerControllers.getDashboardInfo
+  validateRequest(PropertyOwnerValidation.updateExtraCost),
+  PropertyOwnerControllers.updateExtraCost,
 );
 export const PropertyOwnerRouter = router;
