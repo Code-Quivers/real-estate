@@ -42,6 +42,7 @@ baki gula 34%
 9. schools
 10. universities
 11. allowedPets
+12. images
  
 
 
