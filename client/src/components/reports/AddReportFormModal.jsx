@@ -53,7 +53,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       <div className="rs-form-control-wrapper ">
                         <SelectPicker
                           size="lg"
-                          data={["Monthly", "Annually", "Tax"].map((item) => ({
+                          data={["Monthly", "Annually", "Tenant information", "Tax"].map((item) => ({
                             label: item,
                             value: item,
                           }))}
@@ -204,6 +204,12 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       )}
                     />
                   </div>
+                </div>
+              )}
+              {console.log(reportType, "report type")}
+              {reportType === "Tenant information" && (
+                <div>
+                  <button className="font-semibold text-sm py-2 rounded-lg bg-[#E4F1FC] px-5 text-[#29429F]">Generate</button>
                 </div>
               )}
             </div>
