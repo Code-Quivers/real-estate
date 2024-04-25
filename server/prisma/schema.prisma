@@ -135,7 +135,7 @@ model Report {
   expenses            Float?
   // total
   grossProfit         Float
-  taxDocumentFile     String?
+  documentFile        String?
   // 
   propertyOwnerId     String
   propertyOwner       PropertyOwner @relation(fields: [propertyOwnerId], references: [propertyOwnerId], onDelete: Cascade)
