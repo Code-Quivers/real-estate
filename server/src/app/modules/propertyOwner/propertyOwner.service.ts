@@ -5,9 +5,7 @@ import prisma from "../../../shared/prisma";
 import { IPropertyOwnerFilterRequest, IPropertyOwnerUpdateRequest } from "./propertyOwner.interfaces";
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
-import fs from "fs";
-import { logger } from "../../../shared/logger";
-import { Prisma, PropertyOwner } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import {
@@ -17,6 +15,12 @@ import {
 } from "./propertyOwner.constants";
 import bcrypt from "bcrypt";
 import config from "../../../config";
+import {
+  calculatePropertyOwnerProfileScore,
+  calculatePropertyOwnerScoreRatio,
+  filterNonNullValues,
+  removeOldFile,
+} from "./propertyOwner.utils";
 
 // ! get all property owners
 const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
@@ -97,7 +101,7 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
 };
 
 // ! get single Property Owner
-const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<PropertyOwner | null> => {
+const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const propertyOwner = await transactionClient.propertyOwner.findUnique({
       where: {
@@ -108,7 +112,16 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<Property
           },
         },
       },
-      include: {
+      select: {
+        lastName: true,
+        firstName: true,
+        createdAt: true,
+        phoneNumber: true,
+        profileImage: true,
+        propertyOwnerId: true,
+        score: true,
+        userId: true,
+        updatedAt: true,
         _count: true,
         user: {
           select: {
@@ -125,7 +138,11 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<Property
     if (!propertyOwner) {
       throw new ApiError(httpStatus.UNAUTHORIZED, "Property Owner Profile Not Found!!!");
     }
-    return propertyOwner;
+    // profile score ratio
+    const scoreRatio = calculatePropertyOwnerScoreRatio(propertyOwner.score, 100);
+    //  rented  unit score
+
+    return { ...propertyOwner, scoreRatio };
   });
 
   return result;
@@ -140,22 +157,12 @@ const UpdatePropertyOwner = async (
 ) => {
   const profileImage: IUploadFile = req.file as any;
   const profileImagePath = profileImage?.path?.substring(13);
-  // const profileImagePath = profileImage?.path;
-
   const { firstName, lastName, phoneNumber, oldProfileImagePath, password } = req.body as IPropertyOwnerUpdateRequest;
 
   // deleting old style Image
-  const oldFilePaths = "uploads/" + oldProfileImagePath;
+  if (profileImagePath) await removeOldFile(oldProfileImagePath, profileImagePath);
 
-  if (oldProfileImagePath !== undefined && profileImagePath !== undefined) {
-    fs.unlink(oldFilePaths, (err) => {
-      if (err) {
-        logger.info("Error deleting old file");
-      }
-    });
-  }
-
-  //!
+  // !
   const result = await prisma.$transaction(async (transactionClient) => {
     const isPropertyOwnerExists = await transactionClient.propertyOwner.findUnique({
       where: {
@@ -167,13 +174,12 @@ const UpdatePropertyOwner = async (
       throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!");
     }
 
-    const updatedPropertyOwnerProfileData: any = {};
-    if (firstName) updatedPropertyOwnerProfileData["firstName"] = firstName;
-    if (lastName) updatedPropertyOwnerProfileData["lastName"] = lastName;
-    if (phoneNumber) updatedPropertyOwnerProfileData["phoneNumber"] = phoneNumber;
-    if (profileImagePath) updatedPropertyOwnerProfileData["profileImage"] = profileImagePath;
-
-    // ! if password
+    const updatedPropertyOwnerProfileData: any = filterNonNullValues({
+      firstName,
+      lastName,
+      phoneNumber,
+      profileImage: profileImagePath,
+    });
 
     // ! updating
     const res = await transactionClient.propertyOwner.update({
@@ -181,11 +187,31 @@ const UpdatePropertyOwner = async (
         propertyOwnerId,
       },
       data: updatedPropertyOwnerProfileData,
+      include: {
+        FinancialAccount: true,
+        _count: {
+          select: {
+            properties: true,
+          },
+        },
+      },
     });
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Updating Failed !");
     }
-
+    //
+    if (res) {
+      const profileScore = calculatePropertyOwnerProfileScore(res);
+      await transactionClient.propertyOwner.update({
+        where: {
+          propertyOwnerId,
+        },
+        data: {
+          score: profileScore,
+        },
+      });
+    }
+    //  if provided password
     if (password) {
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
@@ -202,7 +228,7 @@ const UpdatePropertyOwner = async (
   });
   return result;
 };
-
+// ! get financial info
 const getFinancialAccountInfo = async (ownerId: string) => {
   try {
     const finAcctData = await prisma.financialAccount.findUnique({
@@ -214,6 +240,7 @@ const getFinancialAccountInfo = async (ownerId: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!");
   }
 };
+// ! get dashboard info
 
 const getDashboardInfo = async (ownerId: string) => {
   try {
@@ -299,11 +326,28 @@ const getDashboardInfo = async (ownerId: string) => {
       }
     }
 
+    // rented unit score
+    const rentedUnitScoreRatio = await prisma.property.count({
+      where: {
+        ownerId,
+        isRented: true,
+      },
+    });
+
+    const getTotalUnits = await prisma.property.count({
+      where: {
+        ownerId,
+      },
+    });
+    //
+
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
       costOfCurrentMonth,
       extraCost: extraCosts,
+      rentedUnitScoreRatio,
+      myTotalUnits: getTotalUnits,
     };
   } catch (err) {
     console.log(err);
