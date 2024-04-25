@@ -409,7 +409,8 @@ enum RequestMaintenancePriorityEnum {
 }
 
 enum ReportType {
-  Monthly
-  Annually
-  Tax
+  MONTHLY
+  ANUALLY
+  TAX
+  TENANT_INFO
 }
