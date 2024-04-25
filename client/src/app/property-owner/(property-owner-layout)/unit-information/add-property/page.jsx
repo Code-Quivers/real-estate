@@ -178,7 +178,7 @@ const AddProperty = () => {
                         </div>
 
                         {/* address  && title */}
-                        <div className=" max-lg:space-y-4   md:col-span-6">
+                        <div className="max-lg:space-y-4   md:col-span-6">
                           {/* title */}
                           <div className="space-y-4 lg:space-y-2 max-lg:mt-5 ">
                             <label className="text-sm font-medium">Title</label>
@@ -223,9 +223,6 @@ const AddProperty = () => {
                           <div className="max-lg:space-y-3">
                             <label className="text-sm font-medium">Description</label>
                             <Controller
-                              rules={{
-                                required: "Description is Required",
-                              }}
                               name={`properties[${idx}].description`}
                               control={control}
                               render={({ field }) => (
@@ -315,7 +312,7 @@ const AddProperty = () => {
                                       }}
                                       className="!w-full"
                                       min={0}
-                                      max={200}
+
                                       // {...field}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.monthlyRent !== undefined} placement="topEnd">
@@ -394,9 +391,6 @@ const AddProperty = () => {
                           <div>
                             <label className="text-sm font-medium">What are the schools next to your house?</label>
                             <Controller
-                              rules={{
-                                required: "Schools is Required",
-                              }}
                               name={`properties[${idx}].schools`}
                               control={control}
                               render={({ field }) => (
@@ -415,9 +409,6 @@ const AddProperty = () => {
                           <div>
                             <label className="text-sm font-medium">What are the universities next to your house?</label>
                             <Controller
-                              rules={{
-                                required: "Universities is Required",
-                              }}
                               name={`properties[${idx}].universities`}
                               control={control}
                               render={({ field }) => (
@@ -445,11 +436,7 @@ const AddProperty = () => {
                         <div className="col-span-6">
                           <div>
                             <label className="text-sm font-medium">What pets do you allow in your house?</label>
-
                             <Controller
-                              rules={{
-                                required: "Pets is Required",
-                              }}
                               name={`properties[${idx}].allowedPets`}
                               control={control}
                               render={({ field }) => (

@@ -22,7 +22,7 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
-import { extractNonNullValues } from "./properties.utils";
+import { calculatePropertyScore, extractNonNullValues } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -61,8 +61,12 @@ const createNewProperty = async (profileId: string, req: Request) => {
     //
     const result = [];
     for (const singleProperty of propertyInfo) {
+      // updating unit score
+      const unitScore = calculatePropertyScore(singleProperty);
+
+      //
       const createdProperty = await transactionClient.property.create({
-        data: singleProperty,
+        data: { ...singleProperty, score: unitScore },
       });
       result.push(createdProperty.propertyId);
     }
