@@ -30,7 +30,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
         data: JSON.stringify(data),
         contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
 
     retriveTenantPaymentInfo: builder.mutation({
@@ -50,7 +50,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
         data: JSON.stringify(data),
         contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
 
     createAccountLink: builder.mutation({
@@ -60,7 +60,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
         data: JSON.stringify(data),
         contentType: "application/json",
       }),
-      // invalidatesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
   }),
 });

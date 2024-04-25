@@ -14,7 +14,7 @@ const DashboardInfo = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalData, setModalData] = useState(null);
   const handleClose = () => setIsOpenModal(false);
-
+  console.log("shafin", data?.data);
   return (
     <div className="space-y-3">
       <div className=" flex border   bg-white items-center justify-between px-5 py-7 rounded-2xl">
@@ -25,9 +25,9 @@ const DashboardInfo = () => {
 
         <div className=" outline outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[50px] h-[50px]">
           <div className=" flex w-full flex-col justify-center items-center">
-            <span>1</span>
+            <span>{data?.data?.rentedUnitScoreRatio}</span>
             <span className="w-[70%] border-t border-[#b6b6b6]" />
-            <span>1</span>
+            <span>{data?.data?.myTotalUnits || 12}</span>
           </div>
         </div>
       </div>
@@ -37,7 +37,7 @@ const DashboardInfo = () => {
       </div>
       <div className="border flex justify-between items-start    px-5 py-3  rounded-2xl bg-white">
         <div className="space-y-5">
-          <h2 className="text-2xl font-semibold">${data?.data?.costOfCurretntMonth || 0.0}</h2>
+          <h2 className="text-2xl font-semibold">${data?.data?.costOfCurrentMonth || 0.0}</h2>
           <p className="text-xl font-medium">Cost this month</p>
         </div>
       </div>

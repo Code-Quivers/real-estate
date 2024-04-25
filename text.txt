@@ -29,16 +29,30 @@ baki gula 34%
 
 
 
-[
-  {
-    month: "April",
-    cost: 100,
-  },
-  {
-    month: "",
-    cost: 100,
-  }
-]
+// unit (property)-------------------------------
+1. title
+2. numOfBed
+3. numOfBath
+4. monthlyRent
+5. address
+6. maintenanceCoveredTenant
+7. maintenanceCoveredOwner
+/------
+8. description
+9. schools
+10. universities
+11. allowedPets
+ 
 
+
+
+// Service Provider -----------------------
+1. Name
+2. profileImage
+3. phoneNumber
+4. companyName
+5. companyAddress
+6. companyPhoneNumber
+7. companyEmailAddress  
 
 
