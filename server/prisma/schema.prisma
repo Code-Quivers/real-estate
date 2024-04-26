@@ -127,10 +127,16 @@ model Report {
   reportTitle     String
   reportType      ReportType
   information     Json[]
+  // monthly rent or anual rent (manual)
   rentAmount      Float
+  // input 
   collectedRent   Float
-  expenses        Float?
+  //  input
+  expenses        Float
+  // rent collected - expenses 
+  // annual --> same
   grossProfit     Float
+  // pdf 
   documentFile    String?
   // 
   propertyOwnerId String
@@ -406,7 +412,7 @@ enum RequestMaintenancePriorityEnum {
 
 enum ReportType {
   MONTHLY
-  ANUALLY
+  ANNUALLY
   TAX
   TENANT_INFO
 }

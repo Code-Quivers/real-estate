@@ -14,7 +14,7 @@ import { OrderRoutes } from "../modules/orders/orders.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
 import { StripeRoutes } from "../modules/paymentStripe/stripe.routes";
 import { ConversationRoutes } from "../modules/conversations/conversation.routes";
-
+import { ReportsRoutes } from "../modules/reports/reports.routes";
 
 const router = express.Router();
 
@@ -71,6 +71,10 @@ const moduleRoutes = [
   {
     path: "/conversations",
     route: ConversationRoutes,
+  },
+  {
+    path: "/reports",
+    route: ReportsRoutes,
   },
 ];
 

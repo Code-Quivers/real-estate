@@ -10,6 +10,7 @@ export const tagTypes = {
   maintenanceRequest: "maintenanceRequest",
   order: "order",
   conversation: "conversation",
+  reports: "reports",
 };
 
 export const tagTypesList = [
