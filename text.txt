@@ -57,3 +57,33 @@ baki gula 34%
 7. companyEmailAddress  
 
 
+
+
+========================
+// report 
+[
+  {
+    image: "",
+    monthlyRent : 2000,
+    bed:"",
+    bath: "",
+    address: "",
+    tenantName: "",
+    tenantPhoto:"", 
+  }
+]
+
+
+
+
+-------------------for monthly report ----------------------------->
+monthlyRent --> from backend
+rentCollected
+expenses
+information [] --> only 1 object of property and tenantName + image
+
+-------------------for annual report ----------------------------->
+annualRent 
+rentCollected
+expenses
+information [] --> only 1 object of property and tenantName + image
