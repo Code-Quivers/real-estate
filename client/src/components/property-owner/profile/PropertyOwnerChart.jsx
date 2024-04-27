@@ -67,8 +67,8 @@ const PropertyOwnerChart = () => {
     ],
   };
 
-  return (
-    <div className="border shadow-lg rounded-2xl  p-5">
+  return ( 
+    <div className="border rounded-2xl p-5 bg-white">
       <Line options={options} data={data} />
     </div>
   );

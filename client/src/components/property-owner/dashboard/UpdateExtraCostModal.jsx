@@ -47,16 +47,18 @@ const UpdateExtraCostModal = ({ open, handleClose, modalData }) => {
     <div>
       <Modal size="sm" dialogAs="div" overflow={false} className="bg-white  mx-auto mt-10 p-5 rounded-lg" open={open} onClose={handleClose}>
         <Modal.Header>
-          <Modal.Title>Add Cost of This Month</Modal.Title>
+          <Modal.Title>
+            <h1 className="font-medium">Add Cost of This Month</h1>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            <div>
-              <h2>Current Cost : ${modalData?.cost}</h2>
-            </div>
             <form onSubmit={handleSubmit(handleUpdateExtraCost)}>
               <div>
-                <label htmlFor="cost">Add Cost</label>
+                <div className="flex justify-between items-center">
+                  <label htmlFor="cost">Add Cost</label>
+                  <h2>Current Cost : ${modalData?.cost}</h2>
+                </div>
                 <Controller
                   name="cost"
                   control={control}
