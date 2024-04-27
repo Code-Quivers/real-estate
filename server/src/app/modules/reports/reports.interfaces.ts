@@ -12,7 +12,7 @@ export type IChatUpdateRequest = {
   serviceAvailability?: ServiceAvailabilityEnum;
   serviceType?: ServiceType;
 };
-export type IChatFilterRequest = {
+export type IReportFilterRequest = {
   searchTerm?: string | undefined;
   createdAt?: string | undefined;
 };
@@ -24,6 +24,7 @@ export type IInformationType = {
   numOfBed: number;
   numOfBath: number;
   address: string;
+  propertyId: string;
   tenantName: string;
   tenantPhoto: string | null | undefined;
 };

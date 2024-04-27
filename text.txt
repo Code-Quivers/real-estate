@@ -70,6 +70,7 @@ baki gula 34%
     address: "",
     tenantName: "",
     tenantPhoto:"", 
+    
   }
 ]
 

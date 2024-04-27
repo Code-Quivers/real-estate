@@ -1,4 +1,4 @@
-export const chatFilterableFields: string[] = [
+export const reportsFilterableFields: string[] = [
   "serviceId",
   "searchTerm",
   "ownerId",
@@ -6,10 +6,10 @@ export const chatFilterableFields: string[] = [
   "serviceAvailability",
 ];
 
-export const chatSearchableFields: string[] = ["address", "description"];
+export const reportsSearchableFields: string[] = ["address", "description"];
 
-export const chatRelationalFields: string[] = ["ownerId"];
-export const chatRelationalFieldsMapper: { [key: string]: string } = {
+export const reportsRelationalFields: string[] = ["ownerId"];
+export const reportsRelationalFieldsMapper: { [key: string]: string } = {
   ownerId: "ownerId",
 };
 

@@ -13,13 +13,13 @@ export const ReportApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.reports],
     }),
-    getMyAllConversations: builder.query({
+    getPropertyOwnerReports: builder.query({
       query: (arg) => ({
-        url: `${REPORT_ROUTES}/get-my-all-conversations`,
+        url: `${REPORT_ROUTES}/property-owner-reports`,
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.conversation],
+      providesTags: [tagTypes.reports],
     }),
     sendMessage: builder.mutation({
       query: ({ data, conversationId }) => ({
@@ -27,9 +27,9 @@ export const ReportApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.conversation],
+      invalidatesTags: [tagTypes.reports],
     }),
   }),
 });
 
-export const { useAddNewMonthlyOrAnnualReportMutation, useSendMessageMutation, useGetMyAllConversationsQuery, useGetMessagesQuery } = ReportApi;
+export const { useAddNewMonthlyOrAnnualReportMutation, useGetPropertyOwnerReportsQuery } = ReportApi;
