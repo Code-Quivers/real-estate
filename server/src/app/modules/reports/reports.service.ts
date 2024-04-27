@@ -3,14 +3,20 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
-import { Conversation, Prisma, Report } from "@prisma/client";
-import { IAddMonthlyOrAnnualReport, IInformationType, IReportFilterRequest } from "./reports.interfaces";
+import { Prisma, Report } from "@prisma/client";
+import {
+  IAddAnnualTaxDocument,
+  IAddMonthlyOrAnnualReport,
+  IInformationType,
+  IReportFilterRequest,
+} from "./reports.interfaces";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { reportsRelationalFields, reportsRelationalFieldsMapper, reportsSearchableFields } from "./reports.constants";
 import { IGenericResponse } from "../../../interfaces/common";
-import moment from "moment";
 import { reportTypePrefix } from "./reports.utils";
+import { Request } from "express";
+import { IUploadFile } from "../../../interfaces/file";
 
 // ! add report
 const addMonthlyOrAnnualReport = async (
@@ -30,24 +36,6 @@ const addMonthlyOrAnnualReport = async (
 
     if (!isExistProperty) {
       throw new ApiError(httpStatus.NOT_FOUND, "Unit not Found !!");
-    }
-
-    // checking if already exist report on same month
-
-    const startOfMonth = moment().startOf("month");
-    const endOfMonth = moment().endOf("month");
-
-    const isExistReportThisMonth = await transactionClient.report.findFirst({
-      where: {
-        propertyOwnerId,
-        propertyId,
-        reportType: payload.reportType,
-        createdAt: { gte: startOfMonth.toDate(), lte: endOfMonth.toDate() },
-      },
-    });
-
-    if (isExistReportThisMonth) {
-      throw new ApiError(httpStatus.CONFLICT, "A report for this unit already exists for the current month.");
     }
 
     // making information
@@ -87,8 +75,105 @@ const addMonthlyOrAnnualReport = async (
   });
   return res;
 };
+// ! add annual tax document report
+const addAnnualTaxDocument = async (propertyOwnerId: string, req: Request): Promise<Partial<Report>> => {
+  const file = req.file as IUploadFile;
+  const filePath = file?.path?.substring(13);
+  const { reportType } = req.body as IAddAnnualTaxDocument;
 
-// ! getMyAllConversation
+  const res = await prisma.$transaction(async (transactionClient) => {
+    // checking if already exist report on same year
+
+    // const startOfYear = moment().startOf("year");
+    // const endOfYear = moment().endOf("year");
+
+    // const isExistReportThisMonth = await transactionClient.report.findFirst({
+    //   where: {
+    //     propertyOwnerId,
+    //     reportType,
+    //     createdAt: { gte: startOfYear.toDate(), lte: endOfYear.toDate() },
+    //   },
+    // });
+
+    // if (isExistReportThisMonth) {
+    //   throw new ApiError(httpStatus.CONFLICT, "A Report already exists for the Current Year.");
+    // }
+
+    const creatingData = {
+      reportTitle: `Annual Tax Document`,
+      reportType,
+      documentFile: filePath,
+      propertyOwnerId,
+    };
+
+    const result = await transactionClient.report.create({
+      data: creatingData,
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to add Report");
+    }
+    return result;
+  });
+  return res;
+};
+// ! generate report
+const generateTenantInfoReport = async (propertyOwnerId: string): Promise<Partial<Report>> => {
+  const res = await prisma.$transaction(async (transactionClient) => {
+    const isExistProperty = await transactionClient.property.findMany({
+      where: {
+        ownerId: propertyOwnerId,
+        Tenant: {
+          isNot: null,
+        },
+      },
+      include: {
+        Tenant: true,
+      },
+    });
+
+    if (!isExistProperty?.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, "No Unit Found !!");
+    }
+
+    // making information
+    // Initialize an array to store information
+    const information = [];
+
+    // Loop through each property and generate information
+    for (const property of isExistProperty) {
+      const propertyInformation = {
+        image: property.images[0],
+        monthlyRent: property.monthlyRent,
+        numOfBed: property.numOfBed,
+        numOfBath: property.numOfBath,
+        address: property.address,
+        tenantName: `${property.Tenant?.firstName} ${property.Tenant?.lastName}`,
+        tenantPhoto: property.Tenant?.profileImage,
+      };
+      information.push(propertyInformation);
+    }
+
+    //  rent collected - expenses
+    const creatingData = {
+      reportTitle: `Tenant Information`,
+      propertyOwnerId,
+      information,
+    };
+
+    const result = await transactionClient.report.create({
+      data: { ...creatingData, reportType: "TENANT_INFO" },
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to add Report");
+    }
+    return result;
+  });
+  return res;
+};
+
+// ! get reports
 const getPropertyOwnerReports = async (
   filters: IReportFilterRequest,
   options: IPaginationOptions,
@@ -169,89 +254,27 @@ const getPropertyOwnerReports = async (
 
 // ! createOrUpdateService
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const getSingleChat = async (conversationId: string, userId: string): Promise<Conversation> => {
+const getReportDetails = async (reportId: string, propertyOwnerId: string): Promise<Report> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     //
-    const chatMessages = await transactionClient.conversation.findUnique({
+    const reportDetails = await transactionClient.report.findUnique({
       where: {
-        conversationId,
-      },
-
-      include: {
-        _count: true,
-        messages: {
-          include: {
-            sender: {
-              select: {
-                userId: true,
-                role: true,
-                tenant: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                    profileImage: true,
-                  },
-                },
-                serviceProvider: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                    profileImage: true,
-                  },
-                },
-                propertyOwner: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                    profileImage: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
-        perticipants: {
-          where: {
-            userId: {
-              not: userId,
-            },
-          },
-          select: {
-            tenant: {
-              select: {
-                firstName: true,
-                lastName: true,
-                profileImage: true,
-              },
-            },
-            serviceProvider: {
-              select: {
-                firstName: true,
-                lastName: true,
-                profileImage: true,
-              },
-            },
-            propertyOwner: {
-              select: {
-                firstName: true,
-                lastName: true,
-                profileImage: true,
-              },
-            },
-            role: true,
-          },
-        },
+        propertyOwnerId,
+        reportId,
       },
     });
-    if (!chatMessages) {
-      throw new ApiError(httpStatus.NOT_FOUND, "Conversation not found !");
+    if (!reportDetails) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Report not found !");
     }
-    return chatMessages;
+    return reportDetails;
   });
   return result;
 };
 
-export const ReportsService = { addMonthlyOrAnnualReport, getPropertyOwnerReports, getSingleChat };
+export const ReportsService = {
+  addMonthlyOrAnnualReport,
+  addAnnualTaxDocument,
+  generateTenantInfoReport,
+  getPropertyOwnerReports,
+  getReportDetails,
+};

@@ -128,14 +128,14 @@ model Report {
   reportType      ReportType
   information     Json[]
   // monthly rent or anual rent (manual)
-  rentAmount      Float
+  rentAmount      Float?
   // input 
-  collectedRent   Float
+  collectedRent   Float?
   //  input
-  expenses        Float
+  expenses        Float?
   // rent collected - expenses 
   // annual --> same
-  grossProfit     Float
+  grossProfit     Float?
   // pdf 
   documentFile    String?
   // 

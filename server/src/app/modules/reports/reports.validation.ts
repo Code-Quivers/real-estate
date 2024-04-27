@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ZodMonthlyOrAnnualReportType } from "./reports.constants";
+import { ZodReportType } from "./reports.constants";
 
 const information = z.object({
   address: z.string(),
@@ -17,9 +17,12 @@ const addMonthlyOrAnnualReport = z.object({
     collectedRent: z.number(),
     expenses: z.number(),
     propertyId: z.string(),
-    reportType: z.enum([...ZodMonthlyOrAnnualReportType] as [string, ...string[]]),
+    reportType: z.enum([...ZodReportType] as [string, ...string[]]),
     information: z.array(information),
   }),
+});
+const addAnnualTaxDocument = z.object({
+  reportType: z.enum([...ZodReportType] as [string, ...string[]]),
 });
 
 const sendMessage = z.object({
@@ -29,4 +32,5 @@ const sendMessage = z.object({
 export const ReportsValidation = {
   addMonthlyOrAnnualReport,
   sendMessage,
+  addAnnualTaxDocument,
 };

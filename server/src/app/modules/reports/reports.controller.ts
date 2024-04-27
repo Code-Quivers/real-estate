@@ -7,7 +7,7 @@ import pick from "../../../shared/pick";
 import { reportsFilterableFields } from "./reports.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 
-// ! start new conversation
+// ! add new report
 const addMonthlyOrAnnualReport = catchAsync(async (req: Request, res: Response) => {
   const propertyOwnerId = (req.user as IRequestUser).profileId;
   const result = await ReportsService.addMonthlyOrAnnualReport(propertyOwnerId, req.body);
@@ -16,6 +16,30 @@ const addMonthlyOrAnnualReport = catchAsync(async (req: Request, res: Response) 
     statusCode: httpStatus.CREATED,
     success: true,
     message: "Added Successfully",
+    data: result,
+  });
+});
+// ! add new annual tax document
+const addAnnualTaxDocument = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.addAnnualTaxDocument(propertyOwnerId, req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Added Successfully",
+    data: result,
+  });
+});
+// ! generateTenantInfoReport
+const generateTenantInfoReport = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.generateTenantInfoReport(propertyOwnerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Generated Successfully",
     data: result,
   });
 });
@@ -35,18 +59,24 @@ const getPropertyOwnerReports = catchAsync(async (req: Request, res: Response) =
   });
 });
 // ! get single Chat
-const getSingleChat = catchAsync(async (req: Request, res: Response) => {
+const getReportDetails = catchAsync(async (req: Request, res: Response) => {
   //
-  const conversationId = req.params?.conversationId;
-  const userId = (req.user as IRequestUser).userId;
-  const result = await ReportsService.getSingleChat(conversationId, userId);
+  const reportId = req.params.reportId;
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.getReportDetails(reportId, propertyOwnerId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Conversations Retrieved Successfully",
+    message: "Report Details Retrieved Successfully",
     data: result,
   });
 });
 
-export const ReportsController = { addMonthlyOrAnnualReport, getPropertyOwnerReports, getSingleChat };
+export const ReportsController = {
+  addMonthlyOrAnnualReport,
+  addAnnualTaxDocument,
+  generateTenantInfoReport,
+  getPropertyOwnerReports,
+  getReportDetails,
+};

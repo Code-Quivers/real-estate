@@ -43,3 +43,6 @@ export type IAddAnnuallyReport = {
   propertyId: string;
   rentAmount: number;
 };
+export type IAddAnnualTaxDocument = {
+  reportType: ReportType;
+};

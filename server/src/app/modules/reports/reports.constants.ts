@@ -26,4 +26,4 @@ export const ZodServiceType = [
   "MARKETING",
   "TECHNOLOGY",
 ];
-export const ZodMonthlyOrAnnualReportType = ["MONTHLY", "ANNUALLY"];
+export const ZodReportType = ["MONTHLY", "ANNUALLY", "TAX", "TENANT_INFO"];
