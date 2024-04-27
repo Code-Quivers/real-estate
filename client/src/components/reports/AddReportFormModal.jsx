@@ -8,9 +8,15 @@ import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { Button, Form, InputNumber, Modal, Notification, SelectPicker, useToaster } from "rsuite";
 import AddTaxFileUpload from "./AddTaxFileUpload";
-import { useAddNewMonthlyOrAnnualReportMutation } from "@/redux/features/reports/reportsApi";
+import {
+  useAddAnnualTaxDocumentReportMutation,
+  useAddNewMonthlyOrAnnualReportMutation,
+  useGenerateTenantInformationReportMutation,
+} from "@/redux/features/reports/reportsApi";
+import { useRouter } from "next/navigation";
 
 const AddReportFormModal = ({ isOpen, handleClose }) => {
+  const router = useRouter();
   const [reportType, setReportType] = useState("");
   const {
     control,
@@ -21,65 +27,100 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
 
   const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
 
+  //  add new monthly or annual report
   const [
     addNewMonthlyOrAnnualReport,
     { data: addData, isLoading: isLoadingAdd, isError: isErrorAdd, isSuccess: isSuccessAdd, error: errorAdd, reset: resetReq },
   ] = useAddNewMonthlyOrAnnualReportMutation();
 
+  //  add new annual tax document report
+  const [addAnnualTaxDocumentReport, { data: addTaxData, isLoading: isLoadingTax, isSuccess: isSuccessTax, isError: isErrorTax, error: taxError }] =
+    useAddAnnualTaxDocumentReportMutation();
+
+  //  add tenant info
+  const [
+    generateTenantInformationReport,
+    { data: generateData, isLoading: isLoadingGenerate, isError: isErrorGenerate, isSuccess: isSuccessGenerate, error: generateError },
+  ] = useGenerateTenantInformationReportMutation();
+
+  // submit
   const handleAddReport = async (postData) => {
-    const information = myUnitsData?.data
-      ?.filter((unitData) => unitData?.propertyId === postData?.propertyId)
-      .map((unitData) => {
-        // Customize what properties are returned
-        return {
-          image: unitData?.images[0],
-          monthlyRent: unitData?.monthlyRent,
-          numOfBed: unitData?.numOfBed,
-          numOfBath: unitData?.numOfBath,
-          address: unitData?.address,
-          tenantName: `${unitData.Tenant?.firstName} ${unitData?.Tenant?.lastName}`,
-          tenantImage: unitData?.Tenant?.profileImage,
-          propertyId: unitData?.propertyId,
+    if (postData?.reportType === "MONTHLY" || postData?.reportType === "ANNUALLY") {
+      const information = myUnitsData?.data
+        ?.filter((unitData) => unitData?.propertyId === postData?.propertyId)
+        .map((unitData) => {
+          // Customize what properties are returned
+          return {
+            image: unitData?.images[0],
+            monthlyRent: unitData?.monthlyRent,
+            numOfBed: unitData?.numOfBed,
+            numOfBath: unitData?.numOfBath,
+            address: unitData?.address,
+            tenantName: `${unitData.Tenant?.firstName} ${unitData?.Tenant?.lastName}`,
+            tenantImage: unitData?.Tenant?.profileImage,
+            propertyId: unitData?.propertyId,
+          };
+        });
+
+      if (postData?.reportType === "MONTHLY") {
+        const monthlyData = {
+          reportType: postData.reportType,
+          collectedRent: parseFloat(postData?.monthlyCollectedRent),
+          expenses: parseFloat(postData?.monthlyExpenses),
+          propertyId: postData?.propertyId,
+          information,
         };
-      });
 
-    if (postData?.reportType === "MONTHLY") {
-      const monthlyData = {
-        reportType: postData.reportType,
-        collectedRent: parseFloat(postData?.monthlyCollectedRent),
-        expenses: parseFloat(postData?.monthlyExpenses),
-        propertyId: postData?.propertyId,
-        information,
-      };
+        await addNewMonthlyOrAnnualReport({
+          data: monthlyData,
+        });
 
-      await addNewMonthlyOrAnnualReport({
-        data: monthlyData,
-      });
-
-      //
-    } else if (postData?.reportType === "ANNUALLY") {
-      const annualData = {
-        reportType: postData.reportType,
-        rentAmount: parseFloat(postData?.annualRent),
-        collectedRent: parseFloat(postData?.annualCollectedRent),
-        expenses: parseFloat(postData?.annualExpenses),
-        propertyId: postData?.propertyId,
-        information,
-      };
-      await addNewMonthlyOrAnnualReport({
-        data: annualData,
-      });
-      //
+        //
+      } else if (postData?.reportType === "ANNUALLY") {
+        const annualData = {
+          reportType: postData.reportType,
+          rentAmount: parseFloat(postData?.annualRent),
+          collectedRent: parseFloat(postData?.annualCollectedRent),
+          expenses: parseFloat(postData?.annualExpenses),
+          propertyId: postData?.propertyId,
+          information,
+        };
+        await addNewMonthlyOrAnnualReport({
+          data: annualData,
+        });
+        //
+      }
     } else if (postData?.reportType === "TENANT_INFO") {
       //
+      await generateTenantInformationReport({
+        data: {
+          reportType: postData.reportType,
+        },
+      });
     } else if (postData?.reportType === "TAX") {
+      //
+      const formData = new FormData();
+
+      if (postData?.taxDocumentFile) {
+        formData.append("file", postData.taxDocumentFile?.blobFile);
+      }
+
+      const obj = JSON.stringify({
+        reportType: postData?.reportType,
+      });
+      formData.append("data", obj);
+
+      //
+      await addAnnualTaxDocumentReport({
+        data: formData,
+      });
       //
     }
 
     //
   };
 
-  // !
+  // ! side effect
   const toaster = useToaster();
   useEffect(() => {
     if (!isLoadingAdd && !isErrorAdd && isSuccessAdd) {
@@ -111,14 +152,97 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
     }
   }, [isLoadingAdd, isErrorAdd, isSuccessAdd, errorAdd, toaster]);
 
+  // adding tax document
+  useEffect(() => {
+    if (!isLoadingTax && !isErrorTax && isSuccessTax) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{addTaxData?.message || "Successfully Added"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      // handleClose();
+      // resetForm();
+      // resetReq();
+    }
+    if (!isLoadingTax && isErrorTax && !isSuccessTax && taxError) {
+      toaster.push(
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{taxError?.message || "Failed to Add"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+  }, [isLoadingTax, isErrorTax, isSuccessTax, taxError, toaster]);
+
+  // adding tenant information report
+  useEffect(() => {
+    if (!isLoadingGenerate && !isErrorGenerate && isSuccessGenerate) {
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{generateData?.message || "Successfully Added"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+
+      router.push(`/property-owner/reports/${generateData?.data?.reportId}`);
+
+      handleClose();
+      resetForm();
+      resetReq();
+    }
+    if (!isLoadingGenerate && isErrorGenerate && !isSuccessGenerate && generateError) {
+      toaster.push(
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{generateError?.message || "Failed to Generate"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+  }, [isLoadingGenerate, isErrorGenerate, isSuccessGenerate, generateError, toaster]);
+
   return (
     <div>
-      <Modal dialogAs="div" size={700} overflow={false} className="bg-white mx-auto rounded-2xl mt-10" open={isOpen}>
+      <Modal
+        dialogAs="div"
+        size={700}
+        onClose={() => {
+          handleClose();
+          resetForm();
+          setReportType("");
+        }}
+        overflow={false}
+        className="bg-white mx-auto rounded-2xl mt-10"
+        open={isOpen}
+      >
         <Modal.Body className="p-10">
           {/* heading title */}
           <div className="flex justify-between items-center">
             <h2>Add New Report</h2>
-            <button onClick={handleClose} className="hover:scale-125 duration-300">
+            <button
+              onClick={() => {
+                handleClose();
+                resetForm();
+                setReportType("");
+              }}
+              className="hover:scale-125 duration-300"
+            >
               <IoClose size={20} />
             </button>
           </div>
@@ -154,7 +278,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                               value: "TENANT_INFO",
                             },
                             {
-                              label: "Tax Document",
+                              label: "Annual Tax Document",
                               value: "TAX",
                             },
                           ].map((item) => ({
@@ -423,9 +547,11 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
               >
                 Close
               </button>
-              <Button loading={isLoadingAdd} type="submit" className="!bg-primary !text-white !rounded-full !px-5 !py-2.5">
-                Submit
-              </Button>
+              {reportType !== "TENANT_INFO" && (
+                <Button loading={isLoadingAdd || isLoadingTax} type="submit" className="!bg-primary !text-white !rounded-full !px-5 !py-2.5">
+                  Submit
+                </Button>
+              )}
             </div>
           </form>
         </Modal.Body>

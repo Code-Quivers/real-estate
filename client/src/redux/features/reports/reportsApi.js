@@ -11,7 +11,23 @@ export const ReportApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.reports],
+      invalidatesTags: [tagTypes.reports, tagTypes.properties],
+    }),
+    generateTenantInformationReport: builder.mutation({
+      query: () => ({
+        url: `${REPORT_ROUTES}/generate-tenant-info-report`,
+        method: "POST",
+      }),
+      invalidatesTags: [tagTypes.reports, tagTypes.properties],
+    }),
+    addAnnualTaxDocumentReport: builder.mutation({
+      query: ({ data }) => ({
+        url: `${REPORT_ROUTES}/annual-tax-document-report`,
+        method: "POST",
+        data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.reports, tagTypes.properties],
     }),
     getPropertyOwnerReports: builder.query({
       query: (arg) => ({
@@ -19,17 +35,22 @@ export const ReportApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.reports],
+      providesTags: [tagTypes.reports, tagTypes.properties],
     }),
-    sendMessage: builder.mutation({
-      query: ({ data, conversationId }) => ({
-        url: `${REPORT_ROUTES}/send-message/${conversationId}`,
-        method: "POST",
-        data,
+    getReportDetails: builder.query({
+      query: ({ reportId }) => ({
+        url: `${REPORT_ROUTES}/report-details/${reportId}`,
+        method: "GET",
       }),
-      invalidatesTags: [tagTypes.reports],
+      providesTags: [tagTypes.reports],
     }),
   }),
 });
 
-export const { useAddNewMonthlyOrAnnualReportMutation, useGetPropertyOwnerReportsQuery } = ReportApi;
+export const {
+  useAddNewMonthlyOrAnnualReportMutation,
+  useGenerateTenantInformationReportMutation,
+  useAddAnnualTaxDocumentReportMutation,
+  useGetPropertyOwnerReportsQuery,
+  useGetReportDetailsQuery,
+} = ReportApi;

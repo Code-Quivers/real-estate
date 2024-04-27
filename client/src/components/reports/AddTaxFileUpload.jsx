@@ -9,7 +9,7 @@ const AddTaxFileUpload = ({ field }) => {
       // Take only the first file if multiple files are somehow selected
       const latestFile = files[0]; // Changed from files[files.length - 1]
 
-      const fileSizeLimit = 1024 * 5 * 1024; // 1 MB
+      const fileSizeLimit = 1024 * 5 * 1024; // 5 MB
 
       if (latestFile.blobFile?.size && latestFile.blobFile?.size <= fileSizeLimit) {
         const fileType = latestFile.blobFile.type;
@@ -37,24 +37,34 @@ const AddTaxFileUpload = ({ field }) => {
     field.onChange(undefined);
   };
 
+  const formatFileSize = (bytes) => {
+    if (bytes === undefined || bytes === null || isNaN(bytes)) return "N/A";
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
   return (
     <div>
       {field?.value ? (
         <div className="mt-10">
-          <div className="flex justify-between gap-5 items-center">
+          <div className="flex justify-between gap-5 items-start bg-slate-100 p-3 ">
             <div>
               <p className="text-wrap">{field?.value?.blobFile?.name}</p>
+              <span className="text-xs ">{formatFileSize(field?.value?.blobFile?.size)}</span>
             </div>
             <div className="z-10">
               <button onClick={handleRemoveFile} className="text-[#f14e4e] hover:text-red-600" type="button">
-                Remove
+                Remove File
               </button>
             </div>
           </div>
         </div>
       ) : (
-        <Uploader draggable fileListVisible={false} autoUpload={false} onChange={handleChangeImages} accept=".pdf">
-          <div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Uploader fileListVisible={false} draggable autoUpload={false} onChange={handleChangeImages} accept=".pdf">
+          <div style={{ height: 150, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span>Click or drag a PDF file here to upload</span>
           </div>
         </Uploader>
