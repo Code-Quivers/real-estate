@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { Button, Form, InputNumber, Message, Modal, SelectPicker, useToaster } from "rsuite";
+import { Button, Form, InputNumber, Modal, Notification, SelectPicker, useToaster } from "rsuite";
 import AddTaxFileUpload from "./AddTaxFileUpload";
 import { useAddNewMonthlyOrAnnualReportMutation } from "@/redux/features/reports/reportsApi";
 
@@ -21,15 +21,14 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
 
   const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
 
-  const [addNewMonthlyOrAnnualReport, { data: addData, isLoading: isLoadingAdd, isError: isErrorAdd, isSuccess: isSuccessAdd, error: errorAdd }] =
-    useAddNewMonthlyOrAnnualReportMutation();
+  const [
+    addNewMonthlyOrAnnualReport,
+    { data: addData, isLoading: isLoadingAdd, isError: isErrorAdd, isSuccess: isSuccessAdd, error: errorAdd, reset: resetReq },
+  ] = useAddNewMonthlyOrAnnualReportMutation();
 
   const handleAddReport = async (postData) => {
     const information = myUnitsData?.data
-      ?.filter((unitData) => {
-        // Customize the condition to match your criteria
-        return unitData?.propertyId === postData?.propertyId;
-      })
+      ?.filter((unitData) => unitData?.propertyId === postData?.propertyId)
       .map((unitData) => {
         // Customize what properties are returned
         return {
@@ -44,9 +43,8 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
         };
       });
 
-    let createData;
     if (postData?.reportType === "MONTHLY") {
-      createData = {
+      const monthlyData = {
         reportType: postData.reportType,
         collectedRent: parseFloat(postData?.monthlyCollectedRent),
         expenses: parseFloat(postData?.monthlyExpenses),
@@ -55,12 +53,12 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
       };
 
       await addNewMonthlyOrAnnualReport({
-        data: createData,
+        data: monthlyData,
       });
 
       //
     } else if (postData?.reportType === "ANNUALLY") {
-      createData = {
+      const annualData = {
         reportType: postData.reportType,
         rentAmount: parseFloat(postData?.annualRent),
         collectedRent: parseFloat(postData?.annualCollectedRent),
@@ -69,7 +67,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
         information,
       };
       await addNewMonthlyOrAnnualReport({
-        data: createData,
+        data: annualData,
       });
       //
     } else if (postData?.reportType === "TENANT_INFO") {
@@ -78,7 +76,6 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
       //
     }
 
-    console.log("shafin", createData);
     //
   };
 
@@ -87,21 +84,28 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
   useEffect(() => {
     if (!isLoadingAdd && !isErrorAdd && isSuccessAdd) {
       toaster.push(
-        <Message bordered showIcon type="success">
-          <span className="lg:text-2xl">{addData?.message || "Successfully Added"}</span>
-        </Message>,
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{addData?.message || "Successfully Added"}</p>
+          </div>
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
         },
       );
+      // handleClose();
+      // resetForm();
+      // resetReq();
     }
     if (!isLoadingAdd && isErrorAdd && !isSuccessAdd && errorAdd) {
       toaster.push(
-        <Message bordered showIcon type="error">
-          <span className="lg:text-2xl">{errorAdd?.message || "Failed to Add"}</span>
-        </Message>,
+        <Notification type="error" header="error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{errorAdd?.message || "Failed to Add"}</p>
+          </div>
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
         },
       );
     }

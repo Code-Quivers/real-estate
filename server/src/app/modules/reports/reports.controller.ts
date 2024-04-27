@@ -4,7 +4,7 @@ import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { ReportsService } from "./reports.service";
 import pick from "../../../shared/pick";
-import { chatFilterableFields } from "./reports.constants";
+import { reportsFilterableFields } from "./reports.constants";
 import { IRequestUser } from "../../interfaces/global.interfaces";
 
 // ! start new conversation
@@ -15,36 +15,22 @@ const addMonthlyOrAnnualReport = catchAsync(async (req: Request, res: Response) 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Message Sent Successfully",
+    message: "Added Successfully",
     data: result,
   });
 });
 
-// ! Send message
-const sendMessage = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req.user as IRequestUser).userId;
-  const conversationId = req?.params?.conversationId;
-  const result = await ReportsService.sendMessage(userId, conversationId, req);
-
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Message Sent Successfully",
-    data: result,
-  });
-});
-
-// ! get getMyAllConversation
-const getMyAllConversation = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, chatFilterableFields);
+// ! get property owner reports
+const getPropertyOwnerReports = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, reportsFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const userId = (req.user as IRequestUser).userId;
-  const result = await ReportsService.getMyAllConversation(filters, options, userId);
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.getPropertyOwnerReports(filters, options, propertyOwnerId);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Conversations Retrieved Successfully",
+    message: "Reports Retrieved Successfully",
     data: result,
   });
 });
@@ -63,4 +49,4 @@ const getSingleChat = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const ReportsController = { addMonthlyOrAnnualReport, sendMessage, getMyAllConversation, getSingleChat };
+export const ReportsController = { addMonthlyOrAnnualReport, getPropertyOwnerReports, getSingleChat };
