@@ -14,7 +14,19 @@ export const extractNonNullValues = <T extends Record<string, any>>(data: T): Pa
 
 // ! calculate Unit (  Property ) Score
 
-export const calculatePropertyScore = (data: IPropertyData | Property): number => {
+export const calculateUnitScoreRatio = (
+  score: number,
+  totalScore: number,
+): {
+  score: number;
+  total: number;
+} => {
+  const ratio = (score / totalScore) * 10; // Scale to 10-based ratio
+  const roundedRatio = Math.round(ratio);
+  return { score: roundedRatio, total: 10 };
+};
+
+export const calculatePropertyScore = (data: IPropertyData | Property) => {
   const { description, schools, universities, allowedPets } = data;
 
   // Criteria weights for property scoring
@@ -33,6 +45,8 @@ export const calculatePropertyScore = (data: IPropertyData | Property): number =
   propertyScore += scoreFromProperty(schools, criteriaWeights.schools);
   propertyScore += scoreFromProperty(universities, criteriaWeights.universities);
   propertyScore += scoreFromProperty(allowedPets, criteriaWeights.allowedPets);
+  //
 
-  return propertyScore;
+  const scoreRatio = calculateUnitScoreRatio(propertyScore, 100);
+  return { propertyScore, scoreRatio };
 };

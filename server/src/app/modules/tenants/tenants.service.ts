@@ -259,7 +259,8 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
           tenantId,
         },
         data: {
-          score: profileScore,
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
         },
       });
     }

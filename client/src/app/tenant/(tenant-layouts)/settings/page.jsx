@@ -1,19 +1,20 @@
 "use client";
-import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
+
+import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 
 const TenantSettings = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const { data } = useGetPropertyOwnerMyProfileQuery(null);
+  const { data } = useGetTenantMyProfileQuery(null);
 
   const style = "border p-3 rounded-2xl ";
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       <div className="flex justify-center  py-5">
-        <h2 className="text-2xl font-semibold ">Settings</h2>
+        <h2 className="text-2xl font-semibold">Settings</h2>
       </div>
       {/*  */}
       <div className="border bg-white  rounded-2xl">
@@ -38,7 +39,7 @@ const TenantSettings = () => {
             <h3 className="border p-3 rounded-2xl ">Password</h3>
           </div>
         </div>
-        <div className="border-t   p-5">
+        <div className="border-t p-5">
           <div>
             <h4 className="text-xl font-medium">Card Information</h4>
           </div>

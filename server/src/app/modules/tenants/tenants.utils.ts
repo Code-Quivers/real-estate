@@ -21,6 +21,19 @@ export const updateTenantData = (updates: UpdateDataObject): Partial<ITenantUpda
 };
 
 // ! calculate  Tenant ProfileScore
+
+export const calculateTenantScoreRatio = (
+  score: number,
+  totalScore: number,
+): {
+  score: number;
+  total: number;
+} => {
+  const ratio = (score / totalScore) * 10; // Scale to 10-based ratio
+  const roundedRatio = Math.round(ratio);
+  return { score: roundedRatio, total: 10 };
+};
+
 // Interface for the data object
 type TenantData = {
   phoneNumber?: any;
@@ -43,7 +56,7 @@ type TenantData = {
 type CriteriaKey = keyof TenantData;
 
 // Function to calculate Tenant Profile Score
-export const calculateTenantProfileScore = (data: TenantData): number => {
+export const calculateTenantProfileScore = (data: TenantData) => {
   let profileScore = 10; // Start with a base score of 10
 
   // Criteria weights
@@ -59,7 +72,6 @@ export const calculateTenantProfileScore = (data: TenantData): number => {
     affordableRentAmount: 6,
     isPets: 6,
     // others should be in total 36
-
     criminalRecordDescription: 2,
     prevLandlordName: 2,
     prevLandlordContactInfo: 2,
@@ -83,7 +95,6 @@ export const calculateTenantProfileScore = (data: TenantData): number => {
   };
 
   // Calculate profile score based on criteria
-  // Calculate profile score based on criteria
   for (const criterion in data) {
     const value = data[criterion as CriteriaKey];
     if (
@@ -94,18 +105,12 @@ export const calculateTenantProfileScore = (data: TenantData): number => {
     }
   }
 
-  return profileScore;
+  // getting ratio
+  const scoreRatio = calculateTenantScoreRatio(profileScore, 100);
+  return {
+    profileScore,
+    scoreRatio,
+  };
 };
 
 // ! Calculate the score ratio
-export const calculateTenantScoreRatio = (
-  score: number,
-  totalScore: number,
-): {
-  score: number;
-  total: number;
-} => {
-  const ratio = (score / totalScore) * 10; // Scale to 10-based ratio
-  const roundedRatio = Math.round(ratio);
-  return { score: roundedRatio, total: 10 };
-};
