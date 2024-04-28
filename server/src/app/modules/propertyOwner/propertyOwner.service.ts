@@ -199,7 +199,7 @@ const UpdatePropertyOwner = async (
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner Updating Failed !");
     }
-    //
+    // updating profile score
     if (res) {
       const profileScore = calculatePropertyOwnerProfileScore(res);
       await transactionClient.propertyOwner.update({

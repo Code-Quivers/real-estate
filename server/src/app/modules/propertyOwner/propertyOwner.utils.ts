@@ -26,19 +26,16 @@ export const removeOldFile = async (oldProfileImagePath: string | undefined, pro
 // ! calculatePropertyOwnerProfileScore
 export const calculatePropertyOwnerProfileScore = (data: any): number => {
   const {
-    firstName,
-    lastName,
     phoneNumber,
     profileImage,
     FinancialAccount,
     _count: { properties },
   } = data;
 
-  let profileScore = 0;
+  let profileScore = 10;
 
   // Criteria weights
   const criteriaWeights = {
-    fullName: 10,
     phoneNumber: 20,
     profileImage: 10,
     financialAccountDetails: 15, // If financial account is not submitted
@@ -47,7 +44,6 @@ export const calculatePropertyOwnerProfileScore = (data: any): number => {
   };
 
   // Calculate profile score based on criteria
-  if (firstName && lastName) profileScore += criteriaWeights.fullName;
   if (phoneNumber) profileScore += criteriaWeights.phoneNumber;
   if (profileImage) profileScore += criteriaWeights.profileImage;
   if (FinancialAccount) {

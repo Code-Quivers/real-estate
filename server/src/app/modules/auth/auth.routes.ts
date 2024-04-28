@@ -5,26 +5,11 @@ const router = express.Router();
 
 router.post("/user/create", AuthController.createUser);
 
-router.post(
-  "/tenant/create-user",
+router.post("/tenant/create-user", AuthController.createNewUserForTenant);
 
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForTenant,
-);
+router.post("/property-owner/create-user", AuthController.createNewUserForPropertyOwner);
 
-router.post(
-  "/property-owner/create-user",
-
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForPropertyOwner,
-);
-
-router.post(
-  "/service-provider/create-user",
-
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForServiceProvider,
-);
+router.post("/service-provider/create-user", AuthController.createNewUserForServiceProvider);
 
 router.post("/login", AuthController.userLogin);
 
