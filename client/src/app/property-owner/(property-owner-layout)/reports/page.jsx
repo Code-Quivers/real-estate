@@ -23,6 +23,7 @@ const reportType = [
     value: "TAX",
   },
 ].map((item) => ({ label: item.label, value: item.value }));
+
 const PropertyOwnerReportPage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const handleClose = () => setIsOpenAdd(false);

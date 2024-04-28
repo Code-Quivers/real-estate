@@ -109,8 +109,8 @@ const TenantSidebar = () => {
             </Nav.Item>
             <Nav.Item
               as={Link}
-              href="/tenant/requests"
-              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/requests" && "!bg-[#1b3697]"}`}
+              href="/tenant/unit-information/my-requests"
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information/my-requests" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}

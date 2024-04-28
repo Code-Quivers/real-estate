@@ -1,6 +1,5 @@
 "use client";
 
-import { useGetPropertyOwnerReportsQuery } from "@/redux/features/reports/reportsApi";
 import moment from "moment";
 import Link from "next/link";
 import { FaRegEye } from "react-icons/fa";

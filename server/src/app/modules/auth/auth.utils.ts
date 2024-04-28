@@ -2,11 +2,7 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 
-export const userFindUnique = async (
-  userName: string,
-  email: string,
-  transactionClient: any,
-) => {
+export const userFindUnique = async (userName: string, email: string, transactionClient: any) => {
   // transaction start
 
   const userNameTaken = await transactionClient.user.findFirst({
