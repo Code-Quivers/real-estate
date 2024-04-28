@@ -63,7 +63,6 @@ const createNewProperty = async (profileId: string, req: Request) => {
     for (const singleProperty of propertyInfo) {
       // updating unit score
       const unitScore = calculatePropertyScore(singleProperty);
-
       //
       const createdProperty = await transactionClient.property.create({
         data: { ...singleProperty, score: unitScore },
@@ -190,7 +189,6 @@ const getPropertyOwnerAllProperty = async (
   options: IPaginationOptions,
 ) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
@@ -231,7 +229,14 @@ const getPropertyOwnerAllProperty = async (
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
       include: {
-        owner: true,
+        owner: {
+          select: {
+            createdAt: true,
+            firstName: true,
+            lastName: true,
+            userId: true,
+          },
+        },
         Tenant: true,
         _count: true,
         maintenanceRequests: true,
@@ -366,6 +371,19 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     if (!updatedProperty) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
     }
+
+    if (updatedProperty) {
+      // updating unit score
+      const unitScore = calculatePropertyScore(updatedProperty);
+      //
+      await transactionClient.property.update({
+        where: {
+          propertyId,
+        },
+        data: { score: unitScore },
+      });
+    }
+
     return updatedProperty;
   });
   return result;

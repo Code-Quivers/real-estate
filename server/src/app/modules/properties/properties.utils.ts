@@ -12,11 +12,9 @@ export const extractNonNullValues = <T extends Record<string, any>>(data: T): Pa
   return extractedData;
 };
 
-//  unit score
-
 // ! calculate Unit (  Property ) Score
 
-export const calculatePropertyScore = (data: IPropertyData): number => {
+export const calculatePropertyScore = (data: IPropertyData | Property): number => {
   const { description, schools, universities, allowedPets } = data;
 
   // Criteria weights for property scoring

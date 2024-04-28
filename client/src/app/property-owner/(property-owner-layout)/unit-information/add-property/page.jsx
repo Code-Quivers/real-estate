@@ -8,7 +8,6 @@ import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
 import { useEffect, useState } from "react";
 import { useAddPropertiesMutation } from "@/redux/features/propertyOwner/propertyApi";
-import AddPropertyEditor from "@/components/property-owner/add-property/AddPropertyEditor";
 import { useRouter } from "next/navigation";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
@@ -70,7 +69,14 @@ const AddProperty = () => {
   const handleSubmitCreateUnit = async (dataGet) => {
     const formData = new FormData();
     const allFiles = (dataGet?.properties || [])?.flatMap((property) => property?.files || []);
-    const propertiesWithoutFiles = (dataGet?.properties || []).map(({ files, ...propertyWithoutFiles }) => propertyWithoutFiles);
+    const propertiesWithoutFiles = (dataGet?.properties || []).map(({ files, ...propertyWithoutFiles }) => {
+      return {
+        ...propertyWithoutFiles,
+        numOfBed: parseFloat(propertyWithoutFiles?.numOfBed),
+        numOfBath: parseFloat(propertyWithoutFiles?.numOfBath),
+        monthlyRent: parseFloat(propertyWithoutFiles?.monthlyRent),
+      };
+    });
 
     const newPropertyList = JSON.stringify(propertiesWithoutFiles);
 
@@ -99,24 +105,10 @@ const AddProperty = () => {
         <div className="  w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
-            <Button
-              // as={Link}
-              // href={"/property-owner/unit-information/add-property"}
-              type="button"
-              className={`   h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
-              size="md"
-              appearance="default"
-            >
+            <Button type="button" className={`   h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="md" appearance="default">
               Property <br /> Information
             </Button>
-            <Button
-              // as={Link}
-              // href={"/"}
-              type="button"
-              className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `}
-              size="lg"
-              appearance="default"
-            >
+            <Button type="button" className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="lg" appearance="default">
               Payment
             </Button>
           </div>
@@ -147,7 +139,7 @@ const AddProperty = () => {
                   </div>
                   {/* other */}
 
-                  <div className="border space-y-5 p-5">
+                  <div className="border space-y-5 p-5 ">
                     {/* property Profile ------------------------ */}
                     <div>
                       <div>
@@ -227,7 +219,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <AddPropertyEditor field={field} />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.description !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.description?.message}
                                   </Form.ErrorMessage>
@@ -243,6 +235,7 @@ const AddProperty = () => {
                             {/* number of beds */}
                             <div className="w-full max-lg:space-y-3">
                               <label className="text-sm font-medium">Number of Beds</label>
+
                               <Controller
                                 rules={{
                                   required: "Num Of Beds is Required",
@@ -255,10 +248,10 @@ const AddProperty = () => {
                                       className="!w-full"
                                       min={0}
                                       max={200}
-                                      // {...field}
-                                      onChange={(e) => {
-                                        field.onChange(parseFloat(e));
-                                      }}
+                                      {...field}
+                                      // onChange={(e) => {
+                                      //   field.onChange(parseFloat(e));
+                                      // }}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.numOfBed !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.numOfBed?.message}
@@ -279,13 +272,13 @@ const AddProperty = () => {
                                 render={({ field }) => (
                                   <div className="rs-form-control-wrapper">
                                     <InputNumber
-                                      onChange={(e) => {
-                                        field.onChange(parseFloat(e));
-                                      }}
+                                      {...field}
+                                      // onChange={(e) => {
+                                      //   field.onChange(parseFloat(e));
+                                      // }}
                                       className="!w-full"
                                       min={0}
                                       max={200}
-                                      // {...field}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.numOfBath !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.numOfBath?.message}
@@ -307,13 +300,12 @@ const AddProperty = () => {
                                 render={({ field }) => (
                                   <div className="rs-form-control-wrapper">
                                     <InputNumber
-                                      onChange={(e) => {
-                                        field.onChange(parseFloat(e));
-                                      }}
+                                      {...field}
+                                      // onChange={(e) => {
+                                      //   field.onChange(parseFloat(e));
+                                      // }}
                                       className="!w-full"
-                                      min={0}
-
-                                      // {...field}
+                                      min={1}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.monthlyRent !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.monthlyRent?.message}
@@ -395,7 +387,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <AddPropertyEditor field={field} />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.schools !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.schools?.message}
                                   </Form.ErrorMessage>
@@ -413,7 +405,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <AddPropertyEditor field={field} />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.universities !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.universities?.message}
                                   </Form.ErrorMessage>
@@ -441,7 +433,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <AddPropertyEditor field={field} />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.allowedPets !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.allowedPets?.message}
                                   </Form.ErrorMessage>
@@ -493,7 +485,13 @@ const AddProperty = () => {
             {/* submit */}
 
             <div className="mt-10 flex justify-end">
-              <Button type="submit" loading={isLoading} size="lg" className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white">
+              <Button
+                disabled={!fields?.length > 0}
+                type="submit"
+                loading={isLoading}
+                size="lg"
+                className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
+              >
                 Next
               </Button>
             </div>
