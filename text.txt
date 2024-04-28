@@ -12,19 +12,44 @@ Property Owner ===========================
 Tenant =====================================
 
 ---------total 66%--- each for 6%-------------
-1.Name 
-2.profileImage                         
-3.dateOfBirth                          
-4.socialSecurityNumber                 
-5.presentAddress                       
-6.phoneNumber                          
-7.drivingLicenseNumber                 
-8.isCriminalRecord                   
-9.criminalRecordDescription
-10.affordableRentAmount                 
-11.isPets    
+
+1. profileImage
+2. dateOfBirth
+3. socialSecurityNumber
+4. presentAddress
+5. phoneNumber
+6. drivingLicenseNumber
+7. isCriminalRecord
+8. criminalRecordDescription
+9. affordableRentAmount
+10. isPets
 ---------------------------
-baki gula 34%
+others fields will be total ----> 34%
+--------------------------
+        
+
+1. prevLandlordName
+2. prevLandlordContactInfo
+3. lengthOfPrevTenancy
+4. leavingReason
+5. isAnyLatePaymentReason
+6. CurrentEmployerOrBusinessName
+7. CurrentEmployerOrBusinessContactInfo
+8. JobTitle
+9. AnnualSalary
+10. OtherIncomeSource
+11. CurrentCreditScore
+12. isPets
+13. typeOfPets
+14. isPetVaccinated
+15. isSmoker
+16. allergies
+17. isHaveOtherMember
+18. numberOfMember
+19. isWillingToSignLeasingAgreement
+20. isAnyExtraToMention
+
+//---------------- -------------------------------------------
 
 
 

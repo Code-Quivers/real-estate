@@ -69,6 +69,8 @@ const createNewUserForTenant = async (payload: IUserCreate): Promise<ILoginUserR
 
     const { tenantId, user } = tenantUser;
 
+    //
+
     // ! getting log in information
     const accessToken = jwtHelpers.createToken(
       {

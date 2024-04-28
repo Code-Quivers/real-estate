@@ -6,7 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { updateTenantData } from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio, updateTenantData } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -197,7 +197,10 @@ const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Not Found!!!");
     }
-    return tenants;
+    const scoreRatio = calculateTenantScoreRatio(tenants.score, 100);
+    //  rented  unit score
+
+    return { ...tenants, scoreRatio };
   });
 
   return result;
@@ -247,6 +250,18 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Updating Failed !");
+    }
+
+    if (res) {
+      const profileScore = calculateTenantProfileScore(res);
+      await transactionClient.tenant.update({
+        where: {
+          tenantId,
+        },
+        data: {
+          score: profileScore,
+        },
+      });
     }
 
     return res;
