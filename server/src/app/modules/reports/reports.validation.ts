@@ -8,7 +8,7 @@ const information = z.object({
   numOfBath: z.number(),
   numOfBed: z.number(),
   propertyId: z.string(),
-  tenantImage: z.string().optional(),
+  // tenantImage: z.string().optional(),
   tenantName: z.string(),
 });
 

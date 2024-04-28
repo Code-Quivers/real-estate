@@ -58,7 +58,7 @@ const PropertyOwnerInformation = () => {
             <div>
               <DashboardInfo />
             </div>
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid md:grid-cols-12 gap-4">
               <div className="col-span-6">
                 <PropertyOwnerChart />
               </div>
