@@ -15,12 +15,7 @@ import {
 } from "./propertyOwner.constants";
 import bcrypt from "bcrypt";
 import config from "../../../config";
-import {
-  calculatePropertyOwnerProfileScore,
-  calculatePropertyOwnerScoreRatio,
-  filterNonNullValues,
-  removeOldFile,
-} from "./propertyOwner.utils";
+import { calculatePropertyOwnerProfileScore, filterNonNullValues, removeOldFile } from "./propertyOwner.utils";
 
 // ! get all property owners
 const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
@@ -139,10 +134,10 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | nu
       throw new ApiError(httpStatus.UNAUTHORIZED, "Property Owner Profile Not Found!!!");
     }
     // profile score ratio
-    const scoreRatio = calculatePropertyOwnerScoreRatio(propertyOwner.score, 100);
-    //  rented  unit score
+    // const scoreRatio = calculatePropertyOwnerScoreRatio(propertyOwner.score, 100);
+    // //  rented  unit score
 
-    return { ...propertyOwner, scoreRatio };
+    return propertyOwner;
   });
 
   return result;
@@ -207,7 +202,8 @@ const UpdatePropertyOwner = async (
           propertyOwnerId,
         },
         data: {
-          score: profileScore,
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
         },
       });
     }

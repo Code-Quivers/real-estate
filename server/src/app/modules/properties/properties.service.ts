@@ -65,7 +65,7 @@ const createNewProperty = async (profileId: string, req: Request) => {
       const unitScore = calculatePropertyScore(singleProperty);
       //
       const createdProperty = await transactionClient.property.create({
-        data: { ...singleProperty, score: unitScore },
+        data: { ...singleProperty, score: unitScore.propertyScore, scoreRatio: unitScore.scoreRatio },
       });
       result.push(createdProperty.propertyId);
     }
@@ -346,7 +346,7 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: Partial<Property> = extractNonNullValues({
+    const updatedPropertyData: any = extractNonNullValues({
       title,
       address,
       images: imagesPath,
@@ -380,7 +380,7 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
         where: {
           propertyId,
         },
-        data: { score: unitScore },
+        data: { score: unitScore.propertyScore, scoreRatio: unitScore.scoreRatio },
       });
     }
 

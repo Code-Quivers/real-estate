@@ -23,8 +23,22 @@ export const removeOldFile = async (oldProfileImagePath: string | undefined, pro
     });
   }
 };
+
+// ! Calculate the score ratio
+export const calculatePropertyOwnerScoreRatio = (
+  score: number,
+  totalScore: number,
+): {
+  score: number;
+  total: number;
+} => {
+  const ratio = (score / totalScore) * 10; // Scale to 10-based ratio
+  const roundedRatio = Math.round(ratio);
+  return { score: roundedRatio, total: 10 };
+};
+
 // ! calculatePropertyOwnerProfileScore
-export const calculatePropertyOwnerProfileScore = (data: any): number => {
+export const calculatePropertyOwnerProfileScore = (data: any) => {
   const {
     phoneNumber,
     profileImage,
@@ -53,19 +67,11 @@ export const calculatePropertyOwnerProfileScore = (data: any): number => {
   }
   if (properties > 0) profileScore += criteriaWeights.properties;
 
-  return profileScore;
+  //
+
+  const scoreRatio = calculatePropertyOwnerScoreRatio(profileScore, 100);
+
+  return { profileScore, scoreRatio };
 };
 
 // !@CodeQuivers
-// ! Calculate the score ratio
-export const calculatePropertyOwnerScoreRatio = (
-  score: number,
-  totalScore: number,
-): {
-  score: number;
-  total: number;
-} => {
-  const ratio = (score / totalScore) * 10; // Scale to 10-based ratio
-  const roundedRatio = Math.round(ratio);
-  return { score: roundedRatio, total: 10 };
-};

@@ -27,6 +27,7 @@ model PropertyOwner {
   FinancialAccount    FinancialAccount?
   // 
   score               Float                @default(10)
+  scoreRatio          Json?
 
   @@map("propertyOwners")
 }
@@ -81,7 +82,8 @@ model Tenant {
   maintenanceRequests                  MaintenanceRequest[]
   orders                               Order[]
   // 
-  score                                Float                @default(6)
+  score                                Float                @default(10)
+  scoreRatio                           Json?
 
   @@map("tenants")
 }
@@ -116,8 +118,10 @@ model Property {
   serviceProviders         ServiceProvider[]
   // 
   score                    Float                @default(60)
+  scoreRatio               Json?
+
   // Many to many relation with Order
-  orders                   Order[]
+  orders Order[]
 
   @@map("properties")
 }
@@ -185,6 +189,7 @@ model ServiceProvider {
   maintenanceRequest  MaintenanceRequest[]
   // 
   score               Float                @default(0)
+  scoreRatio          Json?
 
   @@map("serviceProviders")
 }

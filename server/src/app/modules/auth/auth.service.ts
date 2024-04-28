@@ -36,6 +36,10 @@ const createNewUserForTenant = async (payload: IUserCreate): Promise<ILoginUserR
     const tenantData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,
@@ -131,6 +135,10 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate): Promise<ILog
     const propertyOwnerData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,

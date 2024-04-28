@@ -11,44 +11,42 @@ Property Owner ===========================
 
 Tenant =====================================
 
----------total 66%--- each for 6%-------------
+---------total 54%--- each for 36%-------------
+default score 10
 
-1. profileImage
-2. dateOfBirth
-3. socialSecurityNumber
-4. presentAddress
-5. phoneNumber
-6. drivingLicenseNumber
-7. isCriminalRecord
-8. criminalRecordDescription
-9. affordableRentAmount
-10. isPets
----------------------------
-others fields will be total ----> 34%
---------------------------
-        
-
-1. prevLandlordName
-2. prevLandlordContactInfo
-3. lengthOfPrevTenancy
-4. leavingReason
-5. isAnyLatePaymentReason
-6. CurrentEmployerOrBusinessName
-7. CurrentEmployerOrBusinessContactInfo
-8. JobTitle
-9. AnnualSalary
-10. OtherIncomeSource
-11. CurrentCreditScore
-12. isPets
-13. typeOfPets
-14. isPetVaccinated
-15. isSmoker
-16. allergies
-17. isHaveOtherMember
-18. numberOfMember
-19. isWillingToSignLeasingAgreement
-20. isAnyExtraToMention
-
+  // --------------should be total 54  ----------------
+    profileImage: 6,
+    dateOfBirth: 6,
+    socialSecurityNumber: 6,
+    presentAddress: 6,
+    phoneNumber: 6,
+    isCriminalRecord: 6,
+    drivingLicenseNumber: 6,
+    affordableRentAmount: 6,
+    isPets: 6,
+    
+    // -----------others should be in total 36 ----------
+    
+    criminalRecordDescription: 2,
+    prevLandlordName: 2,
+    prevLandlordContactInfo: 2,
+    lengthOfPrevTenancy: 2,
+    leavingReason: 2,
+    isAnyLatePaymentReason: 1,
+    CurrentEmployerOrBusinessName: 1,
+    CurrentEmployerOrBusinessContactInfo: 1,
+    JobTitle: 2,
+    AnnualSalary: 2,
+    OtherIncomeSource: 2,
+    CurrentCreditScore: 2,
+    typeOfPets: 2,
+    isPetVaccinated: 2,
+    isSmoker: 2,
+    allergies: 2,
+    isHaveOtherMember: 2,
+    numberOfMember: 2,
+    isWillingToSignLeasingAgreement: 2,
+    isAnyExtraToMention: 1,
 //---------------- -------------------------------------------
 
 
