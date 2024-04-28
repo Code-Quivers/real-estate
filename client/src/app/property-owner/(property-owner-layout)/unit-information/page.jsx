@@ -24,7 +24,10 @@ const PropertyOwnerUnitInformation = () => {
   );
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
-  const handleCloseEdit = () => setIsOpenEdit(false);
+  const handleCloseEdit = () => {
+    setIsOpenEdit(false);
+    setEditData(null);
+  };
 
   // ! remove tenant
   const [tenantRemoveData, setTenantRemoveData] = useState(null);

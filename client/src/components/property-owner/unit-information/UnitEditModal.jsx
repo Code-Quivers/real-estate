@@ -1,9 +1,8 @@
 "use client";
 import { Controller, useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { Button, Form, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
+import { Button, Form, Input, InputNumber, Modal, Notification, useToaster } from "rsuite";
 import UpdateImageUpload from "./UpdateImageUpload";
-import EditPropertyEditor from "./EditPropertyEditor";
 import { useUpdatePropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useEffect } from "react";
@@ -15,14 +14,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     handleSubmit,
     setValue,
     reset: resetForm,
-  } = useForm({
-    defaultValues: {
-      // description: editData?.description,
-      // universities: editData?.universities,
-      schools: editData?.schools,
-      // allowedPets: editData?.allowedPets,
-    },
-  });
+  } = useForm();
 
   const [updateProperty, { isLoading, isError, isSuccess, error, reset: resetReq, data: updateResData }] = useUpdatePropertyMutation();
 
@@ -75,26 +67,21 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
   useEffect(() => {
     if (isSuccess && !isLoading && !isError && !error && updateResData) {
       toaster.push(
-        <Message bordered showIcon type="success" closable>
-          <h4 className="font-semibold xl:text-2xl">{updateResData?.message ?? "Successfully Updated"}</h4>
-        </Message>,
-        { placement: "topEnd", duration: 20000 },
+        <Notification showIcon type="success" header="Success" closable>
+          <h4 className="font-semibold ">{updateResData?.message ?? "Successfully Updated"}</h4>
+        </Notification>,
+        { placement: "bottomStart", duration: 20000 },
       );
       handleClose();
       resetReq();
+      resetForm();
     }
     if (!isSuccess && !isLoading && isError && error) {
       toaster.push(
-        <Message bordered centered showIcon type="error" closable>
-          <h4 className="font-semibold xl:text-2xl">
-            {" "}
-            {
-              // @ts-ignore
-              error?.message || "Update Failed"
-            }
-          </h4>
-        </Message>,
-        { placement: "topEnd", duration: 20000 },
+        <Notification showIcon type="error" closable>
+          <h4 className="font-semibold ">{error?.message || "Update Failed"}</h4>
+        </Notification>,
+        { placement: "bottomStart", duration: 20000 },
       );
     }
   }, [isSuccess, isLoading, isError, updateResData, error, toaster]);
@@ -111,6 +98,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
         onClose={() => {
           handleClose();
           resetForm();
+          resetReq();
         }}
       >
         <Modal.Body className=" ">
@@ -250,10 +238,9 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                     <Controller
                       name="description"
                       control={control}
-                      defaultValue={editData?.description}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper">
-                          <EditPropertyEditor field={field} defaultValue={editData?.description} />
+                          <Input className="!w-full" {...field} as="textarea" rows={4} type="text" defaultValue={editData?.description} />
                         </div>
                       )}
                     />
@@ -339,7 +326,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor field={field} defaultValue={editData?.schools} />
+                                  <Input className="!w-full" {...field} as="textarea" rows={4} type="text" defaultValue={editData?.schools} />
                                 </div>
                               )}
                             />
@@ -354,11 +341,10 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                           <div className="w-full  ">
                             <Controller
                               name="universities"
-                              defaultValue={editData?.universities}
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor field={field} defaultValue={editData?.universities} />
+                                  <Input className="!w-full" {...field} as="textarea" rows={4} type="text" defaultValue={editData?.universities} />
                                 </div>
                               )}
                             />
@@ -382,11 +368,10 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                           <div className="w-full  ">
                             <Controller
                               name="allowedPets"
-                              defaultValue={editData?.allowedPets}
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper">
-                                  <EditPropertyEditor field={field} defaultValue={editData?.allowedPets} />
+                                  <Input className="!w-full" {...field} as="textarea" rows={4} type="text" defaultValue={editData?.allowedPets} />
                                 </div>
                               )}
                             />
@@ -404,6 +389,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
                   onClick={() => {
                     handleClose();
                     resetForm();
+                    resetReq();
                   }}
                   className=" border hover:bg-primary/80 hover:text-white hover:border-transparent duration-300 transition-all  border-primary text-primary py-2 px-3 rounded-full"
                 >
