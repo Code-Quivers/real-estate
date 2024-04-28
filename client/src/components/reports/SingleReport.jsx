@@ -7,6 +7,7 @@ import { FcDownload } from "react-icons/fc";
 import { IconButton } from "rsuite";
 
 const SingleReport = ({ report }) => {
+  console.log(report);
   return (
     <>
       <div>
@@ -14,7 +15,7 @@ const SingleReport = ({ report }) => {
         <p>Added: {moment(report?.createdAt).format("L")}</p>
       </div>
       <div className="flex gap-1">
-        <Link href="/property-owner/reports/statement">
+        <Link href={`/property-owner/reports/${report?.reportId}`}>
           <IconButton className="hover:!bg-black/10" circle icon={<FaRegEye className="text-[#1565c0]" size={20} />} />
         </Link>
         <div>
