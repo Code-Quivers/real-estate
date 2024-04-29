@@ -12,6 +12,7 @@ import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 
 const TenantSidebar = () => {
+  // eslint-disable-next-line no-unused-vars
   const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};

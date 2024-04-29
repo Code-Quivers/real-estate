@@ -5,6 +5,7 @@ import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 
 const TenantSettings = () => {
+  // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const { data } = useGetTenantMyProfileQuery(null);

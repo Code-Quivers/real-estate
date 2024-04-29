@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { Button, Loader, Message, useToaster } from "rsuite";
 
 const AllPendingOrders = () => {
-  const { data: allRequest, isLoading, isError, isSuccess, error } = useGetAllMaintenanceReqForServiceProviderQuery({});
+  const { data: allRequest, isLoading } = useGetAllMaintenanceReqForServiceProviderQuery({});
   const toaster = useToaster();
   const [
     acceptMaintenanceRequestForServiceProvider,

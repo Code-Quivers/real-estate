@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Input, Modal } from "rsuite";
 import PropertyOwnerUploadImageEdit from "./PropertyOwnerUploadImageEdit";
@@ -11,6 +10,7 @@ const PropertyOwnerProfileEdit = ({ open, myProfileData, handleClose }) => {
   const {
     control,
     handleSubmit,
+    // eslint-disable-next-line no-unused-vars
     formState: { errors },
   } = useForm();
 

@@ -18,7 +18,7 @@ const ServiceProviderSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const { data, isLoading, isError, error } = useGetServiceProviderMyProfileQuery(null);
+  const { data } = useGetServiceProviderMyProfileQuery(null);
   const { data: myProfileData } = data || {};
 
   const logOut = () => {

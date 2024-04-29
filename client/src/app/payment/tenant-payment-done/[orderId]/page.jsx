@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 
@@ -10,9 +11,12 @@ const TenantPaymentDone = ({ params }) => {
   const orderId = params.orderId;
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
-  const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
+  // const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
   const connectedAccountId = searchParams.get("connectedAccountId");
-  const [retrieveTenantPaymentInfo, { data, isLoading, isError }] = useRetriveTenantPaymentInfoMutation();
+  const [
+    retrieveTenantPaymentInfo,
+    //  { data, isLoading, isError }
+  ] = useRetriveTenantPaymentInfoMutation();
   useEffect(() => {
     retrieveTenantPaymentInfo({ orderId, connectedAccountId, paymentIntentId: payment_intent });
   }, []);

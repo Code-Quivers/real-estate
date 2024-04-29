@@ -7,7 +7,7 @@ import TenantInformation from "@/components/reports/TenantInformation";
 import { useGetReportDetailsQuery } from "@/redux/features/reports/reportsApi";
 
 const TenantInformationReportPage = ({ params }) => {
-  const { data, isLoading, isSuccess, isError, error } = useGetReportDetailsQuery(
+  const { data, isLoading } = useGetReportDetailsQuery(
     {
       reportId: params?.reportId,
     },

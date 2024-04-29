@@ -10,13 +10,7 @@ import { io } from "socket.io-client";
 
 const SendMessageForm = ({ conversationId }) => {
   // form
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset: resetForm,
-    resetField,
-  } = useForm();
+  const { control, handleSubmit, reset: resetForm } = useForm();
   // api
   const [sendMessage, { data, isLoading, isSuccess, isError, error, reset }] = useSendMessageMutation();
 
@@ -46,6 +40,7 @@ const SendMessageForm = ({ conversationId }) => {
   // !----------------------------
   const userDetails = getUserInfo();
   // socket
+  // eslint-disable-next-line no-unused-vars
   const [socketConnected, setSocketConnected] = useState(false);
 
   const ENDPOINT = "http://localhost:4000";

@@ -7,6 +7,7 @@ const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid 
   const stripe = useStripe();
   const elements = useElements();
 
+  // eslint-disable-next-line no-unused-vars
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 

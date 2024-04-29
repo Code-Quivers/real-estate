@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client"; // UpdateImageUpload.jsx
 import { Uploader, Button } from "rsuite";
 import { Controller } from "react-hook-form";

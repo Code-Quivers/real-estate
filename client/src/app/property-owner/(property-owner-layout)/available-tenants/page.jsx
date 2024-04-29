@@ -40,7 +40,7 @@ const PropertyOwnerServiceProviders = () => {
   });
   if (!!debouncedTermAddress) query["presentAddress"] = debouncedTermAddress;
 
-  const { data: allTenantsLists, isLoading, isFetching, isError } = useGetAllAvailableTenantsQuery({ ...query });
+  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setSelectedService] = useState(null);

@@ -1,5 +1,4 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { tagTypes } from "@/redux/tag-types/tag-types";
 
 export const propertyApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -24,7 +23,4 @@ export const propertyApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useCreatePaypalPaymentMutation,
-  useCapturePaypalPaymentMutation,
-} = propertyApi;
+export const { useCreatePaypalPaymentMutation, useCapturePaypalPaymentMutation } = propertyApi;

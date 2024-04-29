@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { useGetDashboardInfoQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import UpdateExtraCostModal from "./UpdateExtraCostModal";
-import PropertyOwnerChart from "../profile/PropertyOwnerChart";
 
 const DashboardInfo = () => {
   const { data, isLoading, isError } = useGetDashboardInfoQuery(

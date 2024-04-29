@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";

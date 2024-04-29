@@ -12,6 +12,7 @@ import { changeScoreStatus } from "@/utils/scoreStatus";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};
