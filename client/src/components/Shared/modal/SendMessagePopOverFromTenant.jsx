@@ -55,10 +55,10 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
   return (
     <div>
       <Whisper
-        placement="autoVertical"
+        placement="bottomEnd"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className=" w-[450px] !rounded-md overflow-y-auto mb-5">
+          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md overflow-y-auto mb-5">
             <div className="p-5 ">
               <div>
                 <h2>Send Message </h2>

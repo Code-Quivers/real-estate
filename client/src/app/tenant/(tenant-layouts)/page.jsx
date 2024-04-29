@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Button } from "rsuite";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
+import { changeScoreStatus } from "@/utils/scoreStatus";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
@@ -38,12 +39,13 @@ const TenantProfile = () => {
           </div>
         </div>
         {/* score */}
+        {console.log(data?.score)}
         <div>
-          <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
+          <div className=" col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
+            <div className={`${changeScoreStatus(data?.score)}`}>
               <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">9</span>
+                <span className="font-medium">{data?.score}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
                 <span className="font-medium">10</span>
               </div>
