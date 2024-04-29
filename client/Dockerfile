@@ -7,16 +7,16 @@ WORKDIR /app
 COPY package*.json ./  
 
 # Install dependencies  
-RUN npm install  
+RUN yarn install  
 
 # Copy the app source code to the container  
 COPY . .  
 
 # Build the Next.js app  
-RUN npm run build  
+RUN yarn build 
 
 # Expose the port the app will run on  
 EXPOSE 3000
 
 # Start the app  
-CMD ["npm", "start"]  
+CMD ["yarn", "start"]  
