@@ -118,6 +118,7 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | nu
         userId: true,
         updatedAt: true,
         _count: true,
+        scoreRatio: true,
         user: {
           select: {
             email: true,
