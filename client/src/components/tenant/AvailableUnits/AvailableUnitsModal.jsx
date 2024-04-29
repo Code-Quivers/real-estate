@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, useToaster } from "rsuite";
+import { Button, Carousel, Modal, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
@@ -46,11 +46,26 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
     <div>
       <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
-          <div className="grid lg:grid-cols-5  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
-            <div className="col-span-2 w-full  overflow-y-scroll max-h-[70vh]  custom-scrollbar">
+          <div className="grid md:grid-cols-12 border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97]">
+            <Carousel className="custom-slider col-span-6 md:hidden">
+              {unitInfo?.images?.length > 0
+                ? unitInfo?.images?.map((photo) => (
+                    <div key={Math.random()}>
+                      <Image
+                        className="w-full h-full object-cover"
+                        height={300}
+                        width={300}
+                        src={`${fileUrlKey()}/${photo}`}
+                        alt="Unit Photo"
+                      />
+                    </div>
+                  ))
+                : null}
+            </Carousel>
+            <div className="max-md:hidden col-span-6 w-full  overflow-y-scroll max-h-[95vh]  custom-scrollbar">
               {unitInfo?.images?.length
                 ? unitInfo?.images?.map((photo) => (
-                    <div key={Math.random()} className="flex flex-col   divide-y divide-[#8b8b8b]">
+                    <div key={Math.random()} className="flex flex-col divide-y divide-[#8b8b8b]">
                       <div className=" ">
                         <Image
                           className="h-[200px] p-3 w-full object-cover"
@@ -64,7 +79,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   ))
                 : ""}
             </div>
-            <div className="col-span-3 w-full overflow-y-scroll max-h-[70vh]  custom-scrollbar ">
+            <div className="col-span-6 w-full overflow-y-scroll md:max-h-[95vh] custom-scrollbar mt-2">
               <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
                 <div>
                   <h2>Logo</h2>

@@ -106,6 +106,7 @@ const AvailableUnitsCard = () => {
                   <p className="text-sm text-center">10</p>
                 </div>
               </div> */}
+              {console.log(unit)}
                 <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
                   <div className=" flex w-full flex-col justify-center items-center">
                     <span className="font-medium">9</span>
