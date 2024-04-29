@@ -4,7 +4,6 @@ import auth from "../../middlewares/auth";
 import { UserRoles } from "@prisma/client";
 import PayerTenantController from "./payerTenant/payer.tenant.controller";
 import StripeController from "./payerPropertyOwner/payer.propertyOwner.controllers";
-// import { PaypalController } from "./paypal.controllers";
 
 const router = express.Router();
 
