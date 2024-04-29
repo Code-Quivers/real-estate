@@ -117,7 +117,8 @@ class StripeAccountManager {
           propertyOwnerId: updatedFinAcctData.ownerId,
         },
         data: {
-          score: profileScore,
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
         },
       });
     }
