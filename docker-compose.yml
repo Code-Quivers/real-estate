@@ -28,7 +28,7 @@ services:
     volumes:
       - type: bind
         source: /root/volumes/real-estate/data
-        target: /app/uploads
+        target: /app/data
 
   client:
     stdin_open: true
