@@ -23,12 +23,11 @@ const DashboardInfo = () => {
           <p className="text-xl font-medium">Rented Unit</p>
           <h2 className="text-4xl font-semibold">{data?.data?.numOfRentedUnit || 0}</h2>
         </div>
-
         <div className=" outline outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[50px] h-[50px]">
           <div className=" flex w-full flex-col justify-center items-center">
             <span>{data?.data?.rentedUnitScoreRatio}</span>
             <span className="w-[70%] border-t border-[#b6b6b6]" />
-            <span>{data?.data?.myTotalUnits || 12}</span>
+            <span>{data?.data?.myTotalUnits || 0}</span>
           </div>
         </div>
       </div>

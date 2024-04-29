@@ -9,6 +9,7 @@ import { Button, Modal, Notification, Placeholder, Popover, Progress, Whisper, t
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
+import { IoMdClose } from "react-icons/io";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -97,6 +98,11 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
         onClose={handleClose}
       >
         <Modal.Body className="" style={{ padding: 0 }}>
+          <div className="flex justify-end p-4 ">
+            <button onClick={() => setModalOpened()} className="hover:text-red-500">
+              <IoMdClose size={20} />
+            </button>
+          </div>
           <div className="p-5">
             {/* top items */}
             <div className="grid grid-cols-5">

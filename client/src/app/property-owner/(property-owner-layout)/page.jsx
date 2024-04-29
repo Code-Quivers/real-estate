@@ -7,6 +7,7 @@ import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
 import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
 import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
+import { changeScoreStatus } from "@/utils/scoreStatus";
 
 const PropertyOwnerInformation = () => {
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
@@ -36,8 +37,8 @@ const PropertyOwnerInformation = () => {
         <div>
           <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className=" outline outline-4 md:outline-8 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  w-[60px] h-[60px]">
-              <div className=" flex w-full flex-col justify-center items-center">
+            <div className={`${changeScoreStatus(myProfileData?.scoreRatio?.score)}`}>
+              <div className="flex w-full flex-col justify-center items-center">
                 <span className="font-medium">{myProfileData?.scoreRatio?.score}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
                 <span className="font-medium">{myProfileData?.scoreRatio?.total}</span>
@@ -75,7 +76,6 @@ const PropertyOwnerInformation = () => {
           <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
             <div className="space-y-2">
               <h2 className="font-bold text-xl 2xl:text-2xl">Full Name</h2>
-              {console.log(myProfileData)}
               <p className="text-lg font-medium">
                 {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
               </p>
