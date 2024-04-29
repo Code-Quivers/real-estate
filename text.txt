@@ -111,3 +111,35 @@ annualRent
 rentCollected
 expenses
 information [] --> only 1 object of property and tenantName + image
+
+
+
+
+----------------------Service Provider-------------------------------------
+
+// total should be 30
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  Service             Service?
+  
+  ------Service-------
+
+// total should be 70
+  minPrice                  Float?
+  maxPrice                  Float?
+  serviceDescription        String?
+  serviceLocation           String?
+  serviceCancellationPolicy String?
+  serviceAvailability       ServiceAvailabilityEnum?
+  serviceType               ServiceType?
+
+
+--- serviceAvailability
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
+  ALL_PRIORITIES

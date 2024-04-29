@@ -59,8 +59,8 @@ const PropertyOwnerSavedTenants = () => {
                         <h3 className="text-lg font-medium">
                           <span>{singleReq?.tenant?.firstName}</span> <span>{singleReq?.tenant?.lastName}</span>
                         </h3>
-                        <h3 className="text-sm font-medium">{"singleReq.placeToRent"}</h3>
-                        <h3 className="text-sm font-medium">{"singleReq.tenant?.affordable"}</h3>
+                        <h3 className="text-sm font-medium">Phone: {singleReq?.tenant?.phoneNumber ?? "-"}</h3>
+                        <h3 className="text-sm font-medium">Affordable Rent : ${singleReq.tenant?.affordableRentAmount ?? "-"}</h3>
                       </div>
                       <div>
                         <div style={{ width: 80 }}>

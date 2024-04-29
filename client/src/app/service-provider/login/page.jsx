@@ -92,7 +92,7 @@ const LoginPage = () => {
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
-                        <Input {...field} type="text" placeholder="Username or Email" />
+                        <Input autoComplete="off" {...field} type="text" placeholder="Username or Email" />
                       </InputGroup>
                       <Form.ErrorMessage show={(!!errors?.emailOrUsername && !!errors?.emailOrUsername?.message) || false} placement="topEnd">
                         {errors?.emailOrUsername?.message}

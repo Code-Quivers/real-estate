@@ -114,7 +114,7 @@ const PropertyOwnerSidebar = () => {
               href="/property-owner/messages"
               style={{ backgroundColor: "#29429f" }}
               eventKey="6"
-              className="hover:!bg-[#1b3697]"
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/property-owner/messages") && "!bg-[#1b3697]"}`}
               icon={<GroupIcon />}
             >
               Messages
