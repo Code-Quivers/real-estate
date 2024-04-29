@@ -1,14 +1,15 @@
-import httpStatus from 'http-status';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from "http-status";
 
-import { PaymentInformation, Prisma } from '@prisma/client';
+import { PaymentInformation, Prisma } from "@prisma/client";
 
-import ApiError from '../../../errors/ApiError';
-import prisma from '../../../shared/prisma';
-import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IGenericResponse } from '../../../interfaces/common';
-import { IPaginationOptions } from '../../../interfaces/pagination';
-import { IPaymentFilterRequest } from './payment.interface';
-import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from './payment.constant';
+import ApiError from "../../../errors/ApiError";
+import prisma from "../../../shared/prisma";
+import { paginationHelpers } from "../../../helpers/paginationHelper";
+import { IGenericResponse } from "../../../interfaces/common";
+import { IPaginationOptions } from "../../../interfaces/pagination";
+import { IPaymentFilterRequest } from "./payment.interface";
+import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
 
 /**
  * Retrieves all payment report.
@@ -26,7 +27,10 @@ import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchab
 //   return paymentReports;
 // };
 
-const getPaymentReports = async (filters: IPaymentFilterRequest, options: IPaginationOptions): Promise<IGenericResponse<PaymentInformation[]>> => {
+const getPaymentReports = async (
+  filters: IPaymentFilterRequest,
+  options: IPaginationOptions,
+): Promise<IGenericResponse<PaymentInformation[]>> => {
   // Calculate pagination options
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -55,26 +59,26 @@ const getPaymentReports = async (filters: IPaymentFilterRequest, options: IPagin
         ...PaymentSearchableFields.map((field: string) => ({
           [field]: {
             contains: searchTerm,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         })),
         // Include search in nested field 'partyOrderId'
-        {
-          order: {
-            partyOrderId: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
-          },
-        },
-        {
-          user: {
-            email: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
-          },
-        },
+        // {
+        //   order: {
+        //     partyOrderId: {
+        //       contains: searchTerm,
+        //       mode: 'insensitive',
+        //     },
+        //   },
+        // },
+        // {
+        //   user: {
+        //     email: {
+        //       contains: searchTerm,
+        //       mode: 'insensitive',
+        //     },
+        //   },
+        // },
       ],
     });
   }
@@ -82,7 +86,7 @@ const getPaymentReports = async (filters: IPaymentFilterRequest, options: IPagin
   // Add filterData conditions if filterData is provided
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map(key => {
+      AND: Object.keys(filterData).map((key) => {
         if (PaymentRelationalFields.includes(key)) {
           return {
             [PaymentRelationalFieldsMapper[key]]: {
@@ -109,14 +113,15 @@ const getPaymentReports = async (filters: IPaymentFilterRequest, options: IPagin
       order: true,
       user: {
         include: {
-          profile: true,
+          propertyOwner: true,
+          tenant: true,
         },
       },
     },
     where: whereConditions,
     skip,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { updatedAt: 'desc' },
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { updatedAt: "desc" },
   });
 
   // Count total matching orders for pagination
@@ -153,7 +158,7 @@ const getPaymentReport = async (paymentId: string): Promise<PaymentInformation |
 
   // If the payment report is not found, throw an error
   if (!paymentReport) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'No payment information found!!!');
+    throw new ApiError(httpStatus.NOT_FOUND, "No payment information found!!!");
   }
 
   return paymentReport;
@@ -170,14 +175,13 @@ const getPaymentReportsWithOrderId = async (userId: string, orderId: string): Pr
 
   // If the payment report is not found, throw an error
   if (!paymentReports) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'No payment information found!!!');
+    throw new ApiError(httpStatus.NOT_FOUND, "No payment information found!!!");
   }
 
   return paymentReports;
 };
 
 // Store payment information in the database from the plaform like Paypal, venmo etc.
-
 
 const createPaymnentReport = async (data: any): Promise<PaymentInformation | null> => {
   // Fetch a single payment report from the database based on the payment ID
@@ -187,7 +191,7 @@ const createPaymnentReport = async (data: any): Promise<PaymentInformation | nul
 
   // If the payment report is not found, throw an error
   if (!paymentReport) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'No payment information found!!!');
+    throw new ApiError(httpStatus.BAD_REQUEST, "No payment information found!!!");
   }
 
   return paymentReport;

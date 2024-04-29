@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { Message } from "@prisma/client";
 import { IChatUpdateRequest } from "./conversation.interfaces";
 
 type UpdateValueType = string | number | boolean;
@@ -18,10 +19,8 @@ export const updateServiceData = (updates: UpdateDataObject): Partial<IChatUpdat
     ...filteredUpdates,
   };
 };
-import { Messages } from "@prisma/client";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const extractNonNullValues = <T extends Record<string, any>>(data: T): Partial<Messages> => {
+export const extractNonNullValues = <T extends Record<string, any>>(data: T): Partial<Message> => {
   const extractedData: any = {};
   Object.keys(data).forEach((key) => {
     if (data[key] !== null && data[key] !== undefined) {

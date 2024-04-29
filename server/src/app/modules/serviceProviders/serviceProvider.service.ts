@@ -198,7 +198,7 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
       throw new ApiError(httpStatus.NOT_FOUND, "Service Provider Profile Not Found!");
     }
 
-    const updatedServiceProviderProfileData: Partial<ServiceProvider> = filterUndefinedOrNullValues({
+    const updatedServiceProviderProfileData = filterUndefinedOrNullValues({
       firstName,
       lastName,
       phoneNumber,

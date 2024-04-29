@@ -3,8 +3,6 @@ import { AuthController } from "./auth.controller";
 
 const router = express.Router();
 
-router.post("/user/create", AuthController.createUser);
-
 router.post("/tenant/create-user", AuthController.createNewUserForTenant);
 
 router.post("/property-owner/create-user", AuthController.createNewUserForPropertyOwner);
