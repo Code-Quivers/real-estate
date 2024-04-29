@@ -58,7 +58,12 @@ const ConversationMessagingChats = () => {
   // ! send message ---------------------
 
   // form
-  const { control, handleSubmit, reset: resetForm } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset: resetForm,
+    formState: { errors },
+  } = useForm();
 
   // api
   const [
@@ -165,6 +170,9 @@ const ConversationMessagingChats = () => {
                   <Controller
                     name="text"
                     control={control}
+                    rules={{
+                      required: "Message is Required",
+                    }}
                     render={({ field }) => (
                       <input
                         type="text"
@@ -178,13 +186,8 @@ const ConversationMessagingChats = () => {
                   />
                 </div>
                 <div className="col-span-1 flex flex-col gap-5 justify-between items-center">
-                  {/* <div className="">
-                    <button type="button" size="lg" className="">
-                      <IoImages size={30} />
-                    </button>
-                  </div> */}
                   <div className="">
-                    <button loading={isLoading} type="submit" size="lg" className="">
+                    <button disabled={errors?.text} loading={isLoading} type="submit" size="lg" className="">
                       <IoMdSend size={30} />
                     </button>
                   </div>

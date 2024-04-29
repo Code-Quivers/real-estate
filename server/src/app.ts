@@ -5,7 +5,6 @@ import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import routes from "./app/routes";
 import cookieParser from "cookie-parser";
 import create_required_directories from "./tasks/directory_creation_task";
-import dbBackupTask from "./tasks/database_backup_task";
 import { setupSocket } from "./socket";
 import { createServer } from "http";
 
@@ -15,7 +14,7 @@ const app: Application = express();
 create_required_directories();
 
 // Start the database backup task
-dbBackupTask.start();
+// dbBackupTask.start();
 
 app.use(
   cors({

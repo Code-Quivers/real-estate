@@ -231,6 +231,10 @@ const createNewUserForServiceProvider = async (payload: IUserCreate): Promise<IL
     const serviceProviderData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,
