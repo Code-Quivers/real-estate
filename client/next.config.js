@@ -9,7 +9,19 @@ const nextConfig = {
         port: "7000",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "77.237.234.238",
+        port: "7000",
+        pathname: "/**",
+      },
+
     ],
+    domains:[
+      "localhost",
+      "77.237.234.238",
+      "77.237.234.238:7000",
+    ]
   },
   webpack: (config) => {
     /**
