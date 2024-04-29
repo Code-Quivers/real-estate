@@ -15,7 +15,7 @@ import {
   serviceProviderRelationalFieldsMapper,
   serviceProviderSearchableFields,
 } from "./serviceProvider.constants";
-import { filterUndefinedOrNullValues } from "./serviceProvider.utils";
+import { calculateServiceProviderProfileScore, filterUndefinedOrNullValues } from "./serviceProvider.utils";
 
 // ! get all Service Provider
 const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, options: IPaginationOptions) => {
@@ -215,10 +215,26 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
         serviceProviderId,
       },
       data: updatedServiceProviderProfileData,
+      include: {
+        Service: true,
+      },
     });
 
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Service Provider Profile Updating Failed !");
+    }
+
+    if (res) {
+      const profileScore = calculateServiceProviderProfileScore(res as any);
+      await transactionClient.serviceProvider.update({
+        where: {
+          serviceProviderId,
+        },
+        data: {
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
+        },
+      });
     }
 
     return res;
