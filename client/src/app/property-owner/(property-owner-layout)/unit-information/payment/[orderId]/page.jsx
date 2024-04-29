@@ -12,6 +12,7 @@ const UnitPaymentPage = ({ params }) => {
   const router = useRouter();
   const toaster = useToaster();
   const [isOpenFreeTrial, setIsOpenFreeTrial] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [monthlyChargePerProperty, setMonthlyChargePerProperty] = useState(20.0);
   const {
     data: orderDetails,

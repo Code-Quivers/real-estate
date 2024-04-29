@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 
@@ -6,12 +7,15 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-const PropetyPaymentDone = ({ params }) => {
+const PropertyPaymentDone = ({ params }) => {
   const orderId = params.orderId;
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
-  const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
-  const [retrievePaymentInfo, { data, isLoading, isError }] = useRetrivePaymentInfoMutation();
+  // const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
+  const [
+    retrievePaymentInfo,
+    // { data, isLoading, isError }
+  ] = useRetrivePaymentInfoMutation();
   useEffect(() => {
     retrievePaymentInfo({ orderId, paymentIntentId: payment_intent });
   }, []);
@@ -42,4 +46,4 @@ const PropetyPaymentDone = ({ params }) => {
   );
 };
 
-export default PropetyPaymentDone;
+export default PropertyPaymentDone;

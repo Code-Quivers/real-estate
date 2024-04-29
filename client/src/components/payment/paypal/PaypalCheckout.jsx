@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
         isRentPayment: isRentPayment, // Flag indicating if it's a rent payment
         tenantId: tenantId, // ID of the tenant
         propertyId: propertyId, // ID of the property
-        ownerId: ownerId // ID of the owner
+        ownerId: ownerId, // ID of the owner
       };
 
       // Call function to create PayPal payment
@@ -47,10 +48,10 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
       } else {
         // If there's an error, construct error message
         const errorDetail = orderData?.details?.[0];
-        const errorMessage = errorDetail ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})` : JSON.stringify(orderData);
+        const errorMessages = errorDetail ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})` : JSON.stringify(orderData);
 
         // Throw an error with the error message
-        throw new Error(errorMessage);
+        throw new Error(errorMessages);
       }
     } catch (err) {
       // Catch and handle any errors
@@ -59,10 +60,10 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
     }
   };
 
-
   /**
- * Handles the approval of a PayPal payment.
- */
+   * Handles the approval of a PayPal payment.
+   */
+  // eslint-disable-next-line no-shadow
   const onApprove = async (data, actions) => {
     try {
       // Prepare data to be sent for capturing PayPal payment
@@ -97,10 +98,10 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
         updateOrderInfo({
           orderInfo: {
             orderId: orderData?.orderId,
-            orderStatus: 'CONFIRMED',
-            planType: 'PREMIUM',
-            isRentPayment
-          }
+            orderStatus: "CONFIRMED",
+            planType: "PREMIUM",
+            isRentPayment,
+          },
         });
 
         // Navigate to payment done page
@@ -117,7 +118,6 @@ const PaypalCheckout = ({ isRentPayment, ownerOrderId, amountToPaid, tenantId, p
     <div className=" max-lg:px-5 w-full py-10 ">
       <div className="grid grid-cols-2 gap-5 w-full">
         <div>
-
           <PayPalScriptProvider options={initialOptions}>
             <PayPalButtons
               style={{

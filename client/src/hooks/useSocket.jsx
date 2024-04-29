@@ -8,6 +8,7 @@ const myDetails = getUserInfo();
 
 const useSocket = () => {
   const [socket, setSocket] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [socketConnected, setSocketConnected] = useState(false);
 
   useEffect(() => {

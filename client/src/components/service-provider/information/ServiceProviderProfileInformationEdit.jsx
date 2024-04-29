@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
-  const [updateMyServiceProviderMyProfile, { isLoading, isError, isSuccess, error }] = useUpdateServiceProviderMyProfileMutation();
+  const [updateMyServiceProviderMyProfile, { isLoading }] = useUpdateServiceProviderMyProfileMutation();
   const {
     control,
     handleSubmit,

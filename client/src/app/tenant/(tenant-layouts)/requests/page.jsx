@@ -6,6 +6,7 @@ import { useGetMyRequestedMaintenanceQuery } from "@/redux/features/maintenanceR
 import { Placeholder } from "rsuite";
 
 const MyMaintenanceRequests = () => {
+  // eslint-disable-next-line no-unused-vars
   const { data: myAllRequests, isError, isLoading, isFetching, error } = useGetMyRequestedMaintenanceQuery();
   return (
     <div className="text-center max-w-[1050px] mt-6 2xl:mx-auto lg:px-5 2xl:px-0 mx-auto">
@@ -13,6 +14,7 @@ const MyMaintenanceRequests = () => {
       <div>
         {!isLoading &&
           myAllRequests?.data?.data?.length > 0 &&
+          // eslint-disable-next-line no-unused-vars
           myAllRequests?.data?.data?.map((req) => (
             <div key={Math.random()} className="flex justify-between items-center border">
               <div className="flex justify-start items-center gap-5">

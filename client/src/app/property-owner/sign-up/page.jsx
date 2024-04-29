@@ -13,7 +13,6 @@ import { FaLock } from "react-icons/fa";
 import { Controller, useForm } from "react-hook-form";
 import { usePropertyOwnerSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
-import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
 import { storeUserInfo } from "@/hooks/services/auth.service";
 
 const style = {

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";

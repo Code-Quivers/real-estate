@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import { useForm } from "react-hook-form";
 import TenantIncomeInformationEdit from "./TenantIncomeInformationEdit";

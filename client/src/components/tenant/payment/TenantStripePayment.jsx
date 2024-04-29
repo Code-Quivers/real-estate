@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "rsuite";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { useGetClientSecretMutation, useGetTenantClientSecretMutation } from "@/redux/features/payment/stripePaymentApi";
+import { useGetTenantClientSecretMutation } from "@/redux/features/payment/stripePaymentApi";
 import TenantStripeCheckoutForm from "./TenantStripeCheckoutForm";
 
 // import StripeCheckoutForm from "./CheckoutForm";
@@ -21,6 +21,7 @@ const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantI
 
   const fetchClientSecret = async () => {
     const resp = await getTenantClientSecret({ tenantId, propertyId, isRentPayment, amountToPaid, ownerId });
+    // eslint-disable-next-line no-unsafe-optional-chaining
     const { clientSecret: cs, connectedAccountId, orderId } = resp?.data?.data;
     if (cs && connectedAccountId) {
       stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN", {

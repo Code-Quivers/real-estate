@@ -21,7 +21,7 @@ const PropertyOwnerDrawer = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const { data: dataResponse, isError, isLoading, error } = useGetPropertyOwnerMyProfileQuery();
+  const { data: dataResponse } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
 

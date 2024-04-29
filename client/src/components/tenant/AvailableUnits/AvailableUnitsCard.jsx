@@ -23,6 +23,7 @@ const AvailableUnitsCard = () => {
   const query = {};
   // const [page, setPage] = useState(1);
   // const [size, setSize] = useState(20);
+  // eslint-disable-next-line no-unused-vars
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");

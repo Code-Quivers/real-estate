@@ -1,5 +1,5 @@
+/* eslint-disable no-unused-vars */
 "use client";
-import PaypalCheckout from "@/components/payment/paypal/PaypalCheckout";
 import { IoClose } from "react-icons/io5";
 import { Modal } from "rsuite";
 import TenantStripeCheckout from "../payment/TenantStripePayment";
