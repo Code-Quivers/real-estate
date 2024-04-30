@@ -11,11 +11,11 @@ export const fileUrlKey = () => {
 
 export const getMsgEndPoint = () => {
   return process.env.NEXT_PUBLIC_MSG_ENDPOINT;
-}
+};
 
 export const getClientUrl = () => {
   return process.env.NEXT_PUBLIC_CLIENT_URL;
-}
+};
 
 // ! for payment
 export const paymentClientId = () => {
