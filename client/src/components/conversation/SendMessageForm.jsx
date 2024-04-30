@@ -1,4 +1,5 @@
 "use client";
+import { getMsgEndPoint } from "@/configs/envConfig";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import { useSendMessageMutation } from "@/redux/features/conversations/conversationApi";
 import { useEffect, useState } from "react";
@@ -43,7 +44,7 @@ const SendMessageForm = ({ conversationId }) => {
   // eslint-disable-next-line no-unused-vars
   const [socketConnected, setSocketConnected] = useState(false);
 
-  const ENDPOINT = "http://localhost:4000";
+  const ENDPOINT = getMsgEndPoint();
   let socket;
 
   //

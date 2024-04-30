@@ -9,6 +9,14 @@ export const fileUrlKey = () => {
   return process.env.NEXT_PUBLIC_FILE_URL_KEY;
 };
 
+export const getMsgEndPoint = () => {
+  return process.env.NEXT_PUBLIC_MSG_ENDPOINT;
+}
+
+export const getClientUrl = () => {
+  return process.env.NEXT_PUBLIC_CLIENT_URL;
+}
+
 // ! for payment
 export const paymentClientId = () => {
   return process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;

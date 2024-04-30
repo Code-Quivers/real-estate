@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Loader } from "rsuite";
+import { getClientUrl } from "@/configs/envConfig";
 
 const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid }) => {
   console.log(orderData, "orderData");
@@ -55,7 +56,7 @@ const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid 
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `http://localhost:3000/payment/payment-done/${orderData?.orderId}`,
+        return_url: `${getClientUrl()}/payment/payment-done/${orderData?.orderId}`,
       },
     });
 
