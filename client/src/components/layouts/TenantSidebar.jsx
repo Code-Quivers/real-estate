@@ -47,7 +47,7 @@ const TenantSidebar = () => {
               href="/tenant"
               eventKey="1"
               icon={<DashboardIcon />}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderTop: "2px solid #000",
@@ -133,7 +133,7 @@ const TenantSidebar = () => {
             </Nav.Item>
             <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697]`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",
