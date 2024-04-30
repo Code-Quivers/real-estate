@@ -14,7 +14,7 @@ const getAllTenants = catchAsync(async (req: Request, res: Response) => {
   const result = await TenantServices.getAllTenants(filters, options);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Tenants fetching successful",
     data: result,
@@ -28,7 +28,7 @@ const getAllAvailableTenants = catchAsync(async (req: Request, res: Response) =>
   const result = await TenantServices.getAllAvailableTenants(filters, options);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Tenants fetching successful",
     data: result,
@@ -40,9 +40,9 @@ const getSingleTenant = catchAsync(async (req: Request, res: Response) => {
   const result = await TenantServices.getSingleTenant(tenantId);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Tenant retrieved Successful",
+    message: "Tenant Retrieved Successful",
     data: result,
   });
 });
@@ -52,9 +52,9 @@ const getTenantMyProfile = catchAsync(async (req: Request, res: Response) => {
   const result = await TenantServices.getSingleTenant(tenantId);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Tenant my profile retrieved Successful",
+    message: "Profile Retrieved Successful",
     data: result,
   });
 });
@@ -65,9 +65,9 @@ const updateTenantProfile = catchAsync(async (req: Request, res: Response) => {
   const result = await TenantServices.updateTenantProfile(tenantId, req);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Property owner created or update successful!",
+    message: "Profile Updated",
     data: result,
   });
 });
@@ -78,7 +78,7 @@ const getMyUnitInformation = catchAsync(async (req: Request, res: Response) => {
   const result = await TenantServices.getMyUnitInformation(tenantId);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
     message: "My Unit Information retrieved Successful",
     data: result,

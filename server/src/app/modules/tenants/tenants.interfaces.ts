@@ -35,6 +35,9 @@ export type ITenantUpdateRequest = {
   affordableRentAmount?: number;
   leavingReason?: string;
   isAnyLatePaymentReason?: string;
+  // account information
+  password?: string;
+  userName?: string;
 };
 
 export type ITenantsFilterRequest = {
