@@ -14,7 +14,6 @@ const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
-
   const { data } = dataResponse || {};
 
   return (
@@ -40,7 +39,7 @@ const TenantProfile = () => {
           </div>
         </div>
         {/* score */}
-        {console.log(data?.score)}
+
         <div>
           <div className=" col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>

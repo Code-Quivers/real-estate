@@ -32,11 +32,10 @@ const TenantSidebar = () => {
               width={120}
               height={120}
               src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
-              // src={profileLogo}
               alt="Profile Picture"
-              className=" object-cover rounded-full  select-none h-[120px] w-[120px]"
+              className="object-cover rounded-full  select-none h-[120px] w-[120px]"
             />
-            <h2 className="text-white ">
+            <h2 className="text-white mt-5 ">
               {data?.firstName} {data?.lastName}
             </h2>
           </div>

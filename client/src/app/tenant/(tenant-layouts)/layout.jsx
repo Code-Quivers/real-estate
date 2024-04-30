@@ -4,7 +4,7 @@ import TenantLayoutProvider from "@/components/layouts/tenant/TenantLayoutProvid
 const TenantLayout = ({ children }) => {
   return (
     <TenantLayoutProvider>
-      <div className="md:grid md:grid-cols-9 bg-[#f6f7f8]  ">
+      <div className="md:grid md:grid-cols-9 bg-[#f6f7f8] ">
         <div
           className="max-md:hidden
        md:col-span-3 lg:col-span-2 w-full"

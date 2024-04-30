@@ -11,6 +11,8 @@ import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { tenantsRelationalFields, tenantsRelationalFieldsMapper, tenantsSearchableFields } from "./tenants.constants";
+import bcrypt from "bcrypt";
+import config from "../../../config";
 
 // ! get all tenants
 const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
@@ -189,6 +191,7 @@ const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
           select: {
             email: true,
             createdAt: true,
+            userName: true,
           },
         },
       },
@@ -212,8 +215,15 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   // const profileImagePath = profileImage?.path;
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } =
-    req.body as ITenantUpdateRequest;
+  const {
+    oldProfileImagePath,
+    AnnualSalary,
+    CurrentCreditScore,
+    affordableRentAmount,
+    numberOfMember,
+    password,
+    ...updates
+  } = req.body as ITenantUpdateRequest;
 
   const tenantReqData = {
     AnnualSalary: Number(AnnualSalary),
@@ -261,6 +271,18 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
         data: {
           score: profileScore.profileScore,
           scoreRatio: profileScore.scoreRatio,
+        },
+      });
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+      await transactionClient.user.update({
+        where: {
+          userId: res?.userId,
+        },
+        data: {
+          password: hashedPassword,
         },
       });
     }
