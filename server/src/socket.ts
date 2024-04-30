@@ -5,7 +5,7 @@ import { Server as SocketIoServer } from "socket.io";
 export function setupSocket(server: any) {
   const io = new SocketIoServer(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", "http://77.237.234.238:3000"],
       methods: ["GET", "POST"],
     },
   });
