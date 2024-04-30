@@ -3,7 +3,7 @@
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, toaster } from "rsuite";
+import { Button, Form, Input, InputGroup, Loader, toaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -14,12 +14,6 @@ import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
 import { getUserInfo, isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
 import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
-
-const style = {
-  width: "100%",
-  borderRadius: "30px !important",
-  overflow: "hidden !important",
-};
 
 const PropertyOwnerLoginPage = () => {
   const [visible, setVisible] = useState(false);
@@ -88,7 +82,7 @@ const PropertyOwnerLoginPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -116,7 +110,7 @@ const PropertyOwnerLoginPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock size={20} />
                         </InputGroup.Addon>
@@ -139,14 +133,28 @@ const PropertyOwnerLoginPage = () => {
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
-                Sign In
-              </Button>
+              {isLoading ? (
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  className="w-full py-3 rounded-md disabled:cursor-not-allowed disabled:opacity-70 bg-primary"
+                >
+                  <Loader size="sm" className="align-middle" />
+                </button>
+              ) : (
+                <button type="submit" className="w-full py-3 rounded-md bg-primary text-white">
+                  Sign in
+                </button>
+              )}
+
+              {/* <Button loading={isLoading} type="submit" size="lg" className="!rounded-md !py-3.5 w-full" appearance="default">
+                {isLoading ? "" : "Sign In"}
+              </Button> */}
             </div>
           </form>
         </div>
 
-        <div className="mt-20 flex justify-center">
+        <div className="mt-2 flex justify-center w-[90%] lg:w-[80%] mx-auto">
           <p className="font-semibold">
             Need an Account?{" "}
             <Link className="text-blue-800 hover:underline" href="/property-owner/sign-up">

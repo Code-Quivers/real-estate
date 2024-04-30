@@ -3,7 +3,7 @@
 import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Notification, useToaster } from "rsuite";
+import { Button, Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -14,12 +14,6 @@ import { Controller, useForm } from "react-hook-form";
 import { usePropertyOwnerSignUpMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { storeUserInfo } from "@/hooks/services/auth.service";
-
-const style = {
-  width: "100%",
-  borderRadius: "20px !important",
-  overflow: "hidden !important",
-};
 
 const PropertyOwnerSignUpPage = () => {
   const [visible, setVisible] = useState(false);
@@ -88,9 +82,9 @@ const PropertyOwnerSignUpPage = () => {
           <h2 className="text-5xl md:mt-0 mt-5 mb-10 font-semibold">Sign Up</h2>
         </div>
         {/* input forms */}
-        <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto ">
+        <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto">
           <form onSubmit={handleSubmit(handlePropertyOwnerSignUp)}>
-            <div className="space-y-6 lg:space-y-3">
+            <div className="space-y-3">
               {/* first Name */}
               <div>
                 <Controller
@@ -101,7 +95,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -124,7 +118,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -147,7 +141,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -174,7 +168,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <EmailFillIcon />
                         </InputGroup.Addon>
@@ -201,7 +195,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
@@ -232,7 +226,7 @@ const PropertyOwnerSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
@@ -253,15 +247,28 @@ const PropertyOwnerSignUpPage = () => {
                 />
               </div>
             </div>
-            <div className="mt-10 flex justify-center">
-              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
+            <div className="mt-5 flex justify-center">
+              {isLoading ? (
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  className="w-full py-3 rounded-md disabled:cursor-not-allowed disabled:opacity-70 bg-primary"
+                >
+                  <Loader size="sm" className="align-middle" />
+                </button>
+              ) : (
+                <button type="submit" className="w-full py-3 rounded-md bg-primary text-white">
+                  Sign up
+                </button>
+              )}
+              {/* <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign Up
-              </Button>
+              </Button> */}
             </div>
           </form>
         </div>
         {/* login and reset buttons */}
-        <div className="mt-5">
+        <div className="mt-3 w-full max-lg:px-5 lg:w-3/4 mx-auto text-center">
           <p className="font-semibold">
             Already have an Account?{" "}
             <Link className="text-blue-800 hover:underline" href="/property-owner/login">
