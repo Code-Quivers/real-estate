@@ -23,23 +23,48 @@ const BankingCredentials = () => {
     }
     router.push(resp?.data?.data?.url);
   };
+
+  const maskAccountNumber = (accountNumber) => {
+    // Extract last four digits
+    const lastFourDigits = accountNumber.slice(-4);
+    // Mask all characters except the last four
+    const maskedDigits = "*".repeat(accountNumber.length - 4);
+    // Combine masked characters with last four digits
+    const formattedNumber = maskedDigits + lastFourDigits;
+    // Insert space every four characters
+    const spacedNumber = formattedNumber.replace(/(.{4})/g, "$1 ");
+    return spacedNumber;
+  };
   return (
     <>
       <div className="flex justify-between items-center">
         <h4 className="text-xl font-medium">Credentials of Getting Money</h4>
         <p className="font-medium max-lg:hidden">Card Information</p>
       </div>
-      <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-8">
+      <div className="my-5 grid grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-5">
         {!isLoading && data?.data?.finOrgAccountId && (
           <>
             {data?.data?.externalAccount?.email && <h3 className="border p-3 rounded-2xl ">Email: {data?.data?.email}</h3>}
             {/* <h3 className="border p-3 rounded-2xl ">
                             Account: {data?.data?.externalAccount}
                         </h3> */}
-            {data?.data?.externalAccount?.bank_name && <h3 className="border p-3 rounded-2xl">Bank Name: {data?.data?.externalAccount.bank_name}</h3>}
-            {data?.data?.externalAccount?.account && <h3 className="border p-3 rounded-2xl">Account No: {data?.data?.externalAccount.account}</h3>}
+            {data?.data?.externalAccount?.bank_name && (
+              <div>
+                <h3 className="text-gray-600">Bank Name</h3>
+                <p>{data?.data?.externalAccount.bank_name}</p>
+              </div>
+            )}
+            {data?.data?.externalAccount?.account && (
+              <div>
+                <h3 className="text-gray-600">Account no</h3>
+                <p>{maskAccountNumber(data?.data?.externalAccount.account)}</p>
+              </div>
+            )}
             {data?.data?.externalAccount?.routing_number && (
-              <h3 className="border p-3 rounded-2xl">Routing No: {data?.data?.externalAccount.routing_number}</h3>
+              <div>
+                <h3 className="text-gray-600">Routing no</h3>
+                <p>{data?.data?.externalAccount.routing_number}</p>
+              </div>
             )}
             {data?.data?.detailsSubmitted || (
               <button className="bg-primary/90 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
