@@ -55,7 +55,6 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        // return_url: `http://localhost:3000/payment/payment-done`,
         return_url: `${getClientUrl()}/payment/tenant-payment-done/${orderInfo?.orderId}?connectedAccountId=${orderInfo.connectedAccountId}`,
       },
     });
