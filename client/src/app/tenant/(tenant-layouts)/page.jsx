@@ -44,11 +44,11 @@ const TenantProfile = () => {
         <div>
           <div className=" col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className={`${changeScoreStatus(data?.score)}`}>
+            <div className={`${changeScoreStatus(data?.scoreRatio?.score)}`}>
               <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">{data?.score}</span>
+                <span className="font-medium">{data?.scoreRatio?.score ?? 0}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">10</span>
+                <span className="font-medium">{data?.scoreRatio?.total ?? 0}</span>
               </div>
             </div>
           </div>
