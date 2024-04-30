@@ -16,6 +16,9 @@ model PropertyOwner {
   phoneNumber         String?
   profileImage        String?
   extraCosts          Json[]
+  score               Float                @default(10)
+  scoreRatio          Json?
+  templates           Json[]
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
   userId              String               @unique
@@ -25,9 +28,7 @@ model PropertyOwner {
   orders              Order[]
   reports             Report[]
   FinancialAccount    FinancialAccount?
-  // 
-  score               Float                @default(10)
-  scoreRatio          Json?
+  Document            Document[]
 
   @@map("propertyOwners")
 }
@@ -84,6 +85,7 @@ model Tenant {
   // 
   score                                Float                @default(10)
   scoreRatio                           Json?
+  Document                             Document[]
 
   @@map("tenants")
 }
@@ -121,7 +123,8 @@ model Property {
   scoreRatio               Json?
 
   // Many to many relation with Order
-  orders Order[]
+  orders   Order[]
+  Document Document[]
 
   @@map("properties")
 }
@@ -339,6 +342,22 @@ model Message {
   updatedAt      DateTime     @updatedAt @db.Timestamptz(0)
 
   @@map("Messages")
+}
+
+model Document {
+  documentId       String        @id @default(uuid())
+  filePath         String
+  isValid          Boolean       @default(true)
+  isSignedByOwner  Boolean       @default(false)
+  isSignedByTenant Boolean       @default(false)
+  ownerId          String
+  owner            PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
+  tenantId         String
+  tenant           Tenant        @relation(fields: [tenantId], references: [tenantId], onDelete: SetDefault)
+  propertyId       String
+  property         Property      @relation(fields: [propertyId], references: [propertyId])
+  createdAt        DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime      @updatedAt @db.Timestamptz(0)
 }
 
 // ! Enums---------------
