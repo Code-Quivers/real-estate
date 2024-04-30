@@ -44,74 +44,72 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
     <Modal
       size="lg"
       open={open}
+      overflow={false}
       // classPrefix="!rounded-2xl"
       onClose={handleClose}
-      dialogAs="div"
-      className="bg-white rounded-xl mt-5 flex mx-auto justify-center items-center  "
+      // dialogAs="div"
+      className="mt-5 flex mx-auto justify-center items-center  "
     >
-      <Modal.Body className="p-3  min-h-[750px] md:min-h-[620px] " classPrefix=" !w-full">
-        <div className="  border   rounded-xl p-3">
-          {/* title */}
-          <div className="flex justify-center">
-            <h2 className="font-semibold text-xl">Profile Information</h2>
-          </div>
+      <Modal.Header>
+        <Modal.Title>
+          <p className="text-center font-semibold text-xl">Profile Information</p>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="p-3">
+        <div>
           {/* forms */}
           <form onSubmit={handleSubmit(handleUpdateProfileInformation)}>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mt-3">
+            <div className="grid md:grid-cols-12 gap-3">
               {/* name */}
-              <div className="col-span-2 lg:col-span-4 lg:flex items-center justify-between gap-10">
-                <div className="w-full">
-                  <Controller
-                    name="firstName"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="space-y-1">
-                        <label className="font-medium text-base">First Name</label>
-                        <Input defaultValue={myProfileData?.firstName} {...field} type="text" />
-                      </div>
-                    )}
-                  />
-                </div>
-                <div className="w-full">
-                  {" "}
-                  <Controller
-                    name="lastName"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="space-y-1">
-                        <label className="font-medium text-base">Last Name</label>
-                        <Input defaultValue={myProfileData?.lastName} {...field} type="text" />
-                      </div>
-                    )}
-                  />
-                </div>
-              </div>{" "}
-              <div className="col-span-2 lg:col-span-4 lg:flex items-center justify-between gap-10">
-                <div className="w-full">
-                  <Controller
-                    name="phoneNumber"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="space-y-1">
-                        <label className="text-base font-medium">Phone Number</label>
-                        <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
-                      </div>
-                    )}
-                  />
-                </div>
-                <div className="w-full">
-                  {" "}
-                  <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="space-y-1">
-                        <label className="text-base font-medium">Password</label>
-                        <Input placeholder="********" {...field} type="password" />
-                      </div>
-                    )}
-                  />
-                </div>
+              <div className="col-span-6">
+                <Controller
+                  name="firstName"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <label className="font-medium text-base">First Name</label>
+                      <Input defaultValue={myProfileData?.firstName} {...field} type="text" />
+                    </div>
+                  )}
+                />
+              </div>
+              <div className="col-span-6">
+                {" "}
+                <Controller
+                  name="lastName"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <label className="font-medium text-base">Last Name</label>
+                      <Input defaultValue={myProfileData?.lastName} {...field} type="text" />
+                    </div>
+                  )}
+                />
+              </div>
+              <div className="col-span-6">
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <label className="text-base font-medium">Phone Number</label>
+                      <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
+                    </div>
+                  )}
+                />
+              </div>
+              <div className="col-span-6">
+                {" "}
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <label className="text-base font-medium">Password</label>
+                      <Input placeholder="********" {...field} type="password" />
+                    </div>
+                  )}
+                />
               </div>
             </div>
             <div className="col-span-4 mt-5 space-y-5 ">
@@ -123,27 +121,19 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
               />
             </div>
             <div className="mt-10 flex gap-5 justify-end">
-              <Button
-                onClick={handleClose}
-                type="button"
-                className={`!px-10 whitespace-pre-wrap  !py-4
-            hover:!bg-[#1d3796]
-            !text-white !rounded-2xl `}
-                size="lg"
-                appearance="default"
-              >
-                CANCEL
-              </Button>
+              <button onClick={handleClose} type="button" className="py-2 font-medium px-4 bg-[#d6dfff] text-primary rounded-md">
+                Cancel
+              </button>
               <Button
                 loading={isLoading}
                 type="submit"
-                className={`!px-10 whitespace-pre-wrap  !py-4 !bg-[#29429f]  
+                className={`!px-6 whitespace-pre-wrap !py-2 !bg-[#29429f]  
             hover:!bg-[#1d3796]
-            !text-white !rounded-2xl `}
+            !text-white !rounded-md `}
                 size="lg"
                 appearance="default"
               >
-                SAVE
+                Save
               </Button>
             </div>
           </form>
