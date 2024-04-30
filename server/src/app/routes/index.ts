@@ -9,7 +9,6 @@ import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
 import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
-import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
 import { OrderRoutes } from "../modules/orders/orders.routes";
 import { PaymentRoutes } from "../modules/payment/payment.routes";
 import { StripeRoutes } from "../modules/paymentStripe/stripe.routes";
@@ -59,10 +58,6 @@ const moduleRoutes = [
   {
     path: "/payment-stripe",
     route: StripeRoutes,
-  },
-  {
-    path: "/payment-paypal",
-    route: PaypalRoutes,
   },
   {
     path: "/orders",

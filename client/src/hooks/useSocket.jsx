@@ -1,8 +1,9 @@
+import { getMsgEndPoint } from "@/configs/envConfig";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = getMsgEndPoint();
 
 const myDetails = getUserInfo();
 
