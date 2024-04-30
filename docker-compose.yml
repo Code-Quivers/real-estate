@@ -25,6 +25,7 @@ services:
       - postgres
     ports:
       - 7000:7000
+      - 4000:4000
     volumes:
       - type: bind
         source: /root/volumes/real-estate/data
