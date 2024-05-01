@@ -55,10 +55,11 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
   return (
     <div>
       <Whisper
+        preventOverflow
         placement="autoVertical"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className=" w-[450px] !rounded-md overflow-y-auto mb-5">
+          <Popover arrow={true} as="div" className="w-[350px] max-h-[400px] !rounded-md overflow-y-auto mb-5">
             <div className="p-5 ">
               <div>
                 <h2>Send Message </h2>
@@ -86,7 +87,7 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
           </Popover>
         }
       >
-        <button className="bg-primary text-white px-2 py-1 w-full">Contact</button>
+        <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Contact</button>
       </Whisper>
     </div>
   );
