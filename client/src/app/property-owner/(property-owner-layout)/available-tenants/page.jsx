@@ -1,6 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
+import { CiBookmark } from "react-icons/ci";
 import { Input, InputGroup, InputNumber, Loader, Pagination, Progress } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
@@ -9,6 +10,7 @@ import { useDebounced } from "@/redux/hook";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
+import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
 
 const PropertyOwnerServiceProviders = () => {
   const query = {};
@@ -52,30 +54,30 @@ const PropertyOwnerServiceProviders = () => {
       </div>
       {/* search with price section start */}
       <div className="">
-        <div className="grid lg:grid-cols-7 gap-0.5 max-lg:gap-2 lg:flex w-full   mt-5 lg:mt-5   ">
+        <div className="grid lg:grid-cols-7 gap-2 max-lg:gap-2 lg:flex w-full   mt-5 lg:mt-5   ">
           {/* tenant name */}
           <div className="max-lg:col-span-3 col-span-3 w-full">
-            <InputGroup size="lg" inside className=" !w-full" style={{ borderRadius: "0 !important" }}>
-              <Input className=" !w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
-              <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
+            <InputGroup size="lg" inside className="!w-full" >
+              <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
+              <InputGroup.Addon>
                 <FaSearch size={20} />
               </InputGroup.Addon>
             </InputGroup>
           </div>
           {/* address */}
           <div className=" md:col-span-2 w-full">
-            <InputGroup size="lg" inside className=" !w-full" style={{ borderRadius: "0 !important" }}>
+            <InputGroup size="lg" inside className=" !w-full" >
               <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
-              <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
+              <InputGroup.Addon>
                 <FaSearch size={20} />
               </InputGroup.Addon>
             </InputGroup>
           </div>
           {/* rent */}
-          <div className=" md:col-span-2  w-full ">
-            <InputGroup size="lg" inside className="lg:!w-full " style={{ borderRadius: "0 !important" }}>
+          <div className=" md:col-span-2 w-full">
+            <InputGroup size="lg" inside className="!w-full ">
               <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
-              <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
+              <InputGroup.Addon>
                 <FaSearch size={20} />
               </InputGroup.Addon>
             </InputGroup>
@@ -91,47 +93,55 @@ const PropertyOwnerServiceProviders = () => {
       )}
 
       {/* all cards */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5">
         {!isLoading &&
           allTenantsLists?.data?.data?.length > 0 &&
-          allTenantsLists?.data?.data?.map((singleReq) => (
-            <div
-              key={Math.random()}
-              onClick={() => {
-                setSelectedService(singleReq);
-                setServiceModalActive(true);
-              }}
-              className=" col-span-1  border flex justify-between items-center pl-3 pr-5 shadow-lg  rounded-lg border-[#acacac]  gap-2"
-            >
-              <div>
-                <Image
-                  width={100}
-                  height={100}
-                  className="w-[100px]  object-cover   rounded-full  "
-                  src={singleReq?.profileImage ? `${fileUrlKey()}/${singleReq?.profileImage}` : profileLogo}
-                  alt="photo"
-                />
-              </div>
-              <div className="p-3 flex justify-between w-full ">
-                <div className="space-y-0.5">
-                  <h3 className="text-sm font-medium">
-                    {singleReq?.firstName} {singleReq?.lastName}
-                  </h3>
-                  <h3 className="text-sm font-medium">Place to rent</h3>
-                  <h3 className="text-sm font-medium">Rent willing to pay</h3>
-                </div>
-              </div>
-              <div style={{ width: 100, marginTop: 10 }}>
-                <Progress.Circle percent="90" strokeColor="green" />
-              </div>
-            </div>
-            // </Whisper>
+          allTenantsLists?.data?.data?.map((singleReq, index) => (
+            <AvailableTenantsList key={index} singleReq={singleReq} />
+            // <div
+            //   key={Math.random()}
+            //   onClick={() => {
+            //     setSelectedService(singleReq);
+            //     setServiceModalActive(true);
+            //   }}
+            //   className="bg-white border rounded-md"
+            // >
+            //   <div className="">
+            //     <Image
+            //       width={100}
+            //       height={100}
+            //       className="w-[100px] object-cover rounded-full  "
+            //       src={singleReq?.profileImage ? `${fileUrlKey()}/${singleReq?.profileImage}` : profileLogo}
+            //       alt="photo"
+            //     />
+            //     <div className="px-3">
+            //       <div className="space-y-0.5">
+            //         <h3 className="text-sm font-medium">
+            //           {singleReq?.firstName} {singleReq?.lastName}
+            //         </h3>
+            //         <h3 className="text-sm font-medium">Place to rent</h3>
+            //         <h3 className="text-sm font-medium">Rent willing to pay: ${singleReq?.affordableRentAmount?.toFixed(2)}</h3>
+            //       </div>
+            //     </div>
+            //   </div>
+
+            //   {/* <div style={{ width: 100, marginTop: 10 }}>
+            //     <Progress.Circle percent="90" strokeColor="green" />
+            //   </div> */}
+            //   <div className="px-3 my-3 flex gap-3">
+            //     <button className="flex gap-1 items-center justify-center w-full text-sm text-primary  py-1.5 font-semibold rounded-md bg-[#E8F0FE]">
+            //       <CiBookmark size={14} /> Save
+            //     </button>
+            //     <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE]">Contact</button>
+            //     <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE]">Add</button>
+            //   </div>
+            // </div>
           ))}
       </div>
       {/* if no data is available */}
       {!isLoading && !allTenantsLists?.data?.data?.length && (
         <div className="flex justify-center items-center pt-12  pb-8">
-          <p className="text-2xl font-semibold text-rose-500 text-center w-full">No Available Tenants Found...</p>
+          <p className="text-2xl font-semibold text-rose-500 text-center w-full">No available tenants found...</p>
         </div>
       )}
       {/* pagination */}
