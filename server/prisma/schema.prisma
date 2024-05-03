@@ -346,16 +346,17 @@ model Message {
 
 model Document {
   documentId       String        @id @default(uuid())
+  documentTitle    String
   filePath         String
   isValid          Boolean       @default(true)
-  isSignedByOwner  Boolean       @default(false)
+  isSignedByOwner  Boolean       @default(true)
   isSignedByTenant Boolean       @default(false)
   ownerId          String
-  owner            PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
+  owner            PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
   tenantId         String
   tenant           Tenant        @relation(fields: [tenantId], references: [tenantId], onDelete: SetDefault)
   propertyId       String
-  property         Property      @relation(fields: [propertyId], references: [propertyId])
+  property         Property      @relation(fields: [propertyId], references: [propertyId], onDelete: Cascade)
   createdAt        DateTime      @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime      @updatedAt @db.Timestamptz(0)
 }

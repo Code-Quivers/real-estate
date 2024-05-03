@@ -14,6 +14,7 @@ import { PaymentRoutes } from "../modules/payment/payment.routes";
 import { StripeRoutes } from "../modules/paymentStripe/stripe.routes";
 import { ConversationRoutes } from "../modules/conversations/conversation.routes";
 import { ReportsRoutes } from "../modules/reports/reports.routes";
+import { DocumentsRoutes } from "../modules/documents/documents.routes";
 
 const router = express.Router();
 
@@ -71,6 +72,10 @@ const moduleRoutes = [
     path: "/reports",
     route: ReportsRoutes,
   },
+  {
+    path: "/documents",
+    route: DocumentsRoutes,
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

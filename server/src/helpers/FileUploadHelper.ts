@@ -64,9 +64,22 @@ const uploadPropertyImages2 = (req: Request, res: Response, next: NextFunction) 
   return cpUpload;
 };
 
+
+const dcoumentStorage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "data/uploads/documents/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueFilename = Date.now() + "-" + file.originalname;
+    cb(null, uniqueFilename);
+  },
+});
+const uploadDocumentFile = multer({ storage: dcoumentStorage });
+
 export const FileUploadHelper = {
   uploadProfileImage,
   uploadPropertyImages,
   uploadUpdatedUserImage,
   uploadPropertyImages2,
+  uploadDocumentFile,
 };
