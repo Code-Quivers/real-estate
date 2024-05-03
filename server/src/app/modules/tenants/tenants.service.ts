@@ -6,7 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { calculateTenantProfileScore, calculateTenantScoreRatio, updateTenantData } from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -248,14 +248,14 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     if (!isTenantProfileExists) throw new ApiError(httpStatus.NOT_FOUND, "Tenant Profile Not Found!");
 
     // updated data from request
-    const newTenantData: Partial<ITenantUpdateRequest> = updateTenantData(tenantReqData);
+    // const newTenantData: Partial<ITenantUpdateRequest> = updateTenantData(tenantReqData);
 
     // ! updating
     const res = await transactionClient.tenant.update({
       where: {
         tenantId,
       },
-      data: newTenantData,
+      data: tenantReqData,
     });
 
     if (!res) {
@@ -263,7 +263,9 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     }
 
     if (res) {
-      const profileScore = calculateTenantProfileScore(res);
+      const profileScore = await calculateTenantProfileScore(res);
+      console.log("profile score", profileScore);
+
       await transactionClient.tenant.update({
         where: {
           tenantId,

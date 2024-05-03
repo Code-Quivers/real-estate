@@ -12,7 +12,7 @@ const PropertyOwnerLayout = ({ children }) => {
         >
           <PropertyOwnerSidebar />
         </div>
-        <div className="col-span-6 border lg:col-span-7 ">
+        <div className="col-span-6   lg:col-span-7 ">
           <div>
             {/* mobile navbar */}
             <div className="md:hidden">

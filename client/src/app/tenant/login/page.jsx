@@ -110,26 +110,29 @@ const LoginPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
+                    // pattern: {
+                    //   value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
+                    //   message:
+                    //     "Password must contain at least one digit, one lowercase letter, one uppercase letter, and be at least 6 characters long",
+                    // },
                     minLength: {
                       value: 6,
                       message: "Minimum 6 characters required for password",
                     },
                   }}
                   render={({ field }) => (
-                    <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
-                        <InputGroup.Addon>
-                          <FaLock size={20} />
-                        </InputGroup.Addon>
-                        <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
-                        <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
-                      </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
-                        {errors?.password?.message}
-                      </Form.ErrorMessage>
-                    </div>
+                    <InputGroup size="lg" style={style} inside>
+                      <InputGroup.Addon>
+                        <FaLock size={20} />
+                      </InputGroup.Addon>
+                      <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
+                      <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
+                    </InputGroup>
                   )}
                 />
+                <div className="mb-10 ">
+                  <span className="text-xs text-red-400">{errors?.password?.message}</span>{" "}
+                </div>
               </div>
             </div>
             <div className="mt-10 flex justify-center">
