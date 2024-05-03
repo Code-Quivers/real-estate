@@ -29,9 +29,9 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
 } */
 
-.rs-picker-toggle {
-  border-radius: 0px !important;
-}
+/* .rs-picker-toggle {
+  border-radius: 30px !important;
+} */
 
 .rs-btn-lg {
   background-color: #29429f !important;

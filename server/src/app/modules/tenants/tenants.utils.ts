@@ -57,6 +57,8 @@ type CriteriaKey = keyof TenantData;
 
 // Function to calculate Tenant Profile Score
 export const calculateTenantProfileScore = (data: TenantData) => {
+  console.log("tenant data", data);
+
   let profileScore = 10; // Start with a base score of 10
 
   // Criteria weights
@@ -97,10 +99,7 @@ export const calculateTenantProfileScore = (data: TenantData) => {
   // Calculate profile score based on criteria
   for (const criterion in data) {
     const value = data[criterion as CriteriaKey];
-    if (
-      (typeof value === "boolean" || value !== undefined) && // Include boolean values
-      criteriaWeights[criterion as CriteriaKey]
-    ) {
+    if (value !== undefined && value !== null && criteriaWeights[criterion as CriteriaKey]) {
       profileScore += criteriaWeights[criterion as CriteriaKey];
     }
   }

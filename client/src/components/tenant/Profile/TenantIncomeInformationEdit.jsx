@@ -92,7 +92,7 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" {...field} defaultValue={responseData?.CurrentCreditScore} />
+                  <InputNumber className="!w-full" min={100} max={850} {...field} defaultValue={responseData?.CurrentCreditScore} />
                 </div>
               )}
             />
