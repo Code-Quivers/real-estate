@@ -4,6 +4,44 @@ import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
 
+
+const getTemplates = async (ownerId: string) => {
+    try {
+        const property = await prisma.propertyOwner.findUnique({
+            where: { propertyOwnerId: ownerId },
+            select: {
+                templates: true
+            }
+        })
+        return property?.templates;
+    } catch (err) {
+        console.log("Error in getTemplates service: ", err)
+        throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get templates!")
+    }
+
+}
+
+const getTemplate = async (ownerId: string, templateId: number) => {
+    try {
+        const property = await prisma.propertyOwner.findUnique({
+            where: { propertyOwnerId: ownerId },
+            select: {
+                templates: true
+            }
+        })
+        if (property?.templates && property.templates.length > 0) {
+            return property.templates[templateId]
+        }
+        else {
+            return []
+        }
+    } catch (err) {
+        console.log("Error in getTemplate service: ", err)
+        throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get the template!")
+    }
+
+}
+
 /**
  * add template to the property owner
  */
@@ -124,6 +162,8 @@ const updateDocumentWithTenantSigned = async (documentId: string, filePath: stri
 };
 
 export const DocumentsServices = {
+    getTemplates,
+    getTemplate,
     addTemplate,
     removeTemplate,
     sendDocument,

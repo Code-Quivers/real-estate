@@ -7,7 +7,20 @@ import { DocumentsControllers } from "./documents.controllers";
 
 
 const router = express.Router();
-// ! get all tenants
+
+
+router.get(
+    "/templates",
+    auth(UserRoles.PROPERTY_OWNER,),
+    DocumentsControllers.getTemplates,
+);
+
+router.get(
+    "/templates/:templateId",
+    auth(UserRoles.PROPERTY_OWNER,),
+    DocumentsControllers.getTemplate,
+);
+
 router.post(
     "/add-template",
     auth(UserRoles.PROPERTY_OWNER,),

@@ -8,6 +8,30 @@ import { IUploadFile } from "../../../interfaces/file";
 import { DocumentsServices } from "./documents.services";
 
 //
+const getTemplates = catchAsync(async (req: Request, res: Response) => {
+    const ownerId: string = (req.user as IRequestUser).profileId;
+
+    const result = await DocumentsServices.getTemplates(ownerId)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Template successfully extracted!",
+        data: result,
+    });
+});
+
+const getTemplate = catchAsync(async (req: Request, res: Response) => {
+    const ownerId: string = (req.user as IRequestUser).profileId;
+    const { templateId } = req.params;
+    const result = await DocumentsServices.getTemplate(ownerId, parseInt(templateId))
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Template successfully extracted!",
+        data: result,
+    });
+});
+
 const addTemplate = catchAsync(async (req: Request, res: Response) => {
     const ownerId: string = (req.user as IRequestUser).profileId;
     const pdfFile: IUploadFile = req?.file as any;
@@ -51,6 +75,8 @@ const updateDocumentWithTenantSigned = catchAsync(async (req: Request, res: Resp
     });
 });
 export const DocumentsControllers = {
+    getTemplates,
+    getTemplate,
     addTemplate,
     sendDocument,
     updateDocumentWithTenantSigned
