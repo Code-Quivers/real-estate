@@ -264,7 +264,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
     if (res) {
       const profileScore = await calculateTenantProfileScore(res);
-      console.log("profile score", profileScore);
 
       await transactionClient.tenant.update({
         where: {
