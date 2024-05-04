@@ -57,8 +57,6 @@ type CriteriaKey = keyof TenantData;
 
 // Function to calculate Tenant Profile Score
 export const calculateTenantProfileScore = (data: TenantData) => {
-  console.log("tenant data", data);
-
   let profileScore = 10; // Start with a base score of 10
 
   // Criteria weights

@@ -134,9 +134,9 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
           placement: "bottomStart",
         },
       );
-      // handleClose();
-      // resetForm();
-      // resetReq();
+      handleClose();
+      resetForm();
+      resetReq();
     }
     if (!isLoadingAdd && isErrorAdd && !isSuccessAdd && errorAdd) {
       toaster.push(
