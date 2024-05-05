@@ -165,9 +165,9 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
           placement: "bottomStart",
         },
       );
-      // handleClose();
-      // resetForm();
-      // resetReq();
+      handleClose();
+      resetForm();
+      resetReq();
     }
     if (!isLoadingTax && isErrorTax && !isSuccessTax && taxError) {
       toaster.push(
