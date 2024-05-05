@@ -108,6 +108,19 @@ const updateExtraCost = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ! get my tenants
+
+const getMyAssignedTenants = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await PropertyOwnerServices.getMyAssignedTenants(propertyOwnerId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Retrieved Successful!",
+    data: result,
+  });
+});
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
@@ -116,4 +129,5 @@ export const PropertyOwnerControllers = {
   getFinancialAccount,
   getDashboardInfo,
   updateExtraCost,
+  getMyAssignedTenants,
 };
