@@ -71,6 +71,9 @@ const AddDocumentModalForm = ({ open, handleClose }) => {
   return (
     <div>
       <Modal overflow={false} open={open} onClose={handleClose}>
+        <Modal.Header>
+          <Modal.Title>Add new document</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <div>
             <form onSubmit={handleSubmit(handleAddNewTemplate)}>
@@ -114,7 +117,7 @@ const AddDocumentModalForm = ({ open, handleClose }) => {
                 />
               </div>
               {/* submit */}
-              <div className="mt-10 flex justify-end">
+              <div className="mt-10 flex gap-5 justify-end">
                 <button
                   onClick={() => {
                     handleClose();
