@@ -55,67 +55,56 @@ const TenantProfile = () => {
       </div>
       {/* Dashboard */}
 
-      <div className="mt-10 grid grid-cols-3 lg:grid-cols-5 w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
+      <div className="flex items-center gap-5 p-2 h-11 bg-white rounded-t-lg border mt-4">
         {/* Personal Information */}
         <div className=" ">
-          <Button
+          <button
             onClick={() => setTabActive(2)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 2 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Personal <br /> Information
-          </Button>
+            Personal information
+          </button>
         </div>
         {/* Rental History */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(3)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 3 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Rental <br /> History
-          </Button>
+            RentalHistory
+          </button>
         </div>
         {/* income information */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(4)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 4 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Income <br /> Information
-          </Button>
+            Income Information
+          </button>
         </div>
         {/* pets */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(5)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 5 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
             Pets
-          </Button>
+          </button>
         </div>
         {/* Other Information */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(6)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 6 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Other <br />
-            Information
-          </Button>
+            Other Information
+          </button>
         </div>
       </div>
 
