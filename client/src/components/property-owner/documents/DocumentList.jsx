@@ -14,6 +14,7 @@ const DocumentList = ({ singleTemplate }) => {
     <div className="">
       <Document className="w-[200px]" file={`${fileUrlKey()}/documents/${singleTemplate?.filePath}`} onLoadSuccess={onDocumentLoadSuccess}>
         <Page width={200} height={400} pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
+        <p>{singleTemplate?.title}</p>
         {/* {Array.from(new Array(allPages), (el, index) => (
           <Page key={`page_${index + 1}`} pageNumber={index + 1} renderTextLayer={false} renderAnnotationLayer={false} />
         ))} */}
