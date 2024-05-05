@@ -105,7 +105,7 @@ const AddProperty = () => {
         <div className="  w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
-            <Button type="button" className={`   h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="md" appearance="default">
+            <Button type="button" className={`h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="md" appearance="default">
               Property <br /> Information
             </Button>
             <Button type="button" className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="lg" appearance="default">
@@ -124,8 +124,8 @@ const AddProperty = () => {
             <div className="space-y-5 mt-5">
               {fields?.map((property, idx) => (
                 <div key={property.id}>
-                  <div className="pb-2 flex justify-between items-center">
-                    <h3 className="font-semibold">Property {idx + 1}</h3>
+                  <div className=" flex justify-between items-center">
+                    <h3 className="font-semibold text-lg">Property {idx + 1}</h3>
                     <button
                       type="button"
                       onClick={() => {
@@ -139,16 +139,16 @@ const AddProperty = () => {
                   </div>
                   {/* other */}
 
-                  <div className="border space-y-5 p-5 ">
+                  <div className=" space-y-5 ">
                     {/* property Profile ------------------------ */}
                     <div>
                       <div>
-                        <h3 className="font-bold">Property Profile</h3>
+                        <h3 className="font-bold text-center mb-2">Property Profile</h3>
                       </div>
                       {/*   */}
-                      <div className="lg:grid lg:grid-cols-12 gap-5 lg:gap-10">
+                      <div className="lg:grid lg:grid-cols-12 gap-5">
                         {/* add photos */}
-                        <div className=" md:col-span-6    ">
+                        <div className=" md:col-span-6">
                           <div>
                             <label className="text-sm font-medium">Add Photos</label>
                             <div>
@@ -170,7 +170,7 @@ const AddProperty = () => {
                         </div>
 
                         {/* address  && title */}
-                        <div className="max-lg:space-y-4   md:col-span-6">
+                        <div className="max-lg:space-y-4 md:col-span-6">
                           {/* title */}
                           <div className="space-y-4 lg:space-y-2 max-lg:mt-5 ">
                             <label className="text-sm font-medium">Title</label>
@@ -181,7 +181,7 @@ const AddProperty = () => {
                                 rules={{ required: "Title is required" }}
                                 render={({ field }) => (
                                   <div className="rs-form-control-wrapper ">
-                                    <Input className="!w-full !rounded-xl" {...field} type="text" />
+                                    <Input className="!w-full" {...field} type="text" />
                                     <Form.ErrorMessage show={!!errors?.properties?.[idx]?.title} placement="topEnd">
                                       {errors?.properties?.[idx]?.title?.message}
                                     </Form.ErrorMessage>
@@ -200,7 +200,7 @@ const AddProperty = () => {
                                 rules={{ required: "Address is required" }}
                                 render={({ field }) => (
                                   <div className="rs-form-control-wrapper">
-                                    <Input className="!w-full !rounded-xl" {...field} type="text" />
+                                    <Input className="!w-full" {...field} type="text" />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.address !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.address?.message}
                                     </Form.ErrorMessage>
@@ -211,14 +211,14 @@ const AddProperty = () => {
                           </div>
                         </div>
                         {/* description */}
-                        <div className=" lg:col-span-12">
+                        <div className="lg:col-span-12">
                           <div className="max-lg:space-y-3">
                             <label className="text-sm font-medium">Description</label>
                             <Controller
                               name={`properties[${idx}].description`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.description !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.description?.message}
@@ -230,8 +230,8 @@ const AddProperty = () => {
                         </div>
 
                         {/* number of beds and number of baths  && monthly rent*/}
-                        <div className=" lg:col-span-12">
-                          <div className="lg:grid lg:grid-cols-3 lg:gap-5 xl:gap-10 max-lg:space-y-3 ">
+                        <div className="lg:col-span-12">
+                          <div className="lg:grid lg:grid-cols-3 gap-5 max-lg:space-y-3 ">
                             {/* number of beds */}
                             <div className="w-full max-lg:space-y-3">
                               <label className="text-sm font-medium">Number of Beds</label>
@@ -243,7 +243,7 @@ const AddProperty = () => {
                                 name={`properties[${idx}].numOfBed`}
                                 control={control}
                                 render={({ field }) => (
-                                  <div className="rs-form-control-wrapper">
+                                  <div className="rs-form-control-wrapper mt-1">
                                     <InputNumber
                                       className="!w-full"
                                       min={0}
@@ -270,7 +270,7 @@ const AddProperty = () => {
                                 name={`properties[${idx}].numOfBath`}
                                 control={control}
                                 render={({ field }) => (
-                                  <div className="rs-form-control-wrapper">
+                                  <div className="rs-form-control-wrapper mt-1">
                                     <InputNumber
                                       {...field}
                                       // onChange={(e) => {
@@ -298,7 +298,7 @@ const AddProperty = () => {
                                 name={`properties[${idx}].monthlyRent`}
                                 control={control}
                                 render={({ field }) => (
-                                  <div className="rs-form-control-wrapper">
+                                  <div className="rs-form-control-wrapper mt-1">
                                     <InputNumber
                                       {...field}
                                       // onChange={(e) => {
@@ -322,10 +322,10 @@ const AddProperty = () => {
                     <hr />
                     <div>
                       <div>
-                        <h3 className="font-bold">Maintenance</h3>
+                        <h3 className="font-bold text-lg text-center mb-2">Maintenance</h3>
                       </div>
                       {/*   */}
-                      <div className="grid lg:grid-cols-12 gap-10">
+                      <div className="grid lg:grid-cols-12 gap-5">
                         {/* maintenance covered by tenant */}
                         <div className="col-span-6">
                           <div>
@@ -337,7 +337,7 @@ const AddProperty = () => {
                               name={`properties[${idx}].maintenanceCoveredTenant`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} {...field} style={{ resize: "none" }} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredTenant !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredTenant?.message}
@@ -358,7 +358,7 @@ const AddProperty = () => {
                               name={`properties[${idx}].maintenanceCoveredOwner`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} style={{ resize: "none" }} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredOwner !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredOwner?.message}
@@ -369,12 +369,12 @@ const AddProperty = () => {
                           </div>
                         </div>
                       </div>
-                    </div>{" "}
+                    </div>
                     <hr />
                     {/* Schools --------------------------------- */}
                     <div>
                       <div>
-                        <h3 className="font-bold">Schools</h3>
+                        <h3 className="font-bold text-center text-lg mb-2">Schools</h3>
                       </div>
                       {/*   */}
                       <div className="grid lg:grid-cols-12 gap-10">
@@ -386,7 +386,7 @@ const AddProperty = () => {
                               name={`properties[${idx}].schools`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.schools !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.schools?.message}
@@ -404,7 +404,7 @@ const AddProperty = () => {
                               name={`properties[${idx}].universities`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.universities !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.universities?.message}
@@ -420,7 +420,7 @@ const AddProperty = () => {
                     {/* Pets --------------------------------- */}
                     <div>
                       <div>
-                        <h3 className="font-bold">Pets</h3>
+                        <h3 className="font-bold text-lg text-center mb-2">Pets</h3>
                       </div>
                       {/*   */}
                       <div className="grid lg:grid-cols-12 gap-10">
@@ -432,7 +432,7 @@ const AddProperty = () => {
                               name={`properties[${idx}].allowedPets`}
                               control={control}
                               render={({ field }) => (
-                                <div className="rs-form-control-wrapper">
+                                <div className="rs-form-control-wrapper mt-1">
                                   <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.allowedPets !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.allowedPets?.message}

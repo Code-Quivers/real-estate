@@ -50,14 +50,14 @@ const PropertyOwnerServiceProviders = () => {
   return (
     <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
       <div className="flex justify-center">
-        <h2 className="text-3xl ">Available Tenants | Total {allTenantsLists?.data?.meta?.total}</h2>
+        <h2 className="text-3xl mb-3">Available Tenants | Total {allTenantsLists?.data?.meta?.total}</h2>
       </div>
       {/* search with price section start */}
       <div className="">
-        <div className="grid lg:grid-cols-7 gap-2 max-lg:gap-2 lg:flex w-full   mt-5 lg:mt-5   ">
+        <div className="grid md:grid-cols-3 gap-5">
           {/* tenant name */}
-          <div className="max-lg:col-span-3 col-span-3 w-full">
-            <InputGroup size="lg" inside className="!w-full" >
+          <div className="">
+            <InputGroup size="lg" inside className="!w-full">
               <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
               <InputGroup.Addon>
                 <FaSearch size={20} />
@@ -65,8 +65,8 @@ const PropertyOwnerServiceProviders = () => {
             </InputGroup>
           </div>
           {/* address */}
-          <div className=" md:col-span-2 w-full">
-            <InputGroup size="lg" inside className=" !w-full" >
+          <div className="">
+            <InputGroup size="lg" inside className="!w-full">
               <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
               <InputGroup.Addon>
                 <FaSearch size={20} />
@@ -74,8 +74,8 @@ const PropertyOwnerServiceProviders = () => {
             </InputGroup>
           </div>
           {/* rent */}
-          <div className=" md:col-span-2 w-full">
-            <InputGroup size="lg" inside className="!w-full ">
+          <div className="">
+            <InputGroup size="lg" inside className="!w-full">
               <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
               <InputGroup.Addon>
                 <FaSearch size={20} />

@@ -74,23 +74,23 @@ const PropertyOwnerInformation = () => {
             <h2 className="text-xl font-medium ">Profile Details</h2>
           </div>
           <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
-            <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Full Name</h2>
-              <p className="text-lg font-medium">
+            <div className="space-y-1">
+              <h2 className="text-xl 2xl:text-2xl">Full Name</h2>
+              <p className="text-lg ">
                 {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
               </p>
             </div>
-            <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Phone Number</h2>
-              <p className="text-lg font-medium">{myProfileData?.phoneNumber ?? "--"}</p>
+            <div className="space-y-1">
+              <h2 className="text-xl ">Phone Number</h2>
+              <p className="text-lg">{myProfileData?.phoneNumber ?? "--"}</p>
             </div>
-            <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Account Registered</h2>
-              <p className="text-lg font-medium">{moment(myProfileData?.createdAt).format("lll")}</p>
+            <div className="space-y-1">
+              <h2 className="text-xl">Account Registered</h2>
+              <p className="text-lg">{moment(myProfileData?.createdAt).format("lll")}</p>
             </div>
-            <div className="space-y-2">
-              <h2 className="font-bold text-xl 2xl:text-2xl">Total Units</h2>
-              <p className="text-lg font-medium">{myProfileData?._count?.properties ?? "--"}</p>
+            <div className="space-y-1">
+              <h2 className="text-xl">Total Units</h2>
+              <p className="text-lg">{myProfileData?._count?.properties ?? "--"}</p>
             </div>
           </div>
         </div>
