@@ -220,8 +220,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
   return (
     <div>
       <Modal
-        dialogAs="div"
-        size={700}
+        size="md"
         onClose={() => {
           handleClose();
           resetForm();
@@ -231,7 +230,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
         className="bg-white mx-auto rounded-2xl mt-10"
         open={isOpen}
       >
-        <Modal.Body className="p-10">
+        <Modal.Body>
           {/* heading title */}
           <div className="flex justify-between items-center">
             <h2>Add New Report</h2>
