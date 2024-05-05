@@ -25,20 +25,21 @@ const AnnualTaxDocument = ({ reportData }) => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Document className="w-[200px]" file={`${fileUrlKey()}/${reportData?.documentFile}`} onLoadSuccess={onDocumentLoadSuccess}>
+      <Document className=" md:w-[200px]" file={`${fileUrlKey()}/${reportData?.documentFile}`} onLoadSuccess={onDocumentLoadSuccess}>
         <Page pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
         {/* {Array.from(new Array(allPages), (el, index) => (
           <Page key={`page_${index + 1}`} pageNumber={index + 1} renderTextLayer={false} renderAnnotationLayer={false} />
         ))} */}
       </Document>
-      <div>
-        <p>
+      <div className="mt-5 flex items-center  gap-4">
+        <p className="text-sm">
           Page {pageNumber || (allPages ? 1 : "--")} of {allPages || "--"}
         </p>
-        <button type="button" disabled={pageNumber <= 1} onClick={previousPage}>
+        <span>|</span>
+        <button type="button" className="bg-slate-200 px-3 py-1 rounded-lg" disabled={pageNumber <= 1} onClick={previousPage}>
           Previous
         </button>
-        <button type="button" disabled={pageNumber >= allPages} onClick={nextPage}>
+        <button type="button" className="bg-slate-200 px-3 py-1 rounded-lg" disabled={pageNumber >= allPages} onClick={nextPage}>
           Next
         </button>
       </div>

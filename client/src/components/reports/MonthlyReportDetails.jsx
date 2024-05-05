@@ -1,5 +1,4 @@
 import { fileUrlKey } from "@/configs/envConfig";
-import apartment from "../../assets/propertyOwner/apartment.jpg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaUser } from "react-icons/fa";
@@ -8,8 +7,8 @@ import { Button } from "rsuite";
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
   return (
-    <section className="border bg-white p-8">
-      <div className="grid grid-cols-7 items-center">
+    <section className="border bg-white md:p-3 lg:p-8">
+      <div className="grid grid-cols-7 max-md:p-3 items-center">
         <div className="col-span-2">
           <button onClick={() => router.back()}>
             <IoChevronBack size={24} />
@@ -20,10 +19,8 @@ const MonthlyReportDetails = ({ reportData }) => {
         </div>
       </div>
       {/* details */}
-
-      <div key={"report?.reportId"} className="border md:my-5 xl:m-6 shadow rounded-md   p-2 bg-white grid grid-cols-7 md:gap-3 lg:gap-5 xl:gap-10">
-        <div className="col-span-3">
-          {console.log(`${fileUrlKey()}/${reportData?.information[0]?.image}`)}
+      <div className="border m-3 md:m-6 shadow rounded-md  md:h-60 p-2 bg-white grid md:grid-cols-7 md:gap-5 xl:gap-10">
+        <div className="md:col-span-3">
           <Image
             className="h-full  object-cover rounded-md"
             src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
@@ -33,7 +30,7 @@ const MonthlyReportDetails = ({ reportData }) => {
           />
         </div>
 
-        <div className="col-span-4 py-6">
+        <div className="md:col-span-4 py-6">
           {reportData?.information?.map((information) => (
             <div key={Math.random()} className="space-y-2">
               <p>$ {information?.monthlyRent}</p>
@@ -57,7 +54,7 @@ const MonthlyReportDetails = ({ reportData }) => {
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
+      <div className="grid grid-cols-4 max-md:px-3 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
         <div className="col-span-2 flex items-center justify-between p-3 border rounded-lg">
           <h2>Monthly Rent</h2>
           <p className="text-lg font-semibold">${reportData?.rentAmount}</p>
@@ -80,7 +77,7 @@ const MonthlyReportDetails = ({ reportData }) => {
       </div>
 
       {/* download */}
-      <div className="mt-20 flex justify-center items-center">
+      <div className="my-10 md:mt-20 flex justify-center items-center">
         <Button type="button" size="lg" className="!bg-primary !text-white !rounded-3xl !text-xl !px-10 !py-5 ">
           Download
         </Button>
