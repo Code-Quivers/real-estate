@@ -25,7 +25,7 @@ const AnnualTaxDocument = ({ reportData }) => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Document file={`${fileUrlKey()}/${reportData?.documentFile}`} onLoadSuccess={onDocumentLoadSuccess}>
+      <Document className="w-[200px]" file={`${fileUrlKey()}/${reportData?.documentFile}`} onLoadSuccess={onDocumentLoadSuccess}>
         <Page pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
         {/* {Array.from(new Array(allPages), (el, index) => (
           <Page key={`page_${index + 1}`} pageNumber={index + 1} renderTextLayer={false} renderAnnotationLayer={false} />
