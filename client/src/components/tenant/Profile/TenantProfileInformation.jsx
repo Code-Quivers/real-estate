@@ -64,7 +64,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
         </div>
       </div>
-
+      {/* Rental History */}
       <div className="border mt-5 rounded-lg shadow-lg">
         <div className="px-5 py-2   flex justify-between items-center">
           <h2 className="text-xl font-medium">Rental History</h2>
@@ -89,12 +89,8 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
             <p className="font-medium">{data?.lengthOfPrevTenancy ?? "-"}</p>
           </div>{" "}
           <div>
-            <h2 className="font-semibold text-lg">Rent I am Willing to pay (monthly) </h2>
+            <h2 className="font-semibold text-lg">Rent willing to pay (monthly) </h2>
             <p className="font-medium">{data?.affordableRentAmount ?? "-"}</p>
-          </div>{" "}
-          <div>
-            <h2 className="font-semibold text-lg">Social Security Number</h2>
-            <p className="font-medium"> {data?.socialSecurityNumber ?? "-"}</p>
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Reason for leaving</h2>
@@ -103,6 +99,44 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           <div>
             <h2 className="font-semibold text-lg">Any Eviction or Late Payment</h2>
             <p className="font-medium"> {data?.isAnyLatePaymentReason ?? "-"}</p>
+          </div>{" "}
+        </div>
+      </div>
+      {/* Income Information */}
+      <div className="border mt-5 rounded-lg shadow-lg">
+        <div className="px-5 py-2   flex justify-between items-center">
+          <h2 className="text-xl font-medium">Income Information</h2>
+          <button
+            onClick={() => setTabActive(4)}
+            className="p-2  hover:bg-primary rounded-full hover:text-white text-primary duration-300  hover:border-black/50"
+          >
+            <MdEdit size={25} />
+          </button>
+        </div>
+        <div className="grid p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
+          <div>
+            <h2 className="font-semibold text-lg">Current Employer/Business Name</h2>
+            <p className="font-medium">{data?.CurrentEmployerOrBusinessName ? data?.CurrentEmployerOrBusinessName : "-"}</p>
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg">Current Employer/Business Contact Info</h2>
+            <p className="font-medium"> {data?.CurrentEmployerOrBusinessContactInfo ? data?.CurrentEmployerOrBusinessContactInfo : "-"}</p>
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg">Job Title</h2>
+            <p className="font-medium">{data?.JobTitle ? data?.JobTitle : "-"}</p>
+          </div>{" "}
+          <div>
+            <h2 className="font-semibold text-lg">Annual Salary</h2>
+            <p className="font-medium">{data?.AnnualSalary ? data?.AnnualSalary : "-"}</p>
+          </div>{" "}
+          <div>
+            <h2 className="font-semibold text-lg">Other Source of income</h2>
+            <p className="font-medium">{data?.OtherIncomeSource ? data?.OtherIncomeSource : "-"}</p>
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg">Current Credit Score</h2>
+            <p className="font-medium"> {data?.CurrentCreditScore ? data?.CurrentCreditScore : "-"}</p>
           </div>{" "}
         </div>
       </div>
