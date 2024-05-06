@@ -41,7 +41,7 @@ const PropertyOwnerServiceProviders = () => {
   const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setTenantDetails] = useState(null);
 
   return (
     <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
@@ -49,35 +49,34 @@ const PropertyOwnerServiceProviders = () => {
         <h2 className="text-3xl mb-3">Available Tenants | Total {allTenantsLists?.data?.meta?.total}</h2>
       </div>
       {/* search with price section start */}
-      <div className="">
-        <div className="grid md:grid-cols-3 gap-5">
-          {/* tenant name */}
-          <div className="">
-            <InputGroup size="lg" inside className="!w-full">
-              <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
-              <InputGroup.Addon>
-                <FaSearch size={20} />
-              </InputGroup.Addon>
-            </InputGroup>
-          </div>
-          {/* address */}
-          <div className="">
-            <InputGroup size="lg" inside className="!w-full">
-              <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
-              <InputGroup.Addon>
-                <FaSearch size={20} />
-              </InputGroup.Addon>
-            </InputGroup>
-          </div>
-          {/* rent */}
-          <div className="">
-            <InputGroup size="lg" inside className="!w-full">
-              <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
-              <InputGroup.Addon>
-                <FaSearch size={20} />
-              </InputGroup.Addon>
-            </InputGroup>
-          </div>
+
+      <div className="grid md:grid-cols-3 gap-5">
+        {/* tenant name */}
+        <div className="">
+          <InputGroup size="lg" inside className="!w-full">
+            <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
+            <InputGroup.Addon>
+              <FaSearch size={20} />
+            </InputGroup.Addon>
+          </InputGroup>
+        </div>
+        {/* address */}
+        <div className="">
+          <InputGroup size="lg" inside className="!w-full">
+            <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
+            <InputGroup.Addon>
+              <FaSearch size={20} />
+            </InputGroup.Addon>
+          </InputGroup>
+        </div>
+        {/* rent */}
+        <div className="">
+          <InputGroup size="lg" inside className="!w-full">
+            <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
+            <InputGroup.Addon>
+              <FaSearch size={20} />
+            </InputGroup.Addon>
+          </InputGroup>
         </div>
       </div>
 
@@ -93,45 +92,28 @@ const PropertyOwnerServiceProviders = () => {
         {!isLoading &&
           allTenantsLists?.data?.data?.length > 0 &&
           allTenantsLists?.data?.data?.map((singleReq, index) => (
-            <AvailableTenantsList key={index} singleReq={singleReq} />
-            // <div
-            //   key={Math.random()}
-            //   onClick={() => {
-            //     setSelectedService(singleReq);
-            //     setServiceModalActive(true);
-            //   }}
-            //   className="bg-white border rounded-md"
-            // >
-            //   <div className="">
-            //     <Image
-            //       width={100}
-            //       height={100}
-            //       className="w-[100px] object-cover rounded-full  "
-            //       src={singleReq?.profileImage ? `${fileUrlKey()}/${singleReq?.profileImage}` : profileLogo}
-            //       alt="photo"
-            //     />
-            //     <div className="px-3">
-            //       <div className="space-y-0.5">
-            //         <h3 className="text-sm font-medium">
-            //           {singleReq?.firstName} {singleReq?.lastName}
-            //         </h3>
-            //         <h3 className="text-sm font-medium">Place to rent</h3>
-            //         <h3 className="text-sm font-medium">Rent willing to pay: ${singleReq?.affordableRentAmount?.toFixed(2)}</h3>
-            //       </div>
-            //     </div>
-            //   </div>
-
-            //   {/* <div style={{ width: 100, marginTop: 10 }}>
-            //     <Progress.Circle percent="90" strokeColor="green" />
-            //   </div> */}
-            //   <div className="px-3 my-3 flex gap-3">
-            //     <button className="flex gap-1 items-center justify-center w-full text-sm text-primary  py-1.5 font-semibold rounded-md bg-[#E8F0FE]">
-            //       <CiBookmark size={14} /> Save
-            //     </button>
-            //     <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE]">Contact</button>
-            //     <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE]">Add</button>
-            //   </div>
-            // </div>
+            <div key={index}>
+              <div className="bg-white border rounded-md shadow-sm">
+                <AvailableTenantsList singleReq={singleReq}>
+                  <div className="px-3 space-y-0.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTenantDetails(singleReq);
+                        setServiceModalActive(true);
+                      }}
+                      className="text-sm text-primary cursor-pointer font-bold"
+                    >
+                      {singleReq?.firstName} {singleReq?.lastName}
+                    </button>
+                    <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "-"}</h3>
+                    <h3 className="text-sm font-medium">
+                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount}` : "-"}`}
+                    </h3>
+                  </div>
+                </AvailableTenantsList>
+              </div>
+            </div>
           ))}
       </div>
       {/* if no data is available */}
@@ -141,14 +123,14 @@ const PropertyOwnerServiceProviders = () => {
         </div>
       )}
       {/* pagination */}
-      <div className="mt-20">
+      <div className="mt-20 bg-white p-2 md:p-5 rounded-lg">
         <Pagination
           total={allTenantsLists?.data?.meta?.total}
           prev
           next
           ellipsis
           size="md"
-          layout={["total", "-", "limit", "|", "pager", "skip"]}
+          layout={["total", "-", "limit", "|", "pager"]}
           limitOptions={[10, 20, 30, 50]}
           limit={size}
           onChangeLimit={(limitChange) => setSize(limitChange)}
