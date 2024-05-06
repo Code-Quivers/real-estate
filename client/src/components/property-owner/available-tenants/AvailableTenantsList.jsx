@@ -4,7 +4,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Avatar, Button, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
+import { Avatar, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
@@ -115,8 +115,10 @@ const AvailableTenantsList = ({ singleReq }) => {
             <h3 className="text-sm font-medium">
               {singleReq?.firstName} {singleReq?.lastName}
             </h3>
-            <h3 className="text-sm font-medium">Place to rent</h3>
-            <h3 className="text-sm font-medium">Rent willing to pay: ${singleReq?.affordableRentAmount?.toFixed(2)}</h3>
+            <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "-"}</h3>
+            <h3 className="text-sm font-medium">
+              Rent willing to pay: {`${singleReq?.affordableRentAmount ? singleReq?.affordableRentAmount?.toFixed(2) : "-"}`}
+            </h3>
           </div>
         </div>
         {/* action */}

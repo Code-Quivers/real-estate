@@ -121,21 +121,21 @@ const SendDocumentPage = ({ params }) => {
               </div>
               {/* pdf editable  */}
               <div>
-                <Controller
+                {/* <Controller
                   name="templateDocument"
                   control={control}
                   rules={{
                     required: "Document Template is required",
                   }}
-                  render={({ field }) => (
-                    <div className="rs-form-control-wrapper ">
-                      <DigitalSignatureDocumentDrawer field={field} />
-                      <Form.ErrorMessage show={(!!errors?.templateDocument && !!errors?.templateDocument?.message) || false} placement="topEnd">
-                        {errors?.templateDocument?.message}
-                      </Form.ErrorMessage>
-                    </div>
-                  )}
-                />
+                  render={({ field }) => ( */}
+                <div className="rs-form-control-wrapper ">
+                  <DigitalSignatureDocumentDrawer filePath={data?.data?.filePath} />
+                  <Form.ErrorMessage show={(!!errors?.templateDocument && !!errors?.templateDocument?.message) || false} placement="topEnd">
+                    {errors?.templateDocument?.message}
+                  </Form.ErrorMessage>
+                </div>
+                {/* )}
+                /> */}
               </div>
               {/* submit button */}
               <div className="mt-10 flex justify-end">

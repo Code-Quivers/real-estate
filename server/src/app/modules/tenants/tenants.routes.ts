@@ -31,7 +31,6 @@ router.patch(
   "/update-profile/:tenantId",
   auth(UserRoles.TENANT, UserRoles.SUPERADMIN, UserRoles.PROPERTY_OWNER),
   FileUploadHelper.uploadUpdatedUserImage.single("file"),
-
   (req: Request, res: Response, next: NextFunction) => {
     req.body = TenantsValidation.updateTenantProfile.parse(JSON.parse(req.body.data));
     return TenantsControllers.updateTenantProfile(req, res, next);
