@@ -103,9 +103,10 @@ const PropertyOwnerLoginPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
@@ -124,15 +125,21 @@ const PropertyOwnerLoginPage = () => {
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
+                      <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
                   )}
                 />
               </div>
+
+              {/* password requirement */}
+
+              <div className="h-16 text-xs font-medium text-white">
+                {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+              </div>
             </div>
-            <div className="mt-10 flex justify-center">
+            <div className=" flex justify-center">
               {isLoading ? (
                 <button
                   type="button"
@@ -146,10 +153,6 @@ const PropertyOwnerLoginPage = () => {
                   Sign in
                 </button>
               )}
-
-              {/* <Button loading={isLoading} type="submit" size="lg" className="!rounded-md !py-3.5 w-full" appearance="default">
-                {isLoading ? "" : "Sign In"}
-              </Button> */}
             </div>
           </form>
         </div>

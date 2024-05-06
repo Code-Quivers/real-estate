@@ -3,7 +3,7 @@
 import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
+import { Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -84,7 +84,7 @@ const PropertyOwnerSignUpPage = () => {
         {/* input forms */}
         <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto">
           <form onSubmit={handleSubmit(handlePropertyOwnerSignUp)}>
-            <div className="space-y-3">
+            <div className="space-y-6 lg:space-y-5">
               {/* first Name */}
               <div>
                 <Controller
@@ -188,9 +188,10 @@ const PropertyOwnerSignUpPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
@@ -208,7 +209,7 @@ const PropertyOwnerSignUpPage = () => {
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
+                      <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -247,7 +248,14 @@ const PropertyOwnerSignUpPage = () => {
                 />
               </div>
             </div>
-            <div className="mt-5 flex justify-center">
+
+            {/* password requirement */}
+
+            <div className="h-16 mt-5   text-xs font-medium text-white">
+              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            </div>
+
+            <div className="flex justify-center">
               {isLoading ? (
                 <button
                   type="button"
@@ -261,9 +269,6 @@ const PropertyOwnerSignUpPage = () => {
                   Sign up
                 </button>
               )}
-              {/* <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
-                Sign Up
-              </Button> */}
             </div>
           </form>
         </div>

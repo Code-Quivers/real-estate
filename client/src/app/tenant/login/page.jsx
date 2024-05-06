@@ -1,7 +1,6 @@
 "use client";
 
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
-
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
 import { Button, Form, Input, InputGroup, toaster } from "rsuite";
@@ -15,12 +14,6 @@ import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
 import { getUserInfo, isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
 import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
-
-const style = {
-  width: "100%",
-  borderRadius: "30px !important",
-  overflow: "hidden !important",
-};
 
 const LoginPage = () => {
   const [visible, setVisible] = useState(false);
@@ -67,6 +60,7 @@ const LoginPage = () => {
     }
   }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
 
+  console.log(errors);
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
       <div className="bg-[#29429f] max-md:hidden  col-span-1 w-full  flex justify-center items-center">
@@ -89,7 +83,7 @@ const LoginPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -110,32 +104,35 @@ const LoginPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    // pattern: {
-                    //   value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/,
-                    //   message:
-                    //     "Password must contain at least one digit, one lowercase letter, one uppercase letter, and be at least 6 characters long",
-                    // },
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
-                    <InputGroup size="lg" style={style} inside>
-                      <InputGroup.Addon>
-                        <FaLock size={20} />
-                      </InputGroup.Addon>
-                      <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
-                      <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
-                    </InputGroup>
+                    <div className="rs-form-control-wrapper">
+                      <InputGroup size="lg" inside>
+                        <InputGroup.Addon>
+                          <FaLock size={20} />
+                        </InputGroup.Addon>
+                        <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
+                        <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
+                        <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
+                          {errors?.password?.message}
+                        </Form.ErrorMessage>
+                      </InputGroup>
+                    </div>
                   )}
                 />
-                <div className="mb-10 ">
-                  <span className="text-xs text-red-400">{errors?.password?.message}</span>{" "}
-                </div>
+              </div>
+              {/* password requirement */}
+
+              <div className="h-16 text-xs font-medium text-white">
+                {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
               </div>
             </div>
-            <div className="mt-10 flex justify-center">
+            <div className="  flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign In
               </Button>

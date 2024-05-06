@@ -15,12 +15,6 @@ import { useServiceProviderSignUpMutation } from "@/redux/features/auth/authApi"
 import { useRouter } from "next/navigation";
 import { storeUserInfo } from "@/hooks/services/auth.service";
 
-const style = {
-  width: "100%",
-  borderRadius: "20px !important",
-  overflow: "hidden !important",
-};
-
 const ServiceProviderSignUpPage = () => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
@@ -102,7 +96,7 @@ const ServiceProviderSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -125,7 +119,7 @@ const ServiceProviderSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -148,7 +142,7 @@ const ServiceProviderSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -175,7 +169,7 @@ const ServiceProviderSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <EmailFillIcon />
                         </InputGroup.Addon>
@@ -195,14 +189,15 @@ const ServiceProviderSignUpPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
@@ -215,7 +210,7 @@ const ServiceProviderSignUpPage = () => {
                           {visible ? <EyeIcon /> : <EyeSlashIcon />}
                         </InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
+                      <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -233,7 +228,7 @@ const ServiceProviderSignUpPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
@@ -254,7 +249,14 @@ const ServiceProviderSignUpPage = () => {
                 />
               </div>
             </div>
-            <div className="mt-10 flex justify-center">
+
+            {/* password requirement */}
+
+            <div className="h-16 mt-5 text-xs font-medium text-white">
+              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            </div>
+
+            <div className=" flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign Up
               </Button>
