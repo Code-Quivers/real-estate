@@ -16,12 +16,6 @@ import { useRouter } from "next/navigation";
 import { SignUpSuccessMessage } from "@/components/toasts/auth/authToastMessages";
 import { storeUserInfo } from "@/hooks/services/auth.service";
 
-const style = {
-  width: "100%",
-  borderRadius: "20px !important",
-  overflow: "hidden !important",
-};
-
 const TenantSignUp = () => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
@@ -88,7 +82,7 @@ const TenantSignUp = () => {
         {/* input forms */}
         <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto ">
           <form onSubmit={handleSubmit(handleTenantSignUp)}>
-            <div className="space-y-6 lg:space-y-3">
+            <div className="space-y-6 lg:space-y-5">
               {/* first Name */}
               <div>
                 <Controller
@@ -99,7 +93,7 @@ const TenantSignUp = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -122,7 +116,7 @@ const TenantSignUp = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -145,7 +139,7 @@ const TenantSignUp = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -172,7 +166,7 @@ const TenantSignUp = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <EmailFillIcon />
                         </InputGroup.Addon>
@@ -192,21 +186,22 @@ const TenantSignUp = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
                         <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
                         <InputGroup.Button onClick={handleChange}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
                       </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
+                      <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
                         {errors?.password?.message}
                       </Form.ErrorMessage>
                     </div>
@@ -224,7 +219,7 @@ const TenantSignUp = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock />
                         </InputGroup.Addon>
@@ -239,6 +234,12 @@ const TenantSignUp = () => {
                 />
               </div>
             </div>
+            {/* password requirement */}
+
+            <div className="h-16 mt-5 text-xs font-medium text-white">
+              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            </div>
+
             <div className="mt-10 flex justify-center">
               <Button type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign Up
