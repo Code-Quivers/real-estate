@@ -7,7 +7,7 @@ export type ITenantUpdateRequest = {
   dateOfBirth?: string;
   presentAddress?: string;
   socialSecurityNumber?: string;
-  drivingLicenseNumber?: string;
+  placeToRent?: string;
   isCriminalRecord?: boolean;
   criminalRecordDescription?: string;
   // income information

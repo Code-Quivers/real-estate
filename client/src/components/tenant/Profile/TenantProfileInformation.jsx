@@ -38,15 +38,22 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Social Security Number</h2>
-            <p className="font-medium"> {data?.socialSecurityNumber ?? "-"}</p>
+            <p className="font-medium">
+              {data?.socialSecurityNumber
+                ? data.socialSecurityNumber
+                    .replace(/\D/g, "")
+                    .replace(/\d/g, "x")
+                    .replace(/x{2}(\w{3})x{3}(\w{4})/, "$1-$2")
+                : "-"}
+            </p>
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Email Address</h2>
             <p className="font-medium">{data?.user?.email}</p>
           </div>
           <div>
-            <h2 className="font-semibold text-lg">Drivers License Number</h2>
-            <p className="font-medium"> {data?.drivingLicenseNumber ?? "-"}</p>
+            <h2 className="font-semibold text-lg">Place To Rent</h2>
+            <p className="font-medium"> {data?.placeToRent ?? "-"}</p>
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Do you have a criminal record?</h2>

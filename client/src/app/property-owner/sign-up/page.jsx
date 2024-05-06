@@ -1,6 +1,6 @@
 "use client";
 
-import serviceProviderLoginImage from "@/assets/loginPage/SignUp- Tenant.png";
+import propertyOwnerSignUpImage from "@/assets/loginPage/property_owner_sign_up.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
 import { Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
@@ -283,8 +283,8 @@ const PropertyOwnerSignUpPage = () => {
         </div>
       </div>
       {/* right image */}
-      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
-        <Image className="object-cover" src={serviceProviderLoginImage} alt="Property Owner Sign-Up Image" />
+      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     sticky top-0 border  h-screen">
+        <Image className="object-contain" width={800} height={800} src={propertyOwnerSignUpImage} alt="Property Owner Sign-Up Image" />
       </div>
     </div>
   );

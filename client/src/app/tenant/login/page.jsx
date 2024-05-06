@@ -63,8 +63,8 @@ const LoginPage = () => {
   console.log(errors);
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
-      <div className="bg-[#29429f] max-md:hidden  col-span-1 w-full  flex justify-center items-center">
-        <Image className="object-cover h-screen" src={tenantLoginImage} alt="Tenant Login Image" />
+      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center h-screen sticky top-0">
+        <Image className="object-contain" width={1000} height={1000} src={tenantLoginImage} alt="Tenant Login Image" />
       </div>
       <div className="w-full  col-span-1  ">
         <div className="flex justify-center">
@@ -140,10 +140,10 @@ const LoginPage = () => {
           </form>
         </div>
 
-        <div className="mt-20 flex justify-center">
+        <div className="mt-5 flex justify-center">
           <p className="font-semibold">
             Need an Account?{" "}
-            <Link className="text-blue-800" href="/tenant/sign-up">
+            <Link className="text-blue-800 hover:underline" href="/tenant/sign-up">
               Sign Up
             </Link>
           </p>

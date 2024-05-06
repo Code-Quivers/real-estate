@@ -68,7 +68,7 @@ export const calculateTenantProfileScore = (data: TenantData) => {
     presentAddress: 6,
     phoneNumber: 6,
     isCriminalRecord: 6,
-    drivingLicenseNumber: 6,
+    placeToRent: 6,
     affordableRentAmount: 6,
     isPets: 6,
     // others should be in total 36

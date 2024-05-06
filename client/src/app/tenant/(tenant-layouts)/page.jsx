@@ -5,7 +5,6 @@ import Image from "next/image";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
-import { Button } from "rsuite";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { changeScoreStatus } from "@/utils/scoreStatus";

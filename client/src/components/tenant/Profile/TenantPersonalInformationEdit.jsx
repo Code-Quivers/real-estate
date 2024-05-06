@@ -88,13 +88,13 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
           </div>
           {/* Driver License Number */}
           <div className="w-full">
-            <label className="text-sm font-medium">Driver License Number</label>
+            <label className="text-sm font-medium">Place to Rent</label>
             <Controller
-              name="drivingLicenseNumber"
+              name="placeToRent"
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} defaultValue={responseData?.drivingLicenseNumber} className="!w-full" type="text" />
+                  <Input {...field} defaultValue={responseData?.placeToRent} className="!w-full" type="text" />
                 </div>
               )}
             />

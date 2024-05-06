@@ -264,8 +264,8 @@ const TenantSignUp = () => {
         </div>
       </div>
       {/* right image */}
-      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
-        <Image className="object-cover" src={tenantLoginImage} alt="Tenant Login Image" />
+      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center h-screen sticky top-0">
+        <Image className="object-contain" src={tenantLoginImage} alt="Tenant Login Image" />
       </div>
     </div>
   );
