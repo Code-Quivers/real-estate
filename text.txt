@@ -21,7 +21,7 @@ default score 10
     presentAddress: 6,
     phoneNumber: 6,
     isCriminalRecord: 6,
-    drivingLicenseNumber: 6,
+    placeToRent: 6,
     affordableRentAmount: 6,
     isPets: 6,
     

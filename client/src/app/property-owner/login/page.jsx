@@ -1,9 +1,9 @@
 "use client";
 
-import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
+import tenantLoginImage from "@/assets/loginPage/property_owner_login.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Loader, toaster } from "rsuite";
+import { Form, Input, InputGroup, Loader, toaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -62,8 +62,8 @@ const PropertyOwnerLoginPage = () => {
 
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
-      <div className="bg-[#29429f] max-md:hidden  col-span-1 w-full  flex justify-center items-center">
-        <Image className="object-cover h-screen" src={tenantLoginImage} alt="Property Owner Login Image" />
+      <div className=" bg-[#29429f] w-full max-lg:hidden flex justify-center items-center     h-screen sticky top-0">
+        <Image className="object-contain" src={tenantLoginImage} alt="Property Owner Login Image" />
       </div>
       <div className="w-full  col-span-1  ">
         <div className="flex justify-center">

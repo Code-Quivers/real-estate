@@ -44,7 +44,7 @@ model Tenant {
   socialSecurityNumber                 String?
   presentAddress                       String?
   phoneNumber                          String?
-  drivingLicenseNumber                 String?
+placeToRent                 String?
   isCriminalRecord                     Boolean?
   criminalRecordDescription            String?
   // rental history
