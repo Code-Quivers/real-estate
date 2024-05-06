@@ -39,11 +39,12 @@ CREATE TABLE "propertyOwners" (
     "phoneNumber" TEXT,
     "profileImage" TEXT,
     "extraCosts" JSONB[],
+    "score" DOUBLE PRECISION NOT NULL DEFAULT 10,
+    "scoreRatio" JSONB,
+    "templates" JSONB[],
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
     "userId" TEXT NOT NULL,
-    "score" DOUBLE PRECISION NOT NULL DEFAULT 10,
-    "scoreRatio" JSONB,
 
     CONSTRAINT "propertyOwners_pkey" PRIMARY KEY ("propertyOwnerId")
 );
@@ -59,7 +60,7 @@ CREATE TABLE "tenants" (
     "socialSecurityNumber" TEXT,
     "presentAddress" TEXT,
     "phoneNumber" TEXT,
-    "drivingLicenseNumber" TEXT,
+    "placeToRent" TEXT,
     "isCriminalRecord" BOOLEAN,
     "criminalRecordDescription" TEXT,
     "prevLandlordName" TEXT,
@@ -171,6 +172,23 @@ CREATE TABLE "serviceProviders" (
 );
 
 -- CreateTable
+CREATE TABLE "Services" (
+    "serviceId" TEXT NOT NULL,
+    "minPrice" DOUBLE PRECISION,
+    "maxPrice" DOUBLE PRECISION,
+    "serviceDescription" TEXT,
+    "serviceLocation" TEXT,
+    "serviceCancellationPolicy" TEXT,
+    "serviceAvailability" "ServiceAvailabilityEnum",
+    "serviceType" "ServiceType",
+    "ownerId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Services_pkey" PRIMARY KEY ("serviceId")
+);
+
+-- CreateTable
 CREATE TABLE "maintenance_requests" (
     "maintenanceRequestId" TEXT NOT NULL,
     "propertyId" TEXT,
@@ -189,23 +207,6 @@ CREATE TABLE "maintenance_requests" (
     "serviceProviderId" TEXT,
 
     CONSTRAINT "maintenance_requests_pkey" PRIMARY KEY ("maintenanceRequestId")
-);
-
--- CreateTable
-CREATE TABLE "Services" (
-    "serviceId" TEXT NOT NULL,
-    "minPrice" DOUBLE PRECISION,
-    "maxPrice" DOUBLE PRECISION,
-    "serviceDescription" TEXT,
-    "serviceLocation" TEXT,
-    "serviceCancellationPolicy" TEXT,
-    "serviceAvailability" "ServiceAvailabilityEnum",
-    "serviceType" "ServiceType",
-    "ownerId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Services_pkey" PRIMARY KEY ("serviceId")
 );
 
 -- CreateTable
@@ -295,6 +296,23 @@ CREATE TABLE "Messages" (
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
 
     CONSTRAINT "Messages_pkey" PRIMARY KEY ("messageId")
+);
+
+-- CreateTable
+CREATE TABLE "Document" (
+    "documentId" TEXT NOT NULL,
+    "documentTitle" TEXT NOT NULL,
+    "filePath" TEXT NOT NULL,
+    "isValid" BOOLEAN NOT NULL DEFAULT true,
+    "isSignedByOwner" BOOLEAN NOT NULL DEFAULT true,
+    "isSignedByTenant" BOOLEAN NOT NULL DEFAULT false,
+    "ownerId" TEXT NOT NULL,
+    "tenantId" TEXT NOT NULL,
+    "propertyId" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(0) NOT NULL,
+
+    CONSTRAINT "Document_pkey" PRIMARY KEY ("documentId")
 );
 
 -- CreateTable
@@ -400,6 +418,9 @@ ALTER TABLE "Order" ADD CONSTRAINT "Order_tenantId_fkey" FOREIGN KEY ("tenantId"
 ALTER TABLE "serviceProviders" ADD CONSTRAINT "serviceProviders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "maintenance_requests" ADD CONSTRAINT "maintenance_requests_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "properties"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -410,9 +431,6 @@ ALTER TABLE "maintenance_requests" ADD CONSTRAINT "maintenance_requests_ownerId_
 
 -- AddForeignKey
 ALTER TABLE "maintenance_requests" ADD CONSTRAINT "maintenance_requests_serviceProviderId_fkey" FOREIGN KEY ("serviceProviderId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Services" ADD CONSTRAINT "Services_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SavedItem" ADD CONSTRAINT "SavedItem_serviceProviderId_fkey" FOREIGN KEY ("serviceProviderId") REFERENCES "serviceProviders"("serviceProviderId") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -440,6 +458,15 @@ ALTER TABLE "Messages" ADD CONSTRAINT "Messages_conversationId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "propertyOwners"("propertyOwnerId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("tenantId") ON DELETE SET DEFAULT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "properties"("propertyId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PropertyToServiceProvider" ADD CONSTRAINT "_PropertyToServiceProvider_A_fkey" FOREIGN KEY ("A") REFERENCES "properties"("propertyId") ON DELETE CASCADE ON UPDATE CASCADE;
