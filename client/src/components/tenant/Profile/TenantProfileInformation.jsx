@@ -39,12 +39,13 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           <div>
             <h2 className="font-semibold text-lg">Social Security Number</h2>
             <p className="font-medium">
-              {data?.socialSecurityNumber
+              {data?.socialSecurityNumber ? "xxx-xx-" + data.socialSecurityNumber.slice(-4) : "-"}
+              {/* {data?.socialSecurityNumber
                 ? data.socialSecurityNumber
                     .replace(/\D/g, "")
                     .replace(/\d/g, "x")
                     .replace(/x{2}(\w{3})x{3}(\w{4})/, "$1-$2")
-                : "-"}
+                : "-"} */}
             </p>
           </div>{" "}
           <div>
