@@ -1,13 +1,9 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { CiBookmark } from "react-icons/ci";
-import { Input, InputGroup, InputNumber, Loader, Pagination, Progress } from "rsuite";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import Image from "next/image";
+import { Input, InputGroup, InputNumber, Loader, Pagination } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
-import { fileUrlKey } from "@/configs/envConfig";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
@@ -151,8 +147,6 @@ const PropertyOwnerServiceProviders = () => {
           prev
           next
           ellipsis
-          // boundaryLinks
-          // maxButtons={1}
           size="md"
           layout={["total", "-", "limit", "|", "pager", "skip"]}
           limitOptions={[10, 20, 30, 50]}

@@ -215,21 +215,8 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   // const profileImagePath = profileImage?.path;
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const {
-    oldProfileImagePath,
-    AnnualSalary,
-    CurrentCreditScore,
-    affordableRentAmount,
-    numberOfMember,
-    password,
-    ...updates
-  } = req.body as ITenantUpdateRequest;
-
+  const { oldProfileImagePath, password, ...updates } = req.body as ITenantUpdateRequest;
   const tenantReqData = {
-    AnnualSalary: Number(AnnualSalary),
-    CurrentCreditScore: Number(CurrentCreditScore),
-    numberOfMember: Number(numberOfMember),
-    affordableRentAmount: Number(affordableRentAmount),
     profileImage: profileImagePath,
     ...updates,
   };

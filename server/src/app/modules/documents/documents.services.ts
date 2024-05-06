@@ -40,6 +40,7 @@ const getTemplate = async (ownerId: string, templateId: number) => {
 
 /**
  * add template to the property owner
+ *
  */
 const addTemplate = async (ownerId: string, title: string, filePath: string) => {
   try {

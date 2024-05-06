@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "rsuite";
 import AddDocumentModalForm from "./AddDocumentModalForm";
 import { useGetMyAllDocumentTemplatesQuery } from "@/redux/features/documents/documentsApi";
-import Link from "next/link";
 import DocumentList from "./DocumentList";
 
 const DocumentPage = () => {
@@ -27,19 +26,16 @@ const DocumentPage = () => {
       {/*  */}
       <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
         {!isLoading &&
-          data?.data?.map((singleTemplate, idx) => (
-            <DocumentList key={idx} singleTemplate={singleTemplate} />
-            // <div key={Math.random()} className="border p-5 flex justify-between items-center rounded-lg shadow-lg">
-            //   <div>
-            //     <h2>{singleTemplate?.title}</h2>
-            //   </div>
-            //   <div className="flex items-center gap-2">
-            //     <Link href={`/property-owner/documents/send-document/${idx}`}>send</Link>
-            //     <button>remove</button>
-            //   </div>
-            // </div>
-          ))}
+          data?.data?.length > 0 &&
+          data?.data?.map((singleTemplate, idx) => <DocumentList key={idx} singleTemplate={singleTemplate} idx={idx} />)}
       </div>
+
+      {/* if not data */}
+      {!isLoading && !data?.data?.length && (
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <h2>No Templates Found</h2>
+        </div>
+      )}
 
       {/* Add template modal */}
       <AddDocumentModalForm open={openAdd} handleClose={handleClose} />

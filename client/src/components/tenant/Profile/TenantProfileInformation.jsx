@@ -128,7 +128,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Annual Salary</h2>
-            <p className="font-medium">{data?.AnnualSalary ? data?.AnnualSalary : "-"}</p>
+            <p className="font-medium">{data?.AnnualSalary ? `$ ${parseFloat(data.AnnualSalary).toLocaleString()}` : "-"}</p>
           </div>{" "}
           <div>
             <h2 className="font-semibold text-lg">Other Source of income</h2>
