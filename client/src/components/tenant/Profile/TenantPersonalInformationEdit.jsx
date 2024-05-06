@@ -1,12 +1,25 @@
 "use client";
-
 import { Controller } from "react-hook-form";
-import { DatePicker, Input, SelectPicker } from "rsuite";
+import { DatePicker, Input, MaskedInput, SelectPicker } from "rsuite";
 import TenantPersonalProfileUpload from "./TenantPersonalPhotoUpload";
 import moment from "moment";
 import { booleanSelectPicker } from "@/utils/tenantEditUtils";
+import { useState } from "react";
+
+const options = [
+  { name: "Social Security Number", mask: [/\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/], placeholder: "123-45-6789" },
+  {
+    name: "US phone number",
+    mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    placeholder: "(555) 495-3947",
+  },
+];
 
 const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, imagePreview, setImagePreview, responseData }) => {
+  const [optionSSN] = useState(options[0]);
+  const [optionNumber] = useState(options[1]);
+  const [keepCharPositions, setKeepCharPositions] = useState(true);
+  const [placeholderChar, setPlaceholderChar] = useState("X");
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -81,7 +94,18 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} defaultValue={responseData?.socialSecurityNumber} className="!w-full" type="text" />
+                  <MaskedInput
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.socialSecurityNumber}
+                    mask={optionSSN.mask}
+                    guide
+                    // showMask
+                    keepCharPositions={keepCharPositions}
+                    placeholder={optionSSN.placeholder}
+                    placeholderChar={placeholderChar}
+                  />
+                  {/* <Input {...field} defaultValue={responseData?.socialSecurityNumber} className="!w-full" type="text" /> */}
                 </div>
               )}
             />
@@ -143,7 +167,18 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <Input {...field} defaultValue={responseData?.phoneNumber} className="!w-full" type="text" />
+                  <MaskedInput
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.phoneNumber}
+                    mask={optionNumber.mask}
+                    guide
+                    // showMask
+                    keepCharPositions={keepCharPositions}
+                    placeholder={optionNumber.placeholder}
+                    placeholderChar={"_"}
+                  />
+                  {/* <Input {...field} defaultValue={responseData?.phoneNumber} className="!w-full" type="text" /> */}
                 </div>
               )}
             />
