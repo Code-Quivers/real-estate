@@ -61,7 +61,20 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" prefix="$" {...field} defaultValue={responseData?.AnnualSalary} min={0} />
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.AnnualSalary}
+                    min={0}
+                    formatter={(value) => {
+                      if (!isNaN(value)) {
+                        return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                      }
+                      return "";
+                    }}
+                    parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                  />
                 </div>
               )}
             />

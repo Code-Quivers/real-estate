@@ -55,7 +55,7 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
           </div>
           {/* Rent amount you are willing to pay */}
           <div className="w-full">
-            <label className="text-sm font-medium">Rent amount you are willing to pay</label>
+            <label className="text-sm font-medium">Rent willing to pay (monthly)</label>
             <Controller
               name="affordableRentAmount"
               control={control}
