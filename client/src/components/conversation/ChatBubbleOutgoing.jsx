@@ -8,13 +8,13 @@ const ChatBubbleOutgoing = ({ message }) => {
   return (
     <div className="w-auto my-1 max-w-[80%]">
       <div className="grid grid-cols-10 items-end gap-2">
-        <div className="col-span-9 flex justify-end ">
+        <div className="col-span-10 md:col-span-9 flex justify-end ">
           <h4 className="text-white shadow shadow-black/10 rounded-2xl rounded-br-none bg-[#2941a0] px-4 py-2.5 w-fit text-sm font-medium">
             {message?.text}
           </h4>
         </div>
         {/* image */}
-        <div className="col-span-1">
+        <div className="md:col-span-1 max-md:hidden">
           <Image
             alt=""
             height={100}
@@ -24,7 +24,7 @@ const ChatBubbleOutgoing = ({ message }) => {
           />
         </div>
       </div>
-      <div className="flex justify-end mt-3 mr-14">
+      <div className="flex  justify-end mt-2 md:mt-3 mr-2 md:mr-14">
         <p className="text-xs font-medium">{moment(message?.createdAt).fromNow()}</p>
       </div>
     </div>

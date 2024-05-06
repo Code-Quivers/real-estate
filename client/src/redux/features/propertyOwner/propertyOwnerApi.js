@@ -34,6 +34,13 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.propertyOwner],
     }),
+    getMyTenants: builder.query({
+      query: () => ({
+        url: "/property-owners/get-my-tenants",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.propertyOwner, tagTypes.tenant],
+    }),
     updateExtraCost: builder.mutation({
       query: ({ data }) => ({
         url: `/property-owners/update-extra-cost`,
@@ -51,4 +58,5 @@ export const {
   useGetFinancialInfoQuery,
   useGetDashboardInfoQuery,
   useUpdateExtraCostMutation,
+  useGetMyTenantsQuery,
 } = propertyOwnerApi;

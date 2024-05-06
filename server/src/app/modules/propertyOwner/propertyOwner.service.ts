@@ -5,7 +5,7 @@ import prisma from "../../../shared/prisma";
 import { IPropertyOwnerFilterRequest, IPropertyOwnerUpdateRequest } from "./propertyOwner.interfaces";
 import { Request } from "express";
 import { IUploadFile } from "../../../interfaces/file";
-import { Prisma } from "@prisma/client";
+import { Prisma, Property } from "@prisma/client";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import {
@@ -132,7 +132,7 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | nu
     });
 
     if (!propertyOwner) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, "Property Owner Profile Not Found!!!");
+      throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Profile Not Found!!!");
     }
     // profile score ratio
     // const scoreRatio = calculatePropertyOwnerScoreRatio(propertyOwner.score, 100);
@@ -430,6 +430,29 @@ const updateExtraCost = async (propertyOwnerId: string, data: { cost: string }) 
   });
 };
 
+// ! get my assigned tenants
+const getMyAssignedTenants = async (propertyOwnerId: string): Promise<Property[] | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const myTenants = await transactionClient.property.findMany({
+      where: {
+        ownerId: propertyOwnerId,
+        isActive: true,
+      },
+      include: {
+        Tenant: true,
+      },
+    });
+
+    if (!myTenants?.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, "No Tenants Found !");
+    }
+
+    return myTenants;
+  });
+
+  return result;
+};
+
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
@@ -437,4 +460,5 @@ export const PropertyOwnerServices = {
   getFinancialAccountInfo,
   getDashboardInfo,
   updateExtraCost,
+  getMyAssignedTenants,
 };

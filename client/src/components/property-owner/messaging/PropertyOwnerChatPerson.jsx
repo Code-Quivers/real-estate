@@ -12,14 +12,20 @@ const ConversationChatPerson = ({ singleConversation, paramsChatId, participant,
       href={{
         query: { chat: conversationId },
       }}
-      className={`py-2 px-3 group cursor-pointer  hover:bg-[#f3f4f6]  rounded-md
+      className={`md:py-2  md:px-3 group cursor-pointer  hover:bg-[#f3f4f6]  rounded-md
       ${paramsChatId === conversationId && "bg-[#f3f4f6]"} grid grid-cols-5 justify-between gap-2 items-center`}
     >
-      <div className="col-span-4 grid  grid-cols-5 gap-2 items-center">
-        <div className="col-span-1">
-          <Image alt="" height={45} width={45} className="rounded-full" src={getProfileImageUrl(singleConversation?.perticipants[0])} />
+      <div className="col-span-5 md:col-span-4 md:grid   md:grid-cols-5 md:gap-2 items-center">
+        <div className="md:col-span-1">
+          <Image
+            alt=""
+            height={50}
+            width={50}
+            className="rounded-full object-cover w-[50px] h-[50px] "
+            src={getProfileImageUrl(singleConversation?.perticipants[0])}
+          />
         </div>
-        <div className="space-y-1 col-span-4">
+        <div className="space-y-1 max-md:hidden col-span-4">
           <h2
             className={`font-semibold group-hover:text-[#29429f] text-[15px] ${paramsChatId === conversationId ? "text-[#29429f]" : "text-black"} `}
           >
@@ -31,7 +37,7 @@ const ConversationChatPerson = ({ singleConversation, paramsChatId, participant,
         </div>
       </div>
       {/*  */}
-      <div className="col-span-1  ">
+      <div className="col-span-1 max-md:hidden ">
         <p className="text-[11px]">{moment(singleConversation?.updatedAt).format("hh:mm A")}</p>
       </div>
     </Link>

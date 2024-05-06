@@ -8,8 +8,6 @@ body::-webkit-scrollbar {
   /* width of the entire scrollbar */
 }
 
-
-
 body::-webkit-scrollbar-track {
   background: #b4bbd4;
   /* color of the tracking area */
@@ -31,37 +29,26 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
 } */
 
-.rs-picker-toggle {
-  border-radius: 0px !important;
-}
+/* .rs-picker-toggle {
+  border-radius: 30px !important;
+} */
 
 .rs-btn-lg {
   background-color: #29429f !important;
   color: white !important;
 }
 
-.rs-modal-content {
+/* .rs-modal-content {
   border-radius: 0 !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
   padding-top: 0px !important;
   padding-bottom: 0px !important;
-}
+} */
 
 /* rs date picker button */
 .rs-btn-primary {
   background-color: #3498ff !important;
-}
-
-/* ReactQuill css overwrite */
-.ql-toolbar {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.ql-container {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 
 .responsive-content-loader {
@@ -81,14 +68,14 @@ body::-webkit-scrollbar-thumb {
 }
 
 /* r suit input */
-.rs-input {
+/* .rs-input {
   border-radius: 0px !important;
-}
+} */
 
 /*  r suit input number */
-.rs-input-group {
+/* .rs-input-group {
   border-radius: 0px !important;
-}
+} */
 
 /* Apply styles when the Input component gains focus */
 /* .rs-input:focus {
@@ -122,21 +109,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 /* add property text editor */
-.ql-editor {
-  background: white !important;
-  border-radius: 0 !important;
-}
-
-.app .ql-container {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  background: #fefcfc;
-}
-
-.app .ql-editor {
-  min-height: 10rem;
-}
-
 
 /* ! uploader */
 .rs-uploader-picture {

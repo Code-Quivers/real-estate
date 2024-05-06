@@ -47,7 +47,7 @@ const TenantMessagingPage = () => {
   // !
 
   return (
-    <section className="max-w-[1050px]  mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]  mb-5  xl:mx-auto md:px-3 lg:px-5 px-1    2xl:px-0 ">
       {/* section title */}
       <div className="flex justify-center">
         <h1 className="text-xl font-medium">Messages</h1>
@@ -59,8 +59,8 @@ const TenantMessagingPage = () => {
         </div>
         {/*  */}
         {/* conversation */}
-        <div className="grid grid-cols-6 gap-2 h-[80vh]">
-          <div className="col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
+        <div className="grid grid-cols-6 gap-1 md:gap-2 h-[80vh]">
+          <div className="col-span-1 md:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (
@@ -87,7 +87,7 @@ const TenantMessagingPage = () => {
               </div>
             )}
           </div>
-          <div className="col-span-4 ">
+          <div className="col-span-5 md:col-span-4 ">
             <ConversationMessagingChats />
           </div>
         </div>

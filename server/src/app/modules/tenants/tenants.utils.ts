@@ -68,7 +68,7 @@ export const calculateTenantProfileScore = (data: TenantData) => {
     presentAddress: 6,
     phoneNumber: 6,
     isCriminalRecord: 6,
-    drivingLicenseNumber: 6,
+    placeToRent: 6,
     affordableRentAmount: 6,
     isPets: 6,
     // others should be in total 36
@@ -97,10 +97,7 @@ export const calculateTenantProfileScore = (data: TenantData) => {
   // Calculate profile score based on criteria
   for (const criterion in data) {
     const value = data[criterion as CriteriaKey];
-    if (
-      (typeof value === "boolean" || value !== undefined) && // Include boolean values
-      criteriaWeights[criterion as CriteriaKey]
-    ) {
+    if (value !== undefined && value !== null && criteriaWeights[criterion as CriteriaKey]) {
       profileScore += criteriaWeights[criterion as CriteriaKey];
     }
   }

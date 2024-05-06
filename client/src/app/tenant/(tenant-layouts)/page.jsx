@@ -5,7 +5,6 @@ import Image from "next/image";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
-import { Button } from "rsuite";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { changeScoreStatus } from "@/utils/scoreStatus";
@@ -14,7 +13,6 @@ const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
-
   const { data } = dataResponse || {};
 
   return (
@@ -40,15 +38,15 @@ const TenantProfile = () => {
           </div>
         </div>
         {/* score */}
-        {console.log(data?.score)}
+
         <div>
           <div className=" col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className={`${changeScoreStatus(data?.score)}`}>
+            <div className={`${changeScoreStatus(data?.scoreRatio?.score)}`}>
               <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">{data?.score}</span>
+                <span className="font-medium">{data?.scoreRatio?.score ?? 0}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">10</span>
+                <span className="font-medium">{data?.scoreRatio?.total ?? 0}</span>
               </div>
             </div>
           </div>
@@ -56,67 +54,56 @@ const TenantProfile = () => {
       </div>
       {/* Dashboard */}
 
-      <div className="mt-10 grid grid-cols-3 lg:grid-cols-5 w-full lg:mt-8 items-stretch gap-2 lg:gap-5">
+      <div className="flex items-center gap-5 p-2 h-11 bg-white rounded-t-lg border mt-4">
         {/* Personal Information */}
         <div className=" ">
-          <Button
+          <button
             onClick={() => setTabActive(2)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 2 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Personal <br /> Information
-          </Button>
+            Personal information
+          </button>
         </div>
         {/* Rental History */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(3)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 3 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Rental <br /> History
-          </Button>
+            RentalHistory
+          </button>
         </div>
         {/* income information */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(4)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 4 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Income <br /> Information
-          </Button>
+            Income Information
+          </button>
         </div>
         {/* pets */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(5)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 5 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
             Pets
-          </Button>
+          </button>
         </div>
         {/* Other Information */}
         <div>
-          <Button
+          <button
             onClick={() => setTabActive(6)}
             type="button"
-            className={`  whitespace-pre-wrap h-full !w-full !py-2 !bg-[#29429f] !text-white !rounded-full `}
-            size="md"
-            appearance="default"
+            className={`${tabActive == 6 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
           >
-            Other <br />
-            Information
-          </Button>
+            Other Information
+          </button>
         </div>
       </div>
 

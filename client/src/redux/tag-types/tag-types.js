@@ -11,6 +11,7 @@ export const tagTypes = {
   order: "order",
   conversation: "conversation",
   reports: "reports",
+  documents: "documents",
 };
 
 export const tagTypesList = [
@@ -23,4 +24,6 @@ export const tagTypesList = [
   tagTypes.maintenanceRequest,
   tagTypes.order,
   tagTypes.conversation,
+  tagTypes.reports,
+  tagTypes.documents,
 ];

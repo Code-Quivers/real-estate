@@ -32,11 +32,10 @@ const TenantSidebar = () => {
               width={120}
               height={120}
               src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
-              // src={profileLogo}
               alt="Profile Picture"
-              className=" object-cover rounded-full  select-none h-[120px] w-[120px]"
+              className="object-cover rounded-full  select-none h-[120px] w-[120px]"
             />
-            <h2 className="text-white ">
+            <h2 className="text-white mt-5 ">
               {data?.firstName} {data?.lastName}
             </h2>
           </div>
@@ -48,7 +47,7 @@ const TenantSidebar = () => {
               href="/tenant"
               eventKey="1"
               icon={<DashboardIcon />}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderTop: "2px solid #000",
@@ -134,7 +133,7 @@ const TenantSidebar = () => {
             </Nav.Item>
             <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697]`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",

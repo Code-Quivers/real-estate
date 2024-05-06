@@ -35,14 +35,14 @@ const PropertyOwnerReportPage = () => {
       </div>
 
       {/* filters */}
-      <div className="grid grid-cols-3  gap-1">
-        <div className="col-span-1">
+      <div className="grid md:grid-cols-3 gap-2">
+        <div className="">
           <SelectPicker size="lg" data={reportType} searchable={false} placeholder="Report Type" className="!w-full" />
         </div>
-        <div className="col-span-1">
+        <div className="">
           <SelectPicker size="lg" data={reportType} searchable={false} placeholder="Property" className="!w-full" />
         </div>
-        <div className="col-span-1">
+        <div className="">
           <DateRangePicker
             menuAutoWidth={true}
             placement="bottomEnd"
@@ -56,8 +56,8 @@ const PropertyOwnerReportPage = () => {
         </div>
       </div>
 
-      <div className="mt-7">
-        <Button onClick={() => setIsOpenAdd(true)} className="!bg-[#29429f] !text-white !px-10 !py-3 !rounded-full" size="lg">
+      <div className="mt-5">
+        <Button onClick={() => setIsOpenAdd(true)} className="!bg-[#29429f] !text-white !px-10 !py-3 !rounded-full max-sm:!w-full" size="lg">
           Add Report
         </Button>
       </div>

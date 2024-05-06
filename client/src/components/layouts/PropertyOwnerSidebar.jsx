@@ -106,7 +106,14 @@ const PropertyOwnerSidebar = () => {
             >
               Unit Information
             </Nav.Item>
-            <Nav.Item style={{ backgroundColor: "#29429f" }} eventKey="5" className="hover:!bg-[#1b3697]" icon={<GroupIcon />}>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/documents"
+              style={{ backgroundColor: "#29429f" }}
+              eventKey="5"
+              className="hover:!bg-[#1b3697]"
+              icon={<GroupIcon />}
+            >
               Documents
             </Nav.Item>
             <Nav.Item

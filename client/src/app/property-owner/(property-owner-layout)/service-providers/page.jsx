@@ -68,7 +68,7 @@ const AvailableServiceProviders = () => {
   const [selectedService, setSelectedService] = useState(null);
 
   return (
-    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-14 2xl:mx-auto lg:px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-14 2xl:mx-auto lg:px-5 2xl:px-0 ">
       <div className="flex justify-center">
         <h2 className="text-4xl ">Service Providers</h2>
       </div>
@@ -77,7 +77,7 @@ const AvailableServiceProviders = () => {
         <div className="lg:col-span-3 col-span-6">
           <InputGroup size="lg" inside>
             <AutoComplete onChange={(e) => setSearchTerm(e)} placeholder="Service Provider" size="lg" data={datas} />
-            <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
+            <InputGroup.Addon>
               <FaSearch size={15} />
             </InputGroup.Addon>
           </InputGroup>
@@ -99,7 +99,7 @@ const AvailableServiceProviders = () => {
         <div className="lg:col-span-3 col-span-6">
           <InputGroup size="lg" inside className="rounded-none">
             <AutoComplete size="lg" placeholder="Price" data={datas} />
-            <InputGroup.Addon style={{ backgroundColor: "#fff" }}>
+            <InputGroup.Addon>
               <FaSearch size={15} />
             </InputGroup.Addon>
           </InputGroup>

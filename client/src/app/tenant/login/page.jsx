@@ -1,7 +1,6 @@
 "use client";
 
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
-
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
 import { Button, Form, Input, InputGroup, toaster } from "rsuite";
@@ -15,12 +14,6 @@ import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
 import { getUserInfo, isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
 import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
-
-const style = {
-  width: "100%",
-  borderRadius: "30px !important",
-  overflow: "hidden !important",
-};
 
 const LoginPage = () => {
   const [visible, setVisible] = useState(false);
@@ -67,10 +60,11 @@ const LoginPage = () => {
     }
   }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
 
+  console.log(errors);
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
-      <div className="bg-[#29429f] max-md:hidden  col-span-1 w-full  flex justify-center items-center">
-        <Image className="object-cover h-screen" src={tenantLoginImage} alt="Tenant Login Image" />
+      <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center h-screen sticky top-0">
+        <Image className="object-contain" width={1000} height={1000} src={tenantLoginImage} alt="Tenant Login Image" />
       </div>
       <div className="w-full  col-span-1  ">
         <div className="flex justify-center">
@@ -89,7 +83,7 @@ const LoginPage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <AvatarIcon />
                         </InputGroup.Addon>
@@ -110,29 +104,35 @@ const LoginPage = () => {
                   control={control}
                   rules={{
                     required: "Password is Required",
-                    minLength: {
-                      value: 6,
-                      message: "Minimum 6 characters required for password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                     },
                   }}
                   render={({ field }) => (
-                    <div className="rs-form-control-wrapper ">
-                      <InputGroup size="lg" style={style} inside>
+                    <div className="rs-form-control-wrapper">
+                      <InputGroup size="lg" inside>
                         <InputGroup.Addon>
                           <FaLock size={20} />
                         </InputGroup.Addon>
                         <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
                         <InputGroup.Button onClick={() => setVisible(!visible)}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
+                        <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
+                          {errors?.password?.message}
+                        </Form.ErrorMessage>
                       </InputGroup>
-                      <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
-                        {errors?.password?.message}
-                      </Form.ErrorMessage>
                     </div>
                   )}
                 />
               </div>
+              {/* password requirement */}
+
+              <div className="h-16 text-xs font-medium text-white">
+                {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+              </div>
             </div>
-            <div className="mt-10 flex justify-center">
+            <div className="  flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign In
               </Button>
@@ -140,10 +140,10 @@ const LoginPage = () => {
           </form>
         </div>
 
-        <div className="mt-20 flex justify-center">
+        <div className="mt-5 flex justify-center">
           <p className="font-semibold">
             Need an Account?{" "}
-            <Link className="text-blue-800" href="/tenant/sign-up">
+            <Link className="text-blue-800 hover:underline" href="/tenant/sign-up">
               Sign Up
             </Link>
           </p>
