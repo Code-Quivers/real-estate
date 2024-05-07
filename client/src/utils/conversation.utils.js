@@ -18,16 +18,15 @@ export const getParticipantName = (participant) => {
 
 export const getProfileImageUrl = (userData) => {
   const role = userData?.role;
-  const defaultImageUrl = profileLogo;
 
   switch (role) {
     case "PROPERTY_OWNER":
-      return `${fileUrlKey()}/${userData?.propertyOwner?.profileImage}`;
+      return userData?.propertyOwner?.profileImage ? `${fileUrlKey()}/${userData.propertyOwner.profileImage}` : profileLogo;
     case "TENANT":
-      return `${fileUrlKey()}/${userData?.tenant?.profileImage}`;
+      return userData?.tenant?.profileImage ? `${fileUrlKey()}/${userData.tenant.profileImage}` : profileLogo;
     case "SERVICE_PROVIDER":
-      return `${fileUrlKey()}/${userData?.serviceProvider?.profileImage}`;
+      return userData?.serviceProvider?.profileImage ? `${fileUrlKey()}/${userData.serviceProvider.profileImage}` : profileLogo;
     default:
-      return defaultImageUrl;
+      return profileLogo;
   }
 };
