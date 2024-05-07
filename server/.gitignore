@@ -7,4 +7,5 @@ logs
 data
 uploads
 
-# /prisma/migrations
+/prisma/migrations
+yarn.lock
