@@ -11,6 +11,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
 import { sortingPicker } from "@/constants/selectPicker.const";
 import { Loader } from "rsuite";
+import Score from "@/components/Shared/Score/Score";
 
 // Search Location data
 const data = ["Newest", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
@@ -82,16 +83,16 @@ const AvailableUnitsCard = () => {
                 setUnits(unit);
               }}
               key={Math.random()}
-              className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
+              className="border rounded-lg hover:shadow-lg hover:border transition-all duration-500 ease-in-out cursor-pointer"
             >
               <Image
                 width={300}
                 height={300}
-                className="w-full h-[250px] object-center object-cover"
+                className="w-full h-[200px] object-center object-cover rounded-t-lg hover:shadow-lg"
                 src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
                 alt="Tenant available units"
               />
-              <div className="flex w-full justify-between items-start mt-2 px-2.5 py-1">
+              <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
                   <h2 className="text-sm">$1200</h2>
                   <h2 className="text-sm">
@@ -100,21 +101,9 @@ const AvailableUnitsCard = () => {
                   </h2>
                   <h2 className="text-sm">{unit?.address ? unit?.address : "--"}</h2>
                 </div>
-                {/* <div>
-                <div className="py-2 px-5 rounded-full border-2 border-red-700">
-                  <p className="text-sm text-center">9</p>
-                  <hr />
-                  <p className="text-sm text-center">10</p>
-                </div>
-              </div> */}
-              {console.log(unit)}
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
-                </div>
+
+                {console.log(unit)}
+                <Score score={unit?.scoreRatio?.score} total={unit?.scoreRatio?.total} />
               </div>
             </div>
           ))}

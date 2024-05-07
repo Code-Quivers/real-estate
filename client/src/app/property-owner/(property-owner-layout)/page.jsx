@@ -1,30 +1,22 @@
 "use client";
-
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import Image from "next/image";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
 import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
 import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
-import { changeScoreStatus } from "@/utils/scoreStatus";
+import Score from "@/components/Shared/Score/Score";
+import { Avatar } from "rsuite";
 
 const PropertyOwnerInformation = () => {
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
   const { data: myProfileData } = data || {};
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-3    2xl:px-0 ">
+    <section className="max-w-[1050px] mb-5 xl:mx-auto md:px-3 lg:px-5 px-3 2xl:px-0">
       {/* profile Information */}
-      <div className="grid grid-cols-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between lg:mr-10 ">
-        <div className="col-span-4 flex max-md:flex-col    justify-start max-md:gap-2  md:justify-start md:items-center  gap-3 my-5">
+      <div className="grid grid-cols-5 w-full  max-md:mb-5 items-start md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between lg:mr-10 ">
+        <div className="col-span-4 flex max-md:flex-col  justify-start max-md:gap-2  md:justify-start md:items-center gap-3 md:mt-5">
           <div>
-            <Image
-              width={80}
-              height={80}
-              src={myProfileData?.profileImage ? `${fileUrlKey()}/${myProfileData?.profileImage}` : profileLogo}
-              className="w-[100px] h-[100px] md:w-[80px] md:h-[80px] object-cover rounded-lg select-none"
-              alt="Profile Image"
-            />
+            <Avatar circle size="xl" src={myProfileData?.profileImage && `${fileUrlKey()}/${myProfileData?.profileImage}`} />
           </div>
           <div>
             <h4>
@@ -37,13 +29,7 @@ const PropertyOwnerInformation = () => {
         <div>
           <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className={`${changeScoreStatus(myProfileData?.scoreRatio?.score)}`}>
-              <div className="flex w-full flex-col justify-center items-center">
-                <span className="font-medium">{myProfileData?.scoreRatio?.score}</span>
-                <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">{myProfileData?.scoreRatio?.total}</span>
-              </div>
-            </div>
+            <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />
           </div>
         </div>
       </div>

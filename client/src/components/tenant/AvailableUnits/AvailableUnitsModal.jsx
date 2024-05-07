@@ -8,6 +8,7 @@ import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import { SaveUnitNotificationError, SaveUnitNotificationSuccess } from "@/components/toasts/notifications/ToastNotification";
 import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOverFromTenant";
+import Score from "@/components/Shared/Score/Score";
 
 const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
   const handleClose = () => setOpen(false);
@@ -51,13 +52,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               {unitInfo?.images?.length > 0
                 ? unitInfo?.images?.map((photo) => (
                     <div key={Math.random()}>
-                      <Image
-                        className="w-full h-full object-cover"
-                        height={300}
-                        width={300}
-                        src={`${fileUrlKey()}/${photo}`}
-                        alt="Unit Photo"
-                      />
+                      <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
                     </div>
                   ))
                 : null}
@@ -104,13 +99,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   </h2>
                   <h2 className="text-xl">{unitInfo?.address ? unitInfo?.address : "3 Belair Dr, Binghamton, NY 13901"}</h2>
                 </div>
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
-                </div>
+                <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
               </div>
               {/* */}
               <div>
