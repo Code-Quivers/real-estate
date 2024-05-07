@@ -106,7 +106,7 @@ const AddProperty = () => {
           {/* Property Information */}
           <div className=" flex justify-center  items-stretch gap-5 ">
             <Button type="button" className={`h-full  !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="md" appearance="default">
-              Property <br /> Information
+              Property Information
             </Button>
             <Button type="button" className={`     !px-10 !py-2 !bg-[#29429f] !text-white !rounded-full `} size="lg" appearance="default">
               Payment

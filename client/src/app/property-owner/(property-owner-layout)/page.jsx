@@ -8,7 +8,7 @@ import Score from "@/components/Shared/Score/Score";
 import { Avatar } from "rsuite";
 
 const PropertyOwnerInformation = () => {
-  const { data } = useGetPropertyOwnerMyProfileQuery(null);
+  const { data, isLoading } = useGetPropertyOwnerMyProfileQuery(null);
   const { data: myProfileData } = data || {};
   return (
     <section className="max-w-[1050px] mb-5 xl:mx-auto md:px-3 lg:px-5 px-3 2xl:px-0">
@@ -29,7 +29,12 @@ const PropertyOwnerInformation = () => {
         <div>
           <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />
+            {isLoading ? (
+              <span className="text-gray-400">Loading...</span>
+            ) : (
+              <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />
+            )}
+            {/* {myProfileData?.scoreRatio?.score >= 0 && <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />} */}
           </div>
         </div>
       </div>
