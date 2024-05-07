@@ -74,10 +74,39 @@ const updateDocumentWithTenantSigned = catchAsync(async (req: Request, res: Resp
     data: result,
   });
 });
+
+const getDocuments = catchAsync(async (req: Request, res: Response) => {
+  const ownerId: string = (req.user as IRequestUser).profileId;
+  const userRole: string = (req.user as IRequestUser).role;
+
+
+  const result = await DocumentsServices.getDocuments(ownerId, userRole);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Documents successfully extracted!",
+    data: result,
+  });
+});
+
+const getDocument = catchAsync(async (req: Request, res: Response) => {
+  const { documentId } = req.params || "";
+
+  const result = await DocumentsServices.getDocument(documentId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Document successfully extracted!",
+    data: result,
+  });
+});
+
 export const DocumentsControllers = {
   getTemplates,
   getTemplate,
   addTemplate,
+  getDocuments,
+  getDocument,
   sendDocument,
   updateDocumentWithTenantSigned,
 };
