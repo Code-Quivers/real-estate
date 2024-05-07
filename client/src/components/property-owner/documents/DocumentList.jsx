@@ -6,7 +6,6 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { LuSend } from "react-icons/lu";
 import Link from "next/link";
 const DocumentList = ({ singleTemplate, idx }) => {
-  console.log(idx);
   pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
   const [allPages, setAllPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
