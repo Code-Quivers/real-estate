@@ -15,7 +15,7 @@ import {
   serviceProviderRelationalFieldsMapper,
   serviceProviderSearchableFields,
 } from "./serviceProvider.constants";
-import { calculateServiceProviderProfileScore, filterUndefinedOrNullValues } from "./serviceProvider.utils";
+import { calculateServiceProviderProfileScore } from "./serviceProvider.utils";
 
 // ! get all Service Provider
 const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, options: IPaginationOptions) => {
@@ -164,16 +164,7 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
 
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const {
-    firstName,
-    lastName,
-    phoneNumber,
-    oldProfileImagePath,
-    companyAddress,
-    companyEmailAddress,
-    companyName,
-    companyPhoneNumber,
-  } = req.body as IServiceProviderUpdateRequest;
+  const { oldProfileImagePath, ...others } = req.body as IServiceProviderUpdateRequest;
 
   // deleting old style Image
   const oldFilePaths = "uploads/" + oldProfileImagePath;
@@ -197,17 +188,11 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
     if (!isServiceProviderOwnerExists) {
       throw new ApiError(httpStatus.NOT_FOUND, "Service Provider Profile Not Found!");
     }
-
-    const updatedServiceProviderProfileData = filterUndefinedOrNullValues({
-      firstName,
-      lastName,
-      phoneNumber,
+    // filterUndefinedOrNullValues(
+    const updatedServiceProviderProfileData = {
+      ...others,
       profileImage: profileImagePath,
-      companyAddress,
-      companyEmailAddress,
-      companyName,
-      companyPhoneNumber,
-    });
+    };
 
     // ! updating
     const res = await transactionClient.serviceProvider.update({
@@ -226,6 +211,7 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
 
     if (res) {
       const profileScore = calculateServiceProviderProfileScore(res as any);
+      // console.log(profileScore);
       await transactionClient.serviceProvider.update({
         where: {
           serviceProviderId,

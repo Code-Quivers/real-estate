@@ -4,11 +4,7 @@ import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { Prisma, Service } from "@prisma/client";
-import {
-  IServiceFilterRequest,
-  IServiceUpdateRequest,
-} from "./services.interfaces";
-import { updateServiceData } from "./services.utils";
+import { IServiceFilterRequest, IServiceUpdateRequest } from "./services.interfaces";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import {
@@ -16,12 +12,10 @@ import {
   servicesRelationalFieldsMapper,
   servicesSearchableFields,
 } from "./services.constants";
+import { calculateServiceProviderProfileScore } from "../serviceProviders/serviceProvider.utils";
 
 // ! get all services
-const getAllServices = async (
-  filters: IServiceFilterRequest,
-  options: IPaginationOptions,
-) => {
+const getAllServices = async (filters: IServiceFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -58,8 +52,7 @@ const getAllServices = async (
     });
   }
 
-  const whereConditions: Prisma.ServiceWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.ServiceWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allServices = await transactionClient.service.findMany({
@@ -95,18 +88,15 @@ const getAllServices = async (
   return result;
 };
 // ! createOrUpdateService
-const createOrUpdateService = async (
-  profileId: string,
-  payload: IServiceUpdateRequest,
-): Promise<Service> => {
+const createOrUpdateService = async (profileId: string, payload: IServiceUpdateRequest): Promise<Service> => {
   // updated data from request
-  const newServiceData: Partial<Service> = updateServiceData(payload);
+  const newServiceData: Partial<Service> = payload;
 
   // !
   const result = await prisma.$transaction(async (transactionClient) => {
     //
 
-    const property = await transactionClient.service.upsert({
+    const service = await transactionClient.service.upsert({
       where: { ownerId: profileId },
       update: newServiceData,
       create: {
@@ -114,10 +104,35 @@ const createOrUpdateService = async (
         ...newServiceData,
       },
     });
-    if (!property) {
+    if (!service) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Service Update Failed !");
     }
-    return property;
+
+    if (service) {
+      const provider = await transactionClient.serviceProvider.findUnique({
+        where: {
+          serviceProviderId: profileId,
+        },
+
+        include: {
+          Service: true,
+        },
+      });
+
+      const profileScore = calculateServiceProviderProfileScore(provider as any);
+      // console.log(profileScore);
+      await transactionClient.serviceProvider.update({
+        where: {
+          serviceProviderId: profileId,
+        },
+        data: {
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
+        },
+      });
+    }
+
+    return service;
   });
   return result;
 };

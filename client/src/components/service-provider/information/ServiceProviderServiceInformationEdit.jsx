@@ -12,15 +12,22 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
   const [updateServiceInformation, { isLoading, isError, isSuccess, error }] = useUpdateServiceInformationMutation();
   const {
-    control,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
 
   const handleUpdateServiceInformation = async (data) => {
-    if (data?.minPrice) data["minPrice"] = parseFloat(data?.minPrice);
-    if (data?.maxPrice) data["maxPrice"] = parseFloat(data?.maxPrice);
+    if (data?.minPrice) {
+      data["minPrice"] = parseFloat(data?.minPrice);
+    } else {
+      data["minPrice"] = null;
+    }
+    if (data?.maxPrice) {
+      data["maxPrice"] = parseFloat(data?.maxPrice);
+    } else {
+      data["maxPrice"] = null;
+    }
 
     const res = await updateServiceInformation({ data });
     if (res?.data?.success === true) router.push("/service-provider");

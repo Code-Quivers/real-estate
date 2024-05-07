@@ -3,8 +3,6 @@ import { useState } from "react";
 import { Drawer, IconButton, Nav, Sidenav } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
-import GroupIcon from "@rsuite/icons/legacy/Group";
-import DashboardIcon from "@rsuite/icons/Dashboard";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,6 +10,12 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { PiArrowLeftBold } from "react-icons/pi";
 import Image from "next/image";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
+import { Icon } from "@rsuite/icons";
+import { FaUserLarge } from "react-icons/fa6";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { IoSettings } from "react-icons/io5";
+import { FaSignOutAlt } from "react-icons/fa";
+import TaskIcon from "@rsuite/icons/Task";
 
 const ServiceProviderSidebarDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -88,12 +92,12 @@ const ServiceProviderSidebarDrawer = () => {
                     </div>
                   </div>
 
-                  <Nav appearance="subtle" className="divide-y-2 divide-black">
+                  <Nav appearance="subtle" onClick={() => setOpen(false)} className="divide-y-2 divide-black">
                     <Nav.Item
                       as={Link}
                       href="/service-provider"
                       eventKey="1"
-                      icon={<DashboardIcon />}
+                      icon={<Icon as={FaUserLarge} />}
                       className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
@@ -106,11 +110,11 @@ const ServiceProviderSidebarDrawer = () => {
                       eventKey="2"
                       as={Link}
                       href="/service-provider/messages"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider/messages" && "!bg-[#1b3697]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/service-provider/messages") && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      icon={<GroupIcon />}
+                      icon={<Icon as={BiSolidMessageSquareDetail} />}
                     >
                       Messages
                     </Nav.Item>
@@ -122,7 +126,7 @@ const ServiceProviderSidebarDrawer = () => {
                         backgroundColor: "#29429f",
                       }}
                       eventKey="3"
-                      icon={<GroupIcon />}
+                      icon={<TaskIcon />}
                     >
                       My Orders
                     </Nav.Item>{" "}
@@ -134,7 +138,7 @@ const ServiceProviderSidebarDrawer = () => {
                         backgroundColor: "#29429f",
                       }}
                       eventKey="3"
-                      icon={<GroupIcon />}
+                      icon={<TaskIcon />}
                     >
                       Pending Orders
                     </Nav.Item>{" "}
@@ -146,7 +150,7 @@ const ServiceProviderSidebarDrawer = () => {
                         backgroundColor: "#29429f",
                       }}
                       eventKey="9"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={IoSettings} />}
                     >
                       Settings
                     </Nav.Item>
@@ -158,7 +162,7 @@ const ServiceProviderSidebarDrawer = () => {
                         borderBottom: "2px solid #000",
                       }}
                       eventKey="9"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={FaSignOutAlt} />}
                     >
                       Log Out
                     </Nav.Item>
