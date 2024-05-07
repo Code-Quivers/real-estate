@@ -11,13 +11,13 @@ const ServiceProviderSettingPage = () => {
   const { data } = useGetServiceProviderMyProfileQuery(null);
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
       <div className="flex justify-center  py-5">
         <h2 className="text-2xl font-semibold ">Settings</h2>
       </div>
       {/*  */}
-      <div className="border border-[#7070709d] rounded-2xl">
-        <div className="p-5">
+      <div className="border bg-white shadow-md  rounded-2xl">
+        <div className="p-3 md:p-5">
           <div className="flex justify-between items-center">
             <div>
               <h4 className="text-xl font-medium">Profile Information</h4>
@@ -29,15 +29,15 @@ const ServiceProviderSettingPage = () => {
             </div>
           </div>
           <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">
+            <h3 className="border p-3 rounded-2xl">
               Name : {data?.data?.firstName ?? "--"}
               {data?.data?.lastName ?? "-"}
             </h3>
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">Email : {data?.data?.user?.email}</h3>
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">Username : {data?.data?.user?.userName}</h3>
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">Password : ******</h3>
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">Service Type: {data?.data?.Service?.serviceType ?? "N/A"}</h3>
-            <h3 className="border p-3 rounded-2xl border-[#7070709d]">Service Availability : {data?.data?.Service?.serviceAvailability ?? "N/A"}</h3>
+            <h3 className="border p-3 rounded-2xl">Email : {data?.data?.user?.email}</h3>
+            <h3 className="border p-3 rounded-2xl">Username : {data?.data?.user?.userName}</h3>
+            <h3 className="border p-3 rounded-2xl">Password : ******</h3>
+            <h3 className="border p-3 rounded-2xl">Service Type: {data?.data?.Service?.serviceType ?? "N/A"}</h3>
+            <h3 className="border p-3 rounded-2xl">Service Availability : {data?.data?.Service?.serviceAvailability ?? "N/A"}</h3>
           </div>
         </div>
       </div>

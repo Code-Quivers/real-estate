@@ -1,8 +1,6 @@
 "use client";
 
 import { Sidenav, Nav } from "rsuite";
-import DashboardIcon from "@rsuite/icons/Dashboard";
-import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
@@ -10,6 +8,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
+import { Icon } from "@rsuite/icons";
+import { BsBuildingsFill } from "react-icons/bs";
+import { FaUserLarge } from "react-icons/fa6";
+import { BiSolidBuildingHouse, BiSolidMessageSquareDetail } from "react-icons/bi";
+import { IoDocuments, IoSettings } from "react-icons/io5";
+import { GrHostMaintenance } from "react-icons/gr";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const TenantSidebar = () => {
   // eslint-disable-next-line no-unused-vars
@@ -46,7 +51,7 @@ const TenantSidebar = () => {
               as={Link}
               href="/tenant"
               eventKey="1"
-              icon={<DashboardIcon />}
+              icon={<Icon as={FaUserLarge} />}
               className={`hover:!bg-[#1b3697] ${activeLink === "/tenant" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
@@ -55,6 +60,7 @@ const TenantSidebar = () => {
             >
               Account Information
             </Nav.Item>
+            {/* units */}
             <Nav.Item
               eventKey="2"
               as={Link}
@@ -63,7 +69,7 @@ const TenantSidebar = () => {
               style={{
                 backgroundColor: "#29429f",
               }}
-              icon={<GroupIcon />}
+              icon={<Icon as={BsBuildingsFill} />}
             >
               Available Units
             </Nav.Item>
@@ -73,17 +79,18 @@ const TenantSidebar = () => {
               className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/saved-units" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="3"
-              icon={<GroupIcon />}
+              icon={<Icon as={BsBuildingsFill} />}
             >
               Saved Units
             </Nav.Item>
+            {/* unit information */}
             <Nav.Item
               as={Link}
               href="/tenant/unit-information"
               className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
-              icon={<GroupIcon />}
+              icon={<Icon as={BiSolidBuildingHouse} />}
             >
               Unit Information
             </Nav.Item>
@@ -92,8 +99,8 @@ const TenantSidebar = () => {
               href="/tenant/documents"
               style={{ backgroundColor: "#29429f" }}
               eventKey="5"
-              className="hover:!bg-[#1b3697]"
-              icon={<GroupIcon />}
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/documents") && "!bg-[#1b3697]"}`}
+              icon={<Icon as={IoDocuments} />}
             >
               Documents
             </Nav.Item>
@@ -102,20 +109,20 @@ const TenantSidebar = () => {
               href="/tenant/messages"
               style={{ backgroundColor: "#29429f" }}
               eventKey="6"
-              className="hover:!bg-[#1b3697]"
-              icon={<GroupIcon />}
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/messages") && "!bg-[#1b3697]"}`}
+              icon={<Icon as={BiSolidMessageSquareDetail} />}
             >
               Messages
             </Nav.Item>
             <Nav.Item
               as={Link}
               href="/tenant/unit-information/my-requests"
-              className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information/my-requests" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/unit-information/my-requests") && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
               eventKey="7"
-              icon={<GroupIcon />}
+              icon={<Icon as={GrHostMaintenance} />}
             >
               Requests
             </Nav.Item>
@@ -127,7 +134,7 @@ const TenantSidebar = () => {
                 backgroundColor: "#29429f",
               }}
               eventKey="7"
-              icon={<GroupIcon />}
+              icon={<Icon as={IoSettings} />}
             >
               Settings
             </Nav.Item>
@@ -139,7 +146,7 @@ const TenantSidebar = () => {
                 borderBottom: "2px solid #000",
               }}
               eventKey="9"
-              icon={<GroupIcon />}
+              icon={<Icon as={FaSignOutAlt} />}
             >
               Log Out
             </Nav.Item>

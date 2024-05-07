@@ -22,21 +22,25 @@ const createOrUpdateService = z.object({
       .number({
         invalid_type_error: "Min Price must be in Integer",
       })
+      .nullable()
       .optional(),
     maxPrice: z
       .number({
         invalid_type_error: "Max Price must be in Integer",
       })
+      .nullable()
       .optional(),
     serviceAvailability: z
       .enum([...ZodServiceAvailability] as [string, ...string[]], {
         invalid_type_error: "Service Availability must be String",
       })
+      .nullable()
       .optional(),
     serviceType: z
       .enum([...ZodServiceType] as [string, ...string[]], {
-        invalid_type_error: "Service Types must be String",
+        invalid_type_error: "Service Type must be a string",
       })
+      .nullable()
       .optional(),
   }),
 });

@@ -124,21 +124,24 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-5 border-t lg:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Location</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ? myProfileData?.Service?.serviceLocation : "--"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceAvailability ?? "--"}</p>
+                <p className="text-lg font-medium">
+                  {myProfileData?.Service?.serviceAvailability ? myProfileData?.Service?.serviceAvailability : "--"}
+                </p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Type</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ? myProfileData?.Service?.serviceType : "--"}</p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {`${myProfileData?.Service?.minPrice}$` ?? "--"} <span>-</span> {`${myProfileData?.Service?.maxPrice}$` ?? "--"}
+                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice}$` : "--"} <span>-</span>{" "}
+                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice}$` : "--"}
                 </p>
               </div>
             </div>

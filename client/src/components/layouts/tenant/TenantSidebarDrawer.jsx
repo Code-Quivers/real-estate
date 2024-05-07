@@ -3,8 +3,6 @@ import { useState } from "react";
 import { Drawer, IconButton, Nav, Sidenav } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
-import GroupIcon from "@rsuite/icons/legacy/Group";
-import DashboardIcon from "@rsuite/icons/Dashboard";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,6 +10,13 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { PiArrowLeftBold } from "react-icons/pi";
 import Image from "next/image";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
+import { Icon } from "@rsuite/icons";
+import { BsBuildingsFill } from "react-icons/bs";
+import { FaUserLarge } from "react-icons/fa6";
+import { BiSolidBuildingHouse, BiSolidMessageSquareDetail } from "react-icons/bi";
+import { IoDocuments, IoSettings } from "react-icons/io5";
+import { GrHostMaintenance } from "react-icons/gr";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const TenantSidebarDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -88,12 +93,12 @@ const TenantSidebarDrawer = () => {
                     </div>
                   </div>
 
-                  <Nav appearance="subtle" className="divide-y-2 divide-black">
+                  <Nav onClick={() => setOpen(false)} appearance="subtle" className="divide-y-2 divide-black">
                     <Nav.Item
                       as={Link}
                       href="/tenant"
                       eventKey="1"
-                      icon={<DashboardIcon />}
+                      icon={<Icon as={FaUserLarge} />}
                       className={`hover:!bg-[#1b3697] ${activeLink === "/tenant" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
@@ -102,6 +107,7 @@ const TenantSidebarDrawer = () => {
                     >
                       Account Information
                     </Nav.Item>
+                    {/* units */}
                     <Nav.Item
                       eventKey="2"
                       as={Link}
@@ -110,7 +116,7 @@ const TenantSidebarDrawer = () => {
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      icon={<GroupIcon />}
+                      icon={<Icon as={BsBuildingsFill} />}
                     >
                       Available Units
                     </Nav.Item>
@@ -120,17 +126,18 @@ const TenantSidebarDrawer = () => {
                       className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/saved-units" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="3"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={BsBuildingsFill} />}
                     >
                       Saved Units
                     </Nav.Item>
+                    {/* unit information */}
                     <Nav.Item
                       as={Link}
                       href="/tenant/unit-information"
                       className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="4"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={BiSolidBuildingHouse} />}
                     >
                       Unit Information
                     </Nav.Item>
@@ -139,8 +146,8 @@ const TenantSidebarDrawer = () => {
                       href="/tenant/documents"
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="5"
-                      className="hover:!bg-[#1b3697]"
-                      icon={<GroupIcon />}
+                      className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/documents") && "!bg-[#1b3697]"}`}
+                      icon={<Icon as={IoDocuments} />}
                     >
                       Documents
                     </Nav.Item>
@@ -149,20 +156,20 @@ const TenantSidebarDrawer = () => {
                       href="/tenant/messages"
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="6"
-                      className="hover:!bg-[#1b3697]"
-                      icon={<GroupIcon />}
+                      className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/messages") && "!bg-[#1b3697]"}`}
+                      icon={<Icon as={BiSolidMessageSquareDetail} />}
                     >
                       Messages
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
                       href="/tenant/unit-information/my-requests"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/tenant/unit-information/my-requests" && "!bg-[#1b3697]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/tenant/unit-information/my-requests") && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
                       eventKey="7"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={GrHostMaintenance} />}
                     >
                       Requests
                     </Nav.Item>
@@ -174,7 +181,7 @@ const TenantSidebarDrawer = () => {
                         backgroundColor: "#29429f",
                       }}
                       eventKey="7"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={IoSettings} />}
                     >
                       Settings
                     </Nav.Item>
@@ -186,7 +193,7 @@ const TenantSidebarDrawer = () => {
                         borderBottom: "2px solid #000",
                       }}
                       eventKey="9"
-                      icon={<GroupIcon />}
+                      icon={<Icon as={FaSignOutAlt} />}
                     >
                       Log Out
                     </Nav.Item>

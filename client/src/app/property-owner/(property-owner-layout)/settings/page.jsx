@@ -12,13 +12,13 @@ const PropertyOwnerSettingPage = () => {
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
       <div className="flex justify-center  py-5">
         <h2 className="text-2xl font-semibold ">Settings</h2>
       </div>
       {/*  */}
       <div className="border  bg-white shadow-lg rounded-2xl">
-        <div className="p-5">
+        <div className=" p-2.5 md:p-5">
           <div className="flex justify-between items-center">
             <div>
               <h4 className="text-xl font-medium">Profile Information</h4>

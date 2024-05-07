@@ -38,7 +38,7 @@ type ServiceProviderData = {
   Service?: Service;
 };
 
-type CriteriaKey = keyof ServiceProviderData | keyof ServiceProviderData["Service"]; // Include keys from ServiceProviderData and Service
+type CriteriaKey = keyof ServiceProviderData;
 type ServiceProviderCriteriaWeights = {
   profileImage: number;
   phoneNumber: number;
@@ -46,9 +46,7 @@ type ServiceProviderCriteriaWeights = {
   companyAddress: number;
   companyPhoneNumber: number;
   companyEmailAddress: number;
-  Service: {
-    [key: string]: number; // Allow indexing by string
-  };
+  Service: any;
 };
 // Criteria weights
 
@@ -76,31 +74,40 @@ export const calculateServiceProviderProfileScore = (data: ServiceProviderData) 
   // Calculate profile score based on criteria
   for (const criterion in data) {
     const value = data[criterion as CriteriaKey];
-    if (
-      (typeof value === "boolean" || value !== undefined) && // Include boolean values
-      criteriaWeights[criterion as CriteriaKey]
-    ) {
+
+    // Skip if the value is falsy (null, undefined, or empty string)
+    if (!value) {
+      continue;
+    }
+
+    const weight = criteriaWeights[criterion as CriteriaKey];
+
+    if (weight) {
       if (criterion === "Service") {
         const serviceCriteria = data[criterion] as Service;
-        const serviceWeights = criteriaWeights[criterion as CriteriaKey] as { [key: string]: number };
+        const serviceWeights = weight as { [key: string]: number };
+
         for (const serviceCriterion in serviceCriteria) {
-          if (serviceCriteria[serviceCriterion as keyof Service] !== undefined && serviceWeights[serviceCriterion]) {
-            profileScore += serviceWeights[serviceCriterion];
+          const serviceValue = serviceCriteria[serviceCriterion as keyof Service];
+
+          // Skip if the serviceValue is falsy (null, undefined, or empty string)
+          if (!serviceValue) {
+            continue;
+          }
+
+          const serviceWeight = serviceWeights[serviceCriterion];
+
+          if (serviceWeight) {
+            profileScore += serviceWeight;
           }
         }
       } else {
-        const weight = criteriaWeights[criterion as CriteriaKey];
-        if (typeof weight === "number") {
-          profileScore += weight;
-        }
+        profileScore += weight;
       }
     }
   }
 
-  // getting ratio
+  // Getting ratio
   const scoreRatio = calculateServiceProviderScoreRatio(profileScore, 100);
-  return {
-    profileScore,
-    scoreRatio,
-  };
+  return { profileScore, scoreRatio };
 };

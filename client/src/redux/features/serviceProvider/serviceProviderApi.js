@@ -17,7 +17,7 @@ export const serviceProviderApi = baseApi.injectEndpoints({
         url: "/service-providers/get-my-profile",
         method: "GET",
       }),
-      providesTags: [tagTypes.serviceProvider],
+      providesTags: [tagTypes.serviceProvider, tagTypes.services, tagTypes.services, tagTypes.serviceProvider],
     }),
     updateServiceProviderMyProfile: builder.mutation({
       query: ({ serviceProviderId, data }) => ({

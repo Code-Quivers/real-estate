@@ -13,3 +13,12 @@ export type IServiceProviderFilterRequest = {
   serviceProviderId?: string | undefined;
   createdAt?: string | undefined;
 };
+
+export type ServiceData = {
+  serviceId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  serviceDescription?: string;
+  serviceLocation?: string;
+  serviceCancellationPolicy?: string;
+};
