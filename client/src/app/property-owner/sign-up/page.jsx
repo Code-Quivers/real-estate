@@ -251,8 +251,8 @@ const PropertyOwnerSignUpPage = () => {
 
             {/* password requirement */}
 
-            <div className="h-16 mt-5   text-xs font-medium text-white">
-              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            <div className="h-16 text-xs font-medium text-red-500">
+              {errors?.password?.type === "pattern" && <p className="py-2 rounded-md">{errors?.password?.message}</p>}
             </div>
 
             <div className="flex justify-center">

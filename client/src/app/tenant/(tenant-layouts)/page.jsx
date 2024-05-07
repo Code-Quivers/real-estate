@@ -1,5 +1,4 @@
 "use client";
-
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
@@ -7,7 +6,7 @@ import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
-import { changeScoreStatus } from "@/utils/scoreStatus";
+import Score from "@/components/Shared/Score/Score";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
@@ -40,15 +39,9 @@ const TenantProfile = () => {
         {/* score */}
 
         <div>
-          <div className=" col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
+          <div className="col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            <div className={`${changeScoreStatus(data?.scoreRatio?.score)}`}>
-              <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">{data?.scoreRatio?.score ?? 0}</span>
-                <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">{data?.scoreRatio?.total ?? 0}</span>
-              </div>
-            </div>
+            {data?.scoreRatio?.total == 10 && <Score score={data?.scoreRatio?.score} total={data?.scoreRatio?.total} />}
           </div>
         </div>
       </div>
