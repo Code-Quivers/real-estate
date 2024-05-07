@@ -436,7 +436,7 @@ const getMyAssignedTenants = async (propertyOwnerId: string): Promise<Property[]
     const myTenants = await transactionClient.property.findMany({
       where: {
         ownerId: propertyOwnerId,
-        isActive: true,
+        isRented: true,
       },
       include: {
         Tenant: true,

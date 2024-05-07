@@ -1,8 +1,6 @@
 "use client";
 
 import { Sidenav, Nav } from "rsuite";
-import DashboardIcon from "@rsuite/icons/Dashboard";
-import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
@@ -10,9 +8,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
-import MessageIcon from "@rsuite/icons/Message";
-import SettingHorizontalIcon from "@rsuite/icons/SettingHorizontal";
 import TaskIcon from "@rsuite/icons/Task";
+import { Icon } from "@rsuite/icons";
+import { FaUserLarge } from "react-icons/fa6";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { IoSettings } from "react-icons/io5";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const ServiceProviderSidebar = () => {
   const activeLink = usePathname();
@@ -37,7 +38,7 @@ const ServiceProviderSidebar = () => {
               className="max-md:w-[70px] max-md:h-[70px] rounded-full md:w-[130px] md:h-[130px] object-cover  select-none"
               alt="Profile Image"
             />
-            <h2 className="mt-5 text-white ">{myProfileData?.companyName ?? "--"}</h2>
+            <h2 className="mt-5 text-white ">{myProfileData?.companyName ? myProfileData?.companyName : "--"}</h2>
           </div>
         </Sidenav.Header>
         <Sidenav.Body>
@@ -46,7 +47,7 @@ const ServiceProviderSidebar = () => {
               as={Link}
               href="/service-provider"
               eventKey="1"
-              icon={<DashboardIcon />}
+              icon={<Icon as={FaUserLarge} />}
               className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
@@ -59,11 +60,11 @@ const ServiceProviderSidebar = () => {
               eventKey="2"
               as={Link}
               href="/service-provider/messages"
-              className={`hover:!bg-[#1b3697] ${activeLink === "/service-provider/messages" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/service-provider/messages") && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
               }}
-              icon={<MessageIcon />}
+              icon={<Icon as={BiSolidMessageSquareDetail} />}
             >
               Messages
             </Nav.Item>
@@ -99,7 +100,7 @@ const ServiceProviderSidebar = () => {
                 backgroundColor: "#29429f",
               }}
               eventKey="9"
-              icon={<SettingHorizontalIcon />}
+              icon={<Icon as={IoSettings} />}
             >
               Settings
             </Nav.Item>
@@ -111,7 +112,7 @@ const ServiceProviderSidebar = () => {
                 borderBottom: "2px solid #000",
               }}
               eventKey="9"
-              icon={<GroupIcon />}
+              icon={<Icon as={FaSignOutAlt} />}
             >
               Log Out
             </Nav.Item>

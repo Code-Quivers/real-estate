@@ -12,15 +12,22 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
   const [updateServiceInformation, { isLoading, isError, isSuccess, error }] = useUpdateServiceInformationMutation();
   const {
-    control,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
 
   const handleUpdateServiceInformation = async (data) => {
-    if (data?.minPrice) data["minPrice"] = parseFloat(data?.minPrice);
-    if (data?.maxPrice) data["maxPrice"] = parseFloat(data?.maxPrice);
+    if (data?.minPrice) {
+      data["minPrice"] = parseFloat(data?.minPrice);
+    } else {
+      data["minPrice"] = null;
+    }
+    if (data?.maxPrice) {
+      data["maxPrice"] = parseFloat(data?.maxPrice);
+    } else {
+      data["maxPrice"] = null;
+    }
 
     const res = await updateServiceInformation({ data });
     if (res?.data?.success === true) router.push("/service-provider");
@@ -76,7 +83,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1 w-full">
                   <label className="text-lg   font-medium">Min Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.minPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.minPrice ? parseFloat(myProfileData?.Service?.minPrice) : undefined}
                     onChange={(value) => setValue("minPrice", value)}
                     min={0}
                   />
@@ -84,7 +91,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1  w-full">
                   <label className="text-lg   font-medium">Max Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.maxPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.maxPrice ? parseFloat(myProfileData?.Service?.maxPrice) : undefined}
                     onChange={(value) => setValue("maxPrice", value)}
                     min={0}
                   />

@@ -41,6 +41,13 @@ export const documentApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.propertyOwner, tagTypes.properties, tagTypes.tenant, tagTypes.documents],
     }),
+    getDocuments: builder.query({
+      query: () => ({
+        url: `${DOCUMENT_API}/documents`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.documents],
+    }),
     getSingleDocumentTemplate: builder.query({
       query: ({ templateId }) => ({
         url: `${DOCUMENT_API}/templates/${templateId}`,
@@ -65,4 +72,5 @@ export const {
   useUpdatePropertyMutation,
   useGetMyAllDocumentTemplatesQuery,
   useGetSingleDocumentTemplateQuery,
+  useGetDocumentsQuery,
 } = documentApi;

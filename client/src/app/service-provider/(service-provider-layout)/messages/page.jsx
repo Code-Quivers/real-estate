@@ -46,10 +46,10 @@ const ServiceProviderMessagingPage = () => {
   // !
 
   return (
-    <section className="max-w-[1050px]  mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]  mb-5  xl:mx-auto md:px-3 lg:px-5 px-1.5    2xl:px-0 ">
       {/* section title */}
-      <div className="flex justify-center">
-        <h1 className="text-xl font-medium">Messages</h1>
+      <div className="flex justify-center mt-3">
+        <h1 className=" text-lg md:text-xl font-medium">Messages</h1>
       </div>
       {/* conversations */}
       <div className="mt-5">
@@ -57,8 +57,8 @@ const ServiceProviderMessagingPage = () => {
           <h2 className="font-semibold text-2xl">Conversations</h2>
         </div>
         {/* messages */}
-        <div className="grid grid-cols-6 gap-2 h-[80vh]">
-          <div className="col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
+        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]">
+          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (
@@ -80,12 +80,15 @@ const ServiceProviderMessagingPage = () => {
               </div>
             )}
             {!isLoading && !allConversations?.data?.data?.length > 0 && (
-              <div className="space-y-3 flex justify-center items-center min-h-[60vh]">
-                <h2>No Conversation Found</h2>
+              <div className="space-y-3 flex justify-center items-center min-h-[60vh] max-md:text-center">
+                <h2 className="max-md:text-sm ">
+                  <span className="md:hidden">Not</span>
+                  <span className="max-md:hidden">No Conversation</span> Found
+                </h2>
               </div>
             )}
           </div>
-          <div className="col-span-4 ">
+          <div className="col-span-5 lg:col-span-4 ">
             <ConversationMessagingChats />
           </div>
         </div>

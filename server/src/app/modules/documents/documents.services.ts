@@ -149,11 +149,51 @@ const updateDocumentWithTenantSigned = async (documentId: string, filePath: stri
   }
 };
 
+
+const getDocuments = async (profileId: string, userRole: string) => {
+  try {
+    let documents: any = [];
+
+    // Check user role and fetch documents.
+    if (userRole === 'TENANT') {
+      documents = await prisma.document.findMany({
+        where: { tenantId: profileId },
+      })
+    }
+    else if (userRole === 'PROPERTY_OWNER') {
+      documents = await prisma.document.findMany({
+        where: { ownerId: profileId },
+      })
+    }
+
+    return documents;
+  } catch (err) {
+    console.log("Error in getDocuments service: ", err);
+    throw new ApiError(httpStatus.BAD_REQUEST, `Failed to get documents for ${userRole}!`);
+  }
+};
+
+
+const getDocument = async (documentId: string) => {
+  try {
+    const document = await prisma.document.findUnique({
+      where: { documentId: documentId }
+    });
+    return document;
+  } catch (err) {
+    console.log("Error in getDocument service: ", err);
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get the document!");
+  }
+};
+
+
 export const DocumentsServices = {
   getTemplates,
   getTemplate,
   addTemplate,
   removeTemplate,
+  getDocuments,
+  getDocument,
   sendDocument,
   updateDocumentWithTenantSigned,
 };

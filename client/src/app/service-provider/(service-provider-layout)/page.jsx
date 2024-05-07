@@ -51,9 +51,9 @@ const ServiceProviderProfileInformation = () => {
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
             <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
               <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">{myProfileData?.scoreRatio?.score ?? 0}</span>
+                <span className="font-medium">{myProfileData?.scoreRatio?.score ? myProfileData?.scoreRatio?.score : 0}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">{myProfileData?.scoreRatio?.total ?? 0}</span>
+                <span className="font-medium">{myProfileData?.scoreRatio?.total ? myProfileData?.scoreRatio?.total : 0}</span>
               </div>
             </div>
           </div>
@@ -124,21 +124,24 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-5 border-t lg:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Location</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ? myProfileData?.Service?.serviceLocation : "--"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceAvailability ?? "--"}</p>
+                <p className="text-lg font-medium">
+                  {myProfileData?.Service?.serviceAvailability ? myProfileData?.Service?.serviceAvailability : "--"}
+                </p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Type</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ? myProfileData?.Service?.serviceType : "--"}</p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {`${myProfileData?.Service?.minPrice}$` ?? "--"} <span>-</span> {`${myProfileData?.Service?.maxPrice}$` ?? "--"}
+                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice}$` : "--"} <span>-</span>{" "}
+                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice}$` : "--"}
                 </p>
               </div>
             </div>
@@ -146,11 +149,15 @@ const ServiceProviderProfileInformation = () => {
             <div className="border-t-2">
               <div className="space-y-2 p-5">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Description</h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceDescription ?? "--"}</p>
+                <p className="text-lg whitespace-pre-wrap font-medium">
+                  {myProfileData?.Service?.serviceDescription ? myProfileData?.Service?.serviceDescription : "--"}
+                </p>
               </div>
               <div className="space-y-2 p-5 border-t">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Cancellation Policy</h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceCancellationPolicy ?? "--"}</p>
+                <p className="text-lg whitespace-pre-wrap font-medium">
+                  {myProfileData?.Service?.serviceCancellationPolicy ? myProfileData?.Service?.serviceCancellationPolicy : "--"}
+                </p>
               </div>
             </div>
           </div>

@@ -119,30 +119,20 @@ const SendDocumentPage = ({ params }) => {
                   />
                 </div>
               </div>
-              {/* pdf editable  */}
+              {/* pdf  View  */}
               <div>
-                {/* <Controller
-                  name="templateDocument"
-                  control={control}
-                  rules={{
-                    required: "Document Template is required",
-                  }}
-                  render={({ field }) => ( */}
-                <div className="rs-form-control-wrapper ">
-                  <DigitalSignatureDocumentDrawer filePath={data?.data?.filePath} />
-                  <Form.ErrorMessage show={(!!errors?.templateDocument && !!errors?.templateDocument?.message) || false} placement="topEnd">
-                    {errors?.templateDocument?.message}
-                  </Form.ErrorMessage>
-                </div>
-                {/* )}
-                /> */}
+                <DigitalSignatureDocumentDrawer filePath={data?.data?.filePath} />
+                <Form.ErrorMessage show={(!!errors?.templateDocument && !!errors?.templateDocument?.message) || false} placement="topEnd">
+                  {errors?.templateDocument?.message}
+                </Form.ErrorMessage>
               </div>
+
               {/* submit button */}
               <div className="mt-10 flex justify-end">
                 <Button className="!bg-primary !text-white " size="lg" type="submit">
                   Submit
                 </Button>
-              </div>{" "}
+              </div>
             </div>
           </form>
         </div>

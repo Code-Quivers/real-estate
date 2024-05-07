@@ -64,17 +64,20 @@ const PropertyOwnerReportPage = () => {
 
       {/*  */}
       <div>
-        <div className="border border-[#949494] mt-5">
+        <div className=" space-y-2  mt-5">
           {!isLoading &&
             data?.data?.data?.length > 0 &&
             data?.data?.data?.map((report, idx) => (
-              <div
-                key={Math.random()}
-                className={`flex justify-between hover:bg-black/5 p-5 ${idx !== data?.data?.data?.length - 1 && "border-b border-[#949494]"}`}
-              >
+              <div key={idx} className={`flex justify-between border shadow bg-white rounded-lg hover:bg-white/5 duration-300 p-5`}>
                 <SingleReport report={report} />
               </div>
             ))}
+          {/* if no report */}
+          {!isLoading && !data?.data?.data?.length && (
+            <div className="flex justify-center items-center min-h-[20vh]">
+              <h2 className="font-medium">No Reports Found !</h2>
+            </div>
+          )}
         </div>
       </div>
 
