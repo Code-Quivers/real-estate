@@ -46,11 +46,11 @@ const PropertyOwnerServiceProviders = () => {
   return (
     <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
       <div className="flex justify-center">
-        <h2 className="text-3xl mb-3">Available Tenants | Total {allTenantsLists?.data?.meta?.total}</h2>
+        <h2 className="md:text-3xl mb-3">Available Tenants</h2>
       </div>
       {/* search with price section start */}
 
-      <div className="grid md:grid-cols-3 gap-5">
+      <div className="grid md:grid-cols-3 gap-2">
         {/* tenant name */}
         <div className="">
           <InputGroup size="lg" inside className="!w-full">
@@ -123,13 +123,13 @@ const PropertyOwnerServiceProviders = () => {
         </div>
       )}
       {/* pagination */}
-      <div className="mt-20 bg-white p-2 md:p-5 rounded-lg">
+      <div className="mt-20 bg-white py-2 px-1 rounded-lg">
         <Pagination
           total={allTenantsLists?.data?.meta?.total}
           prev
           next
           ellipsis
-          size="md"
+          size="sm"
           layout={["total", "-", "limit", "|", "pager"]}
           limitOptions={[10, 20, 30, 50]}
           limit={size}
