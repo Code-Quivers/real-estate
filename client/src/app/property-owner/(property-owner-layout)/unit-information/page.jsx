@@ -40,13 +40,13 @@ const PropertyOwnerUnitInformation = () => {
     <>
       <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl  ">Unit Information | Total {data?.meta?.total}</h2>
+          <h2 className="md:text-2xl">Unit Information</h2>
+          {/* <h2 className="text-2xl  ">Unit Information | Total {data?.meta?.total}</h2> */}
           <Link
             href="/property-owner/unit-information/add-property"
             className=" bg-primary text-white px-3 rounded-full flex items-center gap-2 py-2 drop-shadow-lg"
           >
-            {" "}
-            Add New Unit / House
+            Add new unit / house
           </Link>
         </div>
         {/* main section */}
