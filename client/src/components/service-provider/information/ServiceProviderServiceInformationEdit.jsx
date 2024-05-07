@@ -83,7 +83,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1 w-full">
                   <label className="text-lg   font-medium">Min Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.minPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.minPrice ? parseFloat(myProfileData?.Service?.minPrice) : undefined}
                     onChange={(value) => setValue("minPrice", value)}
                     min={0}
                   />
@@ -91,7 +91,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1  w-full">
                   <label className="text-lg   font-medium">Max Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.maxPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.maxPrice ? parseFloat(myProfileData?.Service?.maxPrice) : undefined}
                     onChange={(value) => setValue("maxPrice", value)}
                     min={0}
                   />
