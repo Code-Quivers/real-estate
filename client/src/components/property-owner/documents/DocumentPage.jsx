@@ -27,7 +27,7 @@ const DocumentPage = () => {
           <div className="flex justify-center items-center py-5">
             <h2 className="text-3xl font-semibold">Document Templates</h2>
           </div>
-          <div className="min-h-[40vh] w-full">
+          <div className="min-h-[30vh] w-full space-y-3">
             {!isTenantDataLoading &&
               tenantData?.data?.map((singleTenant) => (
                 <div key={Math.random()} className="flex justify-between  items-center gap-5 border bg-white shadow-md p-5 rounded-lg">

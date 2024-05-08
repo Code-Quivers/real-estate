@@ -41,16 +41,8 @@ router.patch(
   },
 );
 
-router.get(
-  "/documents",
-  auth(UserRoles.TENANT),
-  DocumentsControllers.getDocuments,
-);
+router.get("/documents", auth(UserRoles.TENANT), DocumentsControllers.getDocuments);
 
-router.get(
-  "/document/:documentId",
-  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
-  DocumentsControllers.getDocument,
-);
+router.get("/document/:documentId", auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER), DocumentsControllers.getDocument);
 
 export const DocumentsRoutes = router;

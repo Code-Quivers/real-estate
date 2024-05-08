@@ -41,13 +41,6 @@ export const documentApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.propertyOwner, tagTypes.properties, tagTypes.tenant, tagTypes.documents],
     }),
-    getDocuments: builder.query({
-      query: () => ({
-        url: `${DOCUMENT_API}/documents`,
-        method: "GET",
-      }),
-      providesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.documents],
-    }),
     getSingleDocumentTemplate: builder.query({
       query: ({ templateId }) => ({
         url: `${DOCUMENT_API}/templates/${templateId}`,
@@ -63,6 +56,23 @@ export const documentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.tenant],
     }),
+    // for tenants
+    getDocuments: builder.query({
+      query: () => ({
+        url: `${DOCUMENT_API}/documents`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.documents],
+    }),
+    sendSignedDocument: builder.mutation({
+      query: ({ data }) => ({
+        url: `${DOCUMENT_API}/update-document-with-tenant-sign`,
+        method: "PATCH",
+        data: data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.propertyOwner, tagTypes.properties, tagTypes.tenant, tagTypes.documents],
+    }),
   }),
 });
 
@@ -73,4 +83,5 @@ export const {
   useGetMyAllDocumentTemplatesQuery,
   useGetSingleDocumentTemplateQuery,
   useGetDocumentsQuery,
+  useSendSignedDocumentMutation,
 } = documentApi;
