@@ -126,13 +126,14 @@ const sendDocument = async (ownerId: string, title: string, tenantId: string, pr
   }
 };
 
-const updateDocumentWithTenantSigned = async (documentId: string, filePath: string) => {
+const updateDocumentWithTenantSigned = async (documentId: string, filePath: string, documentTitle: string) => {
   try {
     // const template = { title, filePath }
     const result = await prisma.$transaction(async (transactionClient) => {
       const dataToUpdate = {
         isSignedByTenant: true,
         filePath: filePath,
+        documentTitle,
       };
       const updatedDocument = await transactionClient.document.update({
         where: { documentId },

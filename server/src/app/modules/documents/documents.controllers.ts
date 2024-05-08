@@ -64,9 +64,11 @@ const sendDocument = catchAsync(async (req: Request, res: Response) => {
 
 const updateDocumentWithTenantSigned = catchAsync(async (req: Request, res: Response) => {
   const pdfFile: IUploadFile = req?.file as any;
-  const filePath: string = pdfFile.filename;
+
+  const filePath: string = pdfFile.path?.substring(13);
   const documentId = req.body?.documentId || "";
-  const result = await DocumentsServices.updateDocumentWithTenantSigned(documentId, filePath);
+  const documentTitle = req.body?.documentTitle;
+  const result = await DocumentsServices.updateDocumentWithTenantSigned(documentId, filePath, documentTitle);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

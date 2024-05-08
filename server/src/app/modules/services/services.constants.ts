@@ -13,12 +13,7 @@ export const servicesRelationalFieldsMapper: { [key: string]: string } = {
   ownerId: "ownerId",
 };
 
-export const ZodServiceAvailability = [
-  "LOW_PRIORITY",
-  "MEDIUM_PRIORITY",
-  "HIGH_PRIORITY",
-  "ALL_PRIORITIES",
-];
+export const ZodServiceAvailability = ["LOW_PRIORITY", "MEDIUM_PRIORITY", "HIGH_PRIORITY", "ALL_PRIORITIES"];
 export const ZodServiceType = [
   "TENANT_SCREENING",
   "MAINTENANCE_AND_REPAIR",
@@ -30,4 +25,5 @@ export const ZodServiceType = [
   "INSPECTION",
   "MARKETING",
   "TECHNOLOGY",
+  "OTHERS",
 ];

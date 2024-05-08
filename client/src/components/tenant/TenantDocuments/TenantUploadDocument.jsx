@@ -19,6 +19,8 @@ const TenantUploadDocument = ({ allDocuments }) => {
   } = useForm();
   // handler function
   const handleUploadSignedDocument = async (updatedFileData) => {
+    const selectedDocument = allDocuments?.find((doc) => doc?.documentId === updatedFileData?.documentId);
+
     const formData = new FormData();
     if (updatedFileData?.documentFile?.blobFile) {
       formData.append("file", updatedFileData?.documentFile?.blobFile);
@@ -27,6 +29,7 @@ const TenantUploadDocument = ({ allDocuments }) => {
     // after
     const obj = {
       documentId: updatedFileData?.documentId,
+      documentTitle: `${selectedDocument?.documentTitle} - Signed`,
     };
     // creating form data
 

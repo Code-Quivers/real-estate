@@ -86,14 +86,11 @@ const AvailableServiceProviders = () => {
           <SelectPicker
             placement="bottomEnd"
             size="lg"
-            searchable={false}
+            // searchable={false}
             className="w-full"
             placeholder="Service Type"
             onChange={(value) => setSelectedServiceType(value)}
             data={serviceTypes}
-            // style={{
-            //   borderRadius: "0px !important",
-            // }}
           />
         </div>
         <div className="lg:col-span-3 col-span-6">

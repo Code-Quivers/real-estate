@@ -50,7 +50,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <label className="text-lg font-medium ">Service Type</label>
                 <div>
                   <SelectPicker
-                    searchable={false}
+                    // searchable={false}
                     onChange={(value) => setValue("serviceType", value)}
                     defaultValue={myProfileData?.Service?.serviceType ?? undefined}
                     data={

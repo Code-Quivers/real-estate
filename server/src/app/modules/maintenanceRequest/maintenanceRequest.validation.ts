@@ -6,7 +6,7 @@ import {
 } from "./maintenanceRequest.constant";
 
 const addMaintenanceRequest = z.object({
-  isAnimal: z.boolean(),
+  isAnimal: z.boolean().optional(),
   animalDetails: z.string().optional(),
   issueLocation: z.string(),
   priority: z.enum([...ZodMaintenancePriority] as [string, ...string[]]),

@@ -27,7 +27,7 @@ const MyAcceptedAllOrders = () => {
           </div>
         )}
 
-        <div className="mt-10 ">
+        <div className="mt-10 bg-white shadow">
           {!isError && (
             <div>
               <Table

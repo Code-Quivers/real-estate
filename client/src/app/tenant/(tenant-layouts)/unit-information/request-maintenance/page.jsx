@@ -138,7 +138,13 @@ const RequestMaintenancePage = () => {
                 }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <SelectPicker {...field} searchable={false} data={MaintenancePriorityType} placeholder="Priority" className="!w-full" />
+                    <SelectPicker
+                      onChange={(e) => field.onChange(e)}
+                      searchable={false}
+                      data={MaintenancePriorityType}
+                      placeholder="Priority"
+                      className="!w-full"
+                    />
                     <Form.ErrorMessage show={(!!errors?.priority && !!errors?.priority?.message) || false} placement="topEnd">
                       {errors?.priority?.message}
                     </Form.ErrorMessage>
@@ -155,7 +161,7 @@ const RequestMaintenancePage = () => {
                 }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <SelectPicker {...field} placeholder="Issue Type" data={issueTypes} className="!w-full" />
+                    <SelectPicker onChange={(e) => field.onChange(e)} placeholder="Issue Type" data={issueTypes} className="!w-full" />
                     <Form.ErrorMessage show={(!!errors?.issueType && !!errors?.issueType?.message) || false} placement="topEnd">
                       {errors?.issueType?.message}
                     </Form.ErrorMessage>
@@ -187,7 +193,7 @@ const RequestMaintenancePage = () => {
           {/* upload and submit button */}
           <div className="col-span-2">
             <div className="flex flex-col justify-between space-y-5">
-              <div className="border">
+              <div className="border bg-white p-5 rounded-lg">
                 <Controller
                   name="files"
                   control={control}
