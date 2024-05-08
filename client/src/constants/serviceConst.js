@@ -39,6 +39,10 @@ export const serviceTypes = [
     label: "Technology",
     value: "TECHNOLOGY",
   },
+  {
+    label: "Others",
+    value: "OTHERS",
+  },
 ].map((item) => ({ label: item.label, value: item.value }));
 
 export const serviceAvailability = [

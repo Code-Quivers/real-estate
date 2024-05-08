@@ -406,6 +406,7 @@ enum ServiceType {
   INSPECTION
   MARKETING
   TECHNOLOGY
+  OTHERS
 }
 
 enum ServiceAvailabilityEnum {

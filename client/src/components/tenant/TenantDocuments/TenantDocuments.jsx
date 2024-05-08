@@ -20,9 +20,12 @@ const TenantDocuments = () => {
           data?.data?.length > 0 &&
           data?.data?.map((singleDoc) => (
             <div key={singleDoc?.documentId} className="flex justify-between items-center p-2 border rounded-lg shadow-lg bg-white">
-              <div>
+              <div className="space-y-3">
                 <h2>{singleDoc?.documentTitle}</h2>
-                <p className="text-slate-400">Added: {moment(singleDoc?.createdAt).format("L")}</p>
+                <div className="flex  items-center gap-3">
+                  <p className="text-slate-400">Added: {moment(singleDoc?.createdAt).format("L")}</p>
+                  {singleDoc?.isSignedByTenant && <p className="text-slate-400">Signed: {moment(singleDoc?.updatedAt).format("L")}</p>}
+                </div>
               </div>
               <div className="flex justify-between items-center gap-2">
                 <button
