@@ -3,11 +3,21 @@
 import { useUpdateServiceProviderMyProfileMutation } from "@/redux/features/serviceProvider/serviceProviderApi";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input } from "rsuite";
+import { Button, Form, Input, MaskedInput } from "rsuite";
 import ServiceProviderProfilePhotoUpload from "./ServiceProviderProfilePhotoUpload";
 import Link from "next/link";
+import { useState } from "react";
+
+const options = [
+  {
+    name: "US phone number",
+    mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    placeholder: "(XXX) XXX-XXXX",
+  },
+];
 
 const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
+  const [optionNumber] = useState(options[0]);
   const router = useRouter();
   const [updateMyServiceProviderMyProfile, { isLoading }] = useUpdateServiceProviderMyProfileMutation();
   const {
@@ -74,7 +84,17 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               render={({ field }) => (
                 <div className="space-y-1">
                   <label className="text-lg font-medium">Company Phone Number</label>
-                  <Input defaultValue={myProfileData?.companyPhoneNumber} {...field} type="text" />
+                  <MaskedInput
+                    className="!w-full"
+                    {...field}
+                    defaultValue={myProfileData?.companyPhoneNumber}
+                    mask={optionNumber.mask}
+                    guide
+                    // showMask
+                    // keepCharPositions
+                    placeholder={optionNumber.placeholder}
+                    placeholderChar={"X"}
+                  />
                 </div>
               )}
             />
