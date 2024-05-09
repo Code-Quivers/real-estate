@@ -8,7 +8,7 @@ import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsA
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
 
-const PropertyOwnerServiceProviders = () => {
+const PropertyOwnerAvailableTenants = () => {
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -146,4 +146,4 @@ const PropertyOwnerServiceProviders = () => {
   );
 };
 
-export default PropertyOwnerServiceProviders;
+export default PropertyOwnerAvailableTenants;

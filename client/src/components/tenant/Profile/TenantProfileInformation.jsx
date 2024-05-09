@@ -26,7 +26,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Current Address</h2>
-            <p> {data?.presentAddress ?? "-"}</p>
+            <p> {data?.presentAddress ? data?.presentAddress : "-"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Date Of Birth</h2>
@@ -34,7 +34,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Phone Number</h2>
-            <p>{data?.phoneNumber ?? "-"}</p>
+            <p>{data?.phoneNumber ? data?.phoneNumber : "-"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Social Security Number</h2>
@@ -46,7 +46,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Place To Rent</h2>
-            <p> {data?.placeToRent ?? "-"}</p>
+            <p> {data?.placeToRent ? data?.placeToRent : "-"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Do you have a criminal record?</h2>
@@ -71,27 +71,27 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
         <div className="grid p-5 border-t md:grid-cols-2 gap-5 gap-x-10 font-medium">
           <div>
             <h2 className="text-gray-600">Previous Landlord Name</h2>
-            <p>{data?.prevLandlordName ?? "-"}</p>
+            <p>{data?.prevLandlordName ? data?.prevLandlordName : "-"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Previous landlord contact info</h2>
-            <p> {data?.prevLandlordContactInfo ?? "-"}</p>
+            <p> {data?.prevLandlordContactInfo ? data?.prevLandlordContactInfo : "-"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Length of previous tenancy</h2>
-            <p>{data?.lengthOfPrevTenancy ?? "-"}</p>
+            <p>{data?.lengthOfPrevTenancy ? data?.lengthOfPrevTenancy : "-"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Rent willing to pay (monthly) </h2>
-            <p>{data?.affordableRentAmount ?? "-"}</p>
+            <p>{data?.affordableRentAmount ? data?.affordableRentAmount : "-"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Reason for leaving</h2>
-            <p>{data?.leavingReason ?? "-"}</p>
+            <p>{data?.leavingReason ? data?.leavingReason : "-"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Any Eviction or Late Payment</h2>
-            <p>{data?.isAnyLatePaymentReason ?? "-"}</p>
+            <p>{data?.isAnyLatePaymentReason ? data?.isAnyLatePaymentReason : "-"}</p>
           </div>
         </div>
       </div>
