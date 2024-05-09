@@ -102,6 +102,13 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
                 {" "}
                 <Controller
                   name="password"
+                  rules={{
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                      message:
+                        "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
+                    },
+                  }}
                   control={control}
                   render={({ field }) => (
                     <div className="space-y-1">
@@ -110,6 +117,9 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
                     </div>
                   )}
                 />
+                <div className="h-16 text-xs mt-2 font-medium text-white">
+                  {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+                </div>
               </div>
             </div>
             <div className="col-span-4 mt-5 space-y-5 ">
