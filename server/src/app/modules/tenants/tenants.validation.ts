@@ -1,156 +1,36 @@
 import { z } from "zod";
 
 const updateTenantProfile = z.object({
-  firstName: z
-    .string({
-      invalid_type_error: "firstName must be in String",
-    })
-    .optional(),
-  lastName: z
-    .string({
-      invalid_type_error: "lastName must be in String",
-    })
-    .optional(),
-  phoneNumber: z
-    .string({
-      invalid_type_error: "phoneNumber must be in String",
-    })
-    .optional(),
-  dateOfBirth: z
-    .string({
-      invalid_type_error: "dateOfBirth must be in Date Type",
-    })
-    .optional(),
-  presentAddress: z
-    .string({
-      invalid_type_error: "presentAddress must be in String",
-    })
-    .optional(),
-  socialSecurityNumber: z
-    .string({
-      invalid_type_error: "socialSecurityNumber must be in String",
-    })
-    .optional(),
-  placeToRent: z
-    .string({
-      invalid_type_error: "placeToRent must be in String",
-    })
-    .optional(),
-  isCriminalRecord: z
-    .boolean({
-      invalid_type_error: "isCriminalRecord must be true or false",
-    })
-    .optional(),
-  criminalRecordDescription: z
-    .string({
-      invalid_type_error: "criminalRecordDescription must be in String",
-    })
-    .optional(),
-  CurrentEmployerOrBusinessName: z
-    .string({
-      invalid_type_error: "CurrentEmployerOrBusinessName must be in String",
-    })
-    .optional(),
-  CurrentEmployerOrBusinessContactInfo: z
-    .string({
-      invalid_type_error: "CurrentEmployerOrBusinessContactInfo must be in String",
-    })
-    .optional(),
-  JobTitle: z
-    .string({
-      invalid_type_error: "JobTitle must be in String",
-    })
-    .optional(),
-  AnnualSalary: z
-    .number({
-      invalid_type_error: "AnnualSalary must be in Integer",
-    })
-    .optional(),
-  OtherIncomeSource: z
-    .string({
-      invalid_type_error: "OtherIncomeSource must be in String",
-    })
-    .optional(),
-  CurrentCreditScore: z
-    .number({
-      invalid_type_error: "CurrentCreditScore must be in Integer",
-    })
-    .optional(),
-  isSmoker: z
-    .boolean({
-      invalid_type_error: "isSmoker must be in true or false",
-    })
-    .optional(),
-  allergies: z
-    .string({
-      invalid_type_error: "allergies must be in String",
-    })
-    .optional(),
-  isHaveOtherMember: z
-    .boolean({
-      invalid_type_error: "isHaveOtherMember must be true or false",
-    })
-    .optional(),
-  numberOfMember: z
-    .number({
-      invalid_type_error: "numberOfMember must be in Integer",
-    })
-    .optional(),
-  isWillingToSignLeasingAgreement: z
-    .boolean({
-      invalid_type_error: "isWillingToSignLeasingAgreement must be True or False",
-    })
-    .optional(),
-  isAnyExtraToMention: z
-    .string({
-      invalid_type_error: "isAnyExtraToMention must be in String",
-    })
-    .optional(),
-  isPets: z
-    .boolean({
-      invalid_type_error: "isPets must be true or false",
-    })
-    .optional(),
-  typeOfPets: z
-    .string({
-      invalid_type_error: "typeOfPets must be in String",
-    })
-    .optional(),
-  isPetVaccinated: z
-    .boolean({
-      invalid_type_error: "isPetVaccinated must be true or false",
-    })
-    .optional(),
-  prevLandlordName: z
-    .string({
-      invalid_type_error: "prevLandlordName must be in String",
-    })
-    .optional(),
-  prevLandlordContactInfo: z
-    .string({
-      invalid_type_error: "prevLandlordContactInfo must be in String",
-    })
-    .optional(),
-  lengthOfPrevTenancy: z
-    .string({
-      invalid_type_error: "lengthOfPrevTenancy must be in String",
-    })
-    .optional(),
-  affordableRentAmount: z
-    .number({
-      invalid_type_error: "affordableRentAmount must be in Integer",
-    })
-    .optional(),
-  leavingReason: z
-    .string({
-      invalid_type_error: "leavingReason must be in String",
-    })
-    .optional(),
-  isAnyLatePaymentReason: z
-    .string({
-      invalid_type_error: "isAnyLatePaymentReason must be in String",
-    })
-    .optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phoneNumber: z.string().optional().nullable(),
+  dateOfBirth: z.string().optional().nullable(),
+  presentAddress: z.string().optional().nullable(),
+  socialSecurityNumber: z.string().optional().nullable(),
+  placeToRent: z.string().optional().nullable(),
+  isCriminalRecord: z.boolean().optional().nullable(),
+  criminalRecordDescription: z.string().optional().nullable(),
+  CurrentEmployerOrBusinessName: z.string().optional().nullable(),
+  CurrentEmployerOrBusinessContactInfo: z.string().optional().nullable(),
+  JobTitle: z.string().optional().nullable(),
+  AnnualSalary: z.number().optional().nullable(),
+  OtherIncomeSource: z.string().optional().nullable(),
+  CurrentCreditScore: z.number().optional().nullable(),
+  isSmoker: z.boolean().optional().nullable(),
+  allergies: z.string().optional().nullable(),
+  isHaveOtherMember: z.boolean().optional().nullable(),
+  numberOfMember: z.number().optional().nullable(),
+  isWillingToSignLeasingAgreement: z.boolean().optional().nullable(),
+  isAnyExtraToMention: z.string().optional().nullable(),
+  isPets: z.boolean().optional().nullable(),
+  typeOfPets: z.string().optional().nullable(),
+  isPetVaccinated: z.boolean().optional().nullable(),
+  prevLandlordName: z.string().optional().nullable(),
+  prevLandlordContactInfo: z.string().optional().nullable(),
+  lengthOfPrevTenancy: z.string().optional().nullable(),
+  affordableRentAmount: z.number().optional().nullable(),
+  leavingReason: z.string().optional().nullable(),
+  isAnyLatePaymentReason: z.string().optional().nullable(),
 });
 
 export const TenantsValidation = {

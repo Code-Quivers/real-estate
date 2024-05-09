@@ -1,6 +1,5 @@
 "use client";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import Image from "next/image";
+
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
@@ -35,7 +34,7 @@ const TenantProfile = () => {
               {data?.firstName} {data?.lastName}
             </h4>
             <h4 className="text-lg font-medium"> {data?.user?.email} </h4>
-            <h4 className="text-lg font-medium">{data?.phoneNumber ?? "--"}</h4>
+            <h4 className="text-lg font-medium">{data?.phoneNumber ? data?.phoneNumber : "--"}</h4>
           </div>
         </div>
         {/* score */}
@@ -43,28 +42,28 @@ const TenantProfile = () => {
         <div>
           <div className="col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            {isLoading ? (
-              <span className="text-gray-400">Loading...</span>
-            ) : (
-              <Score score={data?.scoreRatio?.score} total={data?.scoreRatio?.total} />
-            )}
+            <div>
+              <Score isLoading={isLoading} score={data?.scoreRatio?.score} total={data?.scoreRatio?.total} />
+            </div>
           </div>
         </div>
       </div>
       {/* Dashboard */}
-      <select
-        name=""
-        id=""
-        className="w-full sm:hidden rounded-md p-3 border shadow bg-white"
-        onChange={(e) => setTabActive(parseInt(e.target.value))}
-        value={tabActive}
-      >
-        <option value={2}>Personal information</option>
-        <option value={3}>Rental history</option>
-        <option value={4}>Income Information</option>
-        <option value={5}>Pets</option>
-        <option value={6}>Other Information</option>
-      </select>
+      <div>
+        <select
+          name=""
+          id=""
+          className="w-full sm:hidden rounded-md p-3 border shadow bg-white"
+          onChange={(e) => setTabActive(parseInt(e.target.value))}
+          value={tabActive}
+        >
+          <option value={2}>Personal information</option>
+          <option value={3}>Rental history</option>
+          <option value={4}>Income Information</option>
+          <option value={5}>Pets</option>
+          <option value={6}>Other Information</option>
+        </select>
+      </div>
       <div className="max-sm:hidden flex items-center gap-5 p-2 h-11 bg-white rounded-t-lg border mt-4">
         {/* Personal Information */}
         <div className=" ">
