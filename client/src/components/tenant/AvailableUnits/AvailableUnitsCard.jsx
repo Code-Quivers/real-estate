@@ -90,20 +90,20 @@ const AvailableUnitsCard = () => {
                 height={300}
                 className="w-full h-[200px] object-center object-cover rounded-t-lg hover:shadow-lg"
                 src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
-                alt="Tenant available units"
+                alt="Unit Image"
               />
               <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
-                  <h2 className="text-sm">$1200</h2>
+                  <h2 className="text-sm">${unit?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unit?.numOfBed ?? "0"} Bed </span>
                     <span>{unit?.numOfBath ?? "0"} Bath</span>
                   </h2>
                   <h2 className="text-sm">{unit?.address ? unit?.address : "--"}</h2>
                 </div>
-
-                {console.log(unit)}
-                <Score score={unit?.scoreRatio?.score} total={unit?.scoreRatio?.total} />
+                <div>
+                  <Score score={unit?.scoreRatio?.score} total={unit?.scoreRatio?.total} />
+                </div>
               </div>
             </div>
           ))}

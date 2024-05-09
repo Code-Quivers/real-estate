@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, InputNumber, Loader, Pagination } from "rsuite";
+import { Input, InputGroup, InputNumber, Loader, Pagination, Placeholder } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
@@ -82,8 +82,16 @@ const PropertyOwnerAvailableTenants = () => {
 
       {/* all cards */}
       {isLoading && (
-        <div className="flex justify-center py-10">
-          <Loader size="lg" content="Getting Available Tenants..." />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-center   py-10">
+          <div>
+            <Placeholder.Graph active height={200} />
+          </div>
+          <div>
+            <Placeholder.Graph active height={200} />
+          </div>
+          <div>
+            <Placeholder.Graph active height={200} />
+          </div>
         </div>
       )}
 
@@ -95,15 +103,14 @@ const PropertyOwnerAvailableTenants = () => {
             <div key={index}>
               <div className="bg-white border rounded-md shadow-sm">
                 <AvailableTenantsList singleReq={singleReq}>
-                  <div className="px-3 space-y-0.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTenantDetails(singleReq);
-                        setServiceModalActive(true);
-                      }}
-                      className="text-sm text-primary cursor-pointer font-bold"
-                    >
+                  <div
+                    onClick={() => {
+                      setTenantDetails(singleReq);
+                      setServiceModalActive(true);
+                    }}
+                    className="px-3 space-y-0.5 *:hover:cursor-pointer"
+                  >
+                    <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
                       {singleReq?.firstName} {singleReq?.lastName}
                     </button>
                     <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "-"}</h3>

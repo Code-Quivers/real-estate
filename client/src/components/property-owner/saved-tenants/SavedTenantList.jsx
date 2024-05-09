@@ -1,42 +1,26 @@
 "use client";
-import { savedItemTenant, savedItemTenantFailed } from "@/components/toasts/auth/authToastMessages";
 import { fileUrlKey } from "@/configs/envConfig";
-import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
-import { useEffect } from "react";
-import { Avatar, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
+import { useEffect, useState } from "react";
+import { Avatar, Modal, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
 import Score from "@/components/Shared/Score/Score";
+import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
+import RemoveFromAvailableTenantsModal from "../available-tenants/RemoveFromSavedTenantsModal";
 
-const AvailableTenantsList = ({ singleReq, children }) => {
+const SavedTenantLists = ({ isLoadingSaved, singleReq, children }) => {
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
-  const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
+  const [open, setOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
-  const saveTenantData = async () => {
-    const tenantData = {
-      tenantId: singleReq?.tenantId,
-      itemType: "TENANT",
-    };
-
-    await saveItem(tenantData);
+  const handleOpen = (selectData) => {
+    setModalData(selectData);
+    setOpen(true);
   };
+  const handleClose = () => setOpen(false);
 
   // !side effect
-
-  useEffect(() => {
-    if (isSuccess && !isError && !isLoading) {
-      toaster.push(savedItemTenant(), {
-        placement: "bottomStart",
-      });
-    }
-    if (isError && !isSuccess && error && !isLoading) {
-      toaster.push(savedItemTenantFailed(error?.message), {
-        placement: "bottomStart",
-      });
-    }
-  }, [isSuccess, isSuccess, error]);
 
   // !
   const [
@@ -82,15 +66,16 @@ const AvailableTenantsList = ({ singleReq, children }) => {
       );
     }
   }, [isLoadingAssign, isErrorAssign, isSuccessAssign, errorAssign, toaster]);
+
   return (
     <>
       <div className="flex items-start justify-between">
-        {singleReq?.profileImage ? (
+        {singleReq?.tenant?.profileImage ? (
           <Image
             width={100}
             height={100}
             className="w-[90px] h-[90px] p-3 object-cover rounded-full  "
-            src={`${fileUrlKey()}/${singleReq?.profileImage}`}
+            src={`${fileUrlKey()}/${singleReq?.tenant?.profileImage}`}
             alt="photo"
           />
         ) : (
@@ -100,7 +85,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
         )}
 
         <div className="mr-4 mt-4">
-          <Score score={singleReq?.scoreRatio?.score} total={singleReq?.scoreRatio?.total} />
+          <Score score={singleReq?.tenant?.scoreRatio?.score} total={singleReq?.tenant?.scoreRatio?.total} />
         </div>
       </div>
       {/*  */}
@@ -111,10 +96,10 @@ const AvailableTenantsList = ({ singleReq, children }) => {
         <div className="w-full">
           <button
             //   loading={isLoading}
-            onClick={() => saveTenantData()}
+            onClick={() => handleOpen(singleReq)}
             className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
           >
-            Save
+            Remove
           </button>
         </div>
         {/* Contact  */}
@@ -183,8 +168,14 @@ const AvailableTenantsList = ({ singleReq, children }) => {
           </Whisper>
         </div>
       </div>
+      {/* delete modal */}
+      <Modal open={open} size="xs" dialogAs="div" overflow={false} className="bg-white mx-auto" backdrop="static" onClose={handleClose}>
+        <Modal.Body>
+          <RemoveFromAvailableTenantsModal handleClose={handleClose} modalData={modalData} />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
 
-export default AvailableTenantsList;
+export default SavedTenantLists;
