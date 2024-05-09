@@ -36,7 +36,7 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
     if (!isLoading && isSuccess && !isError) {
       toaster.push(
         <Message showIcon centered type="success" closable>
-          {updateMyProfileRes?.message || "Successfully Updated"}
+          Successfully Updated
         </Message>,
         { placement: "bottomStart", duration: 5000 },
       );
@@ -48,6 +48,7 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
 
   return (
     <Modal
+      backdrop="static"
       size="lg"
       overflow={false}
       open={open}
@@ -56,7 +57,7 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
         handleClose();
       }}
       dialogAs="div"
-      className="bg-white rounded-xl mt-5   flex mx-auto justify-center items-center  "
+      className="bg-white rounded-xl mt-5   flex mx-auto justify-center items-center"
     >
       <Modal.Body className="p-3   " classPrefix=" !w-full">
         <div className="  border   rounded-xl p-3">
@@ -74,7 +75,7 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
                     name="firstName"
                     control={control}
                     render={({ field }) => (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <label className="font-medium text-base">First Name</label>
                         <Input defaultValue={myProfileData?.firstName} {...field} type="text" />
                       </div>
@@ -87,7 +88,7 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
                     name="lastName"
                     control={control}
                     render={({ field }) => (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <label className="font-medium text-base">Last Name</label>
                         <Input defaultValue={myProfileData?.lastName} {...field} type="text" />
                       </div>
@@ -95,13 +96,13 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
                   />
                 </div>
               </div>{" "}
-              <div className="col-span-2 lg:col-span-4 lg:flex items-center justify-between gap-10">
+              <div className=" col-span-2 lg:col-span-4 lg:flex items-start justify-between gap-10">
                 <div className="w-full">
                   <Controller
                     name="phoneNumber"
                     control={control}
                     render={({ field }) => (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <label className="text-base font-medium">Phone Number</label>
                         <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
                       </div>
@@ -109,23 +110,32 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
                   />
                 </div>
                 <div className="w-full">
-                  {" "}
                   <Controller
                     name="password"
+                    rules={{
+                      pattern: {
+                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                        message:
+                          "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
+                      },
+                    }}
                     control={control}
                     render={({ field }) => (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <label className="text-base font-medium">Password</label>
-                        <Input placeholder="********" {...field} type="password" />
+                        <Input placeholder="********" {...field} autoComplete="off" type="password" />
                       </div>
                     )}
-                  />
-                </div>
+                  />{" "}
+                  <div className="h-16 text-xs mt-2 font-medium text-white">
+                    {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+                  </div>
+                </div>{" "}
               </div>
             </div>
 
             {/* button */}
-            <div className="mt-10 flex gap-5 justify-end">
+            <div className="flex gap-5 justify-end">
               <Button
                 onClick={() => {
                   resetForm();
