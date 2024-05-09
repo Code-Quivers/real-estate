@@ -85,7 +85,7 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: 
           />
         )}
         {tabActive === 3 && <TenantRentalHistoryEdit responseData={responseData} control={control} />}
-        {tabActive === 4 && <TenantIncomeInformationEdit responseData={responseData} control={control} />}
+        {tabActive === 4 && <TenantIncomeInformationEdit errors={errors} responseData={responseData} control={control} />}
         {tabActive === 5 && <TenantPetsInformationEdit responseData={responseData} control={control} />}
         {tabActive === 6 && <TenantOtherInformationEdit responseData={responseData} control={control} />}
 

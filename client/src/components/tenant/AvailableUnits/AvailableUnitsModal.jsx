@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import { Button, Carousel, Modal, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
@@ -26,7 +25,6 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
 
     await saveItem(unitData);
   };
-  console.log("unitInfo", unitInfo);
   // !
   const toaster = useToaster();
   useEffect(() => {
@@ -47,7 +45,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
     <div>
       <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
-          <div className="grid md:grid-cols-12 border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97]">
+          <div className="grid md:grid-cols-12 border   justify-between   items-stretch  ">
             <Carousel className="custom-slider col-span-6 md:hidden">
               {unitInfo?.images?.length > 0
                 ? unitInfo?.images?.map((photo) => (
@@ -57,7 +55,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   ))
                 : null}
             </Carousel>
-            <div className="max-md:hidden col-span-6 w-full  overflow-y-scroll max-h-[95vh]  custom-scrollbar">
+            <div className="max-md:hidden col-span-6 w-full  overflow-y-scroll max-h-[75vh]  custom-scrollbar">
               {unitInfo?.images?.length
                 ? unitInfo?.images?.map((photo) => (
                     <div key={Math.random()} className="flex flex-col divide-y divide-[#8b8b8b]">
@@ -77,7 +75,11 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
             <div className="col-span-6 w-full overflow-y-scroll md:max-h-[95vh] custom-scrollbar mt-2">
               <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
                 <div>
-                  <h2>Logo</h2>
+                  {unitInfo?.owner?.profileImage ? (
+                    <Image src={`${fileUrlKey()}/${unitInfo?.owner?.profileImage}`} width={70} height={70} className="rounded-md object-cover" />
+                  ) : (
+                    "Logo"
+                  )}
                 </div>
                 <div className="flex gap-2.5 items-center">
                   <div>
@@ -93,13 +95,15 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               <hr className="border   block" />
               <div className="flex justify-between items-center p-5">
                 <div>
-                  <h2 className="text-4xl mb-2">$1200/month</h2>
+                  <h2 className="text-4xl mb-2">${unitInfo?.monthlyRent}/month</h2>
                   <h2 className="text-xl">
                     <span>{unitInfo?.numOfBed ?? "0"} Bed</span> <span>{unitInfo?.numOfBath ?? "0"} Bath</span>
                   </h2>
-                  <h2 className="text-xl">{unitInfo?.address ? unitInfo?.address : "3 Belair Dr, Binghamton, NY 13901"}</h2>
+                  <h2 className="text-xl">{unitInfo?.address ? unitInfo?.address : "--"}</h2>
                 </div>
-                <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
+                <div>
+                  <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
+                </div>
               </div>
               {/* */}
               <div>
