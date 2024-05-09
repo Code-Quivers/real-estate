@@ -95,7 +95,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               <hr className="border   block" />
               <div className="flex justify-between items-center p-5">
                 <div>
-                  <h2 className="text-4xl mb-2">${unitInfo?.monthlyRent}/month</h2>
+                  <h2 className="text-4xl mb-2">${unitInfo?.monthlyRent?.toLocaleString()}/month</h2>
                   <h2 className="text-xl">
                     <span>{unitInfo?.numOfBed ?? "0"} Bed</span> <span>{unitInfo?.numOfBath ?? "0"} Bath</span>
                   </h2>
