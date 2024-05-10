@@ -4,12 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Avatar, Modal, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
-import RemoveFromAvailableTenantsModal from "../available-tenants/RemoveFromSavedTenantsModal";
+import RemoveFromSavedServiceProviderModal from "./RemoveFromSavedServiceProviderModal";
 
-const SavedTenantLists = ({ singleReq, children }) => {
+const SavedServiceProviderList = ({ singleReq, children }) => {
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -20,21 +20,19 @@ const SavedTenantLists = ({ singleReq, children }) => {
   };
   const handleClose = () => setOpen(false);
 
-  // !side effect
-
   // !
   const [
-    assignTenantToProperty,
+    assignServiceProviderToProperty,
     { data: assignRes, isLoading: isLoadingAssign, isSuccess: isSuccessAssign, isError: isErrorAssign, error: errorAssign },
-  ] = useAssignTenantToPropertyMutation();
+  ] = useAssignServiceProviderToPropertyMutation();
 
-  const handleAddTenantToProperty = async (propertyId) => {
+  const handleAddServiceProviderToProperty = async (propertyId) => {
     const assignData = {
       propertyId,
-      tenantId: singleReq?.tenantId,
+      serviceProviderId: singleReq?.serviceProvider?.serviceProviderId,
     };
 
-    await assignTenantToProperty({
+    await assignServiceProviderToProperty({
       data: assignData,
     });
   };
@@ -66,16 +64,15 @@ const SavedTenantLists = ({ singleReq, children }) => {
       );
     }
   }, [isLoadingAssign, isErrorAssign, isSuccessAssign, errorAssign, toaster]);
-
   return (
     <>
       <div className="flex items-start justify-between">
-        {singleReq?.tenant?.profileImage ? (
+        {singleReq?.serviceProvider?.profileImage ? (
           <Image
             width={100}
             height={100}
             className="w-[90px] h-[90px] p-3 object-cover rounded-full  "
-            src={`${fileUrlKey()}/${singleReq?.tenant?.profileImage}`}
+            src={`${fileUrlKey()}/${singleReq?.serviceProvider?.profileImage}`}
             alt="photo"
           />
         ) : (
@@ -85,7 +82,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
         )}
 
         <div className="mr-4 mt-4">
-          <Score score={singleReq?.tenant?.scoreRatio?.score} total={singleReq?.tenant?.scoreRatio?.total} />
+          <Score score={singleReq?.serviceProvider?.scoreRatio?.score} total={singleReq?.serviceProvider?.scoreRatio?.total} />
         </div>
       </div>
       {/*  */}
@@ -95,7 +92,6 @@ const SavedTenantLists = ({ singleReq, children }) => {
       <div className="flex px-3 py-5 gap-2">
         <div className="w-full">
           <button
-            //   loading={isLoading}
             onClick={() => handleOpen(singleReq)}
             className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
           >
@@ -104,7 +100,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
         </div>
         {/* Contact  */}
         <div className="w-full">
-          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.user?.userId} />
+          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.serviceProvider?.user?.userId} />
         </div>
         {/*  assign to property */}
         <div className="w-full">
@@ -120,7 +116,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
                     unitRes?.data?.map((singleUnit) => (
                       <div key={Math.random()}>
                         <button
-                          onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                          onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
                           className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                         >
                           <div>
@@ -171,11 +167,11 @@ const SavedTenantLists = ({ singleReq, children }) => {
       {/* delete modal */}
       <Modal open={open} size="xs" dialogAs="div" overflow={false} className="bg-white mx-auto" backdrop="static" onClose={handleClose}>
         <Modal.Body>
-          <RemoveFromAvailableTenantsModal handleClose={handleClose} modalData={modalData} />
+          <RemoveFromSavedServiceProviderModal handleClose={handleClose} modalData={modalData} />
         </Modal.Body>
       </Modal>
     </>
   );
 };
 
-export default SavedTenantLists;
+export default SavedServiceProviderList;

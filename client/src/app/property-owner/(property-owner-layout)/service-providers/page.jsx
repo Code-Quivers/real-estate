@@ -9,7 +9,6 @@ import { useDebounced } from "@/redux/hook";
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 import AvailableServiceProviderModal from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderModal";
-import { fileUrlKey } from "@/configs/envConfig";
 import AvailableServiceProviderList from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderList";
 // !
 const AvailableServiceProviders = () => {
