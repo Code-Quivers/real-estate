@@ -2,10 +2,8 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Pagination, Progress, SelectPicker } from "rsuite";
+import { Pagination, SelectPicker } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import Image from "next/image";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
@@ -69,9 +67,9 @@ const AvailableServiceProviders = () => {
   const [selectedService, setSelectedService] = useState(null);
 
   return (
-    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-14 2xl:mx-auto lg:px-5 2xl:px-0 ">
+    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-5 2xl:mx-auto lg:px-5 2xl:px-0 ">
       <div className="flex justify-center">
-        <h2 className="text-4xl ">Service Providers</h2>
+        <h2 className="text-3xl ">Service Providers</h2>
       </div>
       {/* search with price section start */}
       <div className="grid grid-cols-12 gap-3 mt-2">
@@ -135,12 +133,16 @@ const AvailableServiceProviders = () => {
                     <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
                       {singleReq?.firstName} {singleReq?.lastName}
                     </button>
-                    <h3 className="text-base font-medium">
-                      Service Type : {singleReq?.Service?.serviceType ? singleReq?.Service?.serviceType : "--"}
+                    <h3 className="text-sm">
+                      Service Type:{" "}
+                      {singleReq?.Service?.serviceType
+                        ? singleReq?.Service?.serviceType.replace(/_/g, " ").charAt(0).toUpperCase() +
+                          singleReq?.Service?.serviceType.replace(/_/g, " ").slice(1).toLowerCase()
+                        : "--"}
                     </h3>
-                    <h3 className="text-base font-medium">
-                      Service Price : ${singleReq?.Service?.minPrice ? singleReq?.Service?.minPrice : 0} - $
-                      {singleReq?.Service?.maxPrice ? singleReq?.Service?.maxPrice : 0}
+                    <h3 className="text-sm font-medium">
+                      Service Price : ${singleReq?.Service?.minPrice ? singleReq?.Service?.minPrice?.toLocaleString() : 0} - $
+                      {singleReq?.Service?.maxPrice ? singleReq?.Service?.maxPrice?.toLocaleString() : 0}
                     </h3>
                   </div>
                 </AvailableServiceProviderList>

@@ -12,20 +12,20 @@ const ConversationChatPerson = ({ singleConversation, paramsChatId, participant,
       href={{
         query: { chat: conversationId },
       }}
-      className={`lg:py-2  lg:px-3 group cursor-pointer  hover:bg-[#f3f4f6]  rounded-md
-      ${paramsChatId === conversationId && "bg-[#f3f4f6]"} grid grid-cols-5 justify-between gap-2 items-center`}
+      className={`lg:py-2  lg:px-1.5 group cursor-pointer  hover:bg-[#f3f4f6]  rounded md:rounded-md
+      ${paramsChatId === conversationId && "bg-[#e7eaf0] md:bg-[#f3f4f6]"} flex  lg:grid space-y-1 p-1 grid-cols-7 justify-center  items-start `}
     >
-      <div className="col-span-5 lg:col-span-4 lg:grid   lg:grid-cols-5 lg:gap-2 items-center">
+      <div className="col-span-6 lg:grid   lg:grid-cols-5 lg:gap-1 xl:gap-2 items-center">
         <div className="lg:col-span-1">
           <Image
             alt=""
-            height={50}
-            width={50}
-            className="rounded-full object-cover w-[50px] h-[50px] "
+            height={100}
+            width={100}
+            className="rounded-full object-cover lg:!w-[30px] lg:!h-[30px] xl:!w-[50px] xl:!h-[50px] "
             src={getProfileImageUrl(singleConversation?.perticipants[0])}
           />
         </div>
-        <div className="space-y-1 max-lg:hidden col-span-4">
+        <div className="space-y-1 max-lg:hidden lg:col-span-4">
           <h2
             className={`font-semibold group-hover:text-[#29429f] text-[15px] ${paramsChatId === conversationId ? "text-[#29429f]" : "text-black"} `}
           >
@@ -37,8 +37,8 @@ const ConversationChatPerson = ({ singleConversation, paramsChatId, participant,
         </div>
       </div>
       {/*  */}
-      <div className="col-span-1 max-lg:hidden ">
-        <p className="text-[11px]">{moment(singleConversation?.updatedAt).format("hh:mm A")}</p>
+      <div className="col-span-1 max-lg:hidden  ">
+        <p className="text-[11px]">{moment(singleConversation?.updatedAt).format("h:mm a")}</p>
       </div>
     </Link>
   );

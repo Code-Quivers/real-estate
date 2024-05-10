@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getAuthKey } from "@/configs/envConfig";
-import { getNewAccessToken } from "@/hooks/services/auth.service";
+import { getNewAccessToken, removeUserInfo } from "@/hooks/services/auth.service";
 import { setToLocalStorage } from "@/utils/local-storage";
 
 export const axiosInstance = axios.create();
@@ -44,6 +44,18 @@ axiosInstance.interceptors.response.use(
       config.headers["Authorization"] = accessToken;
       setToLocalStorage(getAuthKey(), accessToken);
       return axiosInstance(config);
+    } else if (error?.response?.status === 401 && !config?.sent) {
+      //31
+      config.sent = true;
+
+      removeUserInfo(getAuthKey());
+      const responseObject = {
+        statusCode: error?.response?.status || 500,
+        message: error?.response?.data?.message || "Something went wrong!!",
+        errorMessages: error?.response?.data?.errorMessages,
+      };
+
+      return Promise.reject(responseObject);
     } else {
       const responseObject = {
         statusCode: error?.response?.status || 500,

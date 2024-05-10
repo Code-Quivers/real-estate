@@ -1,56 +1,69 @@
 "use client";
-import { savedItemTenant, savedItemTenantFailed } from "@/components/toasts/auth/authToastMessages";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
 import { Avatar, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 
 const AvailableServiceProviderList = ({ singleReq, children }) => {
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
-  const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
+  const [saveItem, { data, isSuccess, isLoading, isError, error }] = useSaveItemMutation();
 
-  const saveTenantData = async () => {
-    const tenantData = {
-      tenantId: singleReq?.tenantId,
-      itemType: "TENANT",
+  const saveServiceProviderData = async () => {
+    const serviceProviderData = {
+      serviceProviderId: singleReq?.serviceProviderId,
+      itemType: "SERVICE",
     };
 
-    await saveItem(tenantData);
+    await saveItem(serviceProviderData);
   };
 
   // !side effect
 
   useEffect(() => {
     if (isSuccess && !isError && !isLoading) {
-      toaster.push(savedItemTenant(), {
-        placement: "bottomStart",
-      });
+      toaster.push(
+        <Notification type="success" header="success" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{data?.message || "Successfully Added"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
     }
     if (isError && !isSuccess && error && !isLoading) {
-      toaster.push(savedItemTenantFailed(error?.message), {
-        placement: "bottomStart",
-      });
+      toaster.push(
+        <Notification type="error" header="Error" closable>
+          <div>
+            <p className="text-lg font-semibold mb-2">{error?.message || "Failed to Add"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
     }
-  }, [isSuccess, isSuccess, error]);
+  }, [isSuccess, isError, data, error, toaster, isLoading]);
 
   // !
   const [
-    assignTenantToProperty,
+    assignServiceProviderToProperty,
     { data: assignRes, isLoading: isLoadingAssign, isSuccess: isSuccessAssign, isError: isErrorAssign, error: errorAssign },
-  ] = useAssignTenantToPropertyMutation();
+  ] = useAssignServiceProviderToPropertyMutation();
 
-  const handleAddTenantToProperty = async (propertyId) => {
+  const handleAddServiceProviderToProperty = async (propertyId) => {
     const assignData = {
       propertyId,
-      tenantId: singleReq?.tenantId,
+      serviceProviderId: singleReq?.serviceProviderId,
     };
 
-    await assignTenantToProperty({
+    await assignServiceProviderToProperty({
       data: assignData,
     });
   };
@@ -111,7 +124,7 @@ const AvailableServiceProviderList = ({ singleReq, children }) => {
         <div className="w-full">
           <button
             //   loading={isLoading}
-            onClick={() => saveTenantData()}
+            onClick={() => saveServiceProviderData()}
             className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
           >
             Save
@@ -135,7 +148,7 @@ const AvailableServiceProviderList = ({ singleReq, children }) => {
                     unitRes?.data?.map((singleUnit) => (
                       <div key={Math.random()}>
                         <button
-                          onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                          onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
                           className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                         >
                           <div>

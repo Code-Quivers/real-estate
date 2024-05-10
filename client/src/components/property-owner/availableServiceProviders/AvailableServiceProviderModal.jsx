@@ -151,14 +151,28 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                     {modalData?.firstName} {modalData?.lastName}
                   </h2>
                   <h3 className="text-sm font-medium">Company Name : {modalData?.companyName}</h3>
-                  <h3 className="text-base font-medium">Service Type : {modalData?.Service?.serviceType ? modalData?.Service?.serviceType : "--"}</h3>
-                  <h3 className="text-base font-medium">
-                    Service Price : ${modalData?.Service?.minPrice ? modalData?.Service?.minPrice : 0} - $
-                    {modalData?.Service?.maxPrice ? modalData?.Service?.maxPrice : 0}
-                  </h3>{" "}
-                  <h3 className="text-sm font-medium">Priority Type : {modalData?.Service?.serviceAvailability}</h3>
                   <h3 className="text-sm font-medium">
-                    Service Price Range : $ {modalData?.Service?.minPrice} - $ {modalData?.Service?.maxPrice}
+                    Service Type :{" "}
+                    {modalData?.Service?.serviceType
+                      ? modalData?.Service?.serviceType
+                          .replace(/_/g, " ")
+                          .toLowerCase()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                      : "N/A"}
+                  </h3>
+
+                  <h3 className="text-sm font-medium">
+                    Priority Type :{" "}
+                    {modalData?.Service?.serviceAvailability
+                      ? modalData?.Service?.serviceAvailability
+                          .replace(/_/g, " ")
+                          .toLowerCase()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                      : "N/A"}
+                  </h3>
+                  <h3 className="text-sm font-medium">
+                    Service Price Range : $ {modalData?.Service?.minPrice ? modalData?.Service?.minPrice?.toLocaleString() : "0"} - ${" "}
+                    {modalData?.Service?.maxPrice ? modalData?.Service?.maxPrice?.toLocaleString() : "0"}
                   </h3>
                 </div>
               </div>

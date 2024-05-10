@@ -57,12 +57,12 @@ const ServiceProviderMessagingPage = () => {
           <h2 className="font-semibold text-2xl">Conversations</h2>
         </div>
         {/* messages */}
-        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]">
-          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
+        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]  2xl:h-[85vh]">
+          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll   ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (
-                <div key={singleConversation?.conversationId}>
+                <div key={singleConversation?.conversationId} className="space-y-10">
                   <ConversationChatPerson
                     singleConversation={singleConversation}
                     paramsChatId={paramsChatId}

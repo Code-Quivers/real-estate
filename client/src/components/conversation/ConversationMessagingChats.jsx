@@ -7,7 +7,7 @@ import { getUserInfo } from "@/hooks/services/auth.service";
 import { useCallback, useEffect, useRef } from "react";
 import ChatBubbleIncoming from "./ChatBubbleIncoming";
 import ChatBubbleOutgoing from "./ChatBubbleOutgoing";
-import { getParticipantName, getProfileImageUrl } from "@/utils/conversation.utils";
+import { getParticipantName, getParticipantRole, getProfileImageUrl } from "@/utils/conversation.utils";
 import { useToaster } from "rsuite";
 import { Controller, useForm } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
@@ -133,7 +133,7 @@ const ConversationMessagingChats = () => {
   }, [dataResponse]);
 
   return (
-    <div className="flex flex-col h-[80vh] border  rounded-lg  bg-white shadow-lg">
+    <div className="flex flex-col h-[80vh]  2xl:h-[85vh] border  rounded-lg  bg-white shadow-lg">
       {conversationId && !isError ? (
         <>
           <div className="  py-2  border-b px-3  sticky top-0 flex items-center gap-3 ">
@@ -142,6 +142,7 @@ const ConversationMessagingChats = () => {
             </div>
             <div>
               <h2>{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
+              <p className="text-[10px] font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
             </div>
           </div>
           <div className="flex-1 m-1 overflow-y-scroll custom-scrollbar py-3 rounded-md bg-[#02020200]" ref={messagesContainerRef}>

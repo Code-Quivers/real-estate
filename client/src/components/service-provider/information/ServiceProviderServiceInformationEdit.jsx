@@ -3,6 +3,7 @@
 
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useUpdateServiceInformationMutation } from "@/redux/features/services/servicesApi";
+import { convertToNumber } from "@/utils/tenantEditUtils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -18,18 +19,13 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   } = useForm();
 
   const handleUpdateServiceInformation = async (data) => {
-    if (data?.minPrice) {
-      data["minPrice"] = parseFloat(data?.minPrice);
-    } else {
-      data["minPrice"] = null;
-    }
-    if (data?.maxPrice) {
-      data["maxPrice"] = parseFloat(data?.maxPrice);
-    } else {
-      data["maxPrice"] = null;
-    }
+    const obj = {
+      ...data,
+      minPrice: data?.minPrice !== undefined ? convertToNumber(data?.minPrice) : undefined,
+      maxPrice: data?.maxPrice !== undefined ? convertToNumber(data?.maxPrice) : undefined,
+    };
 
-    const res = await updateServiceInformation({ data });
+    const res = await updateServiceInformation({ data: obj });
     if (res?.data?.success === true) router.push("/service-provider");
   };
 

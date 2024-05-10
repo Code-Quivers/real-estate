@@ -46,20 +46,20 @@ const PropertyOwnerMessaging = () => {
   // !
 
   return (
-    <section className="max-w-[1200px] my-5   xl:mx-auto md:px-3 lg:px-5 px-1    2xl:px-0 ">
+    <section className="max-w-[1200px] my-5   xl:mx-auto md:px-1 lg:px-2 xl:px-5 px-1    2xl:px-0 ">
       {/* section title */}
-      <div className="flex  justify-center">
+      <div className="flex  justify-center  ">
         <h1 className="text-xl font-medium">Messages</h1>
       </div>
       {/* conversations */}
-      <div className="mt-5">
+      <div className="mt-3">
         <div className="mb-2">
           <h2 className="font-semibold text-2xl">Conversations</h2>
         </div>
         {/* messages */}
         {/* conversation */}
-        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]">
-          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
+        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]  2xl:h-[85vh]">
+          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll space-y-2 lg:space-y-1 ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (

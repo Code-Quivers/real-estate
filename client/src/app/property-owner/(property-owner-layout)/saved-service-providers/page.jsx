@@ -21,12 +21,10 @@ const PropertyOwnerSavedServiceProviders = () => {
   };
   const handleClose = () => setOpen(false);
   const query = {};
-
   const [itemType, setItemType] = useState("SERVICE");
-
   query["itemType"] = itemType;
 
-  const { data } = useGetAllSavedItemsQuery({ ...query });
+  const { data, isLoading } = useGetAllSavedItemsQuery({ ...query });
 
   return (
     <>
@@ -36,44 +34,50 @@ const PropertyOwnerSavedServiceProviders = () => {
         </div>
         {/* saved service providers */}
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {data?.data?.data?.length
-            ? data?.data?.data?.map((singleReq) => (
-                <div key={Math.random()} className="col-span-1 relative">
-                  <div className="   border grid grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
-                    <div className=" col-span-1">
-                      <Image
-                        height={80}
-                        width={80}
-                        className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
-                        src={singleReq?.ServiceProvider?.profileImage ? `${fileUrlKey()}/${singleReq?.ServiceProvider?.profileImage}` : profileLogo}
-                        alt="photo"
-                      />
-                    </div>
-                    <div className="col-span-4 p-5   flex justify-between w-full ">
-                      <div className="space-y-1">
-                        <h3 className="text-lg font-medium">
-                          <span>{singleReq?.ServiceProvider?.firstName}</span> <span>{singleReq?.ServiceProvider?.lastName}</span>
-                        </h3>
-                        <h3 className="text-sm font-medium">{"singleReq.placeToRent"}</h3>
-                        <h3 className="text-sm font-medium">{"singleReq.ServiceProvider?.affordable"}</h3>
-                      </div>
-                      <div>
-                        <div style={{ width: 80 }}>
-                          <Progress.Circle percent={20} strokeColor="green" />
-                        </div>
-                      </div>
-                    </div>
+          {!isLoading &&
+            data?.data?.data?.length > 0 &&
+            data?.data?.data?.map((singleReq) => (
+              <div key={Math.random()} className="col-span-1 relative">
+                <div className="   border grid grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
+                  <div className=" col-span-1">
+                    <Image
+                      height={80}
+                      width={80}
+                      className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
+                      src={singleReq?.ServiceProvider?.profileImage ? `${fileUrlKey()}/${singleReq?.ServiceProvider?.profileImage}` : profileLogo}
+                      alt="photo"
+                    />
                   </div>
-                  {/* remove  */}
-                  <div className="absolute top-0 right-0">
-                    <button onClick={() => handleOpen(singleReq)} className="hover:bg-black p-1 rounded-tr-lg  hover:text-white">
-                      <CgClose size={20} />
-                    </button>
+                  <div className="col-span-4 p-5   flex justify-between w-full ">
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-medium">
+                        <span>{singleReq?.ServiceProvider?.firstName}</span> <span>{singleReq?.ServiceProvider?.lastName}</span>
+                      </h3>
+                      <h3 className="text-sm font-medium">{"singleReq.placeToRent"}</h3>
+                      <h3 className="text-sm font-medium">{"singleReq.ServiceProvider?.affordable"}</h3>
+                    </div>
+                    <div>
+                      <div style={{ width: 80 }}>
+                        <Progress.Circle percent={20} strokeColor="green" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))
-            : "No data"}
+                {/* remove  */}
+                <div className="absolute top-0 right-0">
+                  <button onClick={() => handleOpen(singleReq)} className="hover:bg-black p-1 rounded-tr-lg  hover:text-white">
+                    <CgClose size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
+
+        {!isLoading && !data?.data?.data?.length && (
+          <div className="flex justify-center items-center min-h-[40vh]">
+            <h2>No Saved Service Provider Found</h2>
+          </div>
+        )}
       </section>
       {/* delete modal */}
       <Modal open={open} size="xs" backdrop="static" onClose={handleClose}>
