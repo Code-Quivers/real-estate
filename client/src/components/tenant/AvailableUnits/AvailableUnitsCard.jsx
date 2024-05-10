@@ -83,7 +83,7 @@ const AvailableUnitsCard = () => {
                 setUnits(unit);
               }}
               key={Math.random()}
-              className="border rounded-lg hover:shadow-lg hover:border transition-all duration-500 ease-in-out cursor-pointer"
+              className="border rounded-lg hover:shadow-lg shadow-md hover:border transition-all duration-500 ease-in-out cursor-pointer"
             >
               <Image
                 width={300}
@@ -120,7 +120,6 @@ const AvailableUnitsCard = () => {
         </div>
       )}
 
-      {/* Available units card end */}
       {/* Available units details using popup start */}
       <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
       {/* Available units details using popup end */}

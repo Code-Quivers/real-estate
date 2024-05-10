@@ -290,6 +290,9 @@ const getSavedUnits = async (userId: string, filters: any, options: IPaginationO
             owner: {
               select: {
                 userId: true,
+                profileImage: true,
+                firstName: true,
+                lastName: true,
               },
             },
           },
