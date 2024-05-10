@@ -33,18 +33,18 @@ const DashboardInfo = () => {
       </div>
       <div className="space-y-5 col-span-6 border bg-white  px-5 py-3   rounded-2xl">
         <p className="text-xl font-medium">Rented Collected this month</p>
-        <h2 className="text-2xl font-semibold">${data?.data?.collectedRentOfCurrentMonth || 0.0}</h2>
+        <h2 className="text-2xl font-semibold">${data?.data?.collectedRentOfCurrentMonth?.toLocaleString() || 0.0}</h2>
       </div>
       <div className="border flex col-span-6 justify-between items-start    px-5 py-3  rounded-2xl bg-white">
         <div className="space-y-5">
           <p className="text-xl font-medium">Cost this month</p>
-          <h2 className="text-2xl font-semibold">${data?.data?.costOfCurrentMonth || 0.0}</h2>
+          <h2 className="text-2xl font-semibold">${data?.data?.costOfCurrentMonth?.toLocaleString() || 0.0}</h2>
         </div>
       </div>
       <div className="border flex col-span-6 justify-between  py-3 px-5 rounded-2xl bg-white">
         <div className="space-y-5">
           <p className="text-xl font-medium">Extra Cost</p>
-          <h2 className="text-2xl font-semibold">${data?.data?.extraCost?.cost || 0.0}</h2>
+          <h2 className="text-2xl font-semibold">${data?.data?.extraCost?.cost?.toLocaleString() || 0.0}</h2>
         </div>
         <div>
           <button

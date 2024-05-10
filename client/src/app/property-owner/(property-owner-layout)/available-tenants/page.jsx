@@ -113,9 +113,9 @@ const PropertyOwnerAvailableTenants = () => {
                     <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
                       {singleReq?.firstName} {singleReq?.lastName}
                     </button>
-                    <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "-"}</h3>
+                    <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "N/A"}</h3>
                     <h3 className="text-sm font-medium">
-                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount}` : "-"}`}
+                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount?.toLocaleString()}` : "N/A"}`}
                     </h3>
                   </div>
                 </AvailableTenantsList>

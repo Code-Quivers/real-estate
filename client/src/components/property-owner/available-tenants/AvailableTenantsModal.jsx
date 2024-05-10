@@ -5,11 +5,11 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Button, Drawer, Notification, Placeholder, Popover, Progress, Whisper, toaster } from "rsuite";
+import { Drawer, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
-import { IoMdClose } from "react-icons/io";
+import moment from "moment";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -58,7 +58,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
     });
   };
 
-  // !
+  // ! side effect
   useEffect(() => {
     if (!isLoadingAssign && !isErrorAssign && isSuccessAssign && !errorAssign) {
       toaster.push(
@@ -94,33 +94,35 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
           <Drawer.Title>Tenant Details</Drawer.Title>
         </Drawer.Header>
         <Drawer.Body style={{ padding: 0 }}>
-          <div className="p-5">
+          <div className="px-5 py-2">
             {/* top items */}
 
-            <div className="flex items-center gap-5 ">
+            <div className="flex items-center gap-2 lg:gap-5 ">
               <div className="">
                 <Image
                   width={100}
                   height={100}
-                  className="w-[100px] ring-2 ring-[#545454] border-black shadow-2xl  h-[100px] object-cover   rounded-full  "
+                  className="!w-[80px]   !h-[80px] object-cover   rounded-full  "
                   src={modalData?.profileImage ? `${fileUrlKey()}/${modalData?.profileImage}` : profileLogo}
                   alt="Tenant Photo"
                 />
               </div>
-              <div className="space-y-3">
-                <h3>
+              {/* tenant data top */}
+              <div className="space-y-1">
+                <h3 className="max-md:font-medium">
                   {modalData?.firstName} {modalData?.lastName}
                 </h3>
-                <h3>Place to rent : -- ?? </h3>
-                <h3>Rent willing to pay : {modalData?.affordableRentAmount ?? "--"}</h3>
+                <h3 className="max-md:text-sm ">Place to rent : {modalData?.placeToRent ? modalData?.placeToRent : "N/A"} </h3>
+                <h3 className="max-md:text-sm">
+                  Rent willing to pay : {modalData?.affordableRentAmount ? modalData?.affordableRentAmount?.toLocaleString() : "N/A"}
+                </h3>
               </div>
             </div>
 
             {/* action */}
-            <div className="flex px-3 py-5 gap-2">
+            <div className="flex  py-3 gap-2">
               <div className="w-full">
                 <button
-                  //   loading={isLoading}
                   onClick={() => saveTenantData()}
                   className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
                 >
@@ -131,7 +133,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
               <div className="w-full">
                 <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
               </div>
-              {/*  */}
+              {/* whisper */}
               <div className="w-full">
                 <Whisper
                   preventOverflow
@@ -191,6 +193,69 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                 >
                   <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
                 </Whisper>
+              </div>
+            </div>
+
+            {/* Tenant data bottom */}
+            <div className="border-t pt-2 mt-2 space-y-2">
+              {/* Personal Information */}
+              <div className="border p-1 rounded-md  space-y-1">
+                <h4 className="text-xs font-medium">Personal Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Date Of Birth</h4>
+                    <h4>{moment(modalData?.dateOfBirth).format("L")}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Present Address</h4>
+                    <h4>{modalData?.presentAddress || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Phone Number</h4>
+                    <h4>{modalData?.phoneNumber ? modalData?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
+                  </div>
+                </div>
+              </div>
+              {/* Personal Information
+               */}
+              <div className="border p-1 rounded-md  space-y-1">
+                <h4 className="text-xs font-medium">Income Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Current Employer/Business Name / </h4>
+                    <h4>{modalData?.CurrentEmployerOrBusinessName ? modalData?.CurrentEmployerOrBusinessName : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Job Title</h4>
+                    <h4>{modalData?.JobTitle || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Current Credit Score</h4>
+                    <h4>{modalData?.CurrentCreditScore || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Annual Salary</h4>
+                    <h4>{modalData?.AnnualSalary ? `$${modalData?.AnnualSalary.toLocaleString()}` : "N/A"}</h4>
+                  </div>
+                </div>
+                {/* Other Information    */}
+              </div>
+              <div className="border p-1 rounded-md  space-y-1">
+                <h4 className="text-xs font-medium">Other Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Number Of Member </h4>
+                    <h4>{modalData?.numberOfMember ? modalData?.numberOfMember : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Does have Allergies</h4>
+                    <h4>{modalData?.allergies !== undefined && modalData?.allergies !== null ? (modalData?.allergies ? "Yes" : "No") : "-"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Is Smoker</h4>
+                    <h4>{modalData?.isSmoker !== undefined && modalData?.isSmoker !== null ? (modalData?.isSmoker ? "Yes" : "No") : "-"}</h4>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
