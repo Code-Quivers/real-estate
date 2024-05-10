@@ -129,19 +129,31 @@ const ServiceProviderProfileInformation = () => {
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
                 <p className="text-lg font-medium">
-                  {myProfileData?.Service?.serviceAvailability ? myProfileData?.Service?.serviceAvailability : "--"}
+                  {myProfileData?.Service?.serviceAvailability
+                    ? myProfileData?.Service?.serviceAvailability
+                        .replace(/_/g, " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())
+                    : "--"}
                 </p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Type</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ? myProfileData?.Service?.serviceType : "--"}</p>
+                <p className="text-lg font-medium">
+                  {myProfileData?.Service?.serviceType
+                    ? myProfileData?.Service?.serviceType
+                        .replace(/_/g, " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())
+                    : "--"}
+                </p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice}$` : "--"} <span>-</span>{" "}
-                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice}$` : "--"}
+                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice?.toLocaleString()}$` : "--"} <span>-</span>{" "}
+                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice?.toLocaleString()}$` : "--"}
                 </p>
               </div>
             </div>

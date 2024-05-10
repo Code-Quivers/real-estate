@@ -52,7 +52,7 @@ const PropertyOwnerSidebar = () => {
     fontSize: "25px",
   };
   return (
-    <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
+    <div className="h-screen shadow-md sticky top-0 overflow-y-auto custom-scrollbar">
       <Sidenav expanded={true} className="h-screen !bg-[#29429f]" appearance="inverse">
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
