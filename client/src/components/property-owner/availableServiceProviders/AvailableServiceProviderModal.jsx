@@ -121,7 +121,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
             margin: 0,
           }}
         >
-          <div className="py5">
+          <div className="px-5 sm:p-3">
             {/* top items */}
 
             <div className=" ">
@@ -183,7 +183,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
             </div>
           </div>
           {/* buttons */}
-          <div className="flex px-3 py-3 gap-2">
+          <div className="flex mx-8 sm:mx-0 px-3 py-3 gap-2">
             <div className="w-full">
               <button
                 onClick={handleSaveServiceProvider}
@@ -259,7 +259,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
             </div>
           </div>
           {/* middle item */}
-          <div className="space-y-5  border-t pt-2 px-3">
+          <div className="space-y-5  border-t pt-2 ml-5 sm:ml-0 px-3">
             <div className="">
               <h4 className="text-sm font-medium">Description</h4>
               <p className="text-sm text-justify ">{modalData?.Service?.serviceDescription}</p>

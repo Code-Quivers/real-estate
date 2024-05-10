@@ -29,12 +29,7 @@ const PropertyOwnerInformation = () => {
         <div>
           <div className=" col-span-1 mr-5   flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            {isLoading ? (
-              <span className="text-gray-400">Loading...</span>
-            ) : (
-              <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />
-            )}
-            {/* {myProfileData?.scoreRatio?.score >= 0 && <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />} */}
+            <Score score={myProfileData?.scoreRatio?.score} total={myProfileData?.scoreRatio?.total} />
           </div>
         </div>
       </div>
@@ -73,7 +68,7 @@ const PropertyOwnerInformation = () => {
             </div>
             <div className="">
               <h2 className="text-gray-600">Phone Number</h2>
-              <p className="text-lg">{myProfileData?.phoneNumber ?? "--"}</p>
+              <p className="text-lg">{myProfileData?.phoneNumber ? myProfileData?.phoneNumber : "N/A"}</p>
             </div>
             <div className="">
               <h2 className="text-gray-600">Account Registered</h2>
@@ -81,7 +76,7 @@ const PropertyOwnerInformation = () => {
             </div>
             <div className="">
               <h2 className="text-gray-600">Total Units</h2>
-              <p className="">{myProfileData?._count?.properties ?? "--"}</p>
+              <p className="">{myProfileData?._count?.properties ? myProfileData?._count?.properties : "N/A"}</p>
             </div>
           </div>
         </div>
