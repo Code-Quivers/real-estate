@@ -5,7 +5,7 @@ import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/s
 import Image from "next/image";
 import { useEffect } from "react";
 import { CgClose } from "react-icons/cg";
-import { Button, Message, useToaster } from "rsuite";
+import { Button, Notification, useToaster } from "rsuite";
 
 const RemoveFromSavedServiceProviderModal = ({ modalData, handleClose }) => {
   const [removeFromSavedItem, { isLoading, isSuccess, isError, error, reset }] = useRemoveFromSavedItemMutation();
@@ -20,16 +20,27 @@ const RemoveFromSavedServiceProviderModal = ({ modalData, handleClose }) => {
   useEffect(() => {
     if (!isLoading && !isError && isSuccess && !error) {
       toaster.push(
-        <Message showIcon type="success" closable>
-          Successfully removed from saved Service Providers
-        </Message>,
+        <Notification showIcon header="Success" type="success" closable>
+          Successfully Removed
+        </Notification>,
         {
-          placement: "topCenter",
+          placement: "bottomStart",
           duration: 2000,
         },
       );
       reset();
       handleClose();
+    }
+    if (!isLoading && isError && !isSuccess && error) {
+      toaster.push(
+        <Notification showIcon type="Error" header="Error" closable>
+          {error?.message || "Failed to Remove"}
+        </Notification>,
+        {
+          placement: "bottomStart",
+          duration: 2000,
+        },
+      );
     }
   }, [isLoading, isError, isSuccess, error]);
   return (

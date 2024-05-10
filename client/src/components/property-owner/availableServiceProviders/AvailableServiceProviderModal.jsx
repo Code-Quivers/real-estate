@@ -145,12 +145,16 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                 </div>
               </div>
 
-              <div className="mt-2">
+              <div>
                 <div className="px-3 space-y-0.5  ">
                   <h2 type="button" className="text-sm  text-primary cursor-pointer font-bold">
                     {modalData?.firstName} {modalData?.lastName}
                   </h2>
+                  <h3 className="text-sm font-medium">Phone Number : {modalData?.phoneNumber}</h3>
                   <h3 className="text-sm font-medium">Company Name : {modalData?.companyName}</h3>
+                  <h3 className="text-sm font-medium">Company Phone Number : {modalData?.companyPhoneNumber}</h3>
+                  <h3 className="text-sm font-medium">Company Email : {modalData?.companyEmailAddress}</h3>
+                  <h3 className="text-sm font-medium">Company Address : {modalData?.companyAddress}</h3>
                   <h3 className="text-sm font-medium">
                     Service Type :{" "}
                     {modalData?.Service?.serviceType
@@ -179,7 +183,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
             </div>
           </div>
           {/* buttons */}
-          <div className="flex px-3 py-5 gap-2">
+          <div className="flex px-3 py-3 gap-2">
             <div className="w-full">
               <button
                 onClick={handleSaveServiceProvider}
@@ -255,13 +259,13 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
             </div>
           </div>
           {/* middle item */}
-          <div className="space-y-5  border-t pt-3 px-3">
+          <div className="space-y-5  border-t pt-2 px-3">
             <div className="">
-              <h4 className="text-lg font-medium">Description</h4>
+              <h4 className="text-sm font-medium">Description</h4>
               <p className="text-sm text-justify ">{modalData?.Service?.serviceDescription}</p>
             </div>
             <div className="">
-              <h4 className="text-lg font-medium">Cancellation Policy</h4>
+              <h4 className="text-sm font-medium">Cancellation Policy</h4>
               <p className="text-sm text-justify ">{modalData?.Service?.serviceCancellationPolicy}</p>
             </div>
           </div>

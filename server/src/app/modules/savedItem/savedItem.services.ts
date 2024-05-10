@@ -203,7 +203,11 @@ const getSavedServiceProviders = async (userId: string, filters: any, options: I
               createdAt: "desc",
             },
       include: {
-        serviceProvider: true,
+        serviceProvider: {
+          include: {
+            Service: true,
+          },
+        },
       },
     });
     const total = await prisma.savedItem.count({
