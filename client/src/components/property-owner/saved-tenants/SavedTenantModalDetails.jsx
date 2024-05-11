@@ -8,6 +8,7 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 import RemoveFromAvailableTenantsModal from "../available-tenants/RemoveFromSavedTenantsModal";
+import moment from "moment";
 
 const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -80,27 +81,31 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
           <div className="p-5">
             {/* top items */}
 
-            <div className="flex items-center gap-5 ">
+            <div className="flex items-center gap-2 lg:gap-5 ">
               <div className="">
                 <Image
                   width={100}
                   height={100}
-                  className="w-[100px] ring-2 ring-[#545454] border-black shadow-2xl  h-[100px] object-cover   rounded-full  "
+                  className="!w-[80px]   !h-[80px] object-cover   rounded-full  "
                   src={modalData?.tenant?.profileImage ? `${fileUrlKey()}/${modalData?.tenant?.profileImage}` : profileLogo}
                   alt="Tenant Photo"
                 />
               </div>
-              <div className="space-y-3">
-                <h3>
+              {/* tenant data top */}
+              <div className="space-y-1">
+                <h3 className="max-md:font-medium">
                   {modalData?.tenant?.firstName} {modalData?.tenant?.lastName}
                 </h3>
-                <h3>Place to rent : -- ?? </h3>
-                <h3>Rent willing to pay : {modalData?.tenant?.affordableRentAmount ?? "--"}</h3>
+                <h3 className="max-md:text-sm ">Place to rent : {modalData?.tenant?.placeToRent ? modalData?.tenant?.placeToRent : "N/A"} </h3>
+                <h3 className="max-md:text-sm">
+                  Rent willing to pay :{" "}
+                  {modalData?.tenant?.affordableRentAmount ? `$${modalData?.tenant?.affordableRentAmount?.toLocaleString()}` : "N/A"}
+                </h3>
               </div>
             </div>
 
             {/* action */}
-            <div className="flex px-3 py-5 gap-2">
+            <div className="flex  py-3 gap-2">
               <div className="w-full">
                 <button
                   //   loading={isLoading}
@@ -174,6 +179,80 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                 >
                   <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
                 </Whisper>
+              </div>
+            </div>
+            {/* Tenant data bottom */}
+            <div className="border-t pt-2 mt-2 space-y-2">
+              {/* Personal Information */}
+              <div className="border p-2 rounded-md  space-y-2">
+                <h4 className="text-xs font-medium">Personal Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Date Of Birth</h4>
+                    <h4>{modalData?.tenant?.dateOfBirth ? moment(modalData?.tenant?.dateOfBirth).format("L") : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Present Address</h4>
+                    <h4>{modalData?.tenant?.presentAddress || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Phone Number</h4>
+                    <h4>{modalData?.tenant?.phoneNumber ? modalData?.tenant?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
+                  </div>
+                </div>
+              </div>
+              {/* Personal Information
+               */}
+              <div className="border p-2 rounded-md  space-y-2">
+                <h4 className="text-xs font-medium">Income Information</h4>
+                <div className="*:text-sm  space-y-1 ">
+                  <div className="flex justify-between items-center">
+                    <h4>Current Employer/Business Name </h4>
+                    <h4>{modalData?.tenant?.CurrentEmployerOrBusinessName ? modalData?.tenant?.CurrentEmployerOrBusinessName : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Job Title</h4>
+                    <h4>{modalData?.tenant?.JobTitle || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Current Credit Score</h4>
+                    <h4>{modalData?.tenant?.CurrentCreditScore || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Annual Salary</h4>
+                    <h4>{modalData?.tenant?.AnnualSalary ? `$${modalData?.tenant?.AnnualSalary.toLocaleString()}` : "N/A"}</h4>
+                  </div>
+                </div>
+                {/* Other Information    */}
+              </div>
+              <div className="border p-2 rounded-md  space-y-1">
+                <h4 className="text-xs font-medium">Other Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Number Of Member </h4>
+                    <h4>{modalData?.tenant?.numberOfMember ? modalData?.tenant?.numberOfMember : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Does have Allergies</h4>
+                    <h4>
+                      {modalData?.tenant?.allergies !== undefined && modalData?.tenant?.allergies !== null
+                        ? modalData?.tenant?.allergies
+                          ? "Yes"
+                          : "No"
+                        : "-"}
+                    </h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Is Smoker</h4>
+                    <h4>
+                      {modalData?.tenant?.isSmoker !== undefined && modalData?.tenant?.isSmoker !== null
+                        ? modalData?.tenant?.isSmoker
+                          ? "Yes"
+                          : "No"
+                        : "-"}
+                    </h4>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

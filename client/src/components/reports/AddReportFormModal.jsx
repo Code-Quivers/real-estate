@@ -316,6 +316,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                         <SelectPicker
                           loading={isLoadingMyUnits}
                           size="lg"
+                          searchable={false}
                           data={
                             myUnitsData?.data?.map((item) => ({
                               label: item?.title,
@@ -326,7 +327,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                                 numOfBed: item?.numOfBed,
                                 numOfBath: item?.numOfBath,
                                 address: item?.address,
-                                monthlyRent: item?.monthlyRent,
+                                monthlyRent: item?.monthlyRent?.toLocaleString(),
                               },
                             })) || []
                           }
@@ -343,10 +344,10 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                                     height={100}
                                     src={item?.others?.image && `${fileUrlKey()}/${item?.others?.image}`}
                                     alt="Profile Image"
-                                    className="w-[80px] h-[80px] object-cover"
+                                    className="w-[80px] h-[80px] rounded-md object-cover"
                                   />
                                 </div>
-                                <div className="space-y-1">
+                                <div className="space-y-0.5">
                                   <h2 className="font-semibold text-sm">{value}</h2>
                                   <h2 className="text-md">${item.others?.monthlyRent}</h2>
                                   <h2 className="text-sm">
@@ -385,7 +386,22 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       }}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Collected Rent..." />
+                          <InputNumber
+                            prefix="$"
+                            min={0}
+                            step={0.1}
+                            className="!w-full"
+                            {...field}
+                            type="text"
+                            placeholder="Collected Rent..."
+                            formatter={(value) => {
+                              if (!isNaN(value)) {
+                                return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                              }
+                              return "";
+                            }}
+                            parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                          />
                           <Form.ErrorMessage
                             show={(!!errors?.monthlyCollectedRent && !!errors?.monthlyCollectedRent?.message) || false}
                             placement="topEnd"
@@ -411,7 +427,22 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Expenses..." />
+                          <InputNumber
+                            prefix="$"
+                            min={0}
+                            step={0.1}
+                            className="!w-full"
+                            {...field}
+                            type="text"
+                            placeholder="Expenses..."
+                            formatter={(value) => {
+                              if (!isNaN(value)) {
+                                return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                              }
+                              return "";
+                            }}
+                            parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                          />
 
                           <Form.ErrorMessage show={(!!errors?.monthlyExpenses && !!errors?.monthlyExpenses?.message) || false} placement="topEnd">
                             {errors?.monthlyExpenses?.message}
@@ -442,7 +473,22 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       }}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Annual Rent..." />
+                          <InputNumber
+                            prefix="$"
+                            min={0}
+                            step={0.1}
+                            className="!w-full"
+                            {...field}
+                            type="text"
+                            formatter={(value) => {
+                              if (!isNaN(value)) {
+                                return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                              }
+                              return "";
+                            }}
+                            parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                            placeholder="Annual Rent..."
+                          />
                           <Form.ErrorMessage show={(!!errors?.annualRent && !!errors?.annualRent?.message) || false} placement="topEnd">
                             {errors?.annualRent?.message}
                           </Form.ErrorMessage>
@@ -466,7 +512,22 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       }}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Collected Rent..." />
+                          <InputNumber
+                            prefix="$"
+                            min={0}
+                            step={0.1}
+                            formatter={(value) => {
+                              if (!isNaN(value)) {
+                                return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                              }
+                              return "";
+                            }}
+                            parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                            className="!w-full"
+                            {...field}
+                            type="text"
+                            placeholder="Collected Rent..."
+                          />
                           <Form.ErrorMessage
                             show={(!!errors?.annualCollectedRent && !!errors?.annualCollectedRent?.message) || false}
                             placement="topEnd"
@@ -492,7 +553,22 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                       control={control}
                       render={({ field }) => (
                         <div className="rs-form-control-wrapper ">
-                          <InputNumber prefix="$" min={0} step={0.1} className="!w-full" {...field} type="text" placeholder="Expenses..." />
+                          <InputNumber
+                            prefix="$"
+                            min={0}
+                            step={0.1}
+                            className="!w-full"
+                            {...field}
+                            type="text"
+                            placeholder="Expenses..."
+                            formatter={(value) => {
+                              if (!isNaN(value)) {
+                                return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                              }
+                              return "";
+                            }}
+                            parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                          />
                           <Form.ErrorMessage show={(!!errors?.annualExpenses && !!errors?.annualExpenses?.message) || false} placement="topEnd">
                             {errors?.annualExpenses?.message}
                           </Form.ErrorMessage>

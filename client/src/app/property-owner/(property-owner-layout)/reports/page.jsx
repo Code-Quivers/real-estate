@@ -1,7 +1,10 @@
 "use client";
 import AddReportFormModal from "@/components/reports/AddReportFormModal";
 import SingleReport from "@/components/reports/SingleReport";
+import { fileUrlKey } from "@/configs/envConfig";
+import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { useGetPropertyOwnerReportsQuery } from "@/redux/features/reports/reportsApi";
+import Image from "next/image";
 import { useState } from "react";
 import { Button, DateRangePicker, SelectPicker } from "rsuite";
 
@@ -27,7 +30,12 @@ const reportType = [
 const PropertyOwnerReportPage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const handleClose = () => setIsOpenAdd(false);
+  const query = {};
+  const [selectedProperty, setSelectedProperty] = useState("");
+
   const { data, isLoading } = useGetPropertyOwnerReportsQuery();
+  const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
+
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5 2xl:px-0 ">
       <div className="flex justify-center  py-5">
@@ -40,7 +48,49 @@ const PropertyOwnerReportPage = () => {
           <SelectPicker size="lg" data={reportType} searchable={false} placeholder="Report Type" className="!w-full" />
         </div>
         <div className="">
-          <SelectPicker size="lg" data={reportType} searchable={false} placeholder="Property" className="!w-full" />
+          <SelectPicker
+            size="lg"
+            data={
+              myUnitsData?.data?.map((item) => ({
+                label: item?.title,
+                value: item?.propertyId,
+                others: {
+                  image: item?.images[0],
+                  tenant: item?.Tenant,
+                  numOfBed: item?.numOfBed,
+                  numOfBath: item?.numOfBath,
+                  address: item?.address,
+                  monthlyRent: item?.monthlyRent?.toLocaleString(),
+                },
+              })) || []
+            }
+            searchable={false}
+            placeholder="Property"
+            className="!w-full"
+            renderMenuItem={(value, item) => {
+              return (
+                <div className="  flex gap-2 border items-center">
+                  <div>
+                    <Image
+                      width={100}
+                      height={100}
+                      src={item?.others?.image && `${fileUrlKey()}/${item?.others?.image}`}
+                      alt="Profile Image"
+                      className="w-[80px] h-[80px] rounded-md object-cover"
+                    />
+                  </div>
+                  <div className="*:text-balance *:text-sm">
+                    <h2 className="font-medium ">{value}</h2>
+                    <h2 className="">${item.others?.monthlyRent}</h2>
+                    <h2 className="">
+                      {item?.others?.numOfBed} Beds {item?.others?.numOfBath} Baths
+                    </h2>
+                    <h2 className="">{item.others?.address ?? "-"}</h2>
+                  </div>
+                </div>
+              );
+            }}
+          />
         </div>
         <div className="">
           <DateRangePicker
