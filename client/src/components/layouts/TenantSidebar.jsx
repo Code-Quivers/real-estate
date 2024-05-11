@@ -24,7 +24,10 @@ const TenantSidebar = () => {
 
   const activeLink = usePathname();
   const router = useRouter();
-  const logOut = () => {
+
+  // Clear all caches
+
+  const logOut = async () => {
     removeUserInfo(getAuthKey());
     router.push("/");
   };
