@@ -27,9 +27,7 @@ const PropertyOwnerSidebar = () => {
 
   const { data: myProfileData } = dataResponse || {};
 
-  // console.log(data);
-
-  const logOut = () => {
+  const logOut = async () => {
     removeUserInfo(getAuthKey());
     router.push("/");
   };
