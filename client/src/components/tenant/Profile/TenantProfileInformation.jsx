@@ -26,19 +26,19 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Current Address</h2>
-            <p> {data?.presentAddress ? data?.presentAddress : "-"}</p>
+            <p> {data?.presentAddress ? data?.presentAddress : "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Date Of Birth</h2>
-            <p>{data?.dateOfBirth ? moment(data?.dateOfBirth).format("MMMM Do YYYY") : "-"}</p>
+            <p>{data?.dateOfBirth ? moment(data?.dateOfBirth).format("MMMM Do YYYY") : "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Phone Number</h2>
-            <p>{data?.phoneNumber ? data?.phoneNumber : "-"}</p>
+            <p>{data?.phoneNumber ? data?.phoneNumber.replace(/\d/g, "X") : "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Social Security Number</h2>
-            <p>{data?.socialSecurityNumber ? "xxx-xx-" + data.socialSecurityNumber.slice(-4) : "-"}</p>
+            <p>{data?.socialSecurityNumber ? "xxx-xx-" + data.socialSecurityNumber.slice(-4) : "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Email Address</h2>
@@ -46,12 +46,12 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Place To Rent</h2>
-            <p> {data?.placeToRent ? data?.placeToRent : "-"}</p>
+            <p> {data?.placeToRent ? data?.placeToRent : "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Do you have a criminal record?</h2>
             <p>
-              {data?.isCriminalRecord === true ? "Yes," : data?.isCriminalRecord === false ? "No" : "-"}{" "}
+              {data?.isCriminalRecord === true ? "Yes," : data?.isCriminalRecord === false ? "No" : "N/A"}{" "}
               {data?.criminalRecordDescription ? `(${data?.criminalRecordDescription})` : ""}
             </p>
           </div>
@@ -71,27 +71,27 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
         <div className="grid p-5 border-t md:grid-cols-2 gap-5 gap-x-10 font-medium">
           <div>
             <h2 className="text-gray-600">Previous Landlord Name</h2>
-            <p>{data?.prevLandlordName ? data?.prevLandlordName : "-"}</p>
+            <p>{data?.prevLandlordName ? data?.prevLandlordName : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Previous landlord contact info</h2>
-            <p> {data?.prevLandlordContactInfo ? data?.prevLandlordContactInfo : "-"}</p>
+            <p> {data?.prevLandlordContactInfo ? data?.prevLandlordContactInfo : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Length of previous tenancy</h2>
-            <p>{data?.lengthOfPrevTenancy ? data?.lengthOfPrevTenancy : "-"}</p>
+            <p>{data?.lengthOfPrevTenancy ? data?.lengthOfPrevTenancy : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Rent willing to pay (monthly) </h2>
-            <p>{data?.affordableRentAmount ? data?.affordableRentAmount : "-"}</p>
+            <p>{data?.affordableRentAmount ? data?.affordableRentAmount : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Reason for leaving</h2>
-            <p>{data?.leavingReason ? data?.leavingReason : "-"}</p>
+            <p>{data?.leavingReason ? data?.leavingReason : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Any Eviction or Late Payment</h2>
-            <p>{data?.isAnyLatePaymentReason ? data?.isAnyLatePaymentReason : "-"}</p>
+            <p>{data?.isAnyLatePaymentReason ? data?.isAnyLatePaymentReason : "N/A"}</p>
           </div>
         </div>
       </div>
@@ -109,27 +109,27 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
         <div className="grid p-5 border-t md:grid-cols-2 gap-5 gap-x-10 font-medium">
           <div>
             <h2 className="text-gray-600">Current Employer/Business Name</h2>
-            <p>{data?.CurrentEmployerOrBusinessName ? data?.CurrentEmployerOrBusinessName : "-"}</p>
+            <p>{data?.CurrentEmployerOrBusinessName ? data?.CurrentEmployerOrBusinessName : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Current Employer/Business Contact Info</h2>
-            <p> {data?.CurrentEmployerOrBusinessContactInfo ? data?.CurrentEmployerOrBusinessContactInfo : "-"}</p>
+            <p> {data?.CurrentEmployerOrBusinessContactInfo ? data?.CurrentEmployerOrBusinessContactInfo : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Job Title</h2>
-            <p>{data?.JobTitle ? data?.JobTitle : "-"}</p>
+            <p>{data?.JobTitle ? data?.JobTitle : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Annual Salary</h2>
-            <p>{data?.AnnualSalary ? `$ ${parseFloat(data.AnnualSalary).toLocaleString()}` : "-"}</p>
+            <p>{data?.AnnualSalary ? `$ ${parseFloat(data.AnnualSalary).toLocaleString()}` : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Other Source of income</h2>
-            <p>{data?.OtherIncomeSource ? data?.OtherIncomeSource : "-"}</p>
+            <p>{data?.OtherIncomeSource ? data?.OtherIncomeSource : "N/A"}</p>
           </div>
           <div>
             <h2 className="text-gray-600">Current Credit Score</h2>
-            <p>{data?.CurrentCreditScore ? data?.CurrentCreditScore : "-"}</p>
+            <p>{data?.CurrentCreditScore ? data?.CurrentCreditScore : "N/A"}</p>
           </div>
         </div>
       </div>

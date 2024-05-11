@@ -21,20 +21,13 @@ const TenantProfile = () => {
         <div className="col-span-4 flex max-md:flex-col justify-start max-md:gap-2 md:justify-start md:items-center md:gap-3">
           <div>
             <Avatar circle size="xl" src={data?.profileImage && `${fileUrlKey()}/${data?.profileImage}`} />
-            {/* <Image
-              height={150}
-              width={150}
-              src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
-              className="max-md:w-[80px] md:w-[150px] md:h-[150px]  rounded-full object-cover select-none"
-              alt="Profile Image"
-            /> */}
           </div>
           <div>
             <h4 className="text-lg font-medium">
               {data?.firstName} {data?.lastName}
             </h4>
             <h4 className="text-lg font-medium"> {data?.user?.email} </h4>
-            <h4 className="text-lg font-medium">{data?.phoneNumber ? data?.phoneNumber : "--"}</h4>
+            <h4 className="text-lg font-medium">Phone Number : {data?.phoneNumber ? data?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
           </div>
         </div>
         {/* score */}
