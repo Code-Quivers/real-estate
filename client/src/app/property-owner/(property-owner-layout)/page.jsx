@@ -23,7 +23,7 @@ const PropertyOwnerInformation = () => {
               Name : {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
             </h4>
             <h4>Email Address : {myProfileData?.user?.email ?? "--"}</h4>
-            <h4>Phone Number : {myProfileData?.phoneNumber ?? "--"}</h4>
+            <h4>Phone Number : {myProfileData?.phoneNumber?.replace(/\d/g, "X") ?? "N/A"}</h4>
           </div>
         </div>
         <div>
@@ -68,7 +68,7 @@ const PropertyOwnerInformation = () => {
             </div>
             <div className="">
               <h2 className="text-gray-600">Phone Number</h2>
-              <p className="text-lg">{myProfileData?.phoneNumber ? myProfileData?.phoneNumber : "N/A"}</p>
+              <p className="text-lg">{myProfileData?.phoneNumber ? myProfileData?.phoneNumber.replace(/\d/g, "X") : "N/A"}</p>
             </div>
             <div className="">
               <h2 className="text-gray-600">Account Registered</h2>

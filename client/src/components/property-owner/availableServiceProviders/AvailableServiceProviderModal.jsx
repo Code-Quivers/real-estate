@@ -150,11 +150,15 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                   <h2 type="button" className="text-sm  text-primary cursor-pointer font-bold">
                     {modalData?.firstName} {modalData?.lastName}
                   </h2>
-                  <h3 className="text-sm font-medium">Phone Number : {modalData?.phoneNumber}</h3>
-                  <h3 className="text-sm font-medium">Company Name : {modalData?.companyName}</h3>
-                  <h3 className="text-sm font-medium">Company Phone Number : {modalData?.companyPhoneNumber}</h3>
+                  <h3 className="text-sm font-medium">
+                    Phone Number : {modalData?.phoneNumber ? modalData?.phoneNumber?.replace(/\d/g, "X") : "N/A"}
+                  </h3>
+                  <h3 className="text-sm font-medium">Company Name : {modalData?.companyName ? modalData?.companyName : "N/A"}</h3>
+                  <h3 className="text-sm font-medium">
+                    Company Phone Number : {modalData?.companyPhoneNumber ? modalData?.companyPhoneNumber : "N/A"}
+                  </h3>
                   <h3 className="text-sm font-medium">Company Email : {modalData?.companyEmailAddress}</h3>
-                  <h3 className="text-sm font-medium">Company Address : {modalData?.companyAddress}</h3>
+                  <h3 className="text-sm font-medium">Company Address : {modalData?.companyAddress ? modalData?.companyAddress : "N/A"}</h3>
                   <h3 className="text-sm font-medium">
                     Service Type :{" "}
                     {modalData?.Service?.serviceType

@@ -96,11 +96,22 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                   {modalData?.serviceProvider?.firstName} {modalData?.serviceProvider?.lastName}
                 </h2>
                 <h3 className="text-sm font-medium">Company Name : {modalData?.serviceProvider?.companyName}</h3>
-                <h3 className="text-sm font-medium">Phone Number : {modalData?.serviceProvider?.phoneNumber}</h3>
-                <h3 className="text-sm font-medium">Company Name : {modalData?.serviceProvider?.companyName}</h3>
-                <h3 className="text-sm font-medium">Company Phone Number : {modalData?.serviceProvider?.companyPhoneNumber}</h3>
-                <h3 className="text-sm font-medium">Company Email : {modalData?.serviceProvider?.companyEmailAddress}</h3>
-                <h3 className="text-sm font-medium">Company Address : {modalData?.serviceProvider?.companyAddress}</h3>
+                <h3 className="text-sm font-medium">
+                  Phone Number : {modalData?.serviceProvider?.phoneNumber ? modalData?.serviceProvider?.phoneNumber.replace(/\d/g, "X") : "N/A"}
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Company Name : {modalData?.serviceProvider?.companyName ? modalData?.serviceProvider?.companyName : "N/A"}
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Company Phone Number :{" "}
+                  {modalData?.serviceProvider?.companyPhoneNumber ? modalData?.serviceProvider?.companyPhoneNumber.replace(/\d/g, "X") : "N/A"}
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Company Email : {modalData?.serviceProvider?.companyEmailAddress ? modalData?.serviceProvider?.companyEmailAddress : "N/A"}
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Company Address : {modalData?.serviceProvider?.companyAddress ? modalData?.serviceProvider?.companyAddress : "N/A"}
+                </h3>
                 <h3 className="text-sm font-medium">
                   Service Type :{" "}
                   {modalData?.serviceProvider?.Service?.serviceType

@@ -22,7 +22,7 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
-import { calculatePropertyScore, extractNonNullValues } from "./properties.utils";
+import { calculatePropertyScore } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -146,8 +146,6 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   //
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    console.log("-----------------------------------");
-    console.log(whereConditions);
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
@@ -355,10 +353,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: any = extractNonNullValues({
+    const updatedPropertyData: any = {
       title,
       address,
-      images: imagesPath,
       allowedPets,
       description,
       maintenanceCoveredOwner,
@@ -368,7 +365,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
       schools,
       universities,
       monthlyRent,
-    });
+    };
+
+    if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
 
     //
     const updatedProperty = await transactionClient.property.update({

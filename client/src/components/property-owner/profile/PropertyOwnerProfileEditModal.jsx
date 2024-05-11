@@ -2,17 +2,18 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Modal } from "rsuite";
+import { Button, Input, MaskedInput, Modal, Notification, useToaster } from "rsuite";
 import PropertyOwnerUploadImageEdit from "./PropertyOwnerUploadImageEdit";
 import { useUpdatePropertyOwnerProfileMutation } from "@/redux/features/propertyOwner/propertyOwnerApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => {
-  const [updatePropertyOwnerProfile, { isLoading, isError, isSuccess, error, reset }] = useUpdatePropertyOwnerProfileMutation();
+  const [updatePropertyOwnerProfile, { data: updatedRes, isLoading, isError, isSuccess, error, reset }] = useUpdatePropertyOwnerProfileMutation();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset: resetForm,
   } = useForm();
 
   const handleUpdateProfileInformation = async (data) => {
@@ -33,13 +34,39 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
     });
     if (res?.data?.success === true) handleClose();
   };
-
+  // ! side effect
+  const toaster = useToaster();
   useEffect(() => {
     if (!isLoading && isSuccess && !isError) {
-      //
+      toaster.push(
+        <Notification type="success" header="Success" closable>
+          {updatedRes?.message || "Successfully Updated"}
+        </Notification>,
+        { placement: "bottomStart", duration: 5000 },
+      );
+      reset();
+      handleClose();
+      resetForm();
     }
-  }, []);
+    // if failed
+    if (!isLoading && !isSuccess && isError) {
+      toaster.push(
+        <Notification header="Failed" type="error" closable>
+          {error?.message || "Failed to Updated"}
+        </Notification>,
+        { placement: "bottomStart", duration: 5000 },
+      );
+      reset();
+      handleClose();
+      resetForm();
+    }
+  }, [isLoading, isSuccess, isError, updatedRes, error, reset]);
 
+  const [optionNumber] = useState({
+    name: "US phone number",
+    mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    placeholder: "(XXX) XXX-XXX",
+  });
   return (
     <Modal
       size="lg"
@@ -93,7 +120,18 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
                   render={({ field }) => (
                     <div className="space-y-1">
                       <label className="text-base font-medium">Phone Number</label>
-                      <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
+                      {/* <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" /> */}
+                      <MaskedInput
+                        className="!w-full"
+                        {...field}
+                        defaultValue={myProfileData?.phoneNumber}
+                        mask={optionNumber.mask}
+                        guide
+                        // showMask
+                        keepCharPositions={true}
+                        placeholder={optionNumber.placeholder}
+                        placeholderChar={"_"}
+                      />
                     </div>
                   )}
                 />

@@ -328,8 +328,6 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
     });
 
-    console.log("order data", orderData);
-
     const dueMonths = orderData.length > 0 ? differenceInMonths(orderData[0].updatedAt) : 1;
 
     const tenantUnitInfo = {
@@ -337,7 +335,6 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
       dueMonths: dueMonths,
     };
-    console.log("due month", tenantUnitInfo);
 
     return tenantUnitInfo;
   });

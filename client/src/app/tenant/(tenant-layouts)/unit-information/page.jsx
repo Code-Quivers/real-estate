@@ -8,6 +8,7 @@ import { useGetTenantMyUnitInformationQuery } from "@/redux/features/tenant/tena
 import { fileUrlKey } from "@/configs/envConfig";
 import TenantMakePaymentModal from "@/components/tenant/unitInformation/TenantMakePaymentModal";
 import { useRouter } from "next/navigation";
+import Score from "@/components/Shared/Score/Score";
 
 const TenantUnitInformation = () => {
   const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery();
@@ -26,7 +27,7 @@ const TenantUnitInformation = () => {
           <div className="grid lg:grid-cols-6 max-lg:gap-5  grid-cols-1 lg:border border-[#707070] ">
             <div
               key={Math.random()}
-              className="  lg:col-span-2 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer max-lg:border border-[#707070] max-lg:shadow-lg "
+              className="lg:col-span-2   transition-all duration-500 ease-in-out  max-lg:border border-[#707070] max-lg:shadow-lg "
             >
               <Image
                 width={300}
@@ -39,18 +40,14 @@ const TenantUnitInformation = () => {
               <div className="flex justify-between items-start mt-2 px-2.5 py-1">
                 <div>
                   <h2 className="text-lg font-medium">{unitRes?.property?.title}</h2>
-                  <h2 className="text-lg">${unitRes?.property?.monthlyRent}</h2>
+                  <h2 className="text-lg">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unitRes?.property?.numOfBed} bed</span> <span>{unitRes?.property?.numOfBath} bath</span>
                   </h2>
                   <h2 className="text-sm">{unitRes?.property?.address}</h2>
                 </div>
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
+                <div>
+                  <Score score={unitRes?.property?.scoreRatio?.score} total={unitRes?.property?.scoreRatio?.total} />
                 </div>
               </div>
             </div>
@@ -61,11 +58,12 @@ const TenantUnitInformation = () => {
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
                   <span>{unitRes?.dueRent}</span>
+                  {/* <span>Month : {unitRes?.dueMonths}</span> */}
                 </p>
                 <Button
                   className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-50"
                   onClick={() => setIsOpenMakePayment(true)}
-                  disabled={unitRes?.dueRent == 0 ? true : false}
+                  disabled={unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0 ? true : false}
                 >
                   {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}
                 </Button>
