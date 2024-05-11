@@ -199,12 +199,12 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
             {/* Tenant data bottom */}
             <div className="border-t pt-2 mt-2 space-y-2">
               {/* Personal Information */}
-              <div className="border p-1 rounded-md  space-y-1">
+              <div className="border p-2 rounded-md  space-y-2">
                 <h4 className="text-xs font-medium">Personal Information</h4>
                 <div className="*:text-sm  space-y-1">
                   <div className="flex justify-between items-center">
                     <h4>Date Of Birth</h4>
-                    <h4>{moment(modalData?.dateOfBirth).format("L")}</h4>
+                    <h4>{modalData?.dateOfBirth ? moment(modalData?.dateOfBirth).format("L") : "N/A"}</h4>
                   </div>
                   <div className="flex justify-between items-center">
                     <h4>Present Address</h4>
@@ -218,11 +218,11 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
               </div>
               {/* Personal Information
                */}
-              <div className="border p-1 rounded-md  space-y-1">
+              <div className="border p-2 rounded-md  space-y-2">
                 <h4 className="text-xs font-medium">Income Information</h4>
-                <div className="*:text-sm  space-y-1">
+                <div className="*:text-sm  space-y-1 ">
                   <div className="flex justify-between items-center">
-                    <h4>Current Employer/Business Name / </h4>
+                    <h4>Current Employer/Business Name </h4>
                     <h4>{modalData?.CurrentEmployerOrBusinessName ? modalData?.CurrentEmployerOrBusinessName : "N/A"}</h4>
                   </div>
                   <div className="flex justify-between items-center">
@@ -240,7 +240,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                 </div>
                 {/* Other Information    */}
               </div>
-              <div className="border p-1 rounded-md  space-y-1">
+              <div className="border p-2 rounded-md  space-y-1">
                 <h4 className="text-xs font-medium">Other Information</h4>
                 <div className="*:text-sm  space-y-1">
                   <div className="flex justify-between items-center">

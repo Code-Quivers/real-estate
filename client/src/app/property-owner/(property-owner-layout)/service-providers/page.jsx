@@ -129,15 +129,15 @@ const AvailableServiceProviders = () => {
                     }}
                     className="px-3 space-y-0.5 *:hover:cursor-pointer"
                   >
-                    <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
+                    <h2 className="text-sm  text-primary cursor-pointer font-bold">
                       {singleReq?.firstName} {singleReq?.lastName}
-                    </button>
+                    </h2>
                     <h3 className="text-sm">
                       Service Type:{" "}
                       {singleReq?.Service?.serviceType
                         ? singleReq?.Service?.serviceType.replace(/_/g, " ").charAt(0).toUpperCase() +
                           singleReq?.Service?.serviceType.replace(/_/g, " ").slice(1).toLowerCase()
-                        : "--"}
+                        : "N/A"}
                     </h3>
                     <h3 className="text-sm font-medium">
                       Service Price : ${singleReq?.Service?.minPrice ? singleReq?.Service?.minPrice?.toLocaleString() : 0} - $

@@ -49,10 +49,11 @@ const PropertyOwnerSavedTenants = () => {
                             {singleReq?.tenant?.firstName} {singleReq?.tenant?.lastName}
                           </button>
                           <h3 className="text-sm font-medium">
-                            Place to rent : {singleReq?.tenant?.placeToRent ? singleReq?.tenant?.placeToRent : "-"}
+                            Place to rent : {singleReq?.tenant?.placeToRent ? singleReq?.tenant?.placeToRent : "N/A"}
                           </h3>
                           <h3 className="text-sm font-medium">
-                            Rent willing to pay: {`${singleReq?.tenant?.affordableRentAmount ? `$ ${singleReq?.tenant?.affordableRentAmount}` : "-"}`}
+                            Rent willing to pay:{" "}
+                            {`${singleReq?.tenant?.affordableRentAmount ? `$ ${singleReq?.tenant?.affordableRentAmount}` : "N/A"}`}
                           </h3>
                         </div>
                       </SavedTenantLists>

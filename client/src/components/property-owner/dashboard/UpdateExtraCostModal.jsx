@@ -57,7 +57,7 @@ const UpdateExtraCostModal = ({ open, handleClose, modalData }) => {
               <div>
                 <div className="flex justify-between items-center">
                   <label htmlFor="cost">Add Cost</label>
-                  <h2>Current Cost : ${modalData?.cost || 0}</h2>
+                  <h2>Current Cost : ${modalData?.cost?.toLocaleString() || 0}</h2>
                 </div>
                 <Controller
                   name="cost"
@@ -65,13 +65,26 @@ const UpdateExtraCostModal = ({ open, handleClose, modalData }) => {
                   rules={{
                     required: "Cost is Required !",
                     min: {
-                      value: modalData?.cost || 0,
+                      value: modalData?.cost,
                       message: "Cost should be greater than previous",
                     },
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <InputNumber prefix="$" {...field} className="!w-full mt-2" defaultValue={modalData?.cost} min={modalData?.cost || 0} />
+                      <InputNumber
+                        prefix="$"
+                        {...field}
+                        className="!w-full mt-2"
+                        defaultValue={modalData?.cost}
+                        min={modalData?.cost || 0}
+                        formatter={(value) => {
+                          if (!isNaN(value)) {
+                            return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                          }
+                          return "";
+                        }}
+                        parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                      />
                       <Form.ErrorMessage show={(!!errors?.cost && !!errors?.cost?.message) || false} placement="topEnd">
                         {errors?.cost?.message}
                       </Form.ErrorMessage>
