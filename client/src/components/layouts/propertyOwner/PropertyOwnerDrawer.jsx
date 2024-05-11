@@ -20,6 +20,7 @@ import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
 import { MdCleanHands } from "react-icons/md";
 import { GrHostMaintenance } from "react-icons/gr";
 import { TbLogout2 } from "react-icons/tb";
+// import { useDispatch } from "react-redux";
 
 const PropertyOwnerDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -34,11 +35,13 @@ const PropertyOwnerDrawer = () => {
 
   const { data: myProfileData } = dataResponse || {};
 
-  // console.log(data);
+  // Clear all caches
+  // const dispatch = useDispatch();
 
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    // dispatch(baseApi.util.resetApiState());
   };
   const design = {
     fontSize: "25px",

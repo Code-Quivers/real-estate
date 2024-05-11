@@ -14,6 +14,8 @@ import { FaUserLarge } from "react-icons/fa6";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { IoSettings } from "react-icons/io5";
 import { FaSignOutAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { baseApi } from "@/redux/api/baseApi";
 
 const ServiceProviderSidebar = () => {
   const activeLink = usePathname();
@@ -22,9 +24,13 @@ const ServiceProviderSidebar = () => {
   const { data } = useGetServiceProviderMyProfileQuery(null);
   const { data: myProfileData } = data || {};
 
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  // Clear all caches
+  const dispatch = useDispatch();
+
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
   };
   return (
     <div className="!h-screen shadow-md !sticky top-0 overflow-y-auto">
