@@ -15,6 +15,8 @@ import { BiSolidBuildingHouse, BiSolidMessageSquareDetail } from "react-icons/bi
 import { IoDocuments, IoSettings } from "react-icons/io5";
 import { GrHostMaintenance } from "react-icons/gr";
 import { FaSignOutAlt } from "react-icons/fa";
+import { baseApi } from "@/redux/api/baseApi";
+import { useDispatch } from "react-redux";
 
 const TenantSidebar = () => {
   // eslint-disable-next-line no-unused-vars
@@ -26,10 +28,12 @@ const TenantSidebar = () => {
   const router = useRouter();
 
   // Clear all caches
+  const dispatch = useDispatch();
 
   const logOut = async () => {
-    removeUserInfo(getAuthKey());
     router.push("/");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
   };
   return (
     <div className="h-screen shadow-md sticky top-0 overflow-y-auto">

@@ -17,6 +17,8 @@ import { BiSolidBuildingHouse, BiSolidMessageSquareDetail } from "react-icons/bi
 import { IoDocuments, IoSettings } from "react-icons/io5";
 import { GrHostMaintenance } from "react-icons/gr";
 import { FaSignOutAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { baseApi } from "@/redux/api/baseApi";
 
 const TenantSidebarDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -31,11 +33,13 @@ const TenantSidebarDrawer = () => {
 
   const { data: myProfileData } = dataResponse || {};
 
-  // console.log(data);
+  // Clear all caches
+  const dispatch = useDispatch();
 
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
   };
 
   return (

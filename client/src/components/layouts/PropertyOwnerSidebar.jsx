@@ -18,6 +18,8 @@ import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
 import { MdCleanHands } from "react-icons/md";
 import { GrHostMaintenance } from "react-icons/gr";
 import { TbLogout2 } from "react-icons/tb";
+// import { useDispatch } from "react-redux";
+// import { baseApi } from "@/redux/api/baseApi";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
@@ -26,10 +28,13 @@ const PropertyOwnerSidebar = () => {
   const { data: dataResponse, isError, isLoading, isSuccess, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
+  // Clear all caches
+  // const dispatch = useDispatch();
 
   const logOut = async () => {
-    removeUserInfo(getAuthKey());
     router.push("/");
+    removeUserInfo(getAuthKey());
+    // dispatch(baseApi.util.resetApiState());
   };
   const toaster = useToaster();
 

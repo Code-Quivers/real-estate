@@ -15,7 +15,6 @@ const DashboardInfo = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalData, setModalData] = useState(null);
   const handleClose = () => setIsOpenModal(false);
-  console.log("shafin", data?.data);
   return (
     <div className="grid md:grid-cols-12 gap-4">
       <div className="flex border col-span-6 bg-white items-center justify-between px-5 py-7 rounded-2xl">
