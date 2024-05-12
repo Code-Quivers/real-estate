@@ -100,7 +100,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <span>{unitInfo?.numOfBed ? unitInfo?.numOfBed : "0"} Bed</span>{" "}
                     <span>{unitInfo?.numOfBath ? unitInfo?.numOfBath : "0"} Bath</span>
                   </h2>
-                  <h2 className="lg:text-xl">{unitInfo?.address ? unitInfo?.address : "--"}</h2>
+                  <h2 className="lg:text-xl">{unitInfo?.address ? unitInfo?.address : "N/A"}</h2>
                 </div>
                 <div>
                   <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
@@ -166,9 +166,9 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   <div className={openTab === 1 ? "block" : "hidden"} id="link1">
                     {/* brief introduction section */}
                     <div className="pb-5">
-                      <h2 className="text-base font-bold capitalize">Description</h2>
+                      <h2 className="text-base font-semibold capitalize">Description</h2>
                       <div>
-                        <p className="whitespace-pre-wrap">{unitInfo?.description ? unitInfo?.description : "--"}</p>
+                        <p className="whitespace-pre-wrap text-md">{unitInfo?.description ? unitInfo?.description : "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -176,12 +176,16 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <div className="grid grid-cols-2   ">
                       <div className="col-span-1 border-r mr-3    p-1">
                         <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Tenant</h2>
-                        <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredTenant ? unitInfo?.maintenanceCoveredTenant : "--"}</p>
+                        <p className="mt-5 whitespace-pre-line text-md">
+                          {unitInfo?.maintenanceCoveredTenant ? unitInfo?.maintenanceCoveredTenant : "N/A"}
+                        </p>
                       </div>
 
                       <div className="col-span-1 p-1">
                         <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Property Owner</h2>
-                        <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredOwner ? unitInfo?.maintenanceCoveredOwner : "--"}</p>
+                        <p className="mt-5 whitespace-pre-line text-md">
+                          {unitInfo?.maintenanceCoveredOwner ? unitInfo?.maintenanceCoveredOwner : "N/A"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -189,21 +193,20 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <div>
                       <h2 className="text-base font-bold capitalize">Schools near by</h2>
                       <div className="">
-                        <p className="whitespace-pre-wrap">{unitInfo?.schools ? unitInfo?.schools : "--"}</p>
+                        <p className="whitespace-pre-wrap text-md">{unitInfo?.schools ? unitInfo?.schools : "N/A"}</p>
                       </div>
                     </div>
-                    <div>
+                    <div className="mt-3 border-t pt-2 mt-2">
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        <p className="whitespace-pre-wrap">{unitInfo?.universities ? unitInfo?.universities : "--"}</p>
+                        <p className="whitespace-pre-wrap">{unitInfo?.universities ? unitInfo?.universities : "N/A"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
                     <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
                     <div className="">
-                      {" "}
-                      <p className="whitespace-pre-wrap">{unitInfo?.pets ? unitInfo?.pets : "--"}</p>
+                      <p className="whitespace-pre-wrap text-md">{unitInfo?.allowedPets ? unitInfo?.allowedPets : "N/A"}</p>
                     </div>
                   </div>
                 </div>
