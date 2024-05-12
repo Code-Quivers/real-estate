@@ -60,19 +60,19 @@ const AnnualReportDetails = ({ reportData }) => {
       <div className="grid sm:grid-cols-4 px-5 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
         <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
           <h2>Annual Rent</h2>
-          <p className="text-lg font-semibold">${reportData?.rentAmount}</p>
+          <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
         </div>
         <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
           <h2>Annual Expenses</h2>
-          <p className="text-lg font-semibold">${reportData?.expenses}</p>
+          <p className="text-lg font-semibold">${reportData?.expenses?.toLocaleString()}</p>
         </div>
         <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
           <h2>Rent Collected</h2>
-          <p className="text-lg font-semibold">${reportData?.collectedRent}</p>
+          <p className="text-lg font-semibold">${reportData?.collectedRent?.toLocaleString()}</p>
         </div>
         <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
           <h2>Gross Profit</h2>
-          <p className="text-lg font-semibold">${reportData?.grossProfit}</p>
+          <p className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</p>
         </div>
       </div>
       <div className="mt-5 flex max-md:m-3 rounded-xl justify-center text-green-500 text-lg font-bold p-5">
