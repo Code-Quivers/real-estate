@@ -1,12 +1,13 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, InputNumber, Loader, Pagination, Placeholder } from "rsuite";
+import { Input, InputGroup, InputNumber, Pagination } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
+import TenantCardSkeleton from "@/components/loading-skeleton/TenantCardSkeleton";
 
 const PropertyOwnerAvailableTenants = () => {
   const query = {};
@@ -36,7 +37,7 @@ const PropertyOwnerAvailableTenants = () => {
     searchQuery: presentAddress,
     delay: 300,
   });
-  if (!!debouncedTermAddress) query["presentAddress"] = debouncedTermAddress;
+  if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
 
   const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
   //
@@ -50,29 +51,21 @@ const PropertyOwnerAvailableTenants = () => {
       </div>
       {/* search with price section start */}
 
-      <div className="grid md:grid-cols-3 gap-2">
-        {/* tenant name */}
-        <div className="">
+      <div className="flex justify-end gap-2">
+        {/* tenant name or address. search with */}
+        <div className="w-full">
           <InputGroup size="lg" inside className="!w-full">
-            <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
+            <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Search with Tenant Name or Address" size="lg" />
             <InputGroup.Addon>
               <FaSearch size={20} />
             </InputGroup.Addon>
           </InputGroup>
         </div>
-        {/* address */}
-        <div className="">
-          <InputGroup size="lg" inside className="!w-full">
-            <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
-            <InputGroup.Addon>
-              <FaSearch size={20} />
-            </InputGroup.Addon>
-          </InputGroup>
-        </div>
+
         {/* rent */}
         <div className="">
           <InputGroup size="lg" inside className="!w-full">
-            <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
+            <Input type="number" buttonAppearance="subtle" min={0} onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
             <InputGroup.Addon>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -83,15 +76,12 @@ const PropertyOwnerAvailableTenants = () => {
       {/* all cards */}
       {isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-center   py-10">
-          <div>
-            <Placeholder.Graph active height={200} />
-          </div>
-          <div>
-            <Placeholder.Graph active height={200} />
-          </div>
-          <div>
-            <Placeholder.Graph active height={200} />
-          </div>
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
         </div>
       )}
 
@@ -130,7 +120,7 @@ const PropertyOwnerAvailableTenants = () => {
         </div>
       )}
       {/* pagination */}
-      <div className="mt-20 bg-white py-2 px-1 rounded-lg">
+      <div className="mt-20   py-2 px-1 rounded-lg">
         <Pagination
           total={allTenantsLists?.data?.meta?.total}
           prev
