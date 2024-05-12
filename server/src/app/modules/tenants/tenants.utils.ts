@@ -97,7 +97,8 @@ export const calculateTenantProfileScore = (data: TenantData) => {
   // Calculate profile score based on criteria
   for (const criterion in data) {
     const value = data[criterion as CriteriaKey];
-    if (value !== undefined && value !== null && criteriaWeights[criterion as CriteriaKey]) {
+
+    if (value !== undefined && value !== "" && value !== null && criteriaWeights[criterion as CriteriaKey]) {
       profileScore += criteriaWeights[criterion as CriteriaKey];
     }
   }

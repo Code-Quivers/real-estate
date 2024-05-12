@@ -18,6 +18,8 @@ import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
 import { MdCleanHands } from "react-icons/md";
 import { GrHostMaintenance } from "react-icons/gr";
 import { TbLogout2 } from "react-icons/tb";
+// import { useDispatch } from "react-redux";
+// import { baseApi } from "@/redux/api/baseApi";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
@@ -26,12 +28,13 @@ const PropertyOwnerSidebar = () => {
   const { data: dataResponse, isError, isLoading, isSuccess, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
+  // Clear all caches
+  // const dispatch = useDispatch();
 
-  // console.log(data);
-
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    // dispatch(baseApi.util.resetApiState());
   };
   const toaster = useToaster();
 
@@ -52,7 +55,7 @@ const PropertyOwnerSidebar = () => {
     fontSize: "25px",
   };
   return (
-    <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
+    <div className="h-screen shadow-md sticky top-0 overflow-y-auto custom-scrollbar">
       <Sidenav expanded={true} className="h-screen !bg-[#29429f]" appearance="inverse">
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">

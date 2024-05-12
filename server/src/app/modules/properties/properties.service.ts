@@ -22,7 +22,7 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
-import { calculatePropertyScore, extractNonNullValues } from "./properties.utils";
+import { calculatePropertyScore } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -146,8 +146,6 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   //
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    console.log("-----------------------------------");
-    console.log(whereConditions);
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
@@ -240,7 +238,16 @@ const getPropertyOwnerAllProperty = async (
         Tenant: true,
         _count: true,
         maintenanceRequests: true,
-        serviceProviders: true,
+        serviceProviders: {
+          include: {
+            Service: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
 
         // serviceProviders: {
         //   include: {
@@ -346,10 +353,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: any = extractNonNullValues({
+    const updatedPropertyData: any = {
       title,
       address,
-      images: imagesPath,
       allowedPets,
       description,
       maintenanceCoveredOwner,
@@ -359,7 +365,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
       schools,
       universities,
       monthlyRent,
-    });
+    };
+
+    if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
 
     //
     const updatedProperty = await transactionClient.property.update({
@@ -456,22 +464,6 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
   const { propertyId, tenantId } = payload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    // check financial account added or not
-    const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
-      where: {
-        propertyOwnerId: profileId,
-        FinancialAccount: {
-          is: {
-            detailsSubmitted: true,
-          },
-        },
-      },
-    });
-
-    if (!isFinancialAdded) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
-    }
-
     // check if owner or not
     const isOwner = await transactionClient.property.findUnique({
       where: {
@@ -482,6 +474,25 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
     if (!isOwner) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property does not exist");
+    }
+
+    if (isOwner?.planType === "PENDING" || isOwner?.planType === "PREMIUM") {
+      const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
+        where: {
+          propertyOwnerId: profileId,
+          FinancialAccount: {
+            is: {
+              detailsSubmitted: true,
+            },
+          },
+        },
+      });
+
+      // check financial account added or not
+
+      if (!isFinancialAdded) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
+      }
     }
 
     // check if already assigned to other property

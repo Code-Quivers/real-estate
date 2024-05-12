@@ -7,11 +7,11 @@ import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 import { useState } from "react";
 
 const options = [
-  { name: "Social Security Number", mask: [/\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/], placeholder: "123-45-6789" },
+  { name: "Social Security Number", mask: [/\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/], placeholder: "XXX-XX-XXXX" },
   {
     name: "US phone number",
     mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
-    placeholder: "(555) 495-3947",
+    placeholder: "(XXX) XXX-XXXX",
   },
 ];
 
@@ -176,7 +176,7 @@ const TenantPersonalInformationEdit = ({ control, setFileValue, fileValue, image
                     // showMask
                     keepCharPositions={keepCharPositions}
                     placeholder={optionNumber.placeholder}
-                    placeholderChar={"_"}
+                    placeholderChar={"X"}
                   />
                   {/* <Input {...field} defaultValue={responseData?.phoneNumber} className="!w-full" type="text" /> */}
                 </div>

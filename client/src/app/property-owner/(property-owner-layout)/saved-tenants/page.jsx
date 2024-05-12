@@ -1,25 +1,12 @@
 "use client";
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-extra-boolean-cast */
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import { fileUrlKey } from "@/configs/envConfig";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
-import Image from "next/image";
 import { useState } from "react";
-import { Loader, Modal, Progress } from "rsuite";
-import { CgClose } from "react-icons/cg";
-import RemoveFromAvailableTenantsModal from "@/components/property-owner/available-tenants/RemoveFromSavedTenantsModal";
+import { Loader } from "rsuite";
+import SavedTenantLists from "@/components/property-owner/saved-tenants/SavedTenantList";
+import SavedTenantModalDetails from "@/components/property-owner/saved-tenants/SavedTenantModalDetails";
 
 const PropertyOwnerSavedTenants = () => {
-  const [open, setOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
-
-  const handleOpen = (selectData) => {
-    setModalData(selectData);
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
   const query = {};
 
   const [itemType, setItemType] = useState("TENANT");
@@ -27,6 +14,8 @@ const PropertyOwnerSavedTenants = () => {
   query["itemType"] = itemType;
 
   const { data, isLoading } = useGetAllSavedItemsQuery({ ...query });
+  const [serviceModalActive, setServiceModalActive] = useState(false);
+  const [selectedService, setTenantDetails] = useState(null);
 
   return (
     <>
@@ -40,52 +29,53 @@ const PropertyOwnerSavedTenants = () => {
             <Loader size="lg" />
           </div>
         )}
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {!isLoading && data?.data?.data?.length
-            ? data?.data?.data?.map((singleReq) => (
-                <div key={Math.random()} className="col-span-1 relative">
-                  <div className="   border lg:grid lg:grid-cols-5 justify-between items-center shadow-lg rounded-lg px-2 border-[#acacac]  gap-2">
-                    <div className=" col-span-1">
-                      <Image
-                        height={80}
-                        width={80}
-                        className=" !w-[80px]  !h-[80px] object-cover     rounded-full  "
-                        src={singleReq?.tenant?.profileImage ? `${fileUrlKey()}/${singleReq?.tenant?.profileImage}` : profileLogo}
-                        alt="photo"
-                      />
-                    </div>
-                    <div className="col-span-4 p-5   flex justify-between w-full ">
-                      <div className="space-y-1">
-                        <h3 className="text-lg font-medium">
-                          <span>{singleReq?.tenant?.firstName}</span> <span>{singleReq?.tenant?.lastName}</span>
-                        </h3>
-                        <h3 className="text-sm font-medium">Phone: {singleReq?.tenant?.phoneNumber ?? "-"}</h3>
-                        <h3 className="text-sm font-medium">Affordable Rent : ${singleReq.tenant?.affordableRentAmount ?? "-"}</h3>
-                      </div>
-                      <div>
-                        <div style={{ width: 80 }}>
-                          <Progress.Circle percent={20} strokeColor="green" />
+        <div>
+          <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {!isLoading &&
+              data?.data?.data?.length > 0 &&
+              data?.data?.data?.map((singleReq, index) => (
+                <>
+                  <div key={index}>
+                    <div className="bg-white border rounded-md shadow-sm">
+                      <SavedTenantLists isLoadingSaved={isLoading} singleReq={singleReq}>
+                        <div
+                          onClick={() => {
+                            setTenantDetails(singleReq);
+                            setServiceModalActive(true);
+                          }}
+                          className="px-3 space-y-0.5 *:hover:cursor-pointer"
+                        >
+                          <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
+                            {singleReq?.tenant?.firstName} {singleReq?.tenant?.lastName}
+                          </button>
+                          <h3 className="text-sm font-medium">
+                            Place to rent : {singleReq?.tenant?.placeToRent ? singleReq?.tenant?.placeToRent : "N/A"}
+                          </h3>
+                          <h3 className="text-sm font-medium">
+                            Rent willing to pay:{" "}
+                            {`${singleReq?.tenant?.affordableRentAmount ? `$ ${singleReq?.tenant?.affordableRentAmount}` : "N/A"}`}
+                          </h3>
                         </div>
-                      </div>
+                      </SavedTenantLists>
                     </div>
                   </div>
-                  {/* remove  */}
-                  <div className="absolute top-0 right-0">
-                    <button onClick={() => handleOpen(singleReq)} className="hover:bg-black p-1 rounded-tr-lg  hover:text-white">
-                      <CgClose size={20} />
-                    </button>
-                  </div>
-                </div>
-              ))
-            : "No data"}
+                </>
+              ))}
+          </div>
+        </div>
+        {/* if no data */}
+        <div>
+          {!isLoading && !data?.data?.data?.length && (
+            <div className="flex justify-center items-center min-h-[40vh]">
+              <h2>No Saved Tenant Found!</h2>
+            </div>
+          )}
         </div>
       </section>
-      {/* delete modal */}
-      <Modal open={open} size="xs" backdrop="static" onClose={handleClose}>
-        <Modal.Body>
-          <RemoveFromAvailableTenantsModal handleClose={handleClose} modalData={modalData} />
-        </Modal.Body>
-      </Modal>
+
+      <>
+        <SavedTenantModalDetails isModalOpened={serviceModalActive} setModalOpened={setServiceModalActive} modalData={selectedService} />
+      </>
     </>
   );
 };

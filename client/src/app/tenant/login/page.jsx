@@ -60,7 +60,6 @@ const LoginPage = () => {
     }
   }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
 
-  console.log(errors);
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
       <div className="col-span-1 bg-[#29429f] w-full max-lg:hidden flex justify-center items-center h-screen sticky top-0">

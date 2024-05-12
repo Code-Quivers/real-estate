@@ -1,5 +1,5 @@
 "use client";
-import apartmentPhoto from "@/assets/propertyOwner/apartment.jpg";
+import apartmentPhoto from "@/assets/house/house-logo.jpg";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
 import { Button, IconButton, Placeholder } from "rsuite";
@@ -40,13 +40,13 @@ const PropertyOwnerUnitInformation = () => {
     <>
       <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl  ">Unit Information | Total {data?.meta?.total}</h2>
+          <h2 className="md:text-2xl">Unit Information</h2>
+          {/* <h2 className="text-2xl  ">Unit Information | Total {data?.meta?.total}</h2> */}
           <Link
             href="/property-owner/unit-information/add-property"
             className=" bg-primary text-white px-3 rounded-full flex items-center gap-2 py-2 drop-shadow-lg"
           >
-            {" "}
-            Add New Unit / House
+            Add new unit / house
           </Link>
         </div>
         {/* main section */}
@@ -80,7 +80,9 @@ const PropertyOwnerUnitInformation = () => {
                       <div className="  space-y-3  flex border rounded-xl justify-between       w-full    ">
                         <div className="flex  justify-between w-full">
                           <div className="space-y-3 p-5 w-full">
-                            <h3 className="text-lg font-medium">$ {singleProperty?.monthlyRent}</h3>
+                            <h3 className="text-lg font-medium">
+                              $ {singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
+                            </h3>
                             <h3 className="text-lg font-medium">
                               {singleProperty?.numOfBed} Beds {singleProperty?.numOfBath} Baths
                             </h3>
@@ -196,12 +198,12 @@ const PropertyOwnerUnitInformation = () => {
                         >
                           Add Service Provider
                         </Link>
-                        <button
+                        {/* <button
                           type="button"
                           className=" rounded-full border border-primary hover:border-primary/80 hover:text-white hover:bg-primary/80 text-primary px-2 py-1"
                         >
                           Update
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                     {/* all service Providers */}
@@ -221,30 +223,49 @@ const PropertyOwnerUnitInformation = () => {
                             </div>
                             <div className="  w-full lg:grid max-lg:space-y-3 lg:grid-cols-2 justify-between gap-2 lg:divide-x-2  ">
                               {/* information */}
-                              <div className="  w-full">
+                              <div className="*:text-sm space-y-0.5  w-full">
                                 <h4>
                                   Name : {serviceProvider?.firstName} {serviceProvider?.lastName}
                                 </h4>
                                 <h4>Email : {serviceProvider?.user?.email}</h4>
-                                <h4>Company Name : {serviceProvider?.companyName}</h4>
-                                <h4>Company Email : {serviceProvider?.companyEmailAddress}</h4>
-                                <h4>Company Address : {serviceProvider?.companyAddress}</h4>
+                                <h4>Company Name : {serviceProvider?.companyName ? serviceProvider?.companyName : "N/A"}</h4>
+                                <h4>Company Email : {serviceProvider?.companyEmailAddress ? serviceProvider?.companyEmailAddress : "N/A"}</h4>
+                                <h4>Company Address : {serviceProvider?.companyAddress ? serviceProvider?.companyAddress : "N/A"}</h4>
+                                <h4>Company Phone Number: {serviceProvider?.companyPhoneNumber ? serviceProvider?.companyPhoneNumber : "N/A"}</h4>
                               </div>
                               {/* Service details */}
                               <div className="lg:pl-2 w-full">
-                                <h4 className="flex justify-between">
-                                  <span>Service Type</span>-<span>{serviceProvider?.Service?.serviceType}</span>
-                                </h4>
-                                <h4 className="flex justify-between">
-                                  <span>Service Availability</span>-<span>{serviceProvider?.Service?.serviceAvailability}</span>
-                                </h4>
-                                <h4 className="flex justify-between">
-                                  <span>Service Location</span>-<span>{serviceProvider?.Service?.serviceLocation}</span>
-                                </h4>
-                                <h4 className="flex justify-between">
-                                  <span>Service Range</span>-
+                                <h4 className=" space-x-5">
+                                  <span>Service Type :</span>
                                   <span>
-                                    ${serviceProvider?.Service?.minPrice} - ${serviceProvider?.Service?.maxPrice}
+                                    {serviceProvider?.Service?.serviceType
+                                      ? serviceProvider?.Service?.serviceType
+                                          .replace(/_/g, " ")
+                                          .toLowerCase()
+                                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                                      : "N/A"}
+                                  </span>
+                                </h4>
+                                <h4 className=" space-x-5">
+                                  <span>Service Availability :</span>{" "}
+                                  <span>
+                                    {serviceProvider?.Service?.serviceAvailability
+                                      ? serviceProvider?.Service?.serviceAvailability
+                                          .replace(/_/g, " ")
+                                          .toLowerCase()
+                                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                                      : "N/A"}
+                                  </span>
+                                </h4>
+                                <h4 className=" space-x-5">
+                                  <span>Service Location :</span>
+                                  <span>{serviceProvider?.Service?.serviceLocation ? serviceProvider?.Service?.serviceLocation : "N/A"}</span>
+                                </h4>
+                                <h4 className=" space-x-5">
+                                  <span>Service Range :</span>
+                                  <span>
+                                    ${serviceProvider?.Service?.minPrice ? serviceProvider?.Service?.minPrice?.toLocaleString() : "0"} - $
+                                    {serviceProvider?.Service?.maxPrice ? serviceProvider?.Service?.maxPrice?.toLocaleString() : "0"}
                                   </span>
                                 </h4>
                               </div>

@@ -23,7 +23,7 @@ const MyMaintenanceRequests = () => {
       )}
       <div></div>
 
-      <div className="mt-10 ">
+      <div className="mt-10 bg-white shadow-md rounded-lg">
         {!isError && (
           <Table
             bordered={true}

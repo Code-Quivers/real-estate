@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   reactStrictMode: false,
   images: {
@@ -15,13 +16,8 @@ const nextConfig = {
         port: "7000",
         pathname: "/**",
       },
-
     ],
-    domains:[
-      "localhost",
-      "77.237.234.238",
-      "77.237.234.238:7000",
-    ]
+    domains: ["localhost", "77.237.234.238", "77.237.234.238:7000"],
   },
   webpack: (config) => {
     /**

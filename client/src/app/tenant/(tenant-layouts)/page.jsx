@@ -1,12 +1,12 @@
 "use client";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
-import Image from "next/image";
+
 import TenantProfileInformation from "@/components/tenant/Profile/TenantProfileInformation";
 import TenantEditing from "@/components/tenant/Profile/TenantEditing";
 import { useState } from "react";
 import { useGetTenantMyProfileQuery } from "@/redux/features/tenant/tenantsApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import Score from "@/components/Shared/Score/Score";
+import { Avatar } from "rsuite";
 
 const TenantProfile = () => {
   const [tabActive, setTabActive] = useState(1);
@@ -17,23 +17,17 @@ const TenantProfile = () => {
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
       {/* profile Information */}
-      <div className="grid grid-cols-5 mt-5 w-full  max-md:mb-5 items-center md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
-        <div className="col-span-4 flex   justify-start max-md:gap-2  md:justify-start items-center md:gap-3 ">
-          <div className="border shadow-lg rounded-full">
-            <Image
-              height={150}
-              width={150}
-              src={data?.profileImage ? `${fileUrlKey()}/${data?.profileImage}` : profileLogo}
-              className="max-md:w-[80px] md:w-[150px] md:h-[150px]  rounded-full object-cover select-none"
-              alt="Profile Image"
-            />
+      <div className="grid grid-cols-5 mt-5 w-full max-md:mb-5 items-start md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
+        <div className="col-span-4 flex max-md:flex-col justify-start max-md:gap-2 md:justify-start md:items-center md:gap-3">
+          <div>
+            <Avatar circle size="xl" src={data?.profileImage && `${fileUrlKey()}/${data?.profileImage}`} />
           </div>
           <div>
             <h4 className="text-lg font-medium">
               {data?.firstName} {data?.lastName}
             </h4>
             <h4 className="text-lg font-medium"> {data?.user?.email} </h4>
-            <h4 className="text-lg font-medium">{data?.phoneNumber ?? "--"}</h4>
+            <h4 className="text-lg font-medium">Phone Number : {data?.phoneNumber ? data?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
           </div>
         </div>
         {/* score */}
@@ -41,18 +35,28 @@ const TenantProfile = () => {
         <div>
           <div className="col-span-1 mr-5 flex flex-col-reverse md:flex-col justify-center items-center gap-2 md:gap-4">
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
-            {data?.scoreRatio?.total == 10 && <Score score={data?.scoreRatio?.score} total={data?.scoreRatio?.total} />}
+            <div>
+              <Score isLoading={isLoading} score={data?.scoreRatio?.score} total={data?.scoreRatio?.total} />
+            </div>
           </div>
         </div>
       </div>
       {/* Dashboard */}
-      <select name="" id="" className="w-full sm:hidden rounded-md p-3" onChange={(e) => setTabActive(parseInt(e.target.value))} value={tabActive}>
-        <option value={2}>Personal information</option>
-        <option value={3}>Rental history</option>
-        <option value={4}>Income Information</option>
-        <option value={5}>Pets</option>
-        <option value={6}>Other Information</option>
-      </select>
+      <div>
+        <select
+          name=""
+          id=""
+          className="w-full sm:hidden rounded-md p-3 border shadow bg-white"
+          onChange={(e) => setTabActive(parseInt(e.target.value))}
+          value={tabActive}
+        >
+          <option value={2}>Personal information</option>
+          <option value={3}>Rental history</option>
+          <option value={4}>Income Information</option>
+          <option value={5}>Pets</option>
+          <option value={6}>Other Information</option>
+        </select>
+      </div>
       <div className="max-sm:hidden flex items-center gap-5 p-2 h-11 bg-white rounded-t-lg border mt-4">
         {/* Personal Information */}
         <div className=" ">

@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import { Button, Carousel, Modal, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
@@ -26,7 +25,6 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
 
     await saveItem(unitData);
   };
-  console.log("unitInfo", unitInfo);
   // !
   const toaster = useToaster();
   useEffect(() => {
@@ -45,10 +43,10 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
 
   return (
     <div>
-      <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
+      <Modal dialogAs="div" className="mx-auto bg-white" overflow={false} size="lg" open={open} onClose={handleClose}>
         <Modal.Body className="!p-0 !overflow-y-hidden">
-          <div className="grid md:grid-cols-12 border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97]">
-            <Carousel className="custom-slider col-span-6 md:hidden">
+          <div className="grid md:grid-cols-12 border   justify-between   items-stretch  ">
+            <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
               {unitInfo?.images?.length > 0
                 ? unitInfo?.images?.map((photo) => (
                     <div key={Math.random()}>
@@ -57,13 +55,13 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   ))
                 : null}
             </Carousel>
-            <div className="max-md:hidden col-span-6 w-full  overflow-y-scroll max-h-[95vh]  custom-scrollbar">
+            <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[80vh]   custom-scrollbar">
               {unitInfo?.images?.length
                 ? unitInfo?.images?.map((photo) => (
                     <div key={Math.random()} className="flex flex-col divide-y divide-[#8b8b8b]">
                       <div className=" ">
                         <Image
-                          className="h-[200px] p-3 w-full object-cover"
+                          className="h-[200px] p-1 w-full object-cover"
                           height={300}
                           width={300}
                           src={`${fileUrlKey()}/${photo}`}
@@ -74,10 +72,14 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   ))
                 : ""}
             </div>
-            <div className="col-span-6 w-full overflow-y-scroll md:max-h-[95vh] custom-scrollbar mt-2">
-              <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
+            <div className="lg:col-span-7 w-full overflow-y-scroll lg:max-h-[80vh]  custom-scrollbar mt-2">
+              <div className="flex px-3 py-2  justify-between items-center sticky top-0 bg-white">
                 <div>
-                  <h2>Logo</h2>
+                  {unitInfo?.owner?.profileImage ? (
+                    <Image src={`${fileUrlKey()}/${unitInfo?.owner?.profileImage}`} width={70} height={70} className="rounded-md object-cover" />
+                  ) : (
+                    "Logo"
+                  )}
                 </div>
                 <div className="flex gap-2.5 items-center">
                   <div>
@@ -91,15 +93,18 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                 </div>
               </div>
               <hr className="border   block" />
-              <div className="flex justify-between items-center p-5">
+              <div className="flex justify-between items-center px-2 py-4 lg:p-5">
                 <div>
-                  <h2 className="text-4xl mb-2">$1200/month</h2>
-                  <h2 className="text-xl">
-                    <span>{unitInfo?.numOfBed ?? "0"} Bed</span> <span>{unitInfo?.numOfBath ?? "0"} Bath</span>
+                  <h2 className="lg:text-4xl mb-2">${unitInfo?.monthlyRent?.toLocaleString()}/month</h2>
+                  <h2 className="lg:text-xl">
+                    <span>{unitInfo?.numOfBed ? unitInfo?.numOfBed : "0"} Bed</span>{" "}
+                    <span>{unitInfo?.numOfBath ? unitInfo?.numOfBath : "0"} Bath</span>
                   </h2>
-                  <h2 className="text-xl">{unitInfo?.address ? unitInfo?.address : "3 Belair Dr, Binghamton, NY 13901"}</h2>
+                  <h2 className="lg:text-xl">{unitInfo?.address ? unitInfo?.address : "--"}</h2>
                 </div>
-                <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
+                <div>
+                  <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
+                </div>
               </div>
               {/* */}
               <div>
@@ -162,30 +167,20 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     {/* brief introduction section */}
                     <div className="pb-5">
                       <h2 className="text-base font-bold capitalize">Description</h2>
-
-                      <div className="ql-editor">
-                        {unitInfo?.description ? (
-                          <div
-                            className="whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{
-                              __html: unitInfo.description,
-                            }}
-                          />
-                        ) : (
-                          <p>--</p>
-                        )}
+                      <div>
+                        <p className="whitespace-pre-wrap">{unitInfo?.description ? unitInfo?.description : "--"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 2 ? "block" : "hidden"} id="link2">
                     <div className="grid grid-cols-2   ">
                       <div className="col-span-1 border-r mr-3    p-1">
-                        <h2 className="text-center font-semibold text-lg">Maintenance covered by Tenant</h2>
+                        <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Tenant</h2>
                         <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredTenant ? unitInfo?.maintenanceCoveredTenant : "--"}</p>
                       </div>
 
                       <div className="col-span-1 p-1">
-                        <h2 className="text-center font-semibold text-lg">Maintenance covered by Property Owner</h2>
+                        <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Property Owner</h2>
                         <p className="mt-5 whitespace-pre-line">{unitInfo?.maintenanceCoveredOwner ? unitInfo?.maintenanceCoveredOwner : "--"}</p>
                       </div>
                     </div>
@@ -194,49 +189,21 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <div>
                       <h2 className="text-base font-bold capitalize">Schools near by</h2>
                       <div className="">
-                        <div className="ql-editor">
-                          {unitInfo?.schools ? (
-                            <div
-                              className="whitespace-pre-wrap"
-                              dangerouslySetInnerHTML={{
-                                __html: unitInfo?.schools,
-                              }}
-                            />
-                          ) : (
-                            <p>--</p>
-                          )}
-                        </div>
+                        <p className="whitespace-pre-wrap">{unitInfo?.schools ? unitInfo?.schools : "--"}</p>
                       </div>
                     </div>
                     <div>
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        {unitInfo?.universities ? (
-                          <div
-                            className="whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{
-                              __html: unitInfo?.universities,
-                            }}
-                          />
-                        ) : (
-                          <p>--</p>
-                        )}
+                        <p className="whitespace-pre-wrap">{unitInfo?.universities ? unitInfo?.universities : "--"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
                     <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
                     <div className="">
-                      {unitInfo?.pets ? (
-                        <div
-                          className="whitespace-pre-wrap"
-                          dangerouslySetInnerHTML={{
-                            __html: unitInfo?.pets,
-                          }}
-                        />
-                      ) : (
-                        <p>--</p>
-                      )}
+                      {" "}
+                      <p className="whitespace-pre-wrap">{unitInfo?.pets ? unitInfo?.pets : "--"}</p>
                     </div>
                   </div>
                 </div>

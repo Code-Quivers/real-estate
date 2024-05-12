@@ -16,6 +16,8 @@ import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { IoSettings } from "react-icons/io5";
 import { FaSignOutAlt } from "react-icons/fa";
 import TaskIcon from "@rsuite/icons/Task";
+import { useDispatch } from "react-redux";
+import { baseApi } from "@/redux/api/baseApi";
 
 const ServiceProviderSidebarDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -32,11 +34,14 @@ const ServiceProviderSidebarDrawer = () => {
 
   // console.log(data);
 
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
-    router.push("/");
-  };
+  // Clear all caches
+  const dispatch = useDispatch();
 
+  const logOut = async () => {
+    router.push("/");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
+  };
   return (
     <div>
       <div className="border-b py-1 shadow-lg flex justify-between items-center pr-3">

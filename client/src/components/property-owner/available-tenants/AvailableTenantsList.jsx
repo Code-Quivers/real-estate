@@ -8,7 +8,7 @@ import { Avatar, Notification, Placeholder, Popover, Whisper, toaster } from "rs
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
-import { changeScoreStatus } from "@/utils/scoreStatus";
+import Score from "@/components/Shared/Score/Score";
 
 const AvailableTenantsList = ({ singleReq, children }) => {
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
@@ -100,13 +100,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
         )}
 
         <div className="mr-4 mt-4">
-          <div className={`${changeScoreStatus(7)}`}>
-            <div className="flex w-full flex-col justify-center items-center">
-              <span className="font-medium">7</span>
-              <span className="w-[70%] border-t border-[#b6b6b6]" />
-              <span className="font-medium">10</span>
-            </div>
-          </div>
+          <Score score={singleReq?.scoreRatio?.score} total={singleReq?.scoreRatio?.total} />
         </div>
       </div>
       {/*  */}
@@ -127,7 +121,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
         <div className="w-full">
           <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.user?.userId} />
         </div>
-        {/*  */}
+        {/*  assign to property */}
         <div className="w-full">
           <Whisper
             preventOverflow

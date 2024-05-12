@@ -58,7 +58,7 @@ const PropertyOwnerSignUpPage = () => {
             <p>Your account is now ready to use.</p>
           </div>
         </Notification>,
-        { placement: "bottomStart" },
+        { placement: "bottomEnd" },
       );
       router.push("/property-owner");
     }
@@ -69,7 +69,7 @@ const PropertyOwnerSignUpPage = () => {
             <p className="text-lg font-semibold mb-2">{error?.message || "Something went wrong!"}</p>
           </div>
         </Notification>,
-        { placement: "bottomStart" },
+        { placement: "bottomEnd" },
       );
       // router.push("/property-owner/login");
     }

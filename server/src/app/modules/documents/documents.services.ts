@@ -126,13 +126,14 @@ const sendDocument = async (ownerId: string, title: string, tenantId: string, pr
   }
 };
 
-const updateDocumentWithTenantSigned = async (documentId: string, filePath: string) => {
+const updateDocumentWithTenantSigned = async (documentId: string, filePath: string, documentTitle: string) => {
   try {
     // const template = { title, filePath }
     const result = await prisma.$transaction(async (transactionClient) => {
       const dataToUpdate = {
         isSignedByTenant: true,
         filePath: filePath,
+        documentTitle,
       };
       const updatedDocument = await transactionClient.document.update({
         where: { documentId },
@@ -149,21 +150,19 @@ const updateDocumentWithTenantSigned = async (documentId: string, filePath: stri
   }
 };
 
-
 const getDocuments = async (profileId: string, userRole: string) => {
   try {
     let documents: any = [];
 
     // Check user role and fetch documents.
-    if (userRole === 'TENANT') {
+    if (userRole === "TENANT") {
       documents = await prisma.document.findMany({
         where: { tenantId: profileId },
-      })
-    }
-    else if (userRole === 'PROPERTY_OWNER') {
+      });
+    } else if (userRole === "PROPERTY_OWNER") {
       documents = await prisma.document.findMany({
         where: { ownerId: profileId },
-      })
+      });
     }
 
     return documents;
@@ -173,11 +172,10 @@ const getDocuments = async (profileId: string, userRole: string) => {
   }
 };
 
-
 const getDocument = async (documentId: string) => {
   try {
     const document = await prisma.document.findUnique({
-      where: { documentId: documentId }
+      where: { documentId: documentId },
     });
     return document;
   } catch (err) {
@@ -185,7 +183,6 @@ const getDocument = async (documentId: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get the document!");
   }
 };
-
 
 export const DocumentsServices = {
   getTemplates,

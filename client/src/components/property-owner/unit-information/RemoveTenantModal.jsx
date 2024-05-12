@@ -78,9 +78,9 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
                 <p>
                   Name: {tenantRemoveData?.Tenant?.firstName} {tenantRemoveData?.Tenant?.lastName}
                 </p>
-                <p>Phone Number: {tenantRemoveData?.Tenant?.phoneNumber}</p>
-                <p>Email: john.doe@example.com</p>
-                <p>Address: 123 Main St, City, Country</p>
+                <p>Phone Number: {tenantRemoveData?.Tenant?.phoneNumber ? tenantRemoveData?.Tenant?.phoneNumber?.replace(/\d/g, "X") : "N/A"}</p>
+                <p>Email: {tenantRemoveData?.Tenant?.user?.email || "N/A"}</p>
+                <p>Address: {tenantRemoveData?.Tenant?.presentAddress}</p>
                 {/* Add more relevant tenant details */}
               </div>
             </div>

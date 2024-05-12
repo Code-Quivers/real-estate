@@ -49,7 +49,7 @@ const addTemplate = catchAsync(async (req: Request, res: Response) => {
 const sendDocument = catchAsync(async (req: Request, res: Response) => {
   const ownerId: string = (req.user as IRequestUser).profileId;
   const pdfFile: IUploadFile = req?.file as any;
-  const filePath: string = pdfFile.filename;
+  const filePath: string = pdfFile.path?.substring(13);
   const title = req.body?.title || "";
   const tenantId = req.body?.tenantId || "";
   const propertyId = req.body?.propertyId || "";
@@ -64,13 +64,15 @@ const sendDocument = catchAsync(async (req: Request, res: Response) => {
 
 const updateDocumentWithTenantSigned = catchAsync(async (req: Request, res: Response) => {
   const pdfFile: IUploadFile = req?.file as any;
-  const filePath: string = pdfFile.filename;
+
+  const filePath: string = pdfFile.path?.substring(13);
   const documentId = req.body?.documentId || "";
-  const result = await DocumentsServices.updateDocumentWithTenantSigned(documentId, filePath);
+  const documentTitle = req.body?.documentTitle;
+  const result = await DocumentsServices.updateDocumentWithTenantSigned(documentId, filePath, documentTitle);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Document successfully upadted with teant sign!",
+    message: "Document successfully updated with tenant sign!",
     data: result,
   });
 });
@@ -78,7 +80,6 @@ const updateDocumentWithTenantSigned = catchAsync(async (req: Request, res: Resp
 const getDocuments = catchAsync(async (req: Request, res: Response) => {
   const ownerId: string = (req.user as IRequestUser).profileId;
   const userRole: string = (req.user as IRequestUser).role;
-
 
   const result = await DocumentsServices.getDocuments(ownerId, userRole);
   sendResponse(res, {

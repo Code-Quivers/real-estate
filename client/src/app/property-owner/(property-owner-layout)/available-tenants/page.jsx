@@ -1,14 +1,15 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, InputNumber, Loader, Pagination } from "rsuite";
+import { Input, InputGroup, InputNumber, Pagination } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
+import TenantCardSkeleton from "@/components/loading-skeleton/TenantCardSkeleton";
 
-const PropertyOwnerServiceProviders = () => {
+const PropertyOwnerAvailableTenants = () => {
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
@@ -36,7 +37,7 @@ const PropertyOwnerServiceProviders = () => {
     searchQuery: presentAddress,
     delay: 300,
   });
-  if (!!debouncedTermAddress) query["presentAddress"] = debouncedTermAddress;
+  if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
 
   const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
   //
@@ -50,29 +51,21 @@ const PropertyOwnerServiceProviders = () => {
       </div>
       {/* search with price section start */}
 
-      <div className="grid md:grid-cols-3 gap-2">
-        {/* tenant name */}
-        <div className="">
+      <div className="flex justify-end gap-2">
+        {/* tenant name or address. search with */}
+        <div className="w-full">
           <InputGroup size="lg" inside className="!w-full">
-            <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Tenant Name" size="lg" />
+            <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Search with Tenant Name or Address" size="lg" />
             <InputGroup.Addon>
               <FaSearch size={20} />
             </InputGroup.Addon>
           </InputGroup>
         </div>
-        {/* address */}
-        <div className="">
-          <InputGroup size="lg" inside className="!w-full">
-            <Input className=" !w-full" onChange={(e) => setPresentAddress(e)} placeholder="Address" size="lg" />
-            <InputGroup.Addon>
-              <FaSearch size={20} />
-            </InputGroup.Addon>
-          </InputGroup>
-        </div>
+
         {/* rent */}
         <div className="">
           <InputGroup size="lg" inside className="!w-full">
-            <InputNumber onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
+            <Input type="number" buttonAppearance="subtle" min={0} onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
             <InputGroup.Addon>
               <FaSearch size={20} />
             </InputGroup.Addon>
@@ -82,8 +75,13 @@ const PropertyOwnerServiceProviders = () => {
 
       {/* all cards */}
       {isLoading && (
-        <div className="flex justify-center py-10">
-          <Loader size="lg" content="Getting Available Tenants..." />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-center   py-10">
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
+          <TenantCardSkeleton />
         </div>
       )}
 
@@ -95,20 +93,19 @@ const PropertyOwnerServiceProviders = () => {
             <div key={index}>
               <div className="bg-white border rounded-md shadow-sm">
                 <AvailableTenantsList singleReq={singleReq}>
-                  <div className="px-3 space-y-0.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTenantDetails(singleReq);
-                        setServiceModalActive(true);
-                      }}
-                      className="text-sm text-primary cursor-pointer font-bold"
-                    >
+                  <div
+                    onClick={() => {
+                      setTenantDetails(singleReq);
+                      setServiceModalActive(true);
+                    }}
+                    className="px-3 space-y-0.5 *:hover:cursor-pointer"
+                  >
+                    <button type="button" className="text-sm  text-primary cursor-pointer font-bold">
                       {singleReq?.firstName} {singleReq?.lastName}
                     </button>
-                    <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "-"}</h3>
+                    <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "N/A"}</h3>
                     <h3 className="text-sm font-medium">
-                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount}` : "-"}`}
+                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount?.toLocaleString()}` : "N/A"}`}
                     </h3>
                   </div>
                 </AvailableTenantsList>
@@ -123,7 +120,7 @@ const PropertyOwnerServiceProviders = () => {
         </div>
       )}
       {/* pagination */}
-      <div className="mt-20 bg-white py-2 px-1 rounded-lg">
+      <div className="mt-20   py-2 px-1 rounded-lg">
         <Pagination
           total={allTenantsLists?.data?.meta?.total}
           prev
@@ -146,4 +143,4 @@ const PropertyOwnerServiceProviders = () => {
   );
 };
 
-export default PropertyOwnerServiceProviders;
+export default PropertyOwnerAvailableTenants;

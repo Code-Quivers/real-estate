@@ -28,7 +28,7 @@ const ServiceProviderSettingPage = () => {
               </button>
             </div>
           </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
+          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-5 xl:gap-x-12 gap-y-8">
             <h3 className="border p-3 rounded-2xl">
               Name : {data?.data?.firstName ?? "--"}
               {data?.data?.lastName ?? "-"}

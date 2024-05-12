@@ -11,7 +11,7 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
         <h2 className="font-semibold text-lg">Rental History</h2>
       </div>
       {/* forms */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mt-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 xl:gap-10 mt-5">
         {/* left ----------------------------- */}
         <div className="col-span-2 space-y-5">
           {/* previous landlord */}{" "}
@@ -61,7 +61,14 @@ const TenantRentalHistoryEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" prefix="$" {...field} defaultValue={responseData?.affordableRentAmount} min={0} />
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.affordableRentAmount}
+                    min={0}
+                    formatter={(value) => `$${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  />
                 </div>
               )}
             />

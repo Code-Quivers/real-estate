@@ -14,6 +14,7 @@ const sendDocument = z.object({
 
 const updateDocument = z.object({
   documentId: z.string({ invalid_type_error: "Document id should be string!" }),
+  documentTitle: z.string(),
 });
 // update
 // const updateExtraCost = z.object({

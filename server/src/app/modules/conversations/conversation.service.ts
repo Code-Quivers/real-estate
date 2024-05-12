@@ -142,7 +142,6 @@ const getMyAllConversation = async (
   userId: string,
 ): Promise<IGenericResponse<Conversation[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
@@ -255,7 +254,7 @@ const getMyAllConversation = async (
   return result;
 };
 
-// ! createOrUpdateService
+// ! get single chats messages
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const getSingleChat = async (conversationId: string, userId: string): Promise<Conversation> => {
   const result = await prisma.$transaction(async (transactionClient) => {

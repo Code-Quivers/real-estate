@@ -2,10 +2,11 @@
 import Image from "next/image";
 import { useState } from "react";
 import SavedUnitsModal from "./SavedUnitModal";
-
+import houseLogo from "@/assets/house/house-logo.jpg";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
 import { Loader } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
+import Score from "@/components/Shared/Score/Score";
 
 const SavedUnitsCard = () => {
   const [isOpen, setModalOpen] = useState(false);
@@ -32,7 +33,7 @@ const SavedUnitsCard = () => {
 
       {/* Available units card start */}
 
-      <div className="mt-2 grid  lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 md:gap-2 xl:gap-6 max-lg:mx-1.5">
+      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 max-md:mx-1">
         {!isLoading &&
           availableUnits?.data?.data?.length > 0 &&
           availableUnits?.data?.data?.map((unit) => (
@@ -42,34 +43,32 @@ const SavedUnitsCard = () => {
                 setModalData(unit);
               }}
               key={Math.random()}
-              className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
+              className="border  rounded-lg hover:shadow-lg shadow-md hover:border transition-all duration-500 ease-in-out cursor-pointer"
             >
               <Image
-                width={500}
-                height={500}
-                className="h-[200px] object-cover"
-                src={`${fileUrlKey()}/${unit?.property?.images[0]}`}
-                alt="Tenant available units"
+                width={300}
+                height={300}
+                className="w-full h-[200px]  object-cover rounded-t-lg  "
+                src={unit?.property?.images?.length ? `${fileUrlKey()}/${unit?.property?.images[0]}` : houseLogo}
+                alt="Unit Image"
               />
-              <div className="flex  justify-between items-start mt-2 px-2.5 py-1">
+              <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
-                  <h2 className="text-sm">$ {unit?.property?.monthlyRent}</h2>
+                  <h2 className="text-sm lg:font-semibold">${unit?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
-                    <span>{unit?.property?.numOfBed}</span> <span>{unit?.property?.numOfBath}</span>
+                    <span>{unit?.property?.numOfBed ? unit?.property?.numOfBed : "0"} Bed </span>
+                    <span>{unit?.property?.numOfBath ? unit?.property?.numOfBath : "0"} Bath</span>
                   </h2>
-                  <h2 className="text-sm">{unit?.property?.address}</h2>
+                  <h2 className="text-sm">{unit?.property?.address ? unit?.property?.address : "--"}</h2>
                 </div>
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
+                <div>
+                  <Score score={unit?.property?.scoreRatio?.score} total={unit?.property?.scoreRatio?.total} />
                 </div>
               </div>
             </div>
           ))}
       </div>
+
       {/* modal */}
       <SavedUnitsModal open={isOpen} handleClose={handleClose} units={modalData} />
     </div>

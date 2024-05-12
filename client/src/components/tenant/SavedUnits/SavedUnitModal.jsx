@@ -1,4 +1,5 @@
 "use client";
+import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
@@ -47,11 +48,11 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
 
   return (
     <div>
-      <Modal overflow={false} size="lg" open={open} onClose={handleClose}>
-        <Modal.Body className="!p-0 !overflow-y-hidden">
-          <div className="grid md:grid-cols-12  border border-[#9e9a97] justify-between divide-x  items-stretch divide-[#9e9a97] ">
+      <Modal overflow={false} dialogAs="div" className="mx-auto bg-white" size="lg" open={open} onClose={handleClose}>
+        <Modal.Body>
+          <div className="grid md:grid-cols-12  border   justify-between divide-x  items-stretch  ">
             {/* images */}
-            <Carousel className="custom-slider col-span-6 md:hidden">
+            <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
               {item?.property?.images?.length > 0
                 ? item?.property?.images?.map((photo, index) => (
                     <div key={index}>
@@ -60,13 +61,13 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                   ))
                 : null}
             </Carousel>
-            <div className="max-md:hidden col-span-6 w-full  overflow-y-scroll max-h-[95vh]  custom-scrollbar">
+            <div className="max-md:hidden md:col-span-5 w-full  overflow-y-scroll  lg:max-h-[80vh]   custom-scrollbar">
               {item?.property?.images?.length > 0
                 ? item?.property?.images?.map((photo, index) => (
                     <div key={index} className="flex flex-col divide-y divide-[#8b8b8b]">
                       <div className="">
                         <Image
-                          className="h-[200px] p-3 w-full object-cover"
+                          className="h-[200px] p-1 w-full object-cover"
                           height={300}
                           width={300}
                           src={`${fileUrlKey()}/${photo}`}
@@ -79,10 +80,19 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
             </div>
 
             {/* others */}
-            <div className="col-span-6 w-full overflow-y-scroll md:max-h-[95vh] custom-scrollbar ">
-              <div className="flex p-5  justify-between items-center sticky top-0 bg-white">
+            <div className="md:col-span-7 w-full overflow-y-scroll lg:max-h-[80vh]  custom-scrollbar ">
+              <div className="flex px-3 py-2  justify-between items-center sticky top-0 bg-white">
                 <div>
-                  <h2>Logo</h2>
+                  {item?.property?.owner?.profileImage ? (
+                    <Image
+                      src={`${fileUrlKey()}/${item?.property?.owner?.profileImage}`}
+                      width={70}
+                      height={70}
+                      className="rounded-md object-cover"
+                    />
+                  ) : (
+                    "Logo"
+                  )}
                 </div>
                 <div className="flex gap-2.5 items-center">
                   <div>
@@ -97,20 +107,17 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                 </div>
               </div>
               <hr className="border   block" />
-              <div className="flex justify-between items-center p-5">
+
+              <div className="flex justify-between items-center px-2 py-4 lg:p-5">
                 <div>
-                  <h2 className="text-4xl mb-2">${item?.property?.monthlyRent}/month</h2>
-                  <h2 className="text-xl">
-                    <span>{item?.property?.numOfBed ?? "0"} Bed</span> <span>{item?.property?.numOfBath ?? "0"} Bath</span>
+                  <h2 className="text-xl lg:text-4xl mb-2">${item?.property?.monthlyRent?.toLocaleString()}/month</h2>
+                  <h2 className="lg:text-xl">
+                    <span>{item?.property?.numOfBed ?? "0"} Bed</span> <span>{item?.property?.numOfBath ? item?.property?.numOfBath : "0"} Bath</span>
                   </h2>
-                  <h2 className="text-xl">{item?.property?.address ?? "===="}</h2>
+                  <h2 className="lg:text-xl">{item?.property?.address ? item?.property?.address : "--"}</h2>
                 </div>
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
+                <div>
+                  <Score score={item?.property?.scoreRatio?.score} total={item?.property?.scoreRatio?.total} />
                 </div>
               </div>
               {/* */}
@@ -175,17 +182,8 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                     <div className="pb-5">
                       <h2 className="text-base font-bold capitalize">Description</h2>
 
-                      <div className="ql-editor">
-                        {item?.property?.description ? (
-                          <div
-                            className="whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{
-                              __html: item?.property.description,
-                            }}
-                          />
-                        ) : (
-                          <p>--</p>
-                        )}
+                      <div className="whitespace-pre-wrap">
+                        <p>{item?.property.description ? item?.property.description : "--"}</p>
                       </div>
                     </div>
                   </div>
@@ -210,49 +208,22 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                     <div>
                       <h2 className="text-base font-bold capitalize">Schools near by</h2>
                       <div className="">
-                        <div className="ql-editor">
-                          {item?.property?.schools ? (
-                            <div
-                              className="whitespace-pre-wrap"
-                              dangerouslySetInnerHTML={{
-                                __html: item?.property?.schools,
-                              }}
-                            />
-                          ) : (
-                            <p>--</p>
-                          )}
+                        <div>
+                          <p className="whitespace-pre-wrap">{item?.property?.schools ? item?.property?.schools : "--"}</p>
                         </div>
                       </div>
                     </div>
                     <div>
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        {item?.property?.universities ? (
-                          <div
-                            className="whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{
-                              __html: item?.property?.universities,
-                            }}
-                          />
-                        ) : (
-                          <p>--</p>
-                        )}
+                        <p className="whitespace-pre-wrap">{item?.property?.universities ? item?.property?.universities : "--"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
                     <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
                     <div className="">
-                      {item?.property?.pets ? (
-                        <div
-                          className="whitespace-pre-wrap"
-                          dangerouslySetInnerHTML={{
-                            __html: item?.property?.pets,
-                          }}
-                        />
-                      ) : (
-                        <p>--</p>
-                      )}
+                      <p className="whitespace-pre-wrap">{item?.property?.pets ? item?.property?.pets : "--"}</p>
                     </div>
                   </div>
                 </div>

@@ -14,6 +14,14 @@ export const getParticipantName = (participant) => {
   }
 };
 
+export const getParticipantRole = (participant) => {
+  const role = participant?.role || "";
+  return role
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 // ! get profile image of chat
 
 export const getProfileImageUrl = (userData) => {

@@ -62,6 +62,7 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
     <div>
       <Modal
         overflow={false}
+        backdrop="static"
         dialogAs="div"
         size="lg"
         className="bg-white mx-auto mt-20 rounded-xl"
@@ -76,7 +77,7 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
           <div className="      rounded-xl p-3">
             {/* title */}
             <div className="flex justify-center">
-              <h2 className="font-semibold text-xl">Profile Information</h2>
+              <h2 className="font-semibold text-xl">Account Information</h2>
             </div>
             {/* forms */}
             <form onSubmit={handleSubmit(handleUpdateProfileInformation)}>
@@ -88,7 +89,7 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       name="firstName"
                       control={control}
                       render={({ field }) => (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           <label className="font-medium text-base">First Name</label>
                           <Input size="lg" defaultValue={myProfileData?.firstName} {...field} type="text" />
                         </div>
@@ -100,7 +101,7 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       name="lastName"
                       control={control}
                       render={({ field }) => (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           <label className="font-medium text-base">Last Name</label>
                           <Input size="lg" defaultValue={myProfileData?.lastName} {...field} type="text" />
                         </div>
@@ -108,13 +109,13 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                     />
                   </div>
                 </div>
-                <div className="col-span-2 lg:col-span-4 lg:flex items-center justify-between gap-10">
+                <div className="col-span-2 lg:col-span-4 lg:flex items-start justify-between gap-10">
                   <div className="w-full">
                     <Controller
                       name="phoneNumber"
                       control={control}
                       render={({ field }) => (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           <label className="text-base font-medium">Phone Number</label>
                           <Input size="lg" defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
                         </div>
@@ -126,28 +127,29 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                     <Controller
                       name="password"
                       rules={{
-                        minLength: {
-                          value: 6,
-                          message: "Password must be greater than or equal to 6",
+                        pattern: {
+                          value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?/~`]).{6,}$/,
+                          message:
+                            "Password should include at least 1 lowercase & uppercase letter, 1 special character (e.g., @, #, $), and be at least 6 characters long",
                         },
                       }}
                       control={control}
                       render={({ field }) => (
                         <div className=" rs-form-control-wrapper  w-full">
                           <Input size="lg" placeholder="********" {...field} className="!w-full" type="password" />
-
-                          <Form.ErrorMessage show={(!!errors?.password && !!errors?.password?.message) || false} placement="topEnd">
-                            {errors?.password?.message}
-                          </Form.ErrorMessage>
                         </div>
                       )}
                     />
+
+                    <div className="h-16 text-xs mt-2 font-medium text-white">
+                      {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* button */}
-              <div className="mt-10 flex gap-5 justify-end">
+              <div className="  flex gap-5 justify-end">
                 <Button
                   onClick={() => {
                     reset();

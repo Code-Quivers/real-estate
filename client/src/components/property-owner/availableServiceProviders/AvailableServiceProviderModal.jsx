@@ -6,10 +6,10 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Button, Modal, Notification, Popover, Progress, Whisper, useToaster } from "rsuite";
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
+import { Avatar, Drawer, Notification, Placeholder, Popover, Whisper, useToaster } from "rsuite";
 import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
+import Score from "@/components/Shared/Score/Score";
 
 const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
@@ -68,7 +68,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
     { data: dataAdd, isLoading: isLoadingAdd, isSuccess: isSuccessAdd, isError: isErrorAdd, error: errorAdd, reset: resetAdd },
   ] = useAssignServiceProviderToPropertyMutation();
 
-  const handleAddTenantToProperty = async (propertyId) => {
+  const handleAddServiceProviderToProperty = async (propertyId) => {
     const assignData = {
       propertyId,
       serviceProviderId: modalData?.serviceProviderId,
@@ -110,152 +110,172 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
 
   return (
     <>
-      <Modal
-        size="lg"
-        dialogAs="div"
-        className="bg-white w-full mx-auto mt-20 rounded-xl"
-        overflow={false}
-        open={isModalOpened}
-        onClose={handleClose}
-      >
-        <Modal.Body
+      <Drawer placement="right" size="xs" open={isModalOpened} onClose={handleClose}>
+        <Drawer.Header>
+          <Drawer.Title>Service Provider Details</Drawer.Title>
+        </Drawer.Header>
+
+        <Drawer.Body
           style={{
             padding: 0,
             margin: 0,
           }}
         >
-          <div className="p-5">
+          <div className="px-5 sm:p-3">
             {/* top items */}
 
-            <div className="flex   justify-between items-center ">
-              <div className="flex items-center w-full  ">
-                <div className="md:flex w-full items-center gap-5">
-                  <div className="max-md:flex  items-center justify-between">
-                    <Image
-                      width={150}
-                      height={150}
-                      className="w-[180px] md:w-[200px] h-[150px] md:h-[150px]  object-cover rounded-lg "
-                      src={modalData?.profileImage ? `${fileUrlKey()}/${modalData?.profileImage}` : profileLogo}
-                      alt="Profile Photo"
-                    />
-
-                    <div
-                      className="md:hidden"
-                      style={{
-                        width: 100,
-                      }}
-                    >
-                      <Progress.Circle percent={30} strokeColor="green" />
-                    </div>
+            <div className=" ">
+              <div className="flex items-start justify-between">
+                {modalData?.profileImage ? (
+                  <Image
+                    width={100}
+                    height={100}
+                    className="w-[90px] h-[90px] p-3 object-cover rounded-full  "
+                    src={`${fileUrlKey()}/${modalData?.profileImage}`}
+                    alt="photo"
+                  />
+                ) : (
+                  <div className="p-3">
+                    <Avatar circle size="lg" />
                   </div>
-                  <div className="md:flex max-md:mt-5  justify-between w-full   ">
-                    <div className="space-y-0.5 flex flex-col justify-between gap-3 ">
-                      <h3 className="text-sm font-medium">
-                        Provider Name : {modalData?.firstName} {modalData?.lastName}
-                      </h3>
-                      <h3 className="text-sm font-medium">Service Type : {modalData?.Service?.serviceType}</h3>
-                      <h3 className="text-sm font-medium">Priority Type : {modalData?.Service?.serviceAvailability}</h3>
-                      <h3 className="text-sm font-medium">Company Name : {modalData?.companyName}</h3>
-                      <h3 className="text-sm font-medium">
-                        Service Price Range : $ {modalData?.Service?.minPrice} - $ {modalData?.Service?.maxPrice}
-                      </h3>
-                    </div>
+                )}
 
-                    <div
-                      className="hidden md:block"
-                      style={{
-                        width: 100,
-                      }}
-                    >
-                      <Progress.Circle percent={30} strokeColor="green" />
-                    </div>
-                  </div>
+                <div className="mr-4 mt-4">
+                  <Score score={modalData?.scoreRatio?.score} total={modalData?.scoreRatio?.total} />
+                </div>
+              </div>
+
+              <div>
+                <div className="px-3 space-y-0.5  ">
+                  <h2 type="button" className="text-sm  text-primary cursor-pointer font-bold">
+                    {modalData?.firstName} {modalData?.lastName}
+                  </h2>
+                  <h3 className="text-sm font-medium">
+                    Phone Number : {modalData?.phoneNumber ? modalData?.phoneNumber?.replace(/\d/g, "X") : "N/A"}
+                  </h3>
+                  <h3 className="text-sm font-medium">Company Name : {modalData?.companyName ? modalData?.companyName : "N/A"}</h3>
+                  <h3 className="text-sm font-medium">
+                    Company Phone Number : {modalData?.companyPhoneNumber ? modalData?.companyPhoneNumber : "N/A"}
+                  </h3>
+                  <h3 className="text-sm font-medium">Company Email : {modalData?.companyEmailAddress}</h3>
+                  <h3 className="text-sm font-medium">Company Address : {modalData?.companyAddress ? modalData?.companyAddress : "N/A"}</h3>
+                  <h3 className="text-sm font-medium">
+                    Service Type :{" "}
+                    {modalData?.Service?.serviceType
+                      ? modalData?.Service?.serviceType
+                          .replace(/_/g, " ")
+                          .toLowerCase()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                      : "N/A"}
+                  </h3>
+
+                  <h3 className="text-sm font-medium">
+                    Priority Type :{" "}
+                    {modalData?.Service?.serviceAvailability
+                      ? modalData?.Service?.serviceAvailability
+                          .replace(/_/g, " ")
+                          .toLowerCase()
+                          .replace(/\b\w/g, (c) => c.toUpperCase())
+                      : "N/A"}
+                  </h3>
+                  <h3 className="text-sm font-medium">
+                    Service Price Range : $ {modalData?.Service?.minPrice ? modalData?.Service?.minPrice?.toLocaleString() : "0"} - ${" "}
+                    {modalData?.Service?.maxPrice ? modalData?.Service?.maxPrice?.toLocaleString() : "0"}
+                  </h3>
                 </div>
               </div>
             </div>
-            {/* middle item */}
-            <div className="grid grid-cols-1  md:grid-cols-2 gap-6 mt-5">
-              <div className="col-span-1">
-                <h4 className="text-lg font-medium">Description</h4>
-                <p className="text-sm text-justify ">{modalData?.Service?.serviceDescription}</p>
-              </div>
-              <div className="col-span-1">
-                <h4 className="text-lg font-medium">Cancellation Policy</h4>
-                <p className="text-sm text-justify ">{modalData?.Service?.serviceCancellationPolicy}</p>
-              </div>
+          </div>
+          {/* buttons */}
+          <div className="flex mx-8 sm:mx-0 px-3 py-3 gap-2">
+            <div className="w-full">
+              <button
+                onClick={handleSaveServiceProvider}
+                className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+              >
+                Save
+              </button>
             </div>
-            {/* action */}
-
-            <div className="flex justify-center gap-3  mx-auto max-w-md mt-10">
-              <div>
-                <Button
-                  loading={isLoading}
-                  onClick={handleSaveServiceProvider}
-                  className="!bg-primary w-full !text-white !px-5 !py-1 !text-base !rounded-none "
-                >
-                  Save
-                </Button>
-              </div>
-
-              {/* Contact  */}
-              <div>
-                <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
-              </div>
-              {/*  */}
-              <div>
-                <Whisper
-                  placement="bottomStart"
-                  trigger="click"
-                  speaker={
-                    <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                      <div className="p-3 space-y-2">
-                        {unitRes?.data?.length > 0
-                          ? unitRes?.data?.map((singleUnit) => (
-                              <div key={Math.random()}>
-                                <button
-                                  onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                                  className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
-                                >
-                                  <div>
-                                    <Image
-                                      width={120}
-                                      height={120}
-                                      className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
-                                      src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
-                                      alt="photo"
-                                    />
-                                  </div>
-                                  <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                                    <h3>${singleUnit?.monthlyRent}</h3>
-                                    <h3>
-                                      {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
-                                    </h3>
-                                    <h3>{singleUnit?.address}</h3>
-                                  </div>
-                                </button>
-
-                                {/* <AvailableServiceProviderPopover singleUnit={singleUnit} serviceProviderId={modalData?.serviceProviderId} /> */}
+            {/* Contact  */}
+            <div className="w-full">
+              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
+            </div>
+            {/*  assign to property */}
+            <div className="w-full">
+              <Whisper
+                preventOverflow
+                placement="auto"
+                trigger="click"
+                speaker={
+                  <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                    <div className="p-3 space-y-2">
+                      {!isLoadingUnits &&
+                        unitRes?.data?.length > 0 &&
+                        unitRes?.data?.map((singleUnit) => (
+                          <div key={Math.random()}>
+                            <button
+                              onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
+                              className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                            >
+                              <div>
+                                <Image
+                                  width={120}
+                                  height={120}
+                                  className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                                  src={singleUnit?.images?.length && `${fileUrlKey()}/${singleUnit?.images[0]}`}
+                                  alt="photo"
+                                />
                               </div>
-                            ))
-                          : "No Unit Found"}
-                      </div>
-                    </Popover>
-                  }
-                >
-                  <Button
-                    loading={isLoadingUnits}
-                    type={"button"}
-                    className="!bg-primary w-full !text-white !px-5 !py-1 !text-base !rounded-none "
-                    appearance="default"
-                  >
-                    Add
-                  </Button>
-                </Whisper>
-              </div>
+                              <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
+                                <h3>${singleUnit?.monthlyRent}</h3>
+                                <h3>
+                                  {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
+                                </h3>
+                                <h3>{singleUnit?.address}</h3>
+                              </div>
+                            </button>
+                          </div>
+                        ))}
+
+                      {isLoadingUnits && (
+                        <div className=" mt-10 gap-y-5 flex flex-col">
+                          <div>
+                            <Placeholder.Graph active height={150} />
+                          </div>
+                          <div>
+                            <Placeholder.Graph active height={150} />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* if no data is available */}
+                      {!isLoadingUnits && !unitRes?.data?.length && (
+                        <div className="flex justify-center min-h-[10vh] items-center">
+                          <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
+                        </div>
+                      )}
+                    </div>
+                  </Popover>
+                }
+              >
+                <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
+              </Whisper>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
+          {/* middle item */}
+          <div className="space-y-5  border-t pt-2 ml-5 sm:ml-0 px-3">
+            <div className="">
+              <h4 className="text-sm font-medium">Description</h4>
+              <p className="text-sm text-justify ">{modalData?.Service?.serviceDescription}</p>
+            </div>
+            <div className="">
+              <h4 className="text-sm font-medium">Cancellation Policy</h4>
+              <p className="text-sm text-justify ">{modalData?.Service?.serviceCancellationPolicy}</p>
+            </div>
+          </div>
+          {/* action */}
+        </Drawer.Body>
+      </Drawer>
     </>
   );
 };
