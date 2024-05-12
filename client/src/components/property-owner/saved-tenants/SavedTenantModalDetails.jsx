@@ -205,7 +205,7 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                */}
               <div className="border p-2 rounded-md  space-y-2">
                 <h4 className="text-xs font-medium">Income Information</h4>
-                <div className="*:text-sm  space-y-1 ">
+                <div className="*:text-sm space-y-1 ">
                   <div className="flex justify-between items-center">
                     <h4>Current Employer/Business Name </h4>
                     <h4>{modalData?.tenant?.CurrentEmployerOrBusinessName ? modalData?.tenant?.CurrentEmployerOrBusinessName : "N/A"}</h4>
@@ -239,7 +239,7 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                         ? modalData?.tenant?.allergies
                           ? "Yes"
                           : "No"
-                        : "-"}
+                        : "N/A"}
                     </h4>
                   </div>
                   <div className="flex justify-between items-center">
@@ -249,7 +249,7 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                         ? modalData?.tenant?.isSmoker
                           ? "Yes"
                           : "No"
-                        : "-"}
+                        : "N/A"}
                     </h4>
                   </div>
                 </div>

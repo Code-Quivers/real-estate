@@ -242,18 +242,18 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
               </div>
               <div className="border p-2 rounded-md  space-y-1">
                 <h4 className="text-xs font-medium">Other Information</h4>
-                <div className="*:text-sm  space-y-1">
+                <div className="*:text-sm space-y-1">
                   <div className="flex justify-between items-center">
                     <h4>Number Of Member </h4>
                     <h4>{modalData?.numberOfMember ? modalData?.numberOfMember : "N/A"}</h4>
                   </div>
                   <div className="flex justify-between items-center">
                     <h4>Does have Allergies</h4>
-                    <h4>{modalData?.allergies !== undefined && modalData?.allergies !== null ? (modalData?.allergies ? "Yes" : "No") : "-"}</h4>
+                    <h4>{modalData?.allergies !== undefined && modalData?.allergies !== null ? (modalData?.allergies ? "Yes" : "No") : "N/A"}</h4>
                   </div>
                   <div className="flex justify-between items-center">
                     <h4>Is Smoker</h4>
-                    <h4>{modalData?.isSmoker !== undefined && modalData?.isSmoker !== null ? (modalData?.isSmoker ? "Yes" : "No") : "-"}</h4>
+                    <h4>{modalData?.isSmoker !== undefined && modalData?.isSmoker !== null ? (modalData?.isSmoker ? "Yes" : "No") : "N/A"}</h4>
                   </div>
                 </div>
               </div>
