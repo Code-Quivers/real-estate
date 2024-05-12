@@ -196,7 +196,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                         <p className="whitespace-pre-wrap text-md">{unitInfo?.schools ? unitInfo?.schools : "N/A"}</p>
                       </div>
                     </div>
-                    <div className="mt-3 border-t pt-2 mt-2">
+                    <div className="mt-3 border-t pt-2">
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
                         <p className="whitespace-pre-wrap">{unitInfo?.universities ? unitInfo?.universities : "N/A"}</p>
