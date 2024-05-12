@@ -115,7 +115,7 @@ const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: I
         if (tenantsRelationalFields.includes(key)) {
           return {
             [tenantsRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
+              [key]: (filterData as any)[key],
             },
           };
         } else {
