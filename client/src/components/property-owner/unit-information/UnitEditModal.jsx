@@ -23,7 +23,7 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     const { files, ...restData } = updatedData;
     const formData = new FormData();
 
-    // // Handle files
+    //  Handle files
     const oldFiles = [];
     files?.forEach((file) => {
       if (file.url) {
@@ -45,13 +45,13 @@ const UnitEditModal = ({ open, handleClose, editData }) => {
     const nullableKeys = ["description", "schools", "universities", "allowedPets"];
 
     for (const [key, value] of Object.entries(restData)) {
-      if (value !== undefined) {
-        if (value !== "" || !["numOfBed", "numOfBath", "monthlyRent"].includes(key)) {
-          if (nullableKeys.includes(key)) {
-            data[key] = value !== "" ? value : null;
-          } else {
-            data[key] = value;
-          }
+      if (value !== undefined && (value !== "" || !["numOfBed", "numOfBath", "monthlyRent"].includes(key))) {
+        if (["numOfBed", "numOfBath", "monthlyRent"].includes(key)) {
+          data[key] = parseInt(value, 10) || null;
+        } else if (nullableKeys.includes(key)) {
+          data[key] = value !== "" ? value : null;
+        } else {
+          data[key] = value;
         }
       }
     }

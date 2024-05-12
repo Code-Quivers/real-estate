@@ -88,7 +88,7 @@ const AvailableUnitsCard = () => {
               <Image
                 width={300}
                 height={300}
-                className="w-full h-[200px] object-center object-cover rounded-t-lg hover:shadow-lg"
+                className="w-full h-[200px] object-center object-cover rounded-t-lg  "
                 src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
                 alt="Unit Image"
               />

@@ -114,7 +114,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                 </h3>
                 <h3 className="max-md:text-sm ">Place to rent : {modalData?.placeToRent ? modalData?.placeToRent : "N/A"} </h3>
                 <h3 className="max-md:text-sm">
-                  Rent willing to pay : {modalData?.affordableRentAmount ? modalData?.affordableRentAmount?.toLocaleString() : "N/A"}
+                  Rent willing to pay : {modalData?.affordableRentAmount ? `$${modalData?.affordableRentAmount?.toLocaleString()}` : "N/A"}
                 </h3>
               </div>
             </div>
