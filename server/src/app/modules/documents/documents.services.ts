@@ -84,7 +84,7 @@ const removeTemplate = async (ownerId: string, title: string, filePath: string) 
       });
       let data: any[] = [];
       if (propertyOwner?.templates) {
-        data = propertyOwner.templates.map((template: any) => template?.filePath != filePath);
+        data = propertyOwner.templates.map((template:any) => template?.filePath != filePath);
       }
       const updatedData = await transactionClient.propertyOwner.update({
         where: { propertyOwnerId: ownerId },
