@@ -334,8 +334,8 @@ model Message {
   messageId      String       @id @default(uuid())
   text           String?
   images         String[]
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [conversationId])
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [conversationId], onDelete: SetNull)
   senderId       String
   sender         User         @relation("sender", fields: [senderId], references: [userId])
   createdAt      DateTime     @default(now()) @db.Timestamptz(0)

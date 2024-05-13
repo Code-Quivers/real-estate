@@ -54,13 +54,16 @@ const getSingleChat = catchAsync(async (req: Request, res: Response) => {
   //
   const conversationId = req.params?.conversationId;
   const userId = (req.user as IRequestUser).userId;
-  const result = await ConversationService.getSingleChat(conversationId, userId);
+  const options = pick(req.query, ["limit", "page"]);
+
+  const result = await ConversationService.getSingleChat(conversationId, userId, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Conversations Retrieved Successfully",
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
