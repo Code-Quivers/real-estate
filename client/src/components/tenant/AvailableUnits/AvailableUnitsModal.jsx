@@ -174,14 +174,14 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   </div>
                   <div className={openTab === 2 ? "block" : "hidden"} id="link2">
                     <div className="grid grid-cols-2   ">
-                      <div className="col-span-1 border-r mr-3    p-1">
+                      <div className="col-span-1 border-r mr-3    p-0.5">
                         <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Tenant</h2>
                         <p className="mt-5 whitespace-pre-line text-md">
                           {unitInfo?.maintenanceCoveredTenant ? unitInfo?.maintenanceCoveredTenant : "N/A"}
                         </p>
                       </div>
 
-                      <div className="col-span-1 p-1">
+                      <div className="col-span-1 p-0.5">
                         <h2 className="text-center font-semibold text-sm ld:text-lg">Maintenance covered by Property Owner</h2>
                         <p className="mt-5 whitespace-pre-line text-md">
                           {unitInfo?.maintenanceCoveredOwner ? unitInfo?.maintenanceCoveredOwner : "N/A"}
@@ -199,12 +199,12 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     <div className="mt-3 border-t pt-2">
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        <p className="whitespace-pre-wrap">{unitInfo?.universities ? unitInfo?.universities : "N/A"}</p>
+                        <p className="whitespace-pre-wrap text-md">{unitInfo?.universities ? unitInfo?.universities : "N/A"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
-                    <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
+                    <h2 className="text-base font-bold capitalize ">Pets Allowed</h2>
                     <div className="">
                       <p className="whitespace-pre-wrap text-md">{unitInfo?.allowedPets ? unitInfo?.allowedPets : "N/A"}</p>
                     </div>

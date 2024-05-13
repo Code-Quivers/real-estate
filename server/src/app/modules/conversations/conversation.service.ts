@@ -256,9 +256,15 @@ const getMyAllConversation = async (
 
 // ! get single chats messages
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const getSingleChat = async (conversationId: string, userId: string): Promise<Conversation> => {
+const getSingleChat = async (
+  conversationId: string,
+  userId: string,
+  options: IPaginationOptions,
+): Promise<IGenericResponse<Conversation>> => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const result = await prisma.$transaction(async (transactionClient) => {
     //
+
     const chatMessages = await transactionClient.conversation.findUnique({
       where: {
         conversationId,
@@ -299,6 +305,8 @@ const getSingleChat = async (conversationId: string, userId: string): Promise<Co
           orderBy: {
             createdAt: "desc",
           },
+          take: limit, // Limit the number of messages
+          skip, // Calculate skip based on page number
         },
         perticipants: {
           where: {
@@ -333,10 +341,15 @@ const getSingleChat = async (conversationId: string, userId: string): Promise<Co
         },
       },
     });
+
     if (!chatMessages) {
       throw new ApiError(httpStatus.NOT_FOUND, "Conversation not found !");
     }
-    return chatMessages;
+
+    const total = chatMessages?._count?.messages ?? 0;
+    const totalPage = Math.ceil(total / limit);
+
+    return { meta: { page, limit, total, totalPage }, data: chatMessages };
   });
   return result;
 };

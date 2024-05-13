@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, InputNumber, Pagination } from "rsuite";
+import { Input, InputGroup, Pagination } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
@@ -39,7 +39,12 @@ const PropertyOwnerAvailableTenants = () => {
   });
   if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
 
-  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
+  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery(
+    { ...query },
+    {
+      pollingInterval: 60000,
+    },
+  );
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setTenantDetails] = useState(null);

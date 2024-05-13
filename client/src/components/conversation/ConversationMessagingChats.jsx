@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useGetMessagesQuery, useSendMessageMutation } from "@/redux/features/conversations/conversationApi";
 import { getUserInfo } from "@/hooks/services/auth.service";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ChatBubbleIncoming from "./ChatBubbleIncoming";
 import ChatBubbleOutgoing from "./ChatBubbleOutgoing";
 import { getParticipantName, getParticipantRole, getProfileImageUrl } from "@/utils/conversation.utils";
@@ -13,6 +13,8 @@ import { Controller, useForm } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
 import useSocket from "../../hooks/useSocket";
 import { SendMessageErrorMessage } from "../toasts/notifications/ToastNotificationMessages";
+import moment from "moment";
+import { GrRefresh } from "react-icons/gr";
 
 const ConversationMessagingChats = () => {
   const toaster = useToaster();
@@ -22,7 +24,26 @@ const ConversationMessagingChats = () => {
   const socket = useSocket();
 
   // ! getting data from api
-  const { data: dataResponse, isError, isLoading, isSuccess, error, refetch } = useGetMessagesQuery({ conversationId }, { skip: !conversationId });
+
+  const query = {};
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const messagesContainerRef = useRef(null);
+  const [shouldScroll, setShouldScroll] = useState(true);
+
+  //
+  query["limit"] = size;
+  query["page"] = page;
+
+  const {
+    data: dataResponse,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+    refetch,
+    isFetching,
+  } = useGetMessagesQuery({ conversationId, ...query }, { skip: !conversationId, pollingInterval: 30000 });
 
   // ! socket---------------------
   // join chat
@@ -97,6 +118,7 @@ const ConversationMessagingChats = () => {
     resetForm({
       text: "",
     });
+    setShouldScroll(true);
   };
 
   // ! -------------------- after send
@@ -118,7 +140,6 @@ const ConversationMessagingChats = () => {
   }, [isErrorSend, isSuccessSend, errorSend, isLoadingSend, sendReset, resetForm]);
 
   // ! scrolling -------------------------------------------------------------
-  const messagesContainerRef = useRef(null);
 
   // Function to scroll to the bottom of the messages container
   const scrollToBottom = () => {
@@ -127,26 +148,74 @@ const ConversationMessagingChats = () => {
     }
   };
 
-  // Scroll to bottom on initial render using useEffect
+  // Scroll to bottom
   useEffect(() => {
-    scrollToBottom();
-  }, [dataResponse]);
+    if (!isLoading && shouldScroll) {
+      scrollToBottom();
+      setShouldScroll(false);
+    }
+
+    if (!isLoading && isSuccess && shouldScroll) {
+      scrollToBottom();
+      setShouldScroll(false);
+    }
+  }, [isLoading, isSuccess, shouldScroll, setShouldScroll]);
 
   return (
     <div className="flex flex-col h-[80vh]  2xl:h-[85vh] border  rounded-lg  bg-white shadow-lg">
       {conversationId && !isError ? (
         <>
-          <div className="  py-2  border-b px-3  sticky top-0 flex items-center gap-3 ">
-            <div className="">
-              <Image alt="" height={45} width={45} className="rounded-full" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
+          <div className="  py-2  border-b px-3  sticky top-0 flex justify-between items-center   ">
+            <div className="flex items-center gap-3">
+              <div className="">
+                <Image alt="" height={45} width={45} className="rounded-full" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
+              </div>
+              <div>
+                <h2>{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
+                <p className="text-[10px] font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
+              </div>
             </div>
             <div>
-              <h2>{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
-              <p className="text-[10px] font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
+              <button onClick={() => refetch()} disabled={isFetching} className="hover:bg-primary p-1 rounded-full hover:text-white duration-300">
+                <GrRefresh size={25} className={`${isFetching && "animate-spin"}`} />
+              </button>
             </div>
           </div>
-          <div className="flex-1 m-1 overflow-y-scroll custom-scrollbar py-3 rounded-md bg-[#02020200]" ref={messagesContainerRef}>
-            <div className="space-y-5 flex flex-col-reverse px-3">
+          {/* messages */}
+          <div className="flex-1 m-1 overflow-y-scroll custom-scrollbar py-3  rounded-md bg-[#02020200]" ref={messagesContainerRef}>
+            {dataResponse?.meta?.total > size ? (
+              <div className="flex justify-center mb-2">
+                {isFetching ? (
+                  "Loading.."
+                ) : (
+                  <button type="button" onClick={() => setSize((prevSize) => prevSize + 10)} className="bg-slate-600 rounded-full px-2 text-white">
+                    See Previous Messages
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="flex justify-center">
+                <div>
+                  <div className="flex justify-center">
+                    <Image
+                      width={150}
+                      height={150}
+                      className="!w-[120px] !h-[120px] object-cover rounded-full"
+                      src={getProfileImageUrl(dataResponse?.data?.perticipants[0])}
+                    />
+                  </div>
+                  <div>
+                    <div className="text-center mb-3 mt-1">
+                      <h2 className="text-lg font-medium">{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
+                      <p className="text-sm font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
+                      <p className="text-xs mt-1">Conversation Started {moment(dataResponse?.data?.createdAt).format("lll")}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3 xl:space-y-4 2xl:space-y-5 flex duration-300 transition-all flex-col-reverse px-3">
               {dataResponse?.data?.messages?.map((message) => (
                 <div
                   key={Math.random()}
