@@ -1,12 +1,12 @@
 "use client";
 
+import ConversationChatPerson from "@/components/conversation/ConversationChatPerson";
 import ConversationMessagingChats from "@/components/conversation/ConversationMessagingChats";
-import ConversationChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import useSocket from "@/hooks/useSocket";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Placeholder } from "rsuite";
 
 const PropertyOwnerMessaging = () => {
@@ -16,6 +16,10 @@ const PropertyOwnerMessaging = () => {
   const socket = useSocket();
   const myDetails = getUserInfo();
   // socket
+  const [size, setSize] = useState(10);
+  const handleRefreshSize = () => {
+    setSize(10);
+  };
 
   useEffect(() => {
     if (allConversations && !isLoading && !isError && isSuccess && myDetails) {
@@ -65,6 +69,7 @@ const PropertyOwnerMessaging = () => {
               allConversations?.data?.data?.map((singleConversation) => (
                 <div key={singleConversation?.conversationId}>
                   <ConversationChatPerson
+                    handleRefreshSize={handleRefreshSize}
                     singleConversation={singleConversation}
                     paramsChatId={paramsChatId}
                     participant={singleConversation?.perticipants[0]}
@@ -87,7 +92,7 @@ const PropertyOwnerMessaging = () => {
             )}
           </div>
           <div className="col-span-5 lg:col-span-4 ">
-            <ConversationMessagingChats />
+            <ConversationMessagingChats setSize={setSize} size={size} />
           </div>
         </div>
       </div>

@@ -1,20 +1,25 @@
 "use client";
 
+import ConversationChatPerson from "@/components/conversation/ConversationChatPerson";
 import ConversationMessagingChats from "@/components/conversation/ConversationMessagingChats";
-import ConversationChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import useSocket from "@/hooks/useSocket";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Placeholder } from "rsuite";
 
 const ServiceProviderMessagingPage = () => {
   const { data: allConversations, isLoading, isError, isSuccess, refetch } = useGetMyAllConversationsQuery();
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
+  const [size, setSize] = useState(10);
+  const handleRefreshSize = () => {
+    setSize(10);
+  };
   const myDetails = getUserInfo();
   const socket = useSocket();
+
   // socket
 
   useEffect(() => {
@@ -64,6 +69,7 @@ const ServiceProviderMessagingPage = () => {
               allConversations?.data?.data?.map((singleConversation) => (
                 <div key={singleConversation?.conversationId} className="space-y-10">
                   <ConversationChatPerson
+                    handleRefreshSize={handleRefreshSize}
                     singleConversation={singleConversation}
                     paramsChatId={paramsChatId}
                     participant={singleConversation?.perticipants[0]}
@@ -89,7 +95,7 @@ const ServiceProviderMessagingPage = () => {
             )}
           </div>
           <div className="col-span-5 lg:col-span-4 ">
-            <ConversationMessagingChats />
+            <ConversationMessagingChats size={size} setSize={setSize} />
           </div>
         </div>
       </div>

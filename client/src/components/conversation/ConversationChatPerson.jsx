@@ -6,12 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Text } from "rsuite";
 
-const ConversationChatPerson = ({ singleConversation, paramsChatId, participant, conversationId }) => {
+const ConversationChatPerson = ({ singleConversation, paramsChatId, participant, conversationId, handleRefreshSize }) => {
   return (
     <Link
       href={{
         query: { chat: conversationId },
       }}
+      onClick={handleRefreshSize}
       className={`lg:py-2  lg:px-1.5 group cursor-pointer  hover:bg-[#f3f4f6]  rounded md:rounded-md
       ${paramsChatId === conversationId && "bg-[#e7eaf0] md:bg-[#f3f4f6]"} flex  lg:grid space-y-1 p-1 grid-cols-7 justify-center  items-start `}
     >

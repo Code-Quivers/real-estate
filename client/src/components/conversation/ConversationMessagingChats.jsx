@@ -16,7 +16,7 @@ import { SendMessageErrorMessage } from "../toasts/notifications/ToastNotificati
 import moment from "moment";
 import { GrRefresh } from "react-icons/gr";
 
-const ConversationMessagingChats = () => {
+const ConversationMessagingChats = ({ size, setSize }) => {
   const toaster = useToaster();
   const useSearch = useSearchParams();
   const conversationId = useSearch.get("chat");
@@ -27,7 +27,6 @@ const ConversationMessagingChats = () => {
 
   const query = {};
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
   const messagesContainerRef = useRef(null);
   const [shouldScroll, setShouldScroll] = useState(true);
 
@@ -208,7 +207,7 @@ const ConversationMessagingChats = () => {
                     <div className="text-center mb-3 mt-1">
                       <h2 className="text-lg font-medium">{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
                       <p className="text-sm font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
-                      <p className="text-xs mt-1">Conversation Started {moment(dataResponse?.data?.createdAt).format("lll")}</p>
+                      <p className="text-xs mt-1">Conversation Started on {moment(dataResponse?.data?.createdAt).format("lll")}</p>
                     </div>
                   </div>
                 </div>
