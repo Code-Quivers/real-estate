@@ -121,7 +121,9 @@ const AvailableUnitsCard = () => {
       )}
 
       {/* Available units details using popup start */}
-      <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
+      <div className="max-md:hidden">
+        <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
+      </div>
       {/* Available units details using popup end */}
     </section>
   );
