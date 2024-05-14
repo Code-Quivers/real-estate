@@ -6,7 +6,7 @@ import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/s
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Button, Carousel, Drawer, IconButton, Modal, Notification, useToaster } from "rsuite";
+import { Button, Carousel, Drawer, IconButton, Notification, useToaster } from "rsuite";
 
 const SavedUnitsModal = ({ open, handleClose, units: item }) => {
   const [openTab, setOpenTab] = useState(1);
