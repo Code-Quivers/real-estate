@@ -28,13 +28,14 @@ const AvailableUnitsCard = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  //
+
   query["searchTerm"] = searchTerm;
   query["sortOrder"] = sortOrder;
   query["sortBy"] = sortBy;
   query["limit"] = 20;
 
   const { data: allAvailableUnitsRes, isLoading, isError } = useGetAllAvailableUnitsQuery({ ...query });
+
   return (
     <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
       {/* search with price section start */}
@@ -48,7 +49,16 @@ const AvailableUnitsCard = () => {
           </InputGroup>
         </div>
         <div className="w-full">
-          <SelectPicker className="!w-full" size="lg" placeholder="Price" data={data} />
+          <SelectPicker
+            searchable={false}
+            size="lg"
+            placeholder="Price"
+            data={["High to low", "Low to High"].map((item) => ({
+              label: item,
+              value: item,
+            }))}
+            className="!w-full"
+          />
         </div>
         <div className="w-full">
           <SelectPicker size="lg" placeholder="More" data={data} className="!w-full" />
@@ -56,7 +66,6 @@ const AvailableUnitsCard = () => {
       </div>
       {/* search with price section end */}
 
-      {/* sort area start */}
       <div className="flex justify-end items-center mt-5">
         <div>
           <SelectPicker
