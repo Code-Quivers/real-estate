@@ -4,9 +4,9 @@ import { useState } from "react";
 import SavedUnitsModal from "./SavedUnitModal";
 import houseLogo from "@/assets/house/house-logo.jpg";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
-import { Loader } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import Score from "@/components/Shared/Score/Score";
+import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
 
 const SavedUnitsCard = () => {
   const [isOpen, setModalOpen] = useState(false);
@@ -19,11 +19,7 @@ const SavedUnitsCard = () => {
   return (
     <div className="mt-3">
       {/* if is loading */}
-      {isLoading && (
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <Loader size="md" content="Getting Saved Units..." />
-        </div>
-      )}
+
       {/* if not found any units */}
       {!isLoading && !availableUnits?.data?.data?.length && (
         <div className="flex justify-center items-center min-h-[60vh]">
@@ -31,7 +27,14 @@ const SavedUnitsCard = () => {
         </div>
       )}
 
-      {/* Available units card start */}
+      {/* saved units card start */}
+      {isLoading && (
+        <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+        </div>
+      )}
 
       <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 max-md:mx-1">
         {!isLoading &&

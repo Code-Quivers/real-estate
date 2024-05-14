@@ -14,11 +14,6 @@ import { Loader } from "rsuite";
 import Score from "@/components/Shared/Score/Score";
 import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
 
-// Search Location data
-const data = ["Newest", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
-
-// Price data
-
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);

@@ -105,7 +105,7 @@ const createNewProperty = async (profileId: string, req: Request) => {
 // ! Getting all property========================================================================
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  console.log(options);
+
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
