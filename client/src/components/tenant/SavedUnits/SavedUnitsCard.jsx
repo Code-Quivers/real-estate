@@ -4,7 +4,6 @@ import { useState } from "react";
 import SavedUnitsModal from "./SavedUnitModal";
 import houseLogo from "@/assets/house/house-logo.jpg";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
-import { Loader } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import Score from "@/components/Shared/Score/Score";
 import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
