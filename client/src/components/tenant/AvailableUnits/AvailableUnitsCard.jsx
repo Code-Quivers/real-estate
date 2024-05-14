@@ -9,9 +9,10 @@ import { FiSearch } from "react-icons/fi";
 import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
-import { sortingPicker } from "@/constants/selectPicker.const";
+import { pricePicker, sortingPicker } from "@/constants/selectPicker.const";
 import { Loader } from "rsuite";
 import Score from "@/components/Shared/Score/Score";
+import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
 
 // Search Location data
 const data = ["Newest", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
@@ -22,13 +23,12 @@ const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);
   const query = {};
-  // const [page, setPage] = useState(1);
-  // const [size, setSize] = useState(20);
+
   // eslint-disable-next-line no-unused-vars
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
+  //
   query["searchTerm"] = searchTerm;
   query["sortOrder"] = sortOrder;
   query["sortBy"] = sortBy;
@@ -37,10 +37,10 @@ const AvailableUnitsCard = () => {
   const { data: allAvailableUnitsRes, isLoading, isError } = useGetAllAvailableUnitsQuery({ ...query });
 
   return (
-    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
+    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-1 2xl:px-0 ">
       {/* search with price section start */}
-      <div className="grid grid-cols-2 lg:flex justify-start items-start  lg:gap-5 border-r-0 border-gray-800">
-        <div className="w-full">
+      <div className="grid grid-cols-5 lg:grid-cols-3  items-start  gap-1 lg:gap-5 border-r-0 border-gray-800">
+        <div className="w-full  col-span-3 lg:col-span-2">
           <InputGroup size="lg" inside>
             <Input onChange={(e) => setSearchTerm(e)} placeholder="Search Location" size="lg" />
             <InputGroup.Button>
@@ -48,24 +48,26 @@ const AvailableUnitsCard = () => {
             </InputGroup.Button>
           </InputGroup>
         </div>
-        <div className="w-full">
+        <div className="w-full col-span-2 lg:col-span-1">
           <SelectPicker
             searchable={false}
             size="lg"
             placeholder="Price"
-            data={["High to low", "Low to High"].map((item) => ({
-              label: item,
-              value: item,
-            }))}
+            data={pricePicker}
+            onChange={(e) => {
+              setSortBy("monthlyRent");
+              setSortOrder(e);
+            }}
+            onClean={() => {
+              setSortBy("createdAt");
+              setSortOrder("");
+            }}
             className="!w-full"
           />
         </div>
-        <div className="w-full">
-          <SelectPicker size="lg" placeholder="More" data={data} className="!w-full" />
-        </div>
       </div>
       {/* search with price section end */}
-
+      {/* Sorting */}
       <div className="flex justify-end items-center mt-5">
         <div>
           <SelectPicker
@@ -81,6 +83,13 @@ const AvailableUnitsCard = () => {
       {/* sort area end */}
 
       {/* Available units card start */}
+      {isLoading && (
+        <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+        </div>
+      )}
 
       <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         {!isLoading &&
@@ -103,7 +112,7 @@ const AvailableUnitsCard = () => {
               />
               <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
-                  <h2 className="text-sm">${unit?.monthlyRent?.toLocaleString()}</h2>
+                  <h2 className="text-sm font-semibold">${unit?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unit?.numOfBed ?? "0"} Bed </span>
                     <span>{unit?.numOfBath ?? "0"} Bath</span>

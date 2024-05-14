@@ -12,7 +12,7 @@ const TenantLayout = ({ children }) => {
         >
           <TenantSidebar />
         </div>
-        <div className="col-span-6 border lg:col-span-7 ">
+        <div className="col-span-6   lg:col-span-7 ">
           <div className="md:hidden">
             <TenantSidebarDrawer />
           </div>
