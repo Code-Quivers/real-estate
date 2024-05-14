@@ -70,7 +70,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
           }}
         >
           <div>
-            <div className="grid md:grid-cols-12 border   justify-between   items-stretch  ">
+            <div className="grid md:grid-cols-12    justify-between   items-stretch  ">
               <div className="md:col-span-5 md:hidden">
                 <Carousel className="custom-slider max-h-[250px] ">
                   {unitInfo?.images?.length > 0
@@ -82,7 +82,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     : null}
                 </Carousel>
               </div>
-              <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]   custom-scrollbar">
+              <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
                 {unitInfo?.images?.length
                   ? unitInfo?.images?.map((photo) => (
                       <div key={Math.random()} className="flex flex-col divide-y divide-[#8b8b8b]">
@@ -99,7 +99,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     ))
                   : ""}
               </div>
-              <div className="lg:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  custom-scrollbar ">
+              <div className="lg:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar ">
                 <div className="flex px-3 py-1.5  justify-between items-center  bg-white">
                   <div>
                     {unitInfo?.owner?.profileImage ? (
