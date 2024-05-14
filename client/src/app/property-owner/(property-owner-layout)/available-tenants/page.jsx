@@ -80,7 +80,7 @@ const PropertyOwnerAvailableTenants = () => {
 
       {/* all cards */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-center   py-10">
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5">
           <TenantCardSkeleton />
           <TenantCardSkeleton />
           <TenantCardSkeleton />
