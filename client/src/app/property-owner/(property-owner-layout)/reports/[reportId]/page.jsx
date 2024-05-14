@@ -1,5 +1,4 @@
 "use client";
-
 import AnnualReportDetails from "@/components/reports/AnnualReportDetails";
 import AnnualTaxDocument from "@/components/reports/AnnualTaxDocument";
 import MonthlyReportDetails from "@/components/reports/MonthlyReportDetails";
@@ -16,7 +15,7 @@ const TenantInformationReportPage = ({ params }) => {
     },
   );
   return (
-    <section className="max-w-[1050px] min-h-screen mb-5  xl:mx-auto md:px-3 lg:px-5 px-2 2xl:px-0">
+    <section className="max-w-4xl min-h-screen mb-5 mx-auto md:px-3 lg:px-5 px-2 2xl:px-0">
       <div className=" flex justify-center my-2">
         <h2>Reports</h2>
       </div>
