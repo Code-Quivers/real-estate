@@ -49,7 +49,9 @@ const getSingleOrder = async (orderId: string) => {
         orderStatus: "PENDING",
       },
       include: {
-        owner: true,
+        owner: {
+          select: { firstName: true, lastName: true, phoneNumber: true, userId: true, profileImage: true },
+        },
         _count: true,
         properties: true,
         tenant: true,
