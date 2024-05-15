@@ -1,19 +1,25 @@
 "use client";
 
 import StripeCheckout from "@/components/payment/stripe/StripeCheckout";
+import { fileUrlKey, getUnitPackagePrices } from "@/configs/envConfig";
 import { useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } from "@/redux/features/orders/orderApi";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { MdSearchOff } from "react-icons/md";
-import { Button, Loader, Message, Modal, useToaster } from "rsuite";
+import { Button, Loader, Message, Modal, Panel, Tabs, useToaster } from "rsuite";
+import apartmentPhoto from "@/assets/house/house-logo.jpg";
 
 const UnitPaymentPage = ({ params }) => {
   const router = useRouter();
   const toaster = useToaster();
   const [isOpenFreeTrial, setIsOpenFreeTrial] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [monthlyChargePerProperty, setMonthlyChargePerProperty] = useState(20.0);
+  const [activePackagePrice, setActivePackagePrice] = useState("MONTHLY");
+  const searchParam = useSearchParams();
+  const searchParams = searchParam.get("paymentMethod");
+
   const {
     data: orderDetails,
     isLoading: isOrderLoading,
@@ -58,9 +64,10 @@ const UnitPaymentPage = ({ params }) => {
       );
     }
   }, [isLoadingTrial, isErrorTrial, isSuccessTrial, errorTrial, router, resetReq, toaster]);
+  //
 
   return (
-    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5 2xl:px-0 ">
+    <section className="max-w-5xl  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5 2xl:px-0 ">
       <div className=" flex justify-center  items-stretch gap-5 ">
         <Button type="button" className={`     !px-12 !py-4 !bg-[#29429f] !text-white !rounded-full `} size="lg" appearance="default">
           Payment
@@ -95,20 +102,84 @@ const UnitPaymentPage = ({ params }) => {
       {/* if order exist */}
       {!isOrderLoading && !isOrderError && (
         <div className="mt-10">
-          <div className="text-center space-y-3">
-            <h2 className="text-xl ">Payment</h2>
-            <h2 className="text-xl ">You will be charged {monthlyChargePerProperty}$/month for each property you add.</h2>
-          </div>
-          {/* paypal or payment method */}
           <div>
-            {console.log(orderDetails)}
+            <Panel>
+              <Tabs appearance="tabs" activeKey={activePackagePrice} onSelect={setActivePackagePrice}>
+                <Tabs.Tab eventKey="MONTHLY" title={`Monthly ${getUnitPackagePrices().MONTHLY}`}>
+                  <h2 className="text-xl">You will be charged ${getUnitPackagePrices().MONTHLY}/month for each property you add.</h2>
+                </Tabs.Tab>
+                <Tabs.Tab eventKey="HALF_YEARLY" title={`Half Yearly ${getUnitPackagePrices().HALF_YEARLY}`}>
+                  <h2 className="text-xl">You will be charged ${getUnitPackagePrices().HALF_YEARLY}/half year for each property you add</h2>
+                </Tabs.Tab>
+                <Tabs.Tab eventKey="ANNUALLY" title={`Annually ${getUnitPackagePrices().ANNUALLY}`}>
+                  <h2 className="text-xl">You will be charged ${getUnitPackagePrices().ANNUALLY}/year for each property you add.</h2>
+                </Tabs.Tab>
+              </Tabs>
+            </Panel>
+          </div>
+          {/* order details */}
 
-            <StripeCheckout
-              ownerOrderedId={orderDetails?.data?.orderId}
-              amountToPaid={monthlyChargePerProperty * orderDetails?.data?._count?.properties}
-              orderData={orderDetails?.data}
-              monthlyChargePerProperty={monthlyChargePerProperty}
-            />
+          <div className="mt-5 space-y-3 ">
+            {orderDetails?.data?.properties?.map((singleProperty) => (
+              <div key={Math.random()} className="flex justify-between items-center border  p-2 shadow-md bg-white rounded-lg">
+                <div className="flex gap-3 items-center">
+                  <Image
+                    width={100}
+                    height={100}
+                    src={singleProperty?.images?.length ? `${fileUrlKey()}/${singleProperty?.images[0]}` : apartmentPhoto}
+                    className="rounded-md !w-[100px] !h-[80px] object-cover object-center"
+                    alt=""
+                  />
+                  <h2 className="text-lg text-wrap">{singleProperty?.title}</h2>
+                </div>
+                <div>
+                  <h2 className="text-4xl font-semibold">${getUnitPackagePrices()[activePackagePrice]}</h2>
+                </div>
+              </div>
+            ))}
+
+            {/* total */}
+            <div>
+              <div className=" mt-10  bg-white  p-5">
+                <div className="">
+                  <div className="flex justify-between w-full mt-2">
+                    <h1 className="w-2/3">Total</h1>
+                    <h1 className="1/3 mr-5 text-2xl font-medium">
+                      ${(getUnitPackagePrices()[activePackagePrice] * orderDetails?.data?._count?.properties).toLocaleString()}
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* paypal or payment method */}
+          <div className="mt-7">
+            {searchParams === "stripe-payment" ? (
+              <StripeCheckout
+                ownerOrderedId={orderDetails?.data?.orderId}
+                amountToPaid={getUnitPackagePrices()[activePackagePrice] * orderDetails?.data?._count?.properties}
+                orderData={orderDetails?.data}
+                orderDetails={{
+                  propertyIds: orderDetails?.data?.properties.map((property) => property?.propertyId),
+                  packagePrice: getUnitPackagePrices()[activePackagePrice],
+                  totalAmountToPay: getUnitPackagePrices()[activePackagePrice] * orderDetails?.data?._count?.properties,
+                  orderId: orderDetails?.data?.orderId,
+                  package: activePackagePrice,
+                }}
+              />
+            ) : (
+              <div className="flex justify-center">
+                <Link
+                  href={{
+                    query: { paymentMethod: "stripe-payment" },
+                  }}
+                  className="border w-full  bg-primary hover:bg-primary/80 duration-300 text-center p-10 text-xl font-serif py-4 rounded-lg text-white"
+                >
+                  Pay with Stripe
+                </Link>
+              </div>
+            )}
           </div>
           {/* activate a free trial */}
           <div className="mt-10 text-center">
