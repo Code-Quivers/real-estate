@@ -3,6 +3,7 @@
 import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
+import { incrementMonth } from "../../../helpers/utils";
 
 /**
  * Creates a new order in the database.
@@ -165,13 +166,18 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
 
     // if the order is for paying rent then return the result
     if (isRentPayment) return updatedInfo;
-
+    const packageType = updatedInfo.packageType;
+    const paidFrom = updatedInfo.updatedAt;
+    let paidTo = paidFrom;
+    if(packageType==='MONTHLY') paidTo = incrementMonth(paidFrom, 1)
+    else if(packageType==='BIANNUALY') paidTo=incrementMonth(paidFrom, 6)
+    else if(packageType==='ANNUALY') paidTo=incrementMonth(paidFrom, 12)
     // When The order is for property payment
     const updatedProperty = await transactionClient.property.updateMany({
       where: {
         orders: { some: { orderId } },
       },
-      data: { planType },
+      data: { planType, packageType, paidFrom, paidTo },
     });
 
     if (!updatedInfo || !updatedProperty) {

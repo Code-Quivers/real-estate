@@ -44,7 +44,7 @@ model Tenant {
   socialSecurityNumber                 String?
   presentAddress                       String?
   phoneNumber                          String?
-placeToRent                 String?
+  placeToRent                          String?
   isCriminalRecord                     Boolean?
   criminalRecordDescription            String?
   // rental history
@@ -106,6 +106,9 @@ model Property {
   images                   String[]
   isRented                 Boolean              @default(false)
   planType                 PlanType             @default(PENDING)
+  packageType              PackageType          @default(NONE)
+  paidFrom                 DateTime
+  paidTo                   DateTime
   isActive                 Boolean              @default(true)
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
@@ -160,6 +163,7 @@ model Order {
   orderId            String              @id @default(uuid())
   properties         Property[]
   orderStatus        OrderStatus         @default(PENDING)
+  packageType        PackageType         @default(NONE)
   // 
   ownerId            String?
   owner              PropertyOwner?      @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
@@ -331,15 +335,15 @@ model Conversation {
 }
 
 model Message {
-  messageId      String       @id @default(uuid())
+  messageId      String        @id @default(uuid())
   text           String?
   images         String[]
   conversationId String?
   conversation   Conversation? @relation(fields: [conversationId], references: [conversationId], onDelete: SetNull)
   senderId       String
-  sender         User         @relation("sender", fields: [senderId], references: [userId])
-  createdAt      DateTime     @default(now()) @db.Timestamptz(0)
-  updatedAt      DateTime     @updatedAt @db.Timestamptz(0)
+  sender         User          @relation("sender", fields: [senderId], references: [userId])
+  createdAt      DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(0)
 
   @@map("Messages")
 }
@@ -441,4 +445,12 @@ enum ReportType {
   ANNUALLY
   TAX
   TENANT_INFO
+}
+
+enum PackageType {
+  NONE
+  MONTHLY
+  QUATERLY
+  BIANNUALY
+  ANNUALY
 }

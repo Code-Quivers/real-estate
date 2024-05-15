@@ -21,9 +21,9 @@ class StripeController {
    * Handles payment for an order.
    */
   static createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-    const { amountToPaid } = req.body;
+    const { amountToPaid, orderId, packageType } = req.body;
     const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.createPaymentIntent(amountToPaid);
-
+    const resp = await OrderServices.updateOrderInfo(orderId, {packageType})
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 201 ? true : false,
