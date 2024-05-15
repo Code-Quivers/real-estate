@@ -158,12 +158,12 @@ const UnitPaymentPage = ({ params }) => {
             {searchParams === "stripe-payment" ? (
               <StripeCheckout
                 ownerOrderedId={orderDetails?.data?.orderId}
-                amountToPaid={getUnitPackagePrices()[activePackagePrice] * orderDetails?.data?._count?.properties}
+                amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
                 orderData={orderDetails?.data}
                 orderDetails={{
                   propertyIds: orderDetails?.data?.properties.map((property) => property?.propertyId),
-                  packagePrice: getUnitPackagePrices()[activePackagePrice],
-                  totalAmountToPay: getUnitPackagePrices()[activePackagePrice] * orderDetails?.data?._count?.properties,
+                  packagePrice: parseInt(getUnitPackagePrices()[activePackagePrice]),
+                  totalAmountToPay: parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties,
                   orderId: orderDetails?.data?.orderId,
                   package: activePackagePrice,
                 }}

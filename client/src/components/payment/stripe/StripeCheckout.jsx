@@ -14,7 +14,7 @@ import { useGetClientSecretMutation } from "@/redux/features/payment/stripePayme
 // Sign in to see your own test API key embedded in code samples.
 const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
 
-const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData }) => {
+const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
 
