@@ -241,7 +241,7 @@ const TenantSignUp = () => {
             </div>
 
             <div className="mt-10 flex justify-center">
-              <Button type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
+              <Button loading={isLoading} type="submit" size="lg" className="!rounded-md !px-8 !py-3 w-full" appearance="default">
                 Sign Up
               </Button>
             </div>

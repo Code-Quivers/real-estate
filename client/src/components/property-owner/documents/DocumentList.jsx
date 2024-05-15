@@ -5,6 +5,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { fileUrlKey } from "@/configs/envConfig";
 import { LuSend } from "react-icons/lu";
 import Link from "next/link";
+import { Text } from "rsuite";
 const DocumentList = ({ singleTemplate, idx }) => {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
   const [allPages, setAllPages] = useState(null);
@@ -15,15 +16,17 @@ const DocumentList = ({ singleTemplate, idx }) => {
   // console.log(`${fileUrlKey()}/documents/${singleTemplate?.filePath}`);
   return (
     <>
-      <Document file={`${fileUrlKey()}/${singleTemplate?.filePath}`} onLoadSuccess={onDocumentLoadSuccess}>
+      <Document className="border shadow" file={`${fileUrlKey()}/${singleTemplate?.filePath}`} onLoadSuccess={onDocumentLoadSuccess}>
         <Page width={230} pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
-        <div className="flex justify-between items-baseline py-2">
-          <p className="w-3/4">{singleTemplate?.title}</p>
-          <div className="flex gap-2">
+        <div className="flex justify-between items-start px-2 rounded-b-md py-3">
+          <Text maxLines={1} className="w-3/4 text-sm !text-black">
+            {singleTemplate?.title}
+          </Text>
+          <div className="flex gap-3">
             <Link href={`/property-owner/documents/send-document/${idx}`} className="">
-              <LuSend />
+              <LuSend size={18} />
             </Link>
-            <AiOutlineDelete className="cursor-pointer" />
+            <AiOutlineDelete size={18} className="cursor-pointer" />
           </div>
         </div>
         {/* {Array.from(new Array(allPages), (el, index) => (

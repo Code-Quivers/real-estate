@@ -17,23 +17,21 @@ const TenantUnitInformation = () => {
   const handleClose = () => setIsOpenMakePayment(false);
   const router = useRouter();
   return (
-    <div className="max-w-[1050px] mt-6 2xl:mx-auto md:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto">
+    <div className="max-w-6xl mt-6 xl:mx-auto mx-3  max-lg:pb-10">
       <h2 className="text-2xl mb-5 text-center">Unit Information</h2>
 
       {!isLoading && !isError && unitRes && (
         <div>
-          {console.log(unitRes, "unit information of tenant")}
-
-          <div className="grid lg:grid-cols-6 max-lg:gap-5  grid-cols-1 lg:border border-[#707070] ">
+          <div className="grid lg:grid-cols-6 max-lg:gap-5 grid-cols-1 lg:border lg:rounded-md">
             <div
               key={Math.random()}
-              className="lg:col-span-2   transition-all duration-500 ease-in-out  max-lg:border border-[#707070] max-lg:shadow-lg "
+              className="lg:col-span-2 lg:m-2 border bg-white rounded-md transition-all duration-500 ease-in-out  max-lg:border shadow"
             >
               <Image
                 width={300}
                 height={300}
                 src={unitRes?.property?.images?.length ? `${fileUrlKey()}/${unitRes?.property?.images[0]}` : unitInfoImage}
-                className="object-cover w-full object-center"
+                className="object-cover w-full object-center rounded-t-md"
                 alt=""
               />
 
@@ -52,7 +50,7 @@ const TenantUnitInformation = () => {
               </div>
             </div>
 
-            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
+            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l p-20 max-lg:shadow max-lg:rounded-md">
               <div>
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
@@ -69,7 +67,7 @@ const TenantUnitInformation = () => {
                 </Button>
               </div>
             </div>
-            <div className=" relative lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
+            <div className=" relative lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l p-20 max-lg:shadow max-lg:rounded-md">
               <div>
                 <h2 className="text-2xl text-center font-semibold mb-2.5 leading-9">
                   Request <br />

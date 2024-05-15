@@ -6,9 +6,10 @@ import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/s
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Button, Carousel, Drawer, IconButton, Notification, useToaster } from "rsuite";
+import { Button, Carousel, Drawer, IconButton, Notification, useMediaQuery, useToaster } from "rsuite";
 
 const SavedUnitsModal = ({ open, handleClose, units: item }) => {
+  const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
   const [openTab, setOpenTab] = useState(1);
   // ! save item
   const [removeFromSavedItem, { data, isLoading, isSuccess, isError, error, reset: resetReq }] = useRemoveFromSavedItemMutation();
@@ -63,8 +64,8 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
           </div>
         }
         overflow={false}
-        size="lg"
-        placement="right"
+        size={isMobile ? "full" : "lg"}
+        placement={isMobile ? "bottom" : "right"}
         open={open}
         onClose={handleClose}
       >
@@ -80,8 +81,8 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
               <div className="md:col-span-5 md:hidden">
                 <Carousel className="custom-slider max-h-[250px] ">
                   {item?.property?.images?.length > 0
-                    ? item?.property?.images?.map((photo) => (
-                        <div key={Math.random()}>
+                    ? item?.property?.images?.map((photo, index) => (
+                        <div key={index}>
                           <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
                         </div>
                       ))
@@ -90,12 +91,12 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
               </div>
             </Carousel>
             <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
-              {!item?.property?.images?.length > 0 ? (
+              {item?.property?.images?.length > 0 ? (
                 item?.property?.images?.map((photo, index) => (
                   <div key={index} className="flex flex-col divide-y divide-[#8b8b8b]">
                     <div className="">
                       <Image
-                        className="h-[200px] p-1 w-full object-cover"
+                        className="h-[200px] mb-1 w-full object-cover"
                         height={300}
                         width={300}
                         src={`${fileUrlKey()}/${photo}`}
@@ -148,14 +149,14 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                   </h2>
                   <h2 className="lg:text-xl">{item?.property?.address ? item?.property?.address : "--"}</h2>
                 </div>
-                <div>
+                <div className="mr-2">
                   <Score score={item?.property?.scoreRatio?.score} total={item?.property?.scoreRatio?.total} />
                 </div>
               </div>
               {/* */}
               <div>
                 {/* buttons */}
-                <div className="flex ">
+                <div className="flex mx-3">
                   <button
                     size="lg"
                     className={`
