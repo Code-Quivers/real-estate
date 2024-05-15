@@ -3,7 +3,7 @@ import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { Loader } from "rsuite";
 import { getClientUrl } from "@/configs/envConfig";
 
-const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid }) => {
+const StripeCheckoutForm = ({ orderData }) => {
   console.log(orderData, "orderData");
   const stripe = useStripe();
   const elements = useElements();
@@ -80,44 +80,27 @@ const StripeCheckoutForm = ({ orderData, monthlyChargePerProperty, amountToPaid 
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <div className="grid md:grid-cols-12 gap-5 mt-5">
-        <div className="md:col-span-7 max-md:order-2">
-          <PaymentElement id="payment-element" options={paymentElementOptions} />
-          {isLoading ? (
-            <button
-              disabled={isLoading}
-              className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full disabled:opacity-35 disabled:cursor-not-allowed"
-            >
-              <Loader size="sm" />
-            </button>
-          ) : (
-            <button
-              className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full"
-              disabled={isLoading || !stripe || !elements}
-              id="submit"
-            >
-              Pay now
-              {/* <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}</span> */}
-            </button>
-          )}
-          {/* Show any error or success messages */}
-          {/* {message && <div id="payment-message">{message}</div>} */}
-        </div>
-        <div className="md:col-span-5 max-md:order-1 md:border-l md:border-gray-300 pl-5">
-          {orderData?.properties?.map((item, index) => (
-            <div key={index} className="flex justify-between w-full mb-2">
-              <h1 className="w-2/3">{item?.title}</h1>
-              <h1 className="1/3 mr-5">${monthlyChargePerProperty.toFixed(2)}</h1>
-            </div>
-          ))}
-          <hr className="border-gray-300" />
-          <div className="">
-            <div className="flex justify-between w-full mt-2">
-              <h1 className="w-2/3">Total</h1>
-              <h1 className="1/3 mr-5 text-2xl font-medium">${amountToPaid.toFixed(2)}</h1>
-            </div>
-          </div>
-        </div>
+      <div className="max-w-5xl mx-auto   mt-5">
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
+        {isLoading ? (
+          <button
+            disabled={isLoading}
+            className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full disabled:opacity-35 disabled:cursor-not-allowed"
+          >
+            <Loader size="sm" />
+          </button>
+        ) : (
+          <button
+            className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full"
+            disabled={isLoading || !stripe || !elements}
+            id="submit"
+          >
+            Pay now
+            {/* <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}</span> */}
+          </button>
+        )}
+        {/* Show any error or success messages */}
+        {/* {message && <div id="payment-message">{message}</div>} */}
       </div>
     </form>
   );
