@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Carousel, Drawer, IconButton, useToaster } from "rsuite";
+import { Button, Carousel, Drawer, IconButton, useMediaQuery, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
@@ -11,6 +11,7 @@ import Score from "@/components/Shared/Score/Score";
 import { CgClose } from "react-icons/cg";
 
 const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
+  const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
   const handleClose = () => setOpen(false);
   const [openTab, setOpenTab] = useState(1);
 
@@ -58,8 +59,8 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
           </div>
         }
         overflow={false}
-        size="lg"
-        placement="right"
+        size={isMobile ? "full" : "lg"}
+        placement={isMobile ? "bottom" : "right"}
         open={open}
         onClose={handleClose}
       >
@@ -74,8 +75,8 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               <div className="md:col-span-5 md:hidden">
                 <Carousel className="custom-slider max-h-[250px] ">
                   {unitInfo?.images?.length > 0
-                    ? unitInfo?.images?.map((photo) => (
-                        <div key={Math.random()}>
+                    ? unitInfo?.images?.map((photo, index) => (
+                        <div key={index}>
                           <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
                         </div>
                       ))
@@ -85,10 +86,10 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
                 {unitInfo?.images?.length
                   ? unitInfo?.images?.map((photo) => (
-                      <div key={Math.random()} className="flex flex-col divide-y divide-[#8b8b8b]">
+                      <div key={Math.random()} className="flex flex-col">
                         <div className=" ">
                           <Image
-                            className="h-[200px]  border-b w-full object-cover"
+                            className="h-[200px]  border-b w-full object-cover mb-1"
                             height={300}
                             width={300}
                             src={`${fileUrlKey()}/${photo}`}
@@ -130,14 +131,14 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                     </h2>
                     <h2 className="lg:text-xl">{unitInfo?.address ? unitInfo?.address : "N/A"}</h2>
                   </div>
-                  <div>
+                  <div className="pr-2">
                     <Score score={unitInfo?.scoreRatio?.score} total={unitInfo?.scoreRatio?.total} />
                   </div>
                 </div>
                 {/* */}
                 <div>
                   {/* buttons */}
-                  <div className="flex ">
+                  <div className="flex px-3">
                     <button
                       size="lg"
                       className={`

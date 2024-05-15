@@ -30,8 +30,8 @@ const DocumentPage = () => {
           <div className="min-h-[30vh] w-full space-y-3">
             {!isTenantDataLoading &&
               tenantData?.data?.map((singleTenant) => (
-                <div key={Math.random()} className="flex justify-between  items-center gap-5 border bg-white shadow-md p-5 rounded-lg">
-                  <div className="flex items-center gap-3">
+                <div key={Math.random()} className="sm:flex justify-between  items-start gap-5 border bg-white shadow-md p-5 rounded-lg">
+                  <div className="sm:flex items-center gap-3">
                     <div>
                       {singleTenant?.Tenant?.profileImage ? (
                         <Image
@@ -45,12 +45,12 @@ const DocumentPage = () => {
                       )}
                     </div>
                     <div>
-                      <h2 className="font-semibold text-lg">
+                      <h2 className="text-lg">
                         {singleTenant?.Tenant?.firstName} {singleTenant?.Tenant?.lastName}
                       </h2>
-                      <h2 className="font-semibold text-lg">Place to rent : {singleTenant?.Tenant?.placeToRent || "-"}</h2>
-                      <h2 className="font-semibold text-lg">
-                        Rent willing to pay : {singleTenant?.Tenant?.affordableRentAmount ? `$ ${singleTenant?.Tenant?.affordableRentAmount}` : "-"}
+                      <h2 className="text-lg">Place to rent : {singleTenant?.Tenant?.placeToRent || "N/A"}</h2>
+                      <h2 className="text-lg">
+                        Rent willing to pay : {singleTenant?.Tenant?.affordableRentAmount ? `$ ${singleTenant?.Tenant?.affordableRentAmount}` : "N/A"}
                       </h2>
                     </div>
                   </div>
@@ -61,7 +61,7 @@ const DocumentPage = () => {
                         setOpenSend(true);
                       }}
                       size="lg"
-                      className="!bg-primary !text-white !text-xl !px-7 !py-3"
+                      className="!bg-primary !text-white !text-sm max-sm:w-full max-sm:mt-2 sm:!text-xl !sm:px-7 !py-2"
                     >
                       Send Document
                     </Button>
@@ -84,7 +84,7 @@ const DocumentPage = () => {
       </div>
 
       {/*  */}
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-[230px] gap-4 justify-center">
         {!isLoading &&
           data?.data?.length > 0 &&
           data?.data?.map((singleTemplate, idx) => <DocumentList key={idx} singleTemplate={singleTemplate} idx={idx} />)}

@@ -32,9 +32,9 @@ const AvailableUnitsCard = () => {
   const { data: allAvailableUnitsRes, isLoading, isError } = useGetAllAvailableUnitsQuery({ ...query });
 
   return (
-    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-1 2xl:px-0 ">
+    <section className="max-w-6xl mb-5 mt-5 mx-auto lg:px-5 px-3 min-h-screen">
       {/* search with price section start */}
-      <div className="grid grid-cols-5 lg:grid-cols-3  items-start  gap-1 lg:gap-5 border-r-0 border-gray-800">
+      <div className="grid grid-cols-5 lg:grid-cols-3  items-start  gap-3 lg:gap-5 border-r-0 border-gray-800">
         <div className="w-full  col-span-3 lg:col-span-2">
           <InputGroup size="lg" inside>
             <Input onChange={(e) => setSearchTerm(e)} placeholder="Search Location" size="lg" />
@@ -86,7 +86,7 @@ const AvailableUnitsCard = () => {
         </div>
       )}
 
-      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+      <div className="mt-4 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         {!isLoading &&
           !isError &&
           allAvailableUnitsRes?.data?.map((unit) => (

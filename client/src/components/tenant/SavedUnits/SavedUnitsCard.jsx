@@ -17,7 +17,7 @@ const SavedUnitsCard = () => {
   const { data: availableUnits, isLoading } = useGetAllSavedItemsQuery({ ...query });
 
   return (
-    <div className="mt-3">
+    <div className="mt-3 mx-3 max-w-6xl lg:mx-auto min-h-screen">
       {/* if is loading */}
 
       {/* if not found any units */}
@@ -36,7 +36,7 @@ const SavedUnitsCard = () => {
         </div>
       )}
 
-      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 max-md:mx-1">
+      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         {!isLoading &&
           availableUnits?.data?.data?.length > 0 &&
           availableUnits?.data?.data?.map((unit) => (
