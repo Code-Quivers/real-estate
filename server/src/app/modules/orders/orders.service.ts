@@ -170,6 +170,13 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
       select: {
         packageType: true,
         updatedAt: true,
+        properties: {
+          select: {
+            propertyId: true,
+            paidFrom: true,
+            paidTo: true,
+          },
+        },
       },
     });
 
@@ -178,20 +185,57 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
     console.log("9999999999999999999999999999999999999");
     console.log(updatedInfo);
     const packageType = updatedInfo.packageType;
-    const paidFrom = updatedInfo.updatedAt;
-    let paidTo = paidFrom;
-    if (packageType === "MONTHLY") paidTo = incrementMonth(paidFrom, 1);
-    else if (packageType === "BIANNUALLY") paidTo = incrementMonth(paidFrom, 6);
-    else if (packageType === "ANNUALLY") paidTo = incrementMonth(paidFrom, 12);
-    // When The order is for property payment
-    const updatedProperty = await transactionClient.property.updateMany({
-      where: {
-        orders: { some: { orderId } },
-      },
-      data: { planType, packageType, paidFrom, paidTo },
-    });
+    const updateOperations = updatedInfo.properties.map((property) => {
+      let paidFrom = null;
+      let paidTo = null;
+      if (!property.paidFrom) {
+        paidFrom = updatedInfo.updatedAt;
+      } else paidFrom = property.paidTo;
 
-    if (!updatedInfo || !updatedProperty) {
+      switch (packageType) {
+        case "MONTHLY":
+          paidTo = incrementMonth(paidFrom, 1);
+          break;
+        case "BIANNUALLY":
+          paidTo = incrementMonth(paidFrom, 6);
+          break;
+        case "ANNUALLY":
+          paidTo = incrementMonth(paidFrom, 12);
+          break;
+        default:
+          // Handle unexpected package types
+          break;
+      }
+      return {
+        where: { propertyId: property.propertyId },
+        data: { planType, packageType, paidFrom, paidTo },
+      };
+    });
+    const updatedProperty = await Promise.all(
+      updateOperations.map(async (updateOperation) => {
+        return await prisma.property.update(updateOperation);
+      }),
+    );
+    console.log("--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(updatedProperty);
+    // const packageType = updatedInfo.packageType;
+    // const paidFrom = updatedInfo.updatedAt;
+    // let paidTo = paidFrom;
+    // if (packageType === "MONTHLY") paidTo = incrementMonth(paidFrom, 1);
+    // else if (packageType === "BIANNUALLY") paidTo = incrementMonth(paidFrom, 6);
+    // else if (packageType === "ANNUALLY") paidTo = incrementMonth(paidFrom, 12);
+    // // When The order is for property payment
+    // const updatedProperty = await transactionClient.property.updateMany({
+    //   // where: {
+    //   //   orders: { some: { orderId } },
+    //   // },
+    //   // data: { planType, packageType, paidFrom, paidTo },
+    //   data: [],
+    //   bulk:true,
+    // });
+
+    // if (!updatedInfo || !updatedProperty) {
+    if (!updatedInfo) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.");
     }
 
