@@ -48,7 +48,7 @@ const LoginPage = () => {
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/tenant");
       toaster.push(LoginSuccessMessage(data?.message), {
-        placement: "bottomStart",
+        placement: "bottomEnd",
       });
     }
 
