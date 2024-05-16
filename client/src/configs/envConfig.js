@@ -33,7 +33,7 @@ export const paymentCurrency = () => {
 export const getUnitPackagePrices = () => {
   return {
     MONTHLY: process.env.NEXT_PUBLIC_MONTHLY_UNIT_PACKAGE_PRICE,
-    HALF_YEARLY: process.env.NEXT_PUBLIC_HALF_YEARLY_PACKAGE_PRICE,
+    BIANNUALLY: process.env.NEXT_PUBLIC_BIANNUALLY_PACKAGE_PRICE,
     ANNUALLY: process.env.NEXT_PUBLIC_ANNUALLY_PACKAGE_PRICE,
   };
 };

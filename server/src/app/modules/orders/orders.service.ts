@@ -134,8 +134,8 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
 
 // Update a specific order info
 const updateOrderInfo = async (orderId: string, orderInfo: any) => {
-  console.log('updating order info............................')
-  console.log(orderInfo)
+  console.log("updating order info............................");
+  console.log(orderInfo);
   const updatedInfo = await prisma.order.update({
     where: { orderId },
     data: orderInfo,
@@ -149,7 +149,7 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
 };
 
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
-  console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+  console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
   const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedInfo = await transactionClient.order.update({
@@ -167,22 +167,22 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
         //   }
         // }
       },
-      select:{
-        packageType:true,
-        updatedAt:true,
-      }
+      select: {
+        packageType: true,
+        updatedAt: true,
+      },
     });
 
     // if the order is for paying rent then return the result
     if (isRentPayment) return updatedInfo;
-    console.log('9999999999999999999999999999999999999')
-    console.log(updatedInfo)
+    console.log("9999999999999999999999999999999999999");
+    console.log(updatedInfo);
     const packageType = updatedInfo.packageType;
     const paidFrom = updatedInfo.updatedAt;
     let paidTo = paidFrom;
-    if(packageType==='MONTHLY') paidTo = incrementMonth(paidFrom, 1)
-    else if(packageType==='BIANNUALY') paidTo=incrementMonth(paidFrom, 6)
-    else if(packageType==='ANNUALY') paidTo=incrementMonth(paidFrom, 12)
+    if (packageType === "MONTHLY") paidTo = incrementMonth(paidFrom, 1);
+    else if (packageType === "BIANNUALLY") paidTo = incrementMonth(paidFrom, 6);
+    else if (packageType === "ANNUALLY") paidTo = incrementMonth(paidFrom, 12);
     // When The order is for property payment
     const updatedProperty = await transactionClient.property.updateMany({
       where: {
