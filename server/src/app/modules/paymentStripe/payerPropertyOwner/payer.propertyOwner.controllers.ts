@@ -8,8 +8,6 @@ import { PaymentServices } from "../../payment/payment.services";
 import { OrderServices } from "../../orders/orders.service";
 import StripeAccountManager from "./AccountCreationService";
 
-
-
 /**
  * Controller handling PayPal related operations such as creating and capturing orders.
  */
@@ -21,11 +19,20 @@ class StripeController {
    * Handles payment for an order.
    */
   static createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-    console.log(req.body)
-    console.log('------------------------------------')
-    const { amountToPaid, ownerOrderedId, packageType } = req.body;
+    console.log(req.body);
+    console.log("------------------------------------");
+    //
+    //   amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+    // orderData={orderDetails?.data}
+    // propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
+    // packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
+    // totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+    // orderId={orderDetails?.data?.orderId}
+    // packageType={activePackagePrice}
+
+    const { amountToPaid, orderId, packageType } = req.body;
     const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.createPaymentIntent(amountToPaid);
-    const resp = await OrderServices.updateOrderInfo(ownerOrderedId, {packageType})
+    const resp = await OrderServices.updateOrderInfo(orderId, { packageType });
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 201 ? true : false,
@@ -44,7 +51,8 @@ class StripeController {
     const tenantId: string = req.body?.tenantId || "";
     const propertyId: string = req.body?.propertyId || "";
 
-    const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.retriveStripePaymentInfo(paymentIntentId);
+    const { jsonResponse, httpStatusCode } =
+      await PropertyOwnerPaymentProcessor.retriveStripePaymentInfo(paymentIntentId);
     const paymentReport = StripeController.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
@@ -93,8 +101,8 @@ class StripeController {
     return {
       platform: "STRIPE",
       paymentStatus: retrievedPaymentInfo.status,
-      amountToPay: parseFloat(retrievedPaymentInfo.amount) / 100.00,
-      amountPaid: parseFloat(retrievedPaymentInfo.amount_received)/100.00,
+      amountToPay: parseFloat(retrievedPaymentInfo.amount) / 100.0,
+      amountPaid: parseFloat(retrievedPaymentInfo.amount_received) / 100.0,
       currency: retrievedPaymentInfo.currency,
       platformFee: parseFloat("0.0"),
       netAmount: parseFloat("0.0"),
@@ -113,9 +121,9 @@ class StripeController {
     const accountInfo = {
       ...req?.body,
       userId,
-      ownerId
-    }
-    const { jsonResponse, httpStatusCode } = await StripeAccountManager.createConnectedAccount(accountInfo)
+      ownerId,
+    };
+    const { jsonResponse, httpStatusCode } = await StripeAccountManager.createConnectedAccount(accountInfo);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -147,7 +155,5 @@ class StripeController {
     });
   });
 }
-
-
 
 export default StripeController;

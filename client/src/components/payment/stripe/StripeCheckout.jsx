@@ -14,12 +14,21 @@ import { useGetClientSecretMutation } from "@/redux/features/payment/stripePayme
 // Sign in to see your own test API key embedded in code samples.
 const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
 
+//  amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+//                 orderData={orderDetails?.data}
+//                 propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
+//                 packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
+//                 totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+//                 orderId={orderDetails?.data?.orderId}
+//                 packageType={activePackagePrice}
+
 const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
+  console.log("shafin", others);
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
 
   const fetchClientSecret = async () => {
-    const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData });
+    const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData, ...others });
 
     if (resp?.data?.data?.clientSecret) {
       setClientSecret(resp.data?.data?.clientSecret);

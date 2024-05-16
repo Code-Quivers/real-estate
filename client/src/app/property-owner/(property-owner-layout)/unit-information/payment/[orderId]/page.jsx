@@ -108,8 +108,8 @@ const UnitPaymentPage = ({ params }) => {
                 <Tabs.Tab eventKey="MONTHLY" title={`Monthly ${getUnitPackagePrices().MONTHLY}`}>
                   <h2 className="text-xl">You will be charged ${getUnitPackagePrices().MONTHLY}/month for each property you add.</h2>
                 </Tabs.Tab>
-                <Tabs.Tab eventKey="HALF_YEARLY" title={`Half Yearly ${getUnitPackagePrices().HALF_YEARLY}`}>
-                  <h2 className="text-xl">You will be charged ${getUnitPackagePrices().HALF_YEARLY}/half year for each property you add</h2>
+                <Tabs.Tab eventKey="BIANNUALLY" title={`Half Yearly ${getUnitPackagePrices().BIANNUALLY}`}>
+                  <h2 className="text-xl">You will be charged ${getUnitPackagePrices().BIANNUALLY}/half year for each property you add</h2>
                 </Tabs.Tab>
                 <Tabs.Tab eventKey="ANNUALLY" title={`Annually ${getUnitPackagePrices().ANNUALLY}`}>
                   <h2 className="text-xl">You will be charged ${getUnitPackagePrices().ANNUALLY}/year for each property you add.</h2>
@@ -153,20 +153,27 @@ const UnitPaymentPage = ({ params }) => {
             </div>
           </div>
 
+          {/* 
+{
+    "propertyIds": [],
+    "package": "MONTHLY",
+    "packagePrice":20,
+    "totalAmountToPay":20,
+    "orderId":"",
+}
+*/}
+
           {/* paypal or payment method */}
           <div className="mt-7">
             {searchParams === "stripe-payment" ? (
               <StripeCheckout
-                ownerOrderedId={orderDetails?.data?.orderId}
                 amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
                 orderData={orderDetails?.data}
-                orderDetails={{
-                  propertyIds: orderDetails?.data?.properties.map((property) => property?.propertyId),
-                  packagePrice: parseInt(getUnitPackagePrices()[activePackagePrice]),
-                  totalAmountToPay: parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties,
-                  orderId: orderDetails?.data?.orderId,
-                  package: activePackagePrice,
-                }}
+                propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
+                packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
+                totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+                orderId={orderDetails?.data?.orderId}
+                packageType={activePackagePrice}
               />
             ) : (
               <div className="flex justify-center">
