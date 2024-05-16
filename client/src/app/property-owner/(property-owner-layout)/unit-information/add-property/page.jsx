@@ -338,7 +338,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper mt-1">
-                                  <Input as="textarea" rows={6} {...field} style={{ resize: "none" }} className="!w-full" />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredTenant !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredTenant?.message}
                                   </Form.ErrorMessage>
@@ -359,7 +359,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper mt-1">
-                                  <Input as="textarea" rows={6} style={{ resize: "none" }} {...field} className="!w-full" />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredOwner !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredOwner?.message}
                                   </Form.ErrorMessage>
