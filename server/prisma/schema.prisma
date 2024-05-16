@@ -107,8 +107,8 @@ model Property {
   isRented                 Boolean              @default(false)
   planType                 PlanType             @default(PENDING)
   packageType              PackageType          @default(NONE)
-  paidFrom                 DateTime
-  paidTo                   DateTime
+  paidFrom                 DateTime?
+  paidTo                   DateTime?
   isActive                 Boolean              @default(true)
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
