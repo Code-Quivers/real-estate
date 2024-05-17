@@ -148,11 +148,11 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                             />
                           </div>
                           <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                            <h3>${singleUnit?.monthlyRent}</h3>
+                            <h3>${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                             <h3>
                               {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
                             </h3>
-                            <h3>{singleUnit?.address}</h3>
+                            <h3>{singleUnit?.address || "N/A"}</h3>
                           </div>
                         </button>
                       </div>

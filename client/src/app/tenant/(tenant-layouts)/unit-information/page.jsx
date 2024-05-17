@@ -9,6 +9,7 @@ import { fileUrlKey } from "@/configs/envConfig";
 import TenantMakePaymentModal from "@/components/tenant/unitInformation/TenantMakePaymentModal";
 import { useRouter } from "next/navigation";
 import Score from "@/components/Shared/Score/Score";
+import { getPackageExpiredDates } from "@/utils/GetDateCalculation";
 
 const TenantUnitInformation = () => {
   const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery();
@@ -61,7 +62,13 @@ const TenantUnitInformation = () => {
                 <Button
                   className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-50"
                   onClick={() => setIsOpenMakePayment(true)}
-                  disabled={unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0 ? true : false}
+                  disabled={
+                    unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired
+                      ? true
+                      : false || unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0
+                        ? true
+                        : false
+                  }
                 >
                   {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}
                 </Button>
