@@ -10,6 +10,7 @@ import { incrementMonth } from "../../../helpers/utils";
  */
 const createOrder = async (orderInfo: any) => {
   // Map property IDs to connect property relationship
+
   const data = {
     ...orderInfo,
     properties: {
@@ -20,8 +21,7 @@ const createOrder = async (orderInfo: any) => {
   // Execute transaction to create the order
   const result = await prisma.$transaction(async (transactionClient) => {
     // Create a new order using transaction
-    console.log("++++++++++++++++++++++++++++++");
-    console.log(data);
+
     const newOrder = await transactionClient.order.create({
       data: data,
     });
