@@ -6,13 +6,14 @@ import { Button, IconButton, Placeholder } from "rsuite";
 import { FaPencilAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import { fileUrlKey } from "@/configs/envConfig";
+import { fileUrlKey, getUnitPackagePrices } from "@/configs/envConfig";
 import UnitEditModal from "@/components/property-owner/unit-information/UnitEditModal";
 import { useState } from "react";
 import { BiSolidMessageAltDetail } from "react-icons/bi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import RemoveTenantModal from "@/components/property-owner/unit-information/RemoveTenantModal";
 import moment from "moment";
+import UnitPackageDate from "@/components/property-owner/unit-information/UnitPackageDate";
 
 const PropertyOwnerUnitInformation = () => {
   const { data, isLoading } = useGetMyAllUnitsQuery(
@@ -40,11 +41,10 @@ const PropertyOwnerUnitInformation = () => {
     <>
       <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="flex justify-between items-center">
-          <h2 className="md:text-2xl">Unit Information</h2>
-          {/* <h2 className="text-2xl  ">Unit Information | Total {data?.meta?.total}</h2> */}
+          <h2 className="lg:text-2xl">Unit Information | Total {data?.meta?.total}</h2>
           <Link
             href="/property-owner/unit-information/add-property"
-            className=" bg-primary text-white px-3 rounded-full flex items-center gap-2 py-2 drop-shadow-lg"
+            className=" bg-primary text-white px-4 rounded-3xl flex items-center gap-2 py-2 drop-shadow-lg"
           >
             Add new unit / house
           </Link>
@@ -54,14 +54,17 @@ const PropertyOwnerUnitInformation = () => {
           {!isLoading &&
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
-              <div key={Math.random()} className="mt-5">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-base font-bold mb-4 ">
-                    Property {idx + 1}: {singleProperty.title}
-                  </h2>
+              <div key={idx} className="mt-5">
+                <div className="lg:flex lg:justify-between lg:items-start">
+                  <h2 className="text-base font-bold mb-4">Property Title : {singleProperty.title}</h2>
+                  {/* if on trial */}
                   {singleProperty?.planType === "ON_TRIAL" && (
                     <h2 className="text-sm ">trial period is activated since - {moment(singleProperty?.createdAt).format("LL")}</h2>
                   )}
+
+                  {/* if expired */}
+                  {singleProperty?.planType === "PREMIUM" && <UnitPackageDate singleProperty={singleProperty} />}
+                  {/*  */}
                 </div>
                 <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white  rounded-xl space-y-8 ">
                   {/* top section */}
@@ -181,6 +184,25 @@ const PropertyOwnerUnitInformation = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* payment information */}
+
+                  {singleProperty?.planType === "PREMIUM" && (
+                    <div className="border rounded-xl min-h-[100px] p-5 lg:col-span-5 ">
+                      <div>
+                        <h3 className="text-lg font-semibold">Payment Information </h3>
+                      </div>
+                      <div className="flex items-center gap-5">
+                        <h3>Payment From : {singleProperty?.paidFrom ? moment(singleProperty?.paidFrom).format("ll") : "N/A"}</h3>
+                        <span>-</span>
+                        <h3>To : {singleProperty?.paidTo ? moment(singleProperty?.paidTo).format("ll") : "N/A"}</h3>
+                      </div>
+                      <div>
+                        <h2>Package Type : {singleProperty?.packageType || "N/A"}</h2>
+                        <h2>Package Price : {singleProperty?.packageType ? `$ ${getUnitPackagePrices()[singleProperty?.packageType]}` : "N/A"}</h2>
+                      </div>
+                    </div>
+                  )}
 
                   {/* service provider */}
                   <div className="border      rounded-xl min-h-[200px] p-5 lg:col-span-5 ">
