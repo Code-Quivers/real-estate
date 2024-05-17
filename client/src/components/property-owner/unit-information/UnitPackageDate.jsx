@@ -41,7 +41,7 @@ const UnitPackageDate = ({ singleProperty }) => {
         <div>
           {getPackageExpiredDates(singleProperty?.createdAt).moreThanOneMonthExpired ? (
             <div className="space-y-3">
-              <h2 className="text-md font-medium text-red-600">Your Unit Package is Fully Expired. Please Pay, Otherwise you cant get anything</h2>
+              <h2 className="text-md font-medium text-red-600">Your Trial Period is Fully Expired. Please Pay, Otherwise you cant get anything</h2>
               <button onClick={handleCreateNewOrder} className="bg-primary px-5 py-2 rounded-3xl text-white">
                 Pay Now
               </button>
