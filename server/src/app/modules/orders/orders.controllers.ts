@@ -4,7 +4,20 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { OrderServices } from "./orders.service";
+import { IRequestUser } from "../../interfaces/global.interfaces";
 //
+const createOrder = catchAsync(async (req: Request, res: Response) => {
+  const ownerId = (req.user as IRequestUser).profileId;
+  const orderInfo = req.body;
+
+  const result = await OrderServices.createOrder({ ownerId, ...orderInfo });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Order Created",
+    data: result,
+  });
+});
 const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
   const orderId = req.params?.orderId as string;
 
@@ -12,7 +25,7 @@ const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Saved item successfully removed!!!",
+    message: "Order Retrieved Successfully !",
     data: result,
   });
 });
@@ -53,8 +66,9 @@ const updateOrderStatusAndPropertyPlanType = catchAsync(async (req: Request, res
 });
 
 export const OrdersController = {
+  createOrder,
   getSingleOrder,
   updatePropertyTrialPeriod,
   updateOrderInfo,
-  updateOrderStatusAndPropertyPlanType
+  updateOrderStatusAndPropertyPlanType,
 };

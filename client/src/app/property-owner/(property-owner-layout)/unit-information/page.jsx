@@ -57,13 +57,10 @@ const PropertyOwnerUnitInformation = () => {
               <div key={idx} className="mt-5">
                 <div className="lg:flex lg:justify-between lg:items-start">
                   <h2 className="text-base font-bold mb-4">Property Title : {singleProperty.title}</h2>
-                  {/* if on trial */}
-                  {singleProperty?.planType === "ON_TRIAL" && (
-                    <h2 className="text-sm ">trial period is activated since - {moment(singleProperty?.createdAt).format("LL")}</h2>
-                  )}
 
-                  {/* if expired */}
-                  {singleProperty?.planType === "PREMIUM" && <UnitPackageDate singleProperty={singleProperty} />}
+                  <div>
+                    <UnitPackageDate singleProperty={singleProperty} />
+                  </div>
                   {/*  */}
                 </div>
                 <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white  rounded-xl space-y-8 ">

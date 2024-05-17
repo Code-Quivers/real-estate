@@ -5,6 +5,7 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
+router.post("/create", auth(UserRoles.PROPERTY_OWNER), OrdersController.createOrder);
 router.get(
   "/get-single-order/:orderId",
   auth(UserRoles.SUPERADMIN, UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
