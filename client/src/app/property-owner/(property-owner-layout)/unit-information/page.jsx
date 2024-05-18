@@ -42,7 +42,9 @@ const PropertyOwnerUnitInformation = () => {
     <>
       <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
         <div className="flex justify-between items-center">
-          <h2 className="lg:text-2xl">Unit Information | Total {data?.meta?.total}</h2>
+          <h2 className="lg:text-2xl">
+            Unit Information: <br className="md:hidden" /> Total {data?.meta?.total}
+          </h2>
           <Link
             href="/property-owner/unit-information/add-property"
             className=" bg-primary text-white px-4 rounded-3xl flex items-center gap-2 py-2 drop-shadow-lg"
@@ -55,20 +57,26 @@ const PropertyOwnerUnitInformation = () => {
           {!isLoading &&
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
-              <div key={idx} className="relative">
-                <div className="mt-5   ">
+              <div key={idx} className="relative ">
+                <div className="mt-5">
                   <div className="lg:flex lg:justify-between lg:items-start">
-                    <h2 className="text-base font-bold mb-4">Property Title : {singleProperty.title}</h2>
+                    <h2 className="text-base mb-2">
+                      Property Title: <span className="font-bold">{singleProperty.title}</span>
+                    </h2>
 
+                    {/* <div>
+                      <UnitPackageDate singleProperty={singleProperty} />
+                    </div> */}
+                    {/*  */}
+                  </div>
+                  <div className="w-full lg:border p-3  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
+                    {/* top section */}
                     <div>
                       <UnitPackageDate singleProperty={singleProperty} />
                     </div>
-                    {/*  */}
-                  </div>
-                  <div className="w-full lg:border p-3  md:p-3 lg:p-6 mt-5  shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
-                    {/* top section */}
-                    <div className="grid grid-cols-12  gap-5">
-                      <div className="col-span-12  md:col-span-12 lg:col-span-6  ">
+                    <div className="grid grid-cols-12 gap-5 ">
+                      <div className="col-span-12 md:col-span-12 lg:col-span-6 relative">
+                        <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed"></div>
                         <Image
                           width={500}
                           height={200}
@@ -78,9 +86,12 @@ const PropertyOwnerUnitInformation = () => {
                         />
                       </div>
                       {/* unit info */}
-                      <div className="col-span-12 space-y-3 lg:col-span-6 flex flex-col justify-between  ">
-                        <div className="  space-y-3  flex border rounded-xl justify-between       w-full    ">
-                          <div className="flex  justify-between w-full">
+                      <div className=" col-span-12 space-y-3 lg:col-span-6 flex flex-col justify-between">
+                        <div className="space-y-3 relative flex border rounded-xl justify-between w-full">
+                          {/* disable logic */}
+                          <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed"></div>
+                          {/* disable logic end */}
+                          <div className="flex justify-between w-full">
                             <div className="space-y-3 p-5 w-full">
                               <h3 className="text-lg font-medium">
                                 $ {singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
@@ -214,10 +225,10 @@ const PropertyOwnerUnitInformation = () => {
                     )}
 
                     {/* service provider */}
-                    <div className="border      rounded-xl min-h-[200px] p-5 lg:col-span-5 ">
-                      <div className="flex justify-between items-center">
+                    <div className="border rounded-xl min-h-[200px] p-5 lg:col-span-5">
+                      <div className="md:flex justify-between items-center">
                         <div>
-                          <h3 className="text-lg font-semibold">Service Provider Information | Total {singleProperty?.serviceProviders?.length}</h3>
+                          <h3 className="text-lg font-semibold">Service Provider Information: Total {singleProperty?.serviceProviders?.length}</h3>
                         </div>
                         {/* action */}
                         <div className="flex gap-2 items-center">
