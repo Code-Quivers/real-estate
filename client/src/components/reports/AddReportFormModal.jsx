@@ -233,7 +233,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
         <Modal.Body>
           {/* heading title */}
           <div className="flex justify-between items-center">
-            <h2>Add New Report</h2>
+            <h2 className="font-medium">Add New Report</h2>
             <button
               onClick={() => {
                 handleClose();
@@ -303,7 +303,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
 
               {/* if report type is monthly or annual  */}
               {(reportType === "MONTHLY" || reportType === "ANNUALLY") && (
-                <div className=" space-y-2 border-t pt-3">
+                <div className="space-y-1 pt-1">
                   <label htmlFor="">Select Property</label>
                   <Controller
                     name="propertyId"
@@ -337,7 +337,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                           value={field.value}
                           renderMenuItem={(value, item) => {
                             return (
-                              <div className="  flex gap-5 border items-center">
+                              <div className="flex gap-5 border rounded-md p-1 items-center">
                                 <div>
                                   <Image
                                     width={100}
@@ -347,7 +347,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                                     className="w-[80px] h-[80px] rounded-md object-cover"
                                   />
                                 </div>
-                                <div className="space-y-0.5">
+                                <div className="">
                                   <h2 className="font-semibold text-sm">{value}</h2>
                                   <h2 className="text-md">${item.others?.monthlyRent}</h2>
                                   <h2 className="text-sm">
@@ -372,7 +372,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
               {reportType === "MONTHLY" && (
                 <div className="space-y-2  pb-5">
                   {/* collected rent */}
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <label htmlFor="collectedRent">Collected Rent</label>
                     <Controller
                       name="monthlyCollectedRent"
@@ -413,7 +413,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                     />
                   </div>
                   {/* Monthly Expenses */}
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <label htmlFor="expenses">Monthly Expenses</label>
                     <Controller
                       name="monthlyExpenses"
@@ -459,7 +459,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
               {reportType === "ANNUALLY" && (
                 <div className="space-y-2">
                   {/* annual rent */}
-                  <div className="space-y-2">
+                  <div className="space-y-0.5">
                     <label htmlFor="annualRent">Annual Rent</label>
                     <Controller
                       name="annualRent"
@@ -498,7 +498,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                   </div>
 
                   {/* collected rent */}
-                  <div className="space-y-2">
+                  <div className="space-y-0.5">
                     <label htmlFor="annualCollectedRent">Collected Rent</label>
                     <Controller
                       name="annualCollectedRent"
@@ -539,7 +539,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                     />
                   </div>
                   {/* Monthly Expenses */}
-                  <div className="space-y-2">
+                  <div className="space-y-0.5">
                     <label htmlFor="annualExpenses">Annual Expenses</label>
                     <Controller
                       name="annualExpenses"

@@ -30,7 +30,7 @@ const DocumentPage = () => {
           <div className="min-h-[30vh] w-full space-y-3">
             {!isTenantDataLoading &&
               tenantData?.data?.map((singleTenant) => (
-                <div key={Math.random()} className="sm:flex justify-between  items-start gap-5 border bg-white shadow-md p-5 rounded-lg">
+                <div key={Math.random()} className="md:flex justify-between  items-start gap-5 border bg-white shadow-md p-5 rounded-lg">
                   <div className="sm:flex items-center gap-3">
                     <div>
                       {singleTenant?.Tenant?.profileImage ? (
@@ -61,7 +61,7 @@ const DocumentPage = () => {
                         setOpenSend(true);
                       }}
                       size="lg"
-                      className="!bg-primary !text-white !text-sm max-sm:w-full max-sm:mt-2 sm:!text-xl !sm:px-7 !py-2"
+                      className="!bg-primary !text-white !text-sm max-md:w-full max-md:mt-2 md:!text-xl !sm:px-7 !py-2"
                     >
                       Send Document
                     </Button>
