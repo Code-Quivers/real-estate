@@ -14,7 +14,7 @@ CREATE TYPE "PlanType" AS ENUM ('PENDING', 'ON_TRIAL', 'PREMIUM');
 CREATE TYPE "MaintenanceRequestStatus" AS ENUM ('PENDING', 'APPROVED', 'ACTIVE', 'PAUSED', 'CANCEL', 'COMPLETED');
 
 -- CreateEnum
-CREATE TYPE "ServiceType" AS ENUM ('TENANT_SCREENING', 'MAINTENANCE_AND_REPAIR', 'CLEANING', 'PEST_CONTROL', 'LAWN_CARE', 'SECURITY_AND_SAFETY', 'INSURANCE', 'INSPECTION', 'MARKETING', 'TECHNOLOGY');
+CREATE TYPE "ServiceType" AS ENUM ('TENANT_SCREENING', 'MAINTENANCE_AND_REPAIR', 'CLEANING', 'PEST_CONTROL', 'LAWN_CARE', 'SECURITY_AND_SAFETY', 'INSURANCE', 'INSPECTION', 'MARKETING', 'TECHNOLOGY', 'OTHERS');
 
 -- CreateEnum
 CREATE TYPE "ServiceAvailabilityEnum" AS ENUM ('LOW_PRIORITY', 'MEDIUM_PRIORITY', 'HIGH_PRIORITY', 'ALL_PRIORITIES');
@@ -30,6 +30,9 @@ CREATE TYPE "RequestMaintenancePriorityEnum" AS ENUM ('LOW_PRIORITY', 'MEDIUM_PR
 
 -- CreateEnum
 CREATE TYPE "ReportType" AS ENUM ('MONTHLY', 'ANNUALLY', 'TAX', 'TENANT_INFO');
+
+-- CreateEnum
+CREATE TYPE "PackageType" AS ENUM ('NONE', 'MONTHLY', 'QUATERLY', 'BIANNUALLY', 'ANNUALLY');
 
 -- CreateTable
 CREATE TABLE "propertyOwners" (
@@ -110,6 +113,9 @@ CREATE TABLE "properties" (
     "images" TEXT[],
     "isRented" BOOLEAN NOT NULL DEFAULT false,
     "planType" "PlanType" NOT NULL DEFAULT 'PENDING',
+    "packageType" "PackageType" NOT NULL DEFAULT 'NONE',
+    "paidFrom" TIMESTAMP(3),
+    "paidTo" TIMESTAMP(3),
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -143,6 +149,7 @@ CREATE TABLE "Report" (
 CREATE TABLE "Order" (
     "orderId" TEXT NOT NULL,
     "orderStatus" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "packageType" "PackageType" NOT NULL DEFAULT 'NONE',
     "ownerId" TEXT,
     "tenantId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -290,7 +297,7 @@ CREATE TABLE "Messages" (
     "messageId" TEXT NOT NULL,
     "text" TEXT,
     "images" TEXT[],
-    "conversationId" TEXT NOT NULL,
+    "conversationId" TEXT,
     "senderId" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(0) NOT NULL,
@@ -454,7 +461,7 @@ ALTER TABLE "PaymentInformation" ADD CONSTRAINT "PaymentInformation_userId_fkey"
 ALTER TABLE "FinancialAccount" ADD CONSTRAINT "FinancialAccount_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "propertyOwners"("propertyOwnerId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Messages" ADD CONSTRAINT "Messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversations"("conversationId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Messages" ADD CONSTRAINT "Messages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversations"("conversationId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
