@@ -44,6 +44,10 @@ router.patch(
   validateRequest(PropertyOwnerValidation.updateExtraCost),
   PropertyOwnerControllers.updateExtraCost,
 );
+
 // ! get my tenants
 router.get("/get-my-tenants", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getMyAssignedTenants);
+
+
+
 export const PropertyOwnerRouter = router;

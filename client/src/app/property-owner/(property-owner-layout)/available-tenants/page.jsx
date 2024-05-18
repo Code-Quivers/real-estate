@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, InputNumber, Pagination } from "rsuite";
+import { Input, InputGroup, Pagination } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
@@ -39,7 +39,12 @@ const PropertyOwnerAvailableTenants = () => {
   });
   if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
 
-  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
+  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery(
+    { ...query },
+    {
+      pollingInterval: 60000,
+    },
+  );
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setTenantDetails] = useState(null);
@@ -75,7 +80,7 @@ const PropertyOwnerAvailableTenants = () => {
 
       {/* all cards */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-5 justify-center   py-10">
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5">
           <TenantCardSkeleton />
           <TenantCardSkeleton />
           <TenantCardSkeleton />

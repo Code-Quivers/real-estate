@@ -1,19 +1,22 @@
 "use client";
 
+import ConversationChatPerson from "@/components/conversation/ConversationChatPerson";
 import ConversationMessagingChats from "@/components/conversation/ConversationMessagingChats";
-import ConversationChatPerson from "@/components/property-owner/messaging/PropertyOwnerChatPerson";
 import { getUserInfo } from "@/hooks/services/auth.service";
 import useSocket from "@/hooks/useSocket";
 import { useGetMyAllConversationsQuery } from "@/redux/features/conversations/conversationApi";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Placeholder } from "rsuite";
 
 const TenantMessagingPage = () => {
   const { data: allConversations, isLoading, isError, isSuccess, refetch } = useGetMyAllConversationsQuery();
   const useSearch = useSearchParams();
   const paramsChatId = useSearch.get("chat");
-
+  const [size, setSize] = useState(10);
+  const handleRefreshSize = () => {
+    setSize(10);
+  };
   const myDetails = getUserInfo();
   const socket = useSocket();
   // socket
@@ -59,13 +62,14 @@ const TenantMessagingPage = () => {
         </div>
         {/*  */}
         {/* conversation */}
-        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]">
-          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll  ">
+        <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]  2xl:h-[85vh]">
+          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll space-y-2 lg:space-y-1 ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (
                 <div key={singleConversation?.conversationId}>
                   <ConversationChatPerson
+                    handleRefreshSize={handleRefreshSize}
                     singleConversation={singleConversation}
                     paramsChatId={paramsChatId}
                     participant={singleConversation?.perticipants[0]}
@@ -88,7 +92,7 @@ const TenantMessagingPage = () => {
             )}
           </div>
           <div className="col-span-5 lg:col-span-4 ">
-            <ConversationMessagingChats />
+            <ConversationMessagingChats size={size} setSize={setSize} />
           </div>
         </div>
       </div>

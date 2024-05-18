@@ -14,12 +14,21 @@ import { useGetClientSecretMutation } from "@/redux/features/payment/stripePayme
 // Sign in to see your own test API key embedded in code samples.
 const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
 
-const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, monthlyChargePerProperty }) => {
+//  amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+//                 orderData={orderDetails?.data}
+//                 propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
+//                 packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
+//                 totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
+//                 orderId={orderDetails?.data?.orderId}
+//                 packageType={activePackagePrice}
+
+const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
+  console.log("shafin", others);
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
 
   const fetchClientSecret = async () => {
-    const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData });
+    const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData, ...others });
 
     if (resp?.data?.data?.clientSecret) {
       setClientSecret(resp.data?.data?.clientSecret);
@@ -39,10 +48,10 @@ const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, monthlyCharge
   };
 
   return (
-    <div>
+    <div className="min-h-[280px]">
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <StripeCheckoutForm orderData={orderData} monthlyChargePerProperty={monthlyChargePerProperty} amountToPaid={amountToPaid} />
+          <StripeCheckoutForm orderData={orderData} />
         </Elements>
       )}
     </div>

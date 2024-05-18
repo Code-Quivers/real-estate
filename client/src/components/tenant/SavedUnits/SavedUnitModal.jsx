@@ -5,9 +5,11 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Carousel, Modal, Notification, useToaster } from "rsuite";
+import { CgClose } from "react-icons/cg";
+import { Button, Carousel, Drawer, IconButton, Notification, useMediaQuery, useToaster } from "rsuite";
 
 const SavedUnitsModal = ({ open, handleClose, units: item }) => {
+  const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
   const [openTab, setOpenTab] = useState(1);
   // ! save item
   const [removeFromSavedItem, { data, isLoading, isSuccess, isError, error, reset: resetReq }] = useRemoveFromSavedItemMutation();
@@ -48,40 +50,71 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
 
   return (
     <div>
-      <Modal overflow={false} dialogAs="div" className="mx-auto bg-white" size="lg" open={open} onClose={handleClose}>
-        <Modal.Body>
-          <div className="grid md:grid-cols-12  border   justify-between divide-x  items-stretch  ">
+      <Drawer
+        closeButton={
+          <div className="flex items-center gap-3 px-3 py-0.5">
+            <IconButton
+              onClick={handleClose}
+              className="group"
+              circle
+              appearance="subtle"
+              icon={<CgClose className="group-hover:scale-125 group-hover:text-red-600 duration-300 transition-all" size={22} />}
+            />
+            <h3>Unit Information Of : {item?.property?.title}</h3>
+          </div>
+        }
+        overflow={false}
+        size={isMobile ? "full" : "lg"}
+        placement={isMobile ? "bottom" : "right"}
+        open={open}
+        onClose={handleClose}
+      >
+        <Drawer.Body
+          style={{
+            padding: 0,
+            margin: 0,
+          }}
+        >
+          <div className="grid md:grid-cols-12    justify-between   items-stretch  ">
             {/* images */}
             <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
-              {item?.property?.images?.length > 0
-                ? item?.property?.images?.map((photo, index) => (
-                    <div key={index}>
-                      <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
-                    </div>
-                  ))
-                : null}
+              <div className="md:col-span-5 md:hidden">
+                <Carousel className="custom-slider max-h-[250px] ">
+                  {item?.property?.images?.length > 0
+                    ? item?.property?.images?.map((photo, index) => (
+                        <div key={index}>
+                          <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
+                        </div>
+                      ))
+                    : null}
+                </Carousel>
+              </div>
             </Carousel>
-            <div className="max-md:hidden md:col-span-5 w-full  overflow-y-scroll  lg:max-h-[80vh]   custom-scrollbar">
-              {item?.property?.images?.length > 0
-                ? item?.property?.images?.map((photo, index) => (
-                    <div key={index} className="flex flex-col divide-y divide-[#8b8b8b]">
-                      <div className="">
-                        <Image
-                          className="h-[200px] p-1 w-full object-cover"
-                          height={300}
-                          width={300}
-                          src={`${fileUrlKey()}/${photo}`}
-                          alt="Unit Photo"
-                        />
-                      </div>
+            <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
+              {item?.property?.images?.length > 0 ? (
+                item?.property?.images?.map((photo, index) => (
+                  <div key={index} className="flex flex-col divide-y divide-[#8b8b8b]">
+                    <div className="">
+                      <Image
+                        className="h-[200px] mb-1 w-full object-cover"
+                        height={300}
+                        width={300}
+                        src={`${fileUrlKey()}/${photo}`}
+                        alt="Unit Photo"
+                      />
                     </div>
-                  ))
-                : ""}
+                  </div>
+                ))
+              ) : (
+                <div className="flex justify-center items-center min-h-[40vh]">
+                  <h2>No Images Available</h2>
+                </div>
+              )}
             </div>
 
             {/* others */}
-            <div className="md:col-span-7 w-full overflow-y-scroll lg:max-h-[80vh]  custom-scrollbar ">
-              <div className="flex px-3 py-2  justify-between items-center sticky top-0 bg-white">
+            <div className="lg:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar ">
+              <div className="flex px-3 py-1.5  justify-between items-center  bg-white">
                 <div>
                   {item?.property?.owner?.profileImage ? (
                     <Image
@@ -116,14 +149,14 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                   </h2>
                   <h2 className="lg:text-xl">{item?.property?.address ? item?.property?.address : "--"}</h2>
                 </div>
-                <div>
+                <div className="mr-2">
                   <Score score={item?.property?.scoreRatio?.score} total={item?.property?.scoreRatio?.total} />
                 </div>
               </div>
               {/* */}
               <div>
                 {/* buttons */}
-                <div className="flex ">
+                <div className="flex mx-3">
                   <button
                     size="lg"
                     className={`
@@ -182,24 +215,24 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                     <div className="pb-5">
                       <h2 className="text-base font-bold capitalize">Description</h2>
 
-                      <div className="whitespace-pre-wrap">
+                      <div className="whitespace-pre-wrap text-justify">
                         <p>{item?.property.description ? item?.property.description : "--"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 2 ? "block" : "hidden"} id="link2">
-                    <div className="grid grid-cols-2   ">
-                      <div className="col-span-1 border-r mr-3    p-1">
+                    <div className="grid grid-cols-2 ">
+                      <div className="col-span-1 border-r  p-1">
                         <h2 className="text-center font-semibold text-lg">Maintenance covered by Tenant</h2>
-                        <p className="mt-5 whitespace-pre-line">
-                          {item?.property?.maintenanceCoveredTenant ? item?.property?.maintenanceCoveredTenant : "--"}
+                        <p className="mt-5 whitespace-pre-wrap ">
+                          {item?.property?.maintenanceCoveredTenant ? item?.property?.maintenanceCoveredTenant : "N/A"}
                         </p>
                       </div>
 
-                      <div className="col-span-1 p-1">
+                      <div className="col-span-1 p-1 pl-1.5">
                         <h2 className="text-center font-semibold text-lg">Maintenance covered by Property Owner</h2>
-                        <p className="mt-5 whitespace-pre-line">
-                          {item?.property?.maintenanceCoveredOwner ? item?.property?.maintenanceCoveredOwner : "--"}
+                        <p className="mt-5 whitespace-pre-wrap">
+                          {item?.property?.maintenanceCoveredOwner ? item?.property?.maintenanceCoveredOwner : "N/A"}
                         </p>
                       </div>
                     </div>
@@ -209,29 +242,29 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                       <h2 className="text-base font-bold capitalize">Schools near by</h2>
                       <div className="">
                         <div>
-                          <p className="whitespace-pre-wrap">{item?.property?.schools ? item?.property?.schools : "--"}</p>
+                          <p className="whitespace-pre-wrap text-justify">{item?.property?.schools ? item?.property?.schools : "N/A"}</p>
                         </div>
                       </div>
                     </div>
                     <div>
                       <h2 className="text-base font-bold capitalize">Universities near by</h2>
                       <div className="">
-                        <p className="whitespace-pre-wrap">{item?.property?.universities ? item?.property?.universities : "--"}</p>
+                        <p className="whitespace-pre-wrap">{item?.property?.universities ? item?.property?.universities : "N/A"}</p>
                       </div>
                     </div>
                   </div>
                   <div className={openTab === 4 ? "block" : "hidden"} id="link4">
                     <h2 className="text-base font-bold capitalize">Pets Allowed</h2>
                     <div className="">
-                      <p className="whitespace-pre-wrap">{item?.property?.pets ? item?.property?.pets : "--"}</p>
+                      <p className="whitespace-pre-wrap text-justify">{item?.property?.pets ? item?.property?.pets : "N/A"}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
+        </Drawer.Body>
+      </Drawer>
     </div>
   );
 };

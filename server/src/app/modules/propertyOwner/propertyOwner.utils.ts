@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from "fs";
 import { infoLogger } from "../../../shared/logger";
+import prisma from "../../../shared/prisma";
 export const filterNonNullValues = (data: any): any => {
   const filteredData: any = {};
   for (const key in data) {
@@ -74,4 +75,65 @@ export const calculatePropertyOwnerProfileScore = (data: any) => {
   return { profileScore, scoreRatio };
 };
 
+export const getMonthlyTotalRentToCollect = async (propertyOwnerId: string): Promise<number> => {
+  const property = await prisma.property.aggregate({
+    where: { ownerId: propertyOwnerId, isRented: true, isActive: true },
+    _sum: {
+      monthlyRent: true,
+    },
+  });
+  return property._sum.monthlyRent || 0;
+};
+
+// !
+export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<number> => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
+  const data = await prisma.property.aggregate({
+    _sum: {
+      monthlyRent: true,
+    },
+    where: {
+      ownerId: ownerId,
+      isRented: true,
+      isActive: true,
+      orders: {
+        some: {
+          updatedAt: {
+            gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+            lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
+          },
+        },
+      },
+    },
+  });
+  return data._sum.monthlyRent || 0;
+};
+
+export const getOwnerTotalCostOfCurrentMonth = async (ownerId: string): Promise<number> => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
+
+  const paymentItems = await prisma.order.findMany({
+    where: {
+      ownerId: ownerId,
+      createdAt: {
+        gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
+        lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
+      },
+    },
+    select: {
+      PaymentInformation: {
+        select: {
+          amountPaid: true,
+        },
+      },
+    },
+  });
+  const totalCost = paymentItems.reduce((acc, item) => {
+    return acc + (item?.PaymentInformation?.amountPaid || 0);
+  }, 0);
+
+  return totalCost;
+};
 // !@CodeQuivers

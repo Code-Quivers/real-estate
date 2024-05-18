@@ -69,7 +69,7 @@ const PropertyOwnerReportPage = () => {
             className="!w-full"
             renderMenuItem={(value, item) => {
               return (
-                <div className="  flex gap-2 border items-center">
+                <div className="  flex gap-2 border items-center rounded-md p-1">
                   <div>
                     <Image
                       width={100}
@@ -107,7 +107,7 @@ const PropertyOwnerReportPage = () => {
       </div>
 
       <div className="mt-5">
-        <Button onClick={() => setIsOpenAdd(true)} className="!bg-[#29429f] !text-white !px-10 !py-3 !rounded-full max-sm:!w-full" size="lg">
+        <Button onClick={() => setIsOpenAdd(true)} className="!bg-[#29429f] hover:!bg-primary/80 !text-white !px-10 !py-3 !rounded-full max-md:!w-full" size="lg">
           Add Report
         </Button>
       </div>

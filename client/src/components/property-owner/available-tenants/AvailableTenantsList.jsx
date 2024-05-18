@@ -132,27 +132,27 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                 <div className="p-3 space-y-2">
                   {!isLoadingUnits &&
                     unitRes?.data?.length > 0 &&
-                    unitRes?.data?.map((singleUnit) => (
-                      <div key={Math.random()}>
+                    unitRes?.data?.map((singleUnit, index) => (
+                      <div key={index}>
                         <button
                           onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                          className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                          className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm"
                         >
-                          <div>
+                          <div className="col-span-1 h-full">
                             <Image
-                              width={120}
-                              height={120}
-                              className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                              width={500}
+                              height={500}
+                              className="h-full w-full p-1 object-cover rounded-xl"
                               src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                               alt="photo"
                             />
                           </div>
-                          <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                            <h3>${singleUnit?.monthlyRent}</h3>
+                          <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium col-span-2 ml-3">
+                            <h3>${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                             <h3>
                               {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
                             </h3>
-                            <h3>{singleUnit?.address}</h3>
+                            <h3>{singleUnit?.address || "N/A"}</h3>
                           </div>
                         </button>
                       </div>

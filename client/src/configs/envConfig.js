@@ -30,3 +30,10 @@ export const paymentDataSdk = () => {
 export const paymentCurrency = () => {
   return process.env.NEXT_PUBLIC_PAYMENT_CURRENCY;
 };
+export const getUnitPackagePrices = () => {
+  return {
+    MONTHLY: process.env.NEXT_PUBLIC_MONTHLY_UNIT_PACKAGE_PRICE,
+    BIANNUALLY: process.env.NEXT_PUBLIC_BIANNUALLY_PACKAGE_PRICE,
+    ANNUALLY: process.env.NEXT_PUBLIC_ANNUALLY_PACKAGE_PRICE,
+  };
+};

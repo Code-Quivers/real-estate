@@ -23,9 +23,10 @@ export const ConversationApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.conversation],
     }),
     getMessages: builder.query({
-      query: ({ conversationId }) => ({
+      query: ({ conversationId, ...others }) => ({
         url: `${CONVERSATION_ROUTE}/get-message/${conversationId}`,
         method: "GET",
+        params: others,
       }),
       providesTags: [tagTypes.conversation],
     }),

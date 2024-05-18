@@ -9,21 +9,16 @@ import { FiSearch } from "react-icons/fi";
 import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
-import { sortingPicker } from "@/constants/selectPicker.const";
+import { pricePicker, sortingPicker } from "@/constants/selectPicker.const";
 import { Loader } from "rsuite";
 import Score from "@/components/Shared/Score/Score";
-
-// Search Location data
-const data = ["Newest", "Linda", "Nancy", "Lloyd", "Alice", "Julia", "Albert"].map((item) => ({ label: item, value: item }));
-
-// Price data
+import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
 
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
   const [open, setOpen] = useState(false);
   const query = {};
-  // const [page, setPage] = useState(1);
-  // const [size, setSize] = useState(20);
+
   // eslint-disable-next-line no-unused-vars
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("");
@@ -35,11 +30,12 @@ const AvailableUnitsCard = () => {
   query["limit"] = 20;
 
   const { data: allAvailableUnitsRes, isLoading, isError } = useGetAllAvailableUnitsQuery({ ...query });
+
   return (
-    <section className="max-w-[1050px]  mb-5 mt-5 2xl:mx-auto lg:px-5   px-3 2xl:px-0 ">
+    <section className="max-w-6xl mb-5 mt-5 mx-auto lg:px-5 px-3 min-h-screen">
       {/* search with price section start */}
-      <div className="grid grid-cols-2 lg:flex justify-start items-start  lg:gap-5 border-r-0 border-gray-800">
-        <div className="w-full">
+      <div className="grid grid-cols-5 lg:grid-cols-3  items-start  gap-3 lg:gap-5 border-r-0 border-gray-800">
+        <div className="w-full  col-span-3 lg:col-span-2">
           <InputGroup size="lg" inside>
             <Input onChange={(e) => setSearchTerm(e)} placeholder="Search Location" size="lg" />
             <InputGroup.Button>
@@ -47,16 +43,26 @@ const AvailableUnitsCard = () => {
             </InputGroup.Button>
           </InputGroup>
         </div>
-        <div className="w-full">
-          <SelectPicker className="!w-full" size="lg" placeholder="Price" data={data} />
-        </div>
-        <div className="w-full">
-          <SelectPicker size="lg" placeholder="More" data={data} className="!w-full" />
+        <div className="w-full col-span-2 lg:col-span-1">
+          <SelectPicker
+            searchable={false}
+            size="lg"
+            placeholder="Price"
+            data={pricePicker}
+            onChange={(e) => {
+              setSortBy("monthlyRent");
+              setSortOrder(e);
+            }}
+            onClean={() => {
+              setSortBy("createdAt");
+              setSortOrder("");
+            }}
+            className="!w-full"
+          />
         </div>
       </div>
       {/* search with price section end */}
-
-      {/* sort area start */}
+      {/* Sorting */}
       <div className="flex justify-end items-center mt-5">
         <div>
           <SelectPicker
@@ -72,8 +78,15 @@ const AvailableUnitsCard = () => {
       {/* sort area end */}
 
       {/* Available units card start */}
+      {isLoading && (
+        <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+        </div>
+      )}
 
-      <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+      <div className="mt-4 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
         {!isLoading &&
           !isError &&
           allAvailableUnitsRes?.data?.map((unit) => (
@@ -88,13 +101,13 @@ const AvailableUnitsCard = () => {
               <Image
                 width={300}
                 height={300}
-                className="w-full h-[200px] object-center object-cover rounded-t-lg hover:shadow-lg"
+                className="w-full h-[200px] object-center object-cover rounded-t-lg  "
                 src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
                 alt="Unit Image"
               />
               <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
-                  <h2 className="text-sm">${unit?.monthlyRent?.toLocaleString()}</h2>
+                  <h2 className="text-sm font-semibold">${unit?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unit?.numOfBed ?? "0"} Bed </span>
                     <span>{unit?.numOfBath ?? "0"} Bath</span>
@@ -121,7 +134,9 @@ const AvailableUnitsCard = () => {
       )}
 
       {/* Available units details using popup start */}
-      <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
+      <div className="max-md:hidden">
+        <AvailableUnitsModal open={open} setOpen={setOpen} availableUnits={availableUnits} unitInfo={units} />
+      </div>
       {/* Available units details using popup end */}
     </section>
   );

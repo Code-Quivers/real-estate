@@ -3,12 +3,14 @@
 import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
+import { incrementMonth } from "../../../helpers/utils";
 
 /**
  * Creates a new order in the database.
  */
 const createOrder = async (orderInfo: any) => {
   // Map property IDs to connect property relationship
+
   const data = {
     ...orderInfo,
     properties: {
@@ -19,8 +21,7 @@ const createOrder = async (orderInfo: any) => {
   // Execute transaction to create the order
   const result = await prisma.$transaction(async (transactionClient) => {
     // Create a new order using transaction
-    console.log("++++++++++++++++++++++++++++++");
-    console.log(data);
+
     const newOrder = await transactionClient.order.create({
       data: data,
     });
@@ -48,7 +49,9 @@ const getSingleOrder = async (orderId: string) => {
         orderStatus: "PENDING",
       },
       include: {
-        owner: true,
+        owner: {
+          select: { firstName: true, lastName: true, phoneNumber: true, userId: true, profileImage: true },
+        },
         _count: true,
         properties: true,
         tenant: true,
@@ -131,6 +134,8 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
 
 // Update a specific order info
 const updateOrderInfo = async (orderId: string, orderInfo: any) => {
+  console.log("updating order info............................");
+  console.log(orderInfo);
   const updatedInfo = await prisma.order.update({
     where: { orderId },
     data: orderInfo,
@@ -144,6 +149,7 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
 };
 
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
+  console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
   const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedInfo = await transactionClient.order.update({
@@ -161,20 +167,75 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
         //   }
         // }
       },
+      select: {
+        packageType: true,
+        updatedAt: true,
+        properties: {
+          select: {
+            propertyId: true,
+            paidFrom: true,
+            paidTo: true,
+          },
+        },
+      },
     });
 
     // if the order is for paying rent then return the result
     if (isRentPayment) return updatedInfo;
+    console.log("9999999999999999999999999999999999999");
+    console.log(updatedInfo);
+    const packageType = updatedInfo.packageType;
+    const updateOperations = updatedInfo.properties.map((property) => {
+      let paidFrom = null;
+      let paidTo = null;
+      if (!property.paidFrom) {
+        paidFrom = updatedInfo.updatedAt;
+      } else paidFrom = property.paidTo;
 
-    // When The order is for property payment
-    const updatedProperty = await transactionClient.property.updateMany({
-      where: {
-        orders: { some: { orderId } },
-      },
-      data: { planType },
+      switch (packageType) {
+        case "MONTHLY":
+          paidTo = incrementMonth(paidFrom, 1);
+          break;
+        case "BIANNUALLY":
+          paidTo = incrementMonth(paidFrom, 6);
+          break;
+        case "ANNUALLY":
+          paidTo = incrementMonth(paidFrom, 12);
+          break;
+        default:
+          // Handle unexpected package types
+          break;
+      }
+      return {
+        where: { propertyId: property.propertyId },
+        data: { planType, packageType, paidFrom, paidTo },
+      };
     });
+    const updatedProperty = await Promise.all(
+      updateOperations.map(async (updateOperation) => {
+        return await prisma.property.update(updateOperation);
+      }),
+    );
+    console.log("--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log(updatedProperty);
+    // const packageType = updatedInfo.packageType;
+    // const paidFrom = updatedInfo.updatedAt;
+    // let paidTo = paidFrom;
+    // if (packageType === "MONTHLY") paidTo = incrementMonth(paidFrom, 1);
+    // else if (packageType === "BIANNUALLY") paidTo = incrementMonth(paidFrom, 6);
+    // else if (packageType === "ANNUALLY") paidTo = incrementMonth(paidFrom, 12);
+    // // When The order is for property payment
+    // const updatedProperty = await transactionClient.property.updateMany({
+    //   // where: {
+    //   //   orders: { some: { orderId } },
+    //   // },
+    //   // data: { planType, packageType, paidFrom, paidTo },
+    //   data: [],
+    //   bulk:true,
+    // });
 
-    if (!updatedInfo || !updatedProperty) {
+    // if (!updatedInfo || !updatedProperty) {
+    if (!updatedInfo) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update the order information.");
     }
 

@@ -15,11 +15,7 @@ router.post(
 );
 
 // Stripe payment request route
-router.post(
-  "/create-tenant-payment-intent",
-  auth(UserRoles.TENANT),
-  PayerTenantController.createTenantPaymentIntent,
-);
+router.post("/create-tenant-payment-intent", auth(UserRoles.TENANT), PayerTenantController.createTenantPaymentIntent);
 
 router.post(
   "/retrive-payment-info",
@@ -44,8 +40,5 @@ router.post(
   auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
   StripeController.createAccountLink,
 );
-
-
-
 
 export const StripeRoutes = router;

@@ -3,7 +3,7 @@
 import AddPropertyUploadPhotos from "@/components/property-owner/add-property/AddPropertyUploadPhotos";
 import { globalTailwindAnimation } from "@/constants/animation";
 import { FaPlus } from "react-icons/fa";
-import { Button, Form, Input, InputNumber, Message, Modal, useToaster } from "rsuite";
+import { Button, Form, Input, InputNumber, Message, Modal, Notification, useToaster } from "rsuite";
 import { IoClose } from "react-icons/io5";
 import { PiWarningBold } from "react-icons/pi";
 import { useEffect, useState } from "react";
@@ -29,9 +29,9 @@ const AddProperty = () => {
   useEffect(() => {
     if (!isLoading && !isError && isSuccess && !error) {
       toaster.push(
-        <Message centered showIcon type="success" closable>
+        <Notification header="Success" type="success" closable>
           {data?.message || "Successfully Created"}
-        </Message>,
+        </Notification>,
         {
           placement: "bottomStart",
           duration: 3000,
@@ -43,9 +43,9 @@ const AddProperty = () => {
     }
     if (!isLoading && isError && !isSuccess) {
       toaster.push(
-        <Message centered showIcon type="error" closable>
-          {error?.message || "Failed to Created"}
-        </Message>,
+        <Notification header="Error" type="error" closable>
+          {error?.message || "Failed to Create"}
+        </Notification>,
         {
           placement: "bottomStart",
           duration: 3000,
@@ -338,7 +338,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper mt-1">
-                                  <Input as="textarea" rows={6} {...field} style={{ resize: "none" }} className="!w-full" />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredTenant !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredTenant?.message}
                                   </Form.ErrorMessage>
@@ -359,7 +359,7 @@ const AddProperty = () => {
                               control={control}
                               render={({ field }) => (
                                 <div className="rs-form-control-wrapper mt-1">
-                                  <Input as="textarea" rows={6} style={{ resize: "none" }} {...field} className="!w-full" />
+                                  <Input as="textarea" rows={6} {...field} className="!w-full" />
                                   <Form.ErrorMessage show={errors?.properties?.[idx]?.maintenanceCoveredOwner !== undefined} placement="topEnd">
                                     {errors?.properties?.[idx]?.maintenanceCoveredOwner?.message}
                                   </Form.ErrorMessage>

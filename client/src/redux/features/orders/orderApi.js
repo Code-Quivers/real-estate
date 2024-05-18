@@ -3,13 +3,14 @@ import { tagTypes } from "@/redux/tag-types/tag-types";
 
 export const orderApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // capturePaypalPayment: builder.query({
-    //   query: ({ orderId }) => ({
-    //     url: `/payment-paypal/capture/${orderId}`,
-    //     method: "POST",
-    //   }),
-    //   providesTags: [tagTypes.properties],
-    // }),
+    createOrder: builder.mutation({
+      query: ({ data }) => ({
+        url: `/orders/create`,
+        method: "POST",
+        data,
+      }),
+      invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
+    }),
     getSingleOrder: builder.query({
       query: ({ orderId }) => ({
         url: `/orders/get-single-order/${orderId}`,
@@ -25,19 +26,14 @@ export const orderApi = baseApi.injectEndpoints({
     }),
 
     updateOrderInfo: builder.mutation({
-      query: ({orderInfo}) => ({
+      query: ({ orderInfo }) => ({
         url: `/orders/update-status`,
         method: "PATCH",
-        data: orderInfo
+        data: orderInfo,
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner, tagTypes.order],
     }),
   }),
 });
 
-export const {
-  // useCapturePaypalPaymentQuery,
-  useGetSingleOrderQuery,
-  useUpdatePropertyTrialPeriodMutation,
-  useUpdateOrderInfoMutation,
-} = orderApi;
+export const { useCreateOrderMutation, useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation, useUpdateOrderInfoMutation } = orderApi;

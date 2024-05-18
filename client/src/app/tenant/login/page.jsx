@@ -48,7 +48,7 @@ const LoginPage = () => {
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/tenant");
       toaster.push(LoginSuccessMessage(data?.message), {
-        placement: "bottomStart",
+        placement: "bottomEnd",
       });
     }
 
@@ -128,11 +128,11 @@ const LoginPage = () => {
               {/* password requirement */}
 
               <div className="h-16 text-xs font-medium text-white">
-                {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+                {errors?.password?.type === "pattern" && <p className="text-red-500  rounded-md">{errors?.password?.message}</p>}
               </div>
             </div>
-            <div className="  flex justify-center">
-              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
+            <div className="flex justify-center">
+              <Button loading={isLoading} type="submit" size="lg" className="!rounded-md w-full !px-8 !py-3" appearance="default">
                 Sign In
               </Button>
             </div>

@@ -121,6 +121,7 @@ const getMyAssignedTenants = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
