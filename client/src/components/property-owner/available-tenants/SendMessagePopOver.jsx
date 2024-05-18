@@ -56,7 +56,7 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
     <div>
       <Whisper
         preventOverflow
-        placement="autoVertical"
+        placement="autoVerticalEnd"
         trigger="click"
         speaker={
           <Popover arrow={true} as="div" className="w-[350px] max-h-[400px] !rounded-md overflow-y-auto mb-5">
@@ -70,10 +70,10 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
                     setTextMessage(e);
                   }}
                   as="textarea"
-                  rows={5}
+                  rows={4}
                 />
               </div>
-              <div className="flex justify-end items-center gap-3 mt-5">
+              <div className="flex justify-end items-center gap-3 mt-3">
                 <Button
                   onClick={handleStartConversation}
                   disabled={!textMessage}
@@ -87,7 +87,7 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
           </Popover>
         }
       >
-        <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Contact</button>
+        <button className="text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Contact</button>
       </Whisper>
     </div>
   );

@@ -2,14 +2,13 @@
 import apartmentPhoto from "@/assets/house/house-logo.jpg";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Image from "next/image";
-import { Button, IconButton, Placeholder } from "rsuite";
+import { Avatar, Button, IconButton, Placeholder } from "rsuite";
 import { FaPencilAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { fileUrlKey, getUnitPackagePrices } from "@/configs/envConfig";
 import UnitEditModal from "@/components/property-owner/unit-information/UnitEditModal";
 import { useState } from "react";
-import { BiSolidMessageAltDetail } from "react-icons/bi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import RemoveTenantModal from "@/components/property-owner/unit-information/RemoveTenantModal";
 import moment from "moment";
@@ -121,11 +120,9 @@ const PropertyOwnerUnitInformation = () => {
 
                             {singleProperty?.isRented && singleProperty?.Tenant && (
                               <div className="flex gap-2 items-center">
-                                <button>
-                                  <SendMessagePopOverFromPropertyOwner receiverId={singleProperty?.Tenant?.userId} />
+                                <SendMessagePopOverFromPropertyOwner receiverId={singleProperty?.Tenant?.userId} />
 
-                                  {/* <BiSolidMessageAltDetail size={20} /> */}
-                                </button>
+                                {/* <BiSolidMessageAltDetail size={20} /> */}
                                 <button
                                   disabled={
                                     singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
@@ -148,9 +145,9 @@ const PropertyOwnerUnitInformation = () => {
                             <>
                               <div className="flex  gap-3   mt-2 ">
                                 <div>
-                                  <Image
-                                    width={90}
-                                    height={90}
+                                  <Avatar
+                                    circle
+                                    size="lg"
                                     src={
                                       singleProperty?.Tenant?.profileImage ? `${fileUrlKey()}/${singleProperty?.Tenant?.profileImage}` : profileLogo
                                     }
@@ -162,7 +159,7 @@ const PropertyOwnerUnitInformation = () => {
                                   <h2 className="text-lg font-semibold">
                                     {singleProperty?.Tenant?.firstName} {singleProperty?.Tenant?.lastName}
                                   </h2>
-                                  <h2 className="text-lg font-semibold">{singleProperty?.Tenant?.phoneNumber ?? "017"}</h2>
+                                  <h2 className="text-md font-medium">Phone Number : {singleProperty?.Tenant?.phoneNumber ?? "017"}</h2>
                                 </div>
                               </div>
                             </>
