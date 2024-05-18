@@ -85,6 +85,7 @@ export const getMonthlyTotalRentToCollect = async (propertyOwnerId: string): Pro
   return property._sum.monthlyRent || 0;
 };
 
+// !
 export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<number> => {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
@@ -98,7 +99,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
       isActive: true,
       orders: {
         some: {
-          createdAt: {
+          updatedAt: {
             gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
             lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
           },

@@ -259,7 +259,6 @@ const getDashboardInfo = async (ownerId: string) => {
     });
 
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
 
     const collectedRentOfCurrentMonth: number = await getLastMonthTotalCollectedRent(ownerId);
     const costOfCurrentMonth: number = await getOwnerTotalCostOfCurrentMonth(ownerId);
@@ -306,7 +305,7 @@ const getDashboardInfo = async (ownerId: string) => {
 
     const monthlyTotalRentToCollect: number = await getMonthlyTotalRentToCollect(ownerId);
     const currentMonthExtraCost: number = extraCosts?.cost || 0;
-    
+
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
