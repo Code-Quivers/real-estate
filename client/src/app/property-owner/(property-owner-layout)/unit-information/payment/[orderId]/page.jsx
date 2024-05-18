@@ -1,5 +1,4 @@
 "use client";
-
 import StripeCheckout from "@/components/payment/stripe/StripeCheckout";
 import { fileUrlKey, getUnitPackagePrices } from "@/configs/envConfig";
 import { useGetSingleOrderQuery, useUpdatePropertyTrialPeriodMutation } from "@/redux/features/orders/orderApi";
@@ -133,7 +132,7 @@ const UnitPaymentPage = ({ params }) => {
                   <h2 className="text-lg text-wrap">{singleProperty?.title}</h2>
                 </div>
                 <div>
-                  <h2 className="text-4xl font-semibold">${getUnitPackagePrices()[activePackagePrice]}</h2>
+                  <h2 className="text-3xl font-semibold text-gray-800">${getUnitPackagePrices()[activePackagePrice]}</h2>
                 </div>
               </div>
             ))}
@@ -181,7 +180,7 @@ const UnitPaymentPage = ({ params }) => {
                   href={{
                     query: { paymentMethod: "stripe-payment" },
                   }}
-                  className="border w-full  bg-primary hover:bg-primary/80 duration-300 text-center p-10 text-xl font-serif py-4 rounded-lg text-white"
+                  className="border w-full  bg-primary hover:bg-primary/80 duration-300 text-center p-10 text-xl py-4 rounded-lg text-white"
                 >
                   Pay with Stripe
                 </Link>
