@@ -15,7 +15,14 @@ import {
 } from "./propertyOwner.constants";
 import bcrypt from "bcrypt";
 import config from "../../../config";
-import { calculatePropertyOwnerProfileScore, filterNonNullValues, removeOldFile } from "./propertyOwner.utils";
+import {
+  calculatePropertyOwnerProfileScore,
+  filterNonNullValues,
+  getLastMonthTotalCollectedRent,
+  getMonthlyTotalRentToCollect,
+  getOwnerTotalCostOfCurrentMonth,
+  removeOldFile,
+} from "./propertyOwner.utils";
 
 // ! get all property owners
 const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, options: IPaginationOptions) => {
@@ -251,51 +258,11 @@ const getDashboardInfo = async (ownerId: string) => {
       _count: true,
     });
 
-    // Calculate collected amount of rent for the current month.
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
 
-    const data = await prisma.property.aggregate({
-      _sum: {
-        monthlyRent: true,
-      },
-      where: {
-        ownerId: ownerId,
-        isRented: true,
-        isActive: true,
-        orders: {
-          some: {
-            createdAt: {
-              gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-              lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
-            },
-          },
-        },
-      },
-    });
-    const collectedRentOfCurrentMonth: number = data?._sum?.monthlyRent || 0;
-
-    // Calculate cost of the owner for the current month
-    const paymentItems = await prisma.order.findMany({
-      where: {
-        ownerId: ownerId,
-        createdAt: {
-          gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
-          lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
-        },
-      },
-      select: {
-        PaymentInformation: {
-          select: {
-            amountPaid: true,
-          },
-        },
-      },
-    });
-
-    const costOfCurrentMonth = paymentItems.reduce((acc, item) => {
-      return acc + (item?.PaymentInformation?.amountPaid || 0);
-    }, 0);
+    const collectedRentOfCurrentMonth: number = await getLastMonthTotalCollectedRent(ownerId);
+    const costOfCurrentMonth: number = await getOwnerTotalCostOfCurrentMonth(ownerId);
 
     // get extra cost
     const getExtraCost = await prisma.propertyOwner.findUnique({
@@ -308,7 +275,7 @@ const getDashboardInfo = async (ownerId: string) => {
     });
     const currentMonths = currentDate.getMonth(); // Month is zero-based
     const currentYear = currentDate.getFullYear();
-    let extraCosts;
+    let extraCosts: any;
 
     if (getExtraCost) {
       // Find the index of the object corresponding to the current month
@@ -336,8 +303,10 @@ const getDashboardInfo = async (ownerId: string) => {
         ownerId,
       },
     });
-    //
 
+    const monthlyTotalRentToCollect: number = await getMonthlyTotalRentToCollect(ownerId);
+    const currentMonthExtraCost: number = extraCosts?.cost || 0;
+    
     return {
       numOfRentedUnit: numOfRentedUnit?._count || 0,
       collectedRentOfCurrentMonth,
@@ -345,6 +314,8 @@ const getDashboardInfo = async (ownerId: string) => {
       extraCost: extraCosts,
       rentedUnitScoreRatio,
       myTotalUnits: getTotalUnits,
+      monthlyTotalRentToCollect,
+      monthlyTotalCost: costOfCurrentMonth + currentMonthExtraCost,
     };
   } catch (err) {
     console.log(err);
