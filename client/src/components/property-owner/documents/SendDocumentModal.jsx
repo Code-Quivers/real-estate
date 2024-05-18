@@ -168,8 +168,10 @@ const SendDocumentModal = ({ open, handleClose, sendModalData }) => {
                   </div>
 
                   {/* submit button */}
-                  <div className="mt-10 flex justify-end gap-3">
-                    <button onClick={handleClose}>Cancel</button>
+                  <div className="mt-10 flex justify-end gap-5">
+                    <button type="button" onClick={handleClose}>
+                      Cancel
+                    </button>
                     <Button className="!bg-primary !text-white " size="lg" type="submit">
                       Submit
                     </Button>
