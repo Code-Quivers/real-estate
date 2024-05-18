@@ -3,7 +3,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, B
 import { Bar } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const PropertyOwnerChart = ({ expected, collected, label1, label2 }) => {
+const PropertyOwnerChart = ({ expected, collected, label1, label2, costColor }) => {
   const options = {
     responsive: true,
     plugins: {
@@ -40,7 +40,7 @@ const PropertyOwnerChart = ({ expected, collected, label1, label2 }) => {
       {
         label: label1,
         data: [expected],
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        backgroundColor: costColor || "rgba(53, 162, 235, 0.5)",
       },
       {
         label: label2,

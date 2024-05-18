@@ -80,6 +80,7 @@ const DashboardInfo = () => {
             collected={data?.data?.collectedRentOfCurrentMonth || 0}
             label1="Cost"
             label2="Rent Collected"
+            costColor="#ff6767"
           />
         </div>
       </div>
