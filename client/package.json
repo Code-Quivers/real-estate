@@ -31,7 +31,7 @@
     "react-pdf": "^8.0.0",
     "react-quill": "^2.0.0",
     "react-redux": "^9.0.4",
-    "rsuite": "^5.60.0",
+    "rsuite": "^5.61.0",
     "sharp": "^0.33.1",
     "socket.io-client": "^4.7.5"
   },
