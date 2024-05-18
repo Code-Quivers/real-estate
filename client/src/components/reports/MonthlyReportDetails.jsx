@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import { IoChevronBack } from "react-icons/io5";
 import { Avatar, Button } from "rsuite";
 import { useRef } from "react";
+import GenerateMonthlyReportPdf from "./generate-pdf/GenerateMonthlyReportPdf";
 
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const MonthlyReportDetails = ({ reportData }) => {
       // const imgY = 30;
       // pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
       // pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.addImage(imgData, "PNG", 0, 0, );
+      pdf.addImage(imgData, "PNG", 0, 0);
       pdf.save("download.pdf");
     });
   };
@@ -104,9 +105,7 @@ const MonthlyReportDetails = ({ reportData }) => {
 
       {/* download */}
       <div className="my-10 md:mt-20 flex justify-center items-center">
-        <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-3xl !text-xl !px-10 !py-5 ">
-          Download
-        </Button>
+        <GenerateMonthlyReportPdf reportData={reportData} />
       </div>
     </section>
   );
