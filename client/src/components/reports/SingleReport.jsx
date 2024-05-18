@@ -12,7 +12,7 @@ const SingleReport = ({ report }) => {
     <>
       <div>
         <h2>{report?.reportTitle}</h2>
-        <p>Added: {moment(report?.createdAt).format("L")}</p>
+        <p className="text-xs">Added: {moment(report?.createdAt).format("L")}</p>
       </div>
       <div className="flex gap-1">
         {/* view */}

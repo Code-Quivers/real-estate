@@ -5,13 +5,14 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Drawer, Notification, Placeholder, Popover, Whisper, toaster } from "rsuite";
+import { Drawer, Notification, Placeholder, Popover, Whisper, toaster, useMediaQuery } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
 import moment from "moment";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
+  const [isMobile] = useMediaQuery("(max-width: 575px)");
   const handleClose = () => setModalOpened(false);
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
 
@@ -89,9 +90,11 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
 
   return (
     <>
-      <Drawer placement="right" size="xs" open={isModalOpened} onClose={handleClose}>
+      <Drawer placement={isMobile ? "bottom" : "right"} size={isMobile ? "full" : "xs"} open={isModalOpened} onClose={handleClose}>
         <Drawer.Header>
-          <Drawer.Title>Tenant Details</Drawer.Title>
+          <Drawer.Title>
+            <span className="font-semibold">Tenant Details</span>
+          </Drawer.Title>
         </Drawer.Header>
         <Drawer.Body style={{ padding: 0 }}>
           <div className="px-5 py-2">
@@ -197,10 +200,10 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
             </div>
 
             {/* Tenant data bottom */}
-            <div className="border-t pt-2 mt-2 space-y-2">
+            <div className="pt-2 mt-2 space-y-2">
               {/* Personal Information */}
-              <div className="border p-2 rounded-md  space-y-2">
-                <h4 className="text-xs font-medium">Personal Information</h4>
+              <div className="border p-2 rounded-md space-y-2 shadow">
+                <h4 className="text-sm font-medium">Personal Information</h4>
                 <div className="*:text-sm  space-y-1">
                   <div className="flex justify-between items-center">
                     <h4>Date Of Birth</h4>
@@ -218,8 +221,8 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
               </div>
               {/* Personal Information
                */}
-              <div className="border p-2 rounded-md  space-y-2">
-                <h4 className="text-xs font-medium">Income Information</h4>
+              <div className="border p-2 rounded-md shadow space-y-2">
+                <h4 className="text-sm font-medium">Income Information</h4>
                 <div className="*:text-sm  space-y-1 ">
                   <div className="flex justify-between items-center">
                     <h4>Current Employer/Business Name </h4>
@@ -240,8 +243,8 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                 </div>
                 {/* Other Information    */}
               </div>
-              <div className="border p-2 rounded-md  space-y-1">
-                <h4 className="text-xs font-medium">Other Information</h4>
+              <div className="border p-2 rounded-md shadow space-y-1">
+                <h4 className="text-sm font-medium">Other Information</h4>
                 <div className="*:text-sm space-y-1">
                   <div className="flex justify-between items-center">
                     <h4>Number Of Member </h4>
