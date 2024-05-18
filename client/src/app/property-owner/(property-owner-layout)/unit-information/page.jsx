@@ -76,7 +76,14 @@ const PropertyOwnerUnitInformation = () => {
                     </div>
                     <div className="grid grid-cols-12 gap-5 ">
                       <div className="col-span-12 md:col-span-12 lg:col-span-6 relative">
-                        <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed"></div>
+                        {/* disable logic start */}
+                        {singleProperty?.planType === "ON_TRIAL"
+                          ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                          : singleProperty?.planType === "PREMIUM"
+                            ? getPackageExpiredDates(singleProperty?.paidTo).moreThanOneMonthExpired
+                            : false && <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed"></div>}
+
+                        {/* disable logic end */}
                         <Image
                           width={500}
                           height={200}
@@ -89,7 +96,11 @@ const PropertyOwnerUnitInformation = () => {
                       <div className=" col-span-12 space-y-3 lg:col-span-6 flex flex-col justify-between">
                         <div className="space-y-3 relative flex border rounded-xl justify-between w-full">
                           {/* disable logic */}
-                          <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed"></div>
+                          {singleProperty?.planType === "ON_TRIAL"
+                            ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                            : singleProperty?.planType === "PREMIUM"
+                              ? getPackageExpiredDates(singleProperty?.paidTo).moreThanOneMonthExpired
+                              : false && <div className="absolute inset-0 bg-white opacity-70 rounded-xl cursor-not-allowed z-[9999]"></div>}
                           {/* disable logic end */}
                           <div className="flex justify-between w-full">
                             <div className="space-y-3 p-5 w-full">
@@ -134,15 +145,20 @@ const PropertyOwnerUnitInformation = () => {
                                 <SendMessagePopOverFromPropertyOwner receiverId={singleProperty?.Tenant?.userId} />
 
                                 {/* <BiSolidMessageAltDetail size={20} /> */}
+
                                 <button
                                   disabled={
-                                    singleProperty?.planType === "ON_TRIAL" ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30 : false
+                                    singleProperty?.planType === "ON_TRIAL"
+                                      ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                      : singleProperty?.planType === "PREMIUM"
+                                        ? getPackageExpiredDates(singleProperty?.paidTo).moreThanOneMonthExpired
+                                        : false
                                   }
                                   onClick={() => {
                                     setIsOpenTenantRemove(true);
                                     setTenantRemoveData(singleProperty);
                                   }}
-                                  className="hover:text-red-600 duration-300"
+                                  className="hover:text-red-600 duration-300 disabled:cursor-not-allowed"
                                 >
                                   <RiDeleteBin5Fill size={20} />
                                 </button>
