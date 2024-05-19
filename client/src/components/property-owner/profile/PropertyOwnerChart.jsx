@@ -13,7 +13,7 @@ const PropertyOwnerChart = ({ expected, collected, label1, label2, costColor }) 
     },
     scales: {
       y: {
-        max: expected + collected,
+        max: expected + collected + 500,
         ticks: {
           display: true,
         },
