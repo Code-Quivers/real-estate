@@ -3,7 +3,7 @@ import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
-import { Avatar, Button } from "rsuite";
+import { Button } from "rsuite";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
