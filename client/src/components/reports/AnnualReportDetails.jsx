@@ -42,69 +42,85 @@ const AnnualReportDetails = ({ reportData }) => {
       </div>
       {/* details */}
 
-      <div className="border m-3 md:m-6 shadow rounded-md  md:h-60 p-2 bg-white grid md:grid-cols-12 md:gap-5 xl:gap-10">
-        <div className="md:col-span-5 h-[220px]">
-          <Image
-            className="h-full w-full  object-cover rounded-md"
-            src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
-            width={600}
-            height={600}
-            alt="Apartment Photo"
-          />
-        </div>
-
-        <div className="md:col-span-7 py-6">
-          {reportData?.information?.map((information) => (
-            <div key={Math.random()} className="space-y-2">
-              <p>$ {information?.monthlyRent}</p>
-              <p>
-                {information?.numOfBed} Beds {information?.numOfBath} Baths
-              </p>
-              <p>{information?.address}</p>
-              <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
-                <div className="w-12 h-12 rounded-full  flex items-center justify-center">
-                  <Avatar circle size="md" src={information?.tenantPhoto && `${fileUrlKey()}/${information?.tenantPhoto}`} />
-                  {/* {information?.tenantPhoto ? (
-                    <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
-                  ) : (
-                    <span>
-                      <FaUser size={20} className="text-gray-500" />
-                    </span>
-                  )} */}
-                </div>
-                <p>{information?.tenantName}</p>
-              </div>
+      <div className="my-5">
+        <div ref={pdfRef} className="md:px-5">
+          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
+            <div className="md:col-span-2 h-[220px]">
+              <Image
+                className="h-full w-full object-cover rounded-md"
+                src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
+                width={600}
+                height={600}
+                alt="Apartment Photo"
+              />
             </div>
-          ))}
+
+            <div className="md:col-span-2 py-6">
+              {reportData?.information?.map((information, index) => (
+                <div key={index} className="space-y-5">
+                  <p>${information?.monthlyRent.toLocaleString()}</p>
+                  <p>
+                    {information?.numOfBed} Beds | {information?.numOfBath} Baths
+                  </p>
+                  <p>{information?.address}</p>
+                  <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
+                    {information?.tenantName ? (
+                      <>
+                        <div className="rounded-full flex items-center justify-center">
+                          {information?.tenantPhoto ? (
+                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
+                          ) : (
+                            <span>
+                              <FaUser size={20} className="text-gray-500" />
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <h2>{information?.tenantName}</h2>
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <h3>Tenant Not Available</h3>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-4 mt-10 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
+            <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
+              <h2>Annual Rent</h2>
+              <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
+            </div>
+            <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
+              <h2>Annual Expenses</h2>
+              <p className="text-lg font-semibold">${reportData?.expenses?.toLocaleString()}</p>
+            </div>
+            <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
+              <h2>Rent Collected</h2>
+              <p className="text-lg font-semibold">${reportData?.collectedRent?.toLocaleString()}</p>
+            </div>
+            <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
+              <h2>Gross Profit</h2>
+              <p className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</p>
+            </div>
+          </div>
+          <div
+            className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mt-5 flex max-md:m-3 rounded-xl justify-center text-lg font-bold p-5`}
+          >
+            <h2>{reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}</h2>
+          </div>
         </div>
-      </div>
-      <div className="grid sm:grid-cols-4 px-5 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
-        <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
-          <h2>Annual Rent</h2>
-          <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
-        </div>
-        <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
-          <h2>Annual Expenses</h2>
-          <p className="text-lg font-semibold">${reportData?.expenses?.toLocaleString()}</p>
-        </div>
-        <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
-          <h2>Rent Collected</h2>
-          <p className="text-lg font-semibold">${reportData?.collectedRent?.toLocaleString()}</p>
-        </div>
-        <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
-          <h2>Gross Profit</h2>
-          <p className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</p>
-        </div>
-      </div>
-      <div
-        className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mt-5 flex max-md:m-3 rounded-xl justify-center text-lg font-bold p-5`}
-      >
-        <h2>{reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}</h2>
       </div>
       {/* download */}
-      <div className="my-10 md:mt-20 flex justify-center items-center">
-        <Button type="button" size="lg" className="!bg-primary !text-white !rounded-3xl !text-xl !px-10 !py-5 ">
+      <div className="my-10 md:mt-10 flex justify-between items-center mx-5">
+        <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Download
+        </Button>
+        <Button type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
+          Edit
         </Button>
       </div>
     </section>
