@@ -1,3 +1,5 @@
+"use client";
+
 import { fileUrlKey } from "@/configs/envConfig";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
