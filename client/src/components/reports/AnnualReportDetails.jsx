@@ -4,18 +4,39 @@ import { FaUser } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
 import { Avatar, Button } from "rsuite";
+import { useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const AnnualReportDetails = ({ reportData }) => {
   const router = useRouter();
+  const pdfRef = useRef();
+  const downloadPdf = () => {
+    const input = pdfRef.current;
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10; // Adjust Y offset to add some margin at the top
+
+      pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save(`${reportData?.reportTitle}.pdf` || "download.pdf");
+    });
+  };
   return (
-    <section>
-      <div className="grid grid-cols-7 max-md:p-3 items-center">
-        <div className="col-span-1">
-          <button onClick={() => router.back()}>
+    <section className="max-w-4xl mx-auto">
+      <div className="flex gap-3 items-center max-md:p-3">
+        <div>
+          <button className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1" onClick={() => router.back()}>
             <IoChevronBack size={24} />
           </button>
         </div>
-        <div className="col-span-6">
+        <div>
           <h1 className="font-semibold">{reportData?.reportTitle}</h1>
         </div>
       </div>
@@ -75,8 +96,10 @@ const AnnualReportDetails = ({ reportData }) => {
           <p className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</p>
         </div>
       </div>
-      <div className="mt-5 flex max-md:m-3 rounded-xl justify-center text-green-500 text-lg font-bold p-5">
-        <h2>{`Your're`} Profitable</h2>
+      <div
+        className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mt-5 flex max-md:m-3 rounded-xl justify-center text-lg font-bold p-5`}
+      >
+        <h2>{reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}</h2>
       </div>
       {/* download */}
       <div className="my-10 md:mt-20 flex justify-center items-center">

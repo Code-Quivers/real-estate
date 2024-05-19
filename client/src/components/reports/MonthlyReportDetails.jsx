@@ -114,8 +114,10 @@ const MonthlyReportDetails = ({ reportData }) => {
               </div>
             </div>
           </div>
-          <div className="     border  rounded-lg bg-white pt-2 mt-6">
-            <h2 className="   text-green-500 mb-3  text-center">{"You're"} Profitable</h2>
+          <div className="border rounded-lg bg-white pt-2 mt-6">
+            <h2 className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mb-3  text-center font-semibold`}>
+              {reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}
+            </h2>
           </div>
         </div>
       </div>
