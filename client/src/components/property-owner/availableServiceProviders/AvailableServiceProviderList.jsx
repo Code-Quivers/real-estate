@@ -149,19 +149,19 @@ const AvailableServiceProviderList = ({ singleReq, children }) => {
                       <div key={Math.random()}>
                         <button
                           onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
-                          className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                          className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                         >
-                          <div>
+                          <div className="col-span-1 h-full">
                             <Image
-                              width={120}
-                              height={120}
-                              className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                              width={300}
+                              height={300}
+                              className="h-full w-full p-1 object-cover rounded-xl"
                               src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                               alt="photo"
                             />
                           </div>
-                          <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                            <h3>${singleUnit?.monthlyRent}</h3>
+                          <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                            <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                             <h3>
                               {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
                             </h3>

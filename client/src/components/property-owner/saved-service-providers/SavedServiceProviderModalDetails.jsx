@@ -3,7 +3,7 @@
 import { fileUrlKey } from "@/configs/envConfig";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Avatar, Drawer, Modal, Notification, Placeholder, Popover, Whisper, useToaster } from "rsuite";
+import { Avatar, Drawer, Modal, Notification, Placeholder, Popover, Whisper, useMediaQuery, useToaster } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
@@ -12,6 +12,7 @@ import Score from "@/components/Shared/Score/Score";
 
 const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
+  const [isMobile] = useMediaQuery("(max-width: 640px)");
   const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
   const [open, setOpen] = useState(false);
   const handleCloseRemove = () => setOpen(false);
@@ -63,55 +64,40 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
   }, [isLoadingAssign, isErrorAssign, isSuccessAssign, errorAssign, toaster]);
   return (
     <>
-      <Drawer placement="right" size="xs" open={isModalOpened} onClose={handleClose}>
+      <Drawer placement={isMobile ? "bottom" : "right"} size={isMobile ? "lg" : "xs"} open={isModalOpened} onClose={handleClose}>
         <Drawer.Header>
           <Drawer.Title>Service Provider Details</Drawer.Title>
         </Drawer.Header>
         <Drawer.Body style={{ padding: 0 }}>
-          <div className="py-3 px-1">
+          <div className="py-3">
             {/* top items */}
-            <div className="flex items-start justify-between">
-              {modalData?.serviceProvider?.profileImage ? (
-                <Image
-                  width={100}
-                  height={100}
-                  className="w-[90px] h-[90px] p-3 object-cover rounded-full  "
-                  src={modalData?.serviceProvider?.profileImage ? `${fileUrlKey()}/${modalData?.serviceProvider?.profileImage}` : profileLogo}
-                  alt="Profile Photo"
-                />
-              ) : (
-                <div className="p-3">
-                  <Avatar circle size="lg" />
-                </div>
-              )}
+            <div>
+              <div className="flex items-start justify-between">
+                {modalData?.serviceProvider?.profileImage ? (
+                  <Image
+                    width={100}
+                    height={100}
+                    className="w-[90px] h-[90px] p-3 object-cover rounded-full  "
+                    src={modalData?.serviceProvider?.profileImage ? `${fileUrlKey()}/${modalData?.serviceProvider?.profileImage}` : profileLogo}
+                    alt="Profile Photo"
+                  />
+                ) : (
+                  <div className="p-3">
+                    <Avatar circle size="lg" />
+                  </div>
+                )}
 
-              <div className="mr-4 mt-4">
-                <Score score={modalData?.serviceProvider?.scoreRatio?.score} total={modalData?.serviceProvider?.scoreRatio?.total} />
+                <div className="mr-4 mt-4">
+                  <Score score={modalData?.serviceProvider?.scoreRatio?.score} total={modalData?.serviceProvider?.scoreRatio?.total} />
+                </div>
               </div>
+              <h2 className="text-sm px-3  text-primary font-bold">
+                {modalData?.serviceProvider?.firstName} {modalData?.serviceProvider?.lastName}
+              </h2>
             </div>
-            {/*  */}
+            {/* service provider information */}
             <div>
               <div className="px-3 space-y-0.5  ">
-                <h2 type="button" className="text-sm  text-primary cursor-pointer font-bold">
-                  {modalData?.serviceProvider?.firstName} {modalData?.serviceProvider?.lastName}
-                </h2>
-                <h3 className="text-sm font-medium">Company Name : {modalData?.serviceProvider?.companyName}</h3>
-                <h3 className="text-sm font-medium">
-                  Phone Number : {modalData?.serviceProvider?.phoneNumber ? modalData?.serviceProvider?.phoneNumber.replace(/\d/g, "X") : "N/A"}
-                </h3>
-                <h3 className="text-sm font-medium">
-                  Company Name : {modalData?.serviceProvider?.companyName ? modalData?.serviceProvider?.companyName : "N/A"}
-                </h3>
-                <h3 className="text-sm font-medium">
-                  Company Phone Number :{" "}
-                  {modalData?.serviceProvider?.companyPhoneNumber ? modalData?.serviceProvider?.companyPhoneNumber.replace(/\d/g, "X") : "N/A"}
-                </h3>
-                <h3 className="text-sm font-medium">
-                  Company Email : {modalData?.serviceProvider?.companyEmailAddress ? modalData?.serviceProvider?.companyEmailAddress : "N/A"}
-                </h3>
-                <h3 className="text-sm font-medium">
-                  Company Address : {modalData?.serviceProvider?.companyAddress ? modalData?.serviceProvider?.companyAddress : "N/A"}
-                </h3>
                 <h3 className="text-sm font-medium">
                   Service Type :{" "}
                   {modalData?.serviceProvider?.Service?.serviceType
@@ -121,7 +107,6 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                         .replace(/\b\w/g, (c) => c.toUpperCase())
                     : "N/A"}
                 </h3>
-
                 <h3 className="text-sm font-medium">
                   Priority Type :{" "}
                   {modalData?.serviceProvider?.Service?.serviceAvailability
@@ -167,19 +152,19 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                             <div key={Math.random()}>
                               <button
                                 onClick={() => handleAddServiceProviderToProperty(singleDetail?.serviceProviderId)}
-                                className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                                className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                               >
-                                <div>
+                                <div className="col-span-1 h-full ">
                                   <Image
-                                    width={100}
-                                    height={100}
-                                    className="!w-[100px] !h-[100px]   p-1 object-cover rounded-xl"
+                                    width={500}
+                                    height={500}
+                                    className="w-full h-full p-1 object-cover rounded-xl"
                                     src={singleDetail?.images?.length ? `${fileUrlKey()}/${singleDetail?.images[0]}` : profileLogo}
                                     alt="photo"
                                   />
                                 </div>
-                                <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                                  <h3>${singleDetail?.monthlyRent}</h3>
+                                <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                                  <h3 className="font-semibold">${singleDetail?.monthlyRent?.toLocaleString()}</h3>
                                   <h3>
                                     {singleDetail?.numOfBed} Beds {singleDetail?.numOfBath} Bath
                                   </h3>
@@ -214,8 +199,25 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                 </Whisper>
               </div>
             </div>
+            {/* company information */}
+            <div className="border shadow-sm text-sm mx-3 p-2 rounded-md">
+              <h1 className="font-semibold">Company Information</h1>
+              <h3 className="text-sm font-medium">Name: {modalData?.serviceProvider?.companyName}</h3>
+              {/* <h3 className="text-sm font-medium">
+                Phone Number : {modalData?.serviceProvider?.phoneNumber ? modalData?.serviceProvider?.phoneNumber.replace(/\d/g, "X") : "N/A"}
+              </h3> */}
+              <h3 className="text-sm font-medium">
+                Company Phone: {modalData?.serviceProvider?.companyPhoneNumber ? modalData?.serviceProvider?.companyPhoneNumber : "N/A"}
+              </h3>
+              <h3 className="text-sm font-medium">
+                Address: {modalData?.serviceProvider?.companyAddress ? modalData?.serviceProvider?.companyAddress : "N/A"}
+              </h3>
+              <h3 className="text-sm font-medium">
+                Email : {modalData?.serviceProvider?.companyEmailAddress ? modalData?.serviceProvider?.companyEmailAddress : "N/A"}
+              </h3>
+            </div>
             {/* bottom items */}
-            <div className="space-y-5  border-t pt-1 px-3">
+            <div className="space-y-5 border-t pt-1 px-3 my-5">
               <div className="">
                 <h4 className="text-sm font-medium">Description</h4>
                 <p className="text-sm text-justify ">

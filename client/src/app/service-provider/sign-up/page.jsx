@@ -3,7 +3,7 @@
 import serviceProviderSignUpImage from "@/assets/loginPage/service_provider_sign_up.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Notification, useToaster } from "rsuite";
+import { Button, Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -252,15 +252,23 @@ const ServiceProviderSignUpPage = () => {
 
             {/* password requirement */}
 
-            <div className="h-16 mt-5 text-xs font-medium text-white">
-              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            <div className="h-16 mt-3 text-xs font-medium text-white">
+              {errors?.password?.type === "pattern" && <p className="text-red-500 rounded-md">{errors?.password?.message}</p>}
             </div>
 
-            <div className=" flex justify-center">
-              <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
-                Sign Up
-              </Button>
-            </div>
+            {isLoading ? (
+              <button
+                type="button"
+                disabled={isLoading}
+                className="w-full py-3 rounded-md disabled:cursor-not-allowed disabled:opacity-70 bg-primary"
+              >
+                <Loader size="sm" className="align-middle" />
+              </button>
+            ) : (
+              <button type="submit" className="w-full py-3 rounded-md bg-primary text-white">
+                Sign in
+              </button>
+            )}
           </form>
         </div>
         {/* login and reset buttons */}

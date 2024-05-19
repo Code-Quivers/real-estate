@@ -6,13 +6,14 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Avatar, Drawer, Notification, Placeholder, Popover, Whisper, useToaster } from "rsuite";
+import { Avatar, Drawer, Notification, Placeholder, Popover, Whisper, useMediaQuery, useToaster } from "rsuite";
 import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 import Score from "@/components/Shared/Score/Score";
 
 const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
+  const [isMobile] = useMediaQuery("(max-width: 640px)");
   const toaster = useToaster();
 
   const [saveServiceProvider, { isSuccess, isLoading, isError, error, reset }] = useSaveItemMutation();
@@ -110,7 +111,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
 
   return (
     <>
-      <Drawer placement="right" size="xs" open={isModalOpened} onClose={handleClose}>
+      <Drawer placement={isMobile ? "bottom" : "right"} size={isMobile ? "lg" : "xs"} open={isModalOpened} onClose={handleClose}>
         <Drawer.Header>
           <Drawer.Title>Service Provider Details</Drawer.Title>
         </Drawer.Header>
@@ -144,46 +145,31 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                   <Score score={modalData?.scoreRatio?.score} total={modalData?.scoreRatio?.total} />
                 </div>
               </div>
-
-              <div>
-                <div className="px-3 space-y-0.5  ">
-                  <h2 type="button" className="text-sm  text-primary cursor-pointer font-bold">
-                    {modalData?.firstName} {modalData?.lastName}
-                  </h2>
-                  <h3 className="text-sm font-medium">
-                    Phone Number : {modalData?.phoneNumber ? modalData?.phoneNumber?.replace(/\d/g, "X") : "N/A"}
-                  </h3>
-                  <h3 className="text-sm font-medium">Company Name : {modalData?.companyName ? modalData?.companyName : "N/A"}</h3>
-                  <h3 className="text-sm font-medium">
-                    Company Phone Number : {modalData?.companyPhoneNumber ? modalData?.companyPhoneNumber : "N/A"}
-                  </h3>
-                  <h3 className="text-sm font-medium">Company Email : {modalData?.companyEmailAddress}</h3>
-                  <h3 className="text-sm font-medium">Company Address : {modalData?.companyAddress ? modalData?.companyAddress : "N/A"}</h3>
-                  <h3 className="text-sm font-medium">
-                    Service Type :{" "}
-                    {modalData?.Service?.serviceType
-                      ? modalData?.Service?.serviceType
-                          .replace(/_/g, " ")
-                          .toLowerCase()
-                          .replace(/\b\w/g, (c) => c.toUpperCase())
-                      : "N/A"}
-                  </h3>
-
-                  <h3 className="text-sm font-medium">
-                    Priority Type :{" "}
-                    {modalData?.Service?.serviceAvailability
-                      ? modalData?.Service?.serviceAvailability
-                          .replace(/_/g, " ")
-                          .toLowerCase()
-                          .replace(/\b\w/g, (c) => c.toUpperCase())
-                      : "N/A"}
-                  </h3>
-                  <h3 className="text-sm font-medium">
-                    Service Price Range : $ {modalData?.Service?.minPrice ? modalData?.Service?.minPrice?.toLocaleString() : "0"} - ${" "}
-                    {modalData?.Service?.maxPrice ? modalData?.Service?.maxPrice?.toLocaleString() : "0"}
-                  </h3>
-                </div>
-              </div>
+              <h2 className="text-sm text-primary font-bold">
+                {modalData?.firstName} {modalData?.lastName}
+              </h2>
+              <h3 className="text-sm">
+                Service Type :
+                {modalData?.Service?.serviceType
+                  ? modalData?.Service?.serviceType
+                      .replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/\b\w/g, (c) => c.toUpperCase())
+                  : "N/A"}
+              </h3>
+              <h3 className="text-sm">
+                Service Price Range: ${modalData?.Service?.minPrice ? modalData?.Service?.minPrice?.toLocaleString() : "0"} - $
+                {modalData?.Service?.maxPrice ? modalData?.Service?.maxPrice?.toLocaleString() : "0"}
+              </h3>
+              <h3 className="text-sm">
+                Priority Type:{" "}
+                {modalData?.Service?.serviceAvailability
+                  ? modalData?.Service?.serviceAvailability
+                      .replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/\b\w/g, (c) => c.toUpperCase())
+                  : "N/A"}
+              </h3>
             </div>
           </div>
           {/* buttons */}
@@ -211,25 +197,25 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                     <div className="p-3 space-y-2">
                       {!isLoadingUnits &&
                         unitRes?.data?.length > 0 &&
-                        unitRes?.data?.map((singleUnit) => (
-                          <div key={Math.random()}>
+                        unitRes?.data?.map((singleUnit, index) => (
+                          <div key={index}>
                             <button
                               onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
-                              className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                              className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                             >
-                              <div>
+                              <div className="col-span-1 h-full">
                                 <Image
-                                  width={120}
-                                  height={120}
-                                  className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
+                                  width={500}
+                                  height={500}
+                                  className="h-full w-full p-1 object-cover rounded-xl"
                                   src={singleUnit?.images?.length && `${fileUrlKey()}/${singleUnit?.images[0]}`}
                                   alt="photo"
                                 />
                               </div>
-                              <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                                <h3>${singleUnit?.monthlyRent}</h3>
+                              <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                                <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                                 <h3>
-                                  {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
+                                  {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                                 </h3>
                                 <h3>{singleUnit?.address}</h3>
                               </div>
@@ -262,9 +248,20 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
               </Whisper>
             </div>
           </div>
+          {/* company information */}
+          <div>
+            <div className="border shadow-sm text-sm mx-3 p-2 rounded-md">
+              <h1 className="font-semibold">Company Information</h1>
+              <h3>Name: {modalData?.companyName ? modalData?.companyName : "N/A"}</h3>
+              {/* <h3>Phone Number : {modalData?.phoneNumber ? modalData?.phoneNumber?.replace(/\d/g, "X") : "N/A"}</h3> */}
+              <h3>Company Phone: {modalData?.companyPhoneNumber ? modalData?.companyPhoneNumber : "N/A"}</h3>
+              <h3>Address: {modalData?.companyAddress ? modalData?.companyAddress : "N/A"}</h3>
+              <h3>Email: {modalData?.companyEmailAddress ? modalData?.companyEmailAddress : "N/A"}</h3>
+            </div>
+          </div>
           {/* middle item */}
-          <div className="space-y-5  border-t pt-2 ml-5 sm:ml-0 px-3">
-            <div className="">
+          <div className="space-y-5  border-t my-4 ml-5 sm:ml-0 px-3">
+            <div className="mt-3">
               <h4 className="text-sm font-medium">Description</h4>
               <p className="text-sm text-justify ">{modalData?.Service?.serviceDescription}</p>
             </div>
