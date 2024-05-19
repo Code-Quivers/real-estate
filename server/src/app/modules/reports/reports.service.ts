@@ -284,7 +284,7 @@ const getReportDetails = async (reportId: string, propertyOwnerId: string): Prom
 };
 
 // ! update report data
-const updateReportData = async (
+const updateAnnualOrMonthly = async (
   reportId: string,
   propertyOwnerId: string,
   payload: IUpdateMonthlyOrAnnualReport,
@@ -334,11 +334,57 @@ const updateReportData = async (
   return res;
 };
 
+// ! update tax Document data
+const updateAnnualTaxDocument = async (
+  reportId: string,
+  propertyOwnerId: string,
+  req: Request,
+): Promise<Partial<Report>> => {
+  const file = req.file as IUploadFile;
+  const filePath = file?.path?.substring(13);
+
+  const res = await prisma.$transaction(async (transactionClient) => {
+    // checking if exist report
+
+    const isExistReport = await transactionClient.report.findUnique({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+    });
+    if (!isExistReport) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Report Not Found");
+    }
+
+    // updating
+
+    const newData = {
+      reportTitle: `Annual Tax Document`,
+      documentFile: filePath,
+    };
+
+    const result = await transactionClient.report.update({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+      data: newData,
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Update Report");
+    }
+    return result;
+  });
+  return res;
+};
+
 export const ReportsService = {
   addMonthlyOrAnnualReport,
   addAnnualTaxDocument,
   generateTenantInfoReport,
   getPropertyOwnerReports,
   getReportDetails,
-  updateReportData,
+  updateAnnualOrMonthly,
+  updateAnnualTaxDocument,
 };

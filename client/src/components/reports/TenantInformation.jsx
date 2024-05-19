@@ -1,10 +1,10 @@
+"use client";
 import { fileUrlKey } from "@/configs/envConfig";
-import apartment from "../../assets/propertyOwner/apartment.jpg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaUser } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
-import { Avatar, Button } from "rsuite";
+import { Button } from "rsuite";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
 import jsPDF from "jspdf";
@@ -33,7 +33,7 @@ const TenantInformation = ({ reportData }) => {
     <section className="">
       <div className="grid grid-cols-5 my-3">
         <div className="col-span-2">
-          <button onClick={() => router.back()}>
+          <button onClick={() => router.push("/property-owner/reports")}>
             <IoChevronBack size={24} />
           </button>
         </div>

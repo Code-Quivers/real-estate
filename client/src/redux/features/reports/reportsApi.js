@@ -21,6 +21,7 @@ export const ReportApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.reports, tagTypes.properties],
     }),
+
     generateTenantInformationReport: builder.mutation({
       query: () => ({
         url: `${REPORT_ROUTES}/generate-tenant-info-report`,
@@ -32,6 +33,15 @@ export const ReportApi = baseApi.injectEndpoints({
       query: ({ data }) => ({
         url: `${REPORT_ROUTES}/annual-tax-document-report`,
         method: "POST",
+        data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.reports, tagTypes.properties],
+    }),
+    updateAnnualTaxDocumentData: builder.mutation({
+      query: ({ data, reportId }) => ({
+        url: `${REPORT_ROUTES}/update-tax-document/${reportId}`,
+        method: "PATCH",
         data,
         contentType: "multipart/form-data",
       }),
@@ -62,4 +72,5 @@ export const {
   useAddAnnualTaxDocumentReportMutation,
   useGetPropertyOwnerReportsQuery,
   useGetReportDetailsQuery,
+  useUpdateAnnualTaxDocumentDataMutation,
 } = ReportApi;

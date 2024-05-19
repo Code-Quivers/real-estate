@@ -9,7 +9,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { Button } from "rsuite";
 import { useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import EditMonthlyOrAnnualReportModal from "./EditReportModal";
+import EditMonthlyOrAnnualReportModal from "./EditMonthlyOrAnnualReportModal";
 
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -39,7 +39,10 @@ const MonthlyReportDetails = ({ reportData }) => {
     <section className="max-w-4xl mx-auto">
       <div className="flex gap-3 items-center max-md:p-3">
         <div>
-          <button className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1" onClick={() => router.back()}>
+          <button
+            className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1"
+            onClick={() => router.push("/property-owner/reports")}
+          >
             <IoChevronBack size={24} />
           </button>
         </div>

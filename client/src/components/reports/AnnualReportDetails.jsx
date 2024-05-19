@@ -7,7 +7,7 @@ import { Button } from "rsuite";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import EditMonthlyOrAnnualReportModal from "./EditReportModal";
+import EditMonthlyOrAnnualReportModal from "./EditMonthlyOrAnnualReportModal";
 
 const AnnualReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -38,7 +38,10 @@ const AnnualReportDetails = ({ reportData }) => {
     <section className="max-w-4xl mx-auto  ">
       <div className="flex gap-3 items-center max-md:p-2">
         <div>
-          <button className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1" onClick={() => router.back()}>
+          <button
+            className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1"
+            onClick={() => router.push("/property-owner/reports")}
+          >
             <IoChevronBack size={24} />
           </button>
         </div>
