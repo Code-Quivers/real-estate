@@ -109,8 +109,7 @@ const AvailableUnitsCard = () => {
                 <div>
                   <h2 className="text-sm font-semibold">${unit?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
-                    <span>{unit?.numOfBed ?? "0"} Bed </span>
-                    <span>{unit?.numOfBath ?? "0"} Bath</span>
+                    <span>{unit?.numOfBed ?? "0"} Bed </span> | <span>{unit?.numOfBath ?? "0"} Bath</span>
                   </h2>
                   <h2 className="text-sm">{unit?.address ? unit?.address : "--"}</h2>
                 </div>

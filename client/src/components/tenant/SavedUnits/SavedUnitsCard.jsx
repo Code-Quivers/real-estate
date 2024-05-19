@@ -59,7 +59,7 @@ const SavedUnitsCard = () => {
                 <div>
                   <h2 className="text-sm lg:font-semibold">${unit?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
-                    <span>{unit?.property?.numOfBed ? unit?.property?.numOfBed : "0"} Bed </span>
+                    <span>{unit?.property?.numOfBed ? unit?.property?.numOfBed : "0"} Bed </span> |{" "}
                     <span>{unit?.property?.numOfBath ? unit?.property?.numOfBath : "0"} Bath</span>
                   </h2>
                   <h2 className="text-sm">{unit?.property?.address ? unit?.property?.address : "--"}</h2>
