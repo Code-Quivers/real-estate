@@ -7,8 +7,9 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { IoChevronBack } from "react-icons/io5";
 import { Button } from "rsuite";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
+import EditMonthlyReportModal from "./EditReportModal";
 
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -31,6 +32,9 @@ const MonthlyReportDetails = ({ reportData }) => {
     });
   };
 
+  // !
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const handleCloseEdit = () => setIsOpenEdit(false);
   return (
     <section className="max-w-4xl mx-auto">
       <div className="flex gap-3 items-center max-md:p-3">
@@ -110,7 +114,13 @@ const MonthlyReportDetails = ({ reportData }) => {
               </div>
               <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
                 <h2>Gross Profit</h2>
-                <h2 className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</h2>
+                <h2 className="text-lg font-semibold">
+                  {reportData?.grossProfit !== undefined
+                    ? reportData.grossProfit < 0
+                      ? `-$${Math.abs(reportData.grossProfit).toLocaleString()}`
+                      : `$${reportData.grossProfit.toLocaleString()}`
+                    : null}
+                </h2>
               </div>
             </div>
           </div>
@@ -124,10 +134,15 @@ const MonthlyReportDetails = ({ reportData }) => {
         <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Download
         </Button>
-        <Button type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
+        <Button type="button" onClick={() => setIsOpenEdit(true)} size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Edit
         </Button>
       </div>
+
+      <>
+        {/* edit modal */}
+        <EditMonthlyReportModal isOpen={isOpenEdit} handleClose={handleCloseEdit} reportData={reportData} />
+      </>
     </section>
   );
 };

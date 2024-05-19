@@ -72,6 +72,20 @@ const getReportDetails = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! update report details
+const updateReportData = catchAsync(async (req: Request, res: Response) => {
+  //
+  const reportId = req.params.reportId;
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.updateReportData(reportId, propertyOwnerId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Updated",
+    data: result,
+  });
+});
 
 export const ReportsController = {
   addMonthlyOrAnnualReport,
@@ -79,4 +93,5 @@ export const ReportsController = {
   generateTenantInfoReport,
   getPropertyOwnerReports,
   getReportDetails,
+  updateReportData,
 };

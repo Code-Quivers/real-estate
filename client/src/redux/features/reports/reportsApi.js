@@ -13,6 +13,14 @@ export const ReportApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.reports, tagTypes.properties],
     }),
+    updateMonthlyOrAnnualReportData: builder.mutation({
+      query: ({ data, reportId }) => ({
+        url: `${REPORT_ROUTES}/report-update/${reportId}`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: [tagTypes.reports, tagTypes.properties],
+    }),
     generateTenantInformationReport: builder.mutation({
       query: () => ({
         url: `${REPORT_ROUTES}/generate-tenant-info-report`,
@@ -49,6 +57,7 @@ export const ReportApi = baseApi.injectEndpoints({
 
 export const {
   useAddNewMonthlyOrAnnualReportMutation,
+  useUpdateMonthlyOrAnnualReportDataMutation,
   useGenerateTenantInformationReportMutation,
   useAddAnnualTaxDocumentReportMutation,
   useGetPropertyOwnerReportsQuery,
