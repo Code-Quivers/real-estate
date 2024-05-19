@@ -147,10 +147,10 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                               alt="photo"
                             />
                           </div>
-                          <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium col-span-2 ml-3">
-                            <h3>${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                          <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                            <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                             <h3>
-                              {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
+                              {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                             </h3>
                             <h3>{singleUnit?.address || "N/A"}</h3>
                           </div>
