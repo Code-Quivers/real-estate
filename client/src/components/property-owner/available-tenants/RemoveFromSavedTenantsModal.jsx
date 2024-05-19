@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { CgClose } from "react-icons/cg";
 import { Button, Notification, useToaster } from "rsuite";
 
-const RemoveFromAvailableTenantsModal = ({ modalData, handleClose, handleCloseDrawer }) => {
+const RemoveFromAvailableTenantsModal = ({ modalData, handleClose }) => {
   const [removeFromSavedItem, { isLoading, isSuccess, isError, error, reset }] = useRemoveFromSavedItemMutation();
   const toaster = useToaster();
   const handleRemoveFromSavedItem = async (itemId) => {
@@ -30,7 +30,6 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose, handleCloseDr
       );
       reset();
       handleClose();
-      handleCloseDrawer();
     }
 
     if (!isLoading && isError && !isSuccess && error) {
@@ -45,7 +44,6 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose, handleCloseDr
       );
       reset();
       handleClose();
-      handleCloseDrawer();
     }
   }, [isLoading, isError, isSuccess, error]);
   return (
@@ -55,7 +53,6 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose, handleCloseDr
         <button
           onClick={() => {
             handleClose();
-            handleCloseDrawer();
             reset();
           }}
           className=" px-2 hover:text-white/90 py-1  text-white"
@@ -91,7 +88,6 @@ const RemoveFromAvailableTenantsModal = ({ modalData, handleClose, handleCloseDr
         <button
           onClick={() => {
             handleClose();
-            handleCloseDrawer();
             reset();
           }}
           className="border text-sm py-2 hover:bg-slate-100 rounded-md px-3"
