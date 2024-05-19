@@ -36,8 +36,8 @@ const AvailableServiceProviders = () => {
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [sortBy, setSortBy] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
+  // const [sortBy, setSortBy] = useState("");
+  // const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedServiceAvailability, setSelectedServiceAvailability] = useState(undefined);
   const [selectedServiceType, setSelectedServiceType] = useState(undefined);
@@ -45,8 +45,8 @@ const AvailableServiceProviders = () => {
   // filter
   query["limit"] = size;
   query["page"] = page;
-  query["sortBy"] = sortBy;
-  query["sortOrder"] = sortOrder;
+  // query["sortBy"] = sortBy;
+  // query["sortOrder"] = sortOrder;
   query["serviceAvailability"] = selectedServiceAvailability;
   query["serviceType"] = selectedServiceType;
 
@@ -84,7 +84,7 @@ const AvailableServiceProviders = () => {
           <SelectPicker
             placement="bottomEnd"
             size="lg"
-            // searchable={false}
+            searchable={false}
             className="w-full"
             placeholder="Service Type"
             onChange={(value) => setSelectedServiceType(value)}
