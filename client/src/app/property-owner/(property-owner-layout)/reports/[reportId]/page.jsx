@@ -15,8 +15,8 @@ const TenantInformationReportPage = ({ params }) => {
     },
   );
   return (
-    <section className="max-w-5xl min-h-screen mb-5 mx-auto md:px-3 lg:px-5 px-2 2xl:px-0">
-      <div className=" flex justify-center my-2">
+    <section className="max-w-5xl min-h-screen lg:mb-5 mx-auto md:px-3 lg:px-5 px-2 2xl:px-0">
+      <div className=" flex justify-center my-2 max-md:hidden">
         <h2>Reports</h2>
       </div>
       {/* if report type is tenant_info */}

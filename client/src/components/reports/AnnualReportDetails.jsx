@@ -35,7 +35,7 @@ const AnnualReportDetails = ({ reportData }) => {
   const handleCloseEdit = () => setIsOpenEdit(false);
 
   return (
-    <section className="max-w-4xl mx-auto">
+    <section className="max-w-4xl mx-auto  ">
       <div className="flex gap-3 items-center max-md:p-2">
         <div>
           <button className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1" onClick={() => router.back()}>
