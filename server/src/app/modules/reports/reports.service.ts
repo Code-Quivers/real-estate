@@ -180,7 +180,7 @@ const getPropertyOwnerReports = async (
   propertyOwnerId: string,
 ): Promise<IGenericResponse<Report[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, startDate, endDate, ...filterData } = filters;
   //
   const andConditions = [];
   if (searchTerm) {
@@ -191,6 +191,16 @@ const getPropertyOwnerReports = async (
           mode: "insensitive",
         },
       })),
+    });
+  }
+
+  //
+  if (startDate && endDate) {
+    andConditions.push({
+      createdAt: {
+        gte: startDate, // Greater than or equal to startDate
+        lte: endDate, // Less than or equal to endDate
+      },
     });
   }
   //

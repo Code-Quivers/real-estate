@@ -2,39 +2,65 @@
 import AddReportFormModal from "@/components/reports/AddReportFormModal";
 import SingleReport from "@/components/reports/SingleReport";
 import { fileUrlKey } from "@/configs/envConfig";
+import { reportType } from "@/constants/selectPicker.const";
 import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import { useGetPropertyOwnerReportsQuery } from "@/redux/features/reports/reportsApi";
 import Image from "next/image";
 import { useState } from "react";
-import { Button, DateRangePicker, SelectPicker } from "rsuite";
-
-const reportType = [
-  {
-    label: "Monthly",
-    value: "MONTHLY",
-  },
-  {
-    label: "Annual",
-    value: "ANNUALLY",
-  },
-  {
-    label: "Tenant Information",
-    value: "TENANT_INFO",
-  },
-  {
-    label: "Tax",
-    value: "TAX",
-  },
-].map((item) => ({ label: item.label, value: item.value }));
+import { Button, DateRangePicker, Placeholder, SelectPicker } from "rsuite";
 
 const PropertyOwnerReportPage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const handleClose = () => setIsOpenAdd(false);
+  // filter
   const query = {};
-  const [selectedProperty, setSelectedProperty] = useState("");
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [selectedReportType, setSelectedReportType] = useState(null);
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: "",
+    endDate: "",
+  });
 
-  const { data, isLoading } = useGetPropertyOwnerReportsQuery();
+  query["propertyId"] = selectedProperty;
+  query["reportType"] = selectedReportType;
+  query["startDate"] = selectedDate.startDate;
+  query["endDate"] = selectedDate.endDate;
+
+  // !
+  const { data, isLoading } = useGetPropertyOwnerReportsQuery({ ...query });
   const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
+
+  //
+
+  const handleFilterDate = (date) => {
+    if (!date?.length) {
+      setSelectedDate({
+        startDate: "",
+        endDate: "",
+      });
+    }
+
+    if (date) {
+      const startDate = new Date(date[0]);
+      const endDate = new Date(date[1]);
+
+      // Set the start time to 00:00:00 (12:00 AM)
+      startDate.setHours(0, 0, 0, 0);
+
+      // Set the end time to 23:59:59 (11:59 PM)
+      endDate.setHours(23, 59, 59, 999);
+
+      const formattedStartDate = startDate.toISOString();
+      const formattedEndDate = endDate.toISOString();
+
+      if (startDate !== null && endDate !== null) {
+        setSelectedDate({
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        });
+      }
+    }
+  };
 
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5 2xl:px-0 ">
@@ -45,11 +71,21 @@ const PropertyOwnerReportPage = () => {
       {/* filters */}
       <div className="grid md:grid-cols-3 gap-2">
         <div className="">
-          <SelectPicker size="lg" data={reportType} searchable={false} placeholder="Report Type" className="!w-full" />
+          <SelectPicker
+            size="lg"
+            data={reportType}
+            searchable={false}
+            placeholder="Report Type"
+            onChange={(e) => setSelectedReportType(e)}
+            onClean={() => setSelectedProperty(null)}
+            className="!w-full"
+          />
         </div>
         <div className="">
           <SelectPicker
             size="lg"
+            onChange={(e) => setSelectedProperty(e)}
+            onClean={() => setSelectedProperty(null)}
             data={
               myUnitsData?.data?.map((item) => ({
                 label: item?.title,
@@ -66,6 +102,7 @@ const PropertyOwnerReportPage = () => {
             }
             searchable={false}
             placeholder="Property"
+            loading={isLoadingMyUnits}
             className="!w-full"
             renderMenuItem={(value, item) => {
               return (
@@ -98,7 +135,9 @@ const PropertyOwnerReportPage = () => {
             placement="bottomEnd"
             showOneCalendar
             size="lg"
-            data={reportType}
+            onChange={(value) => {
+              handleFilterDate(value);
+            }}
             searchable={false}
             placeholder="Time Frame"
             className="!w-full"
@@ -107,7 +146,11 @@ const PropertyOwnerReportPage = () => {
       </div>
 
       <div className="mt-5">
-        <Button onClick={() => setIsOpenAdd(true)} className="!bg-[#29429f] hover:!bg-primary/80 !text-white !px-10 !py-3 !rounded-full max-md:!w-full" size="lg">
+        <Button
+          onClick={() => setIsOpenAdd(true)}
+          className="!bg-[#29429f] hover:!bg-primary/80 !text-white !px-10 !py-3 !rounded-full max-md:!w-full"
+          size="lg"
+        >
           Add Report
         </Button>
       </div>
@@ -126,6 +169,14 @@ const PropertyOwnerReportPage = () => {
           {!isLoading && !data?.data?.data?.length && (
             <div className="flex justify-center items-center min-h-[20vh]">
               <h2 className="font-medium">No Reports Found !</h2>
+            </div>
+          )}
+          {isLoading && (
+            <div className="space-y-2">
+              <Placeholder.Graph active height={85} />
+              <Placeholder.Graph active height={85} />
+              <Placeholder.Graph active height={85} />
+              <Placeholder.Graph active height={85} />
             </div>
           )}
         </div>

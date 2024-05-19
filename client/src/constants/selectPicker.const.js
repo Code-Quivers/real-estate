@@ -20,3 +20,21 @@ export const pricePicker = [
   label: item.label,
   value: item.value,
 }));
+export const reportType = [
+  {
+    label: "Monthly",
+    value: "MONTHLY",
+  },
+  {
+    label: "Annual",
+    value: "ANNUALLY",
+  },
+  {
+    label: "Tenant Information",
+    value: "TENANT_INFO",
+  },
+  {
+    label: "Tax",
+    value: "TAX",
+  },
+].map((item) => ({ label: item.label, value: item.value }));
