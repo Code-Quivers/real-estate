@@ -46,47 +46,61 @@ const MaintenanceRequest = () => {
 
   return (
     <>
-      <section className="max-w-[1050px]  mb-5 mt-14 2xl:mx-auto lg:px-5    2xl:px-0 ">
+      <section className="max-w-5xl  mb-5 mt-14 mx-auto lg:px-5 2xl:px-0 ">
         <div className="flex justify-center">
           <h2 className="text-4xl ">Maintenance Request</h2>
         </div>
         {/* requests */}
 
         {!isLoading && (
-          <div className="mt-10  space-y-5">
+          <div className="mt-10 grid mx-3 lg:mx-0 gap-5">
             {maintenanceReq?.data?.length > 0 &&
-              maintenanceReq?.data?.map((singleReq) => (
-                <div className="border grid grid-cols-9 items-center border-[#acacac]  gap-6" key={Math.random()}>
-                  <div className="col-span-8 flex gap-6">
-                    <div className="border border-[#acacac]">
+              maintenanceReq?.data?.map((singleReq, index) => (
+                <div className="border grid grid-cols-12 bg-white rounded-md p-2" key={index}>
+                  {console.log(singleReq)}
+                  <div className=" gap-6 lg:col-span-5 col-span-12">
+                    <div className="">
                       <Image
-                        className="w-[500px] h-[250px] object-cover object-left"
+                        className="h-[200px] object-cover rounded-md w-full"
                         alt="photo"
-                        width={500}
+                        width={800}
                         height={250}
                         src={singleReq?.property?.images?.length > 0 ? `${fileUrlKey()}/${singleReq?.property?.images[0]}` : ""}
                       />
                     </div>
-                    <div className="p-5 flex justify-between w-full ">
-                      <div className="space-y-3">
-                        <h3 className="text-xl font-medium">
-                          Home Owner Name : {singleReq?.owner?.firstName} {singleReq?.owner?.lastName}{" "}
-                        </h3>
-                        <h3 className="text-xl font-medium">Issue Location : {singleReq.issueLocation}</h3>
-                        <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3>
-                        <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3>
-                      </div>
-                      <div></div>
-                    </div>
                   </div>
-                  <div className="col-span-1 space-y-3">
-                    {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
+                  <div className="lg:col-span-7 col-span-12 lg:px-4 py-2 w-full flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium">
+                          Owner: {singleReq?.owner?.firstName} {singleReq?.owner?.lastName}{" "}
+                        </h3>
+                        <h3 className="font-medium text-xs px-3 py-1 bg-[#868E96] text-white rounded-full">{getType(singleReq?.priority)}</h3>
+                      </div>
+                      <h3 className="font-medium">Issue Location : {singleReq?.issueLocation}</h3>
+                      <h3 className="font-medium">
+                        Issue Type :{" "}
+                        {singleReq?.issueType
+                          ? singleReq?.issueType?.replace(/_/g, " ").charAt(0).toUpperCase() +
+                            singleReq?.issueType?.replace(/_/g, " ").slice(1).toLowerCase()
+                          : "N/A"}
+                      </h3>
+                    </div>
 
-                    <Button onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)} className="!bg-primary !px-3 !py-2 !text-white">
-                      Accept
-                    </Button>
-                    <Button className="!bg-primary !px-3 !py-2 !text-white">Reject</Button>
-                    <Button className="!bg-primary !px-3 !py-2 !text-white">Contact</Button>
+                    {/* <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3> */}
+
+                    <div className="flex gap-2 max-lg:mt-3">
+                      {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
+
+                      <Button
+                        onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)}
+                        className="!bg-primary !px-3 !py-2 !text-white w-full"
+                      >
+                        Accept
+                      </Button>
+                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Reject</Button>
+                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button>
+                    </div>
                   </div>
                 </div>
               ))}
