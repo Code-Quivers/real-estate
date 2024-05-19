@@ -36,3 +36,9 @@ export type IAddAnnuallyReport = {
 export type IAddAnnualTaxDocument = {
   reportType: ReportType;
 };
+
+export type IUpdateMonthlyOrAnnualReport = {
+  collectedRent?: number;
+  expenses?: number;
+  grossProfit?: number;
+};

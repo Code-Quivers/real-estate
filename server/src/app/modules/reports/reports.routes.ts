@@ -32,7 +32,15 @@ router.post("/generate-tenant-info-report", auth(UserRoles.PROPERTY_OWNER), Repo
 
 // ! get property owner reports
 router.get("/property-owner-reports", auth(UserRoles.PROPERTY_OWNER), ReportsController.getPropertyOwnerReports);
-//
+// ! get single report details
 router.get("/report-details/:reportId", auth(UserRoles.PROPERTY_OWNER), ReportsController.getReportDetails);
+
+// ! update report info
+router.patch(
+  "/report-update/:reportId",
+  auth(UserRoles.PROPERTY_OWNER),
+  validateRequest(ReportsValidation.updateReportData),
+  ReportsController.updateReportData,
+);
 
 export const ReportsRoutes = router;
