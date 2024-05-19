@@ -40,7 +40,18 @@ router.patch(
   "/report-update/:reportId",
   auth(UserRoles.PROPERTY_OWNER),
   validateRequest(ReportsValidation.updateReportData),
-  ReportsController.updateReportData,
+  ReportsController.updateAnnualOrMonthly,
+);
+
+// ! update annual tax document
+
+router.patch(
+  "/update-tax-document/:reportId",
+  auth(UserRoles.PROPERTY_OWNER),
+  TaxDocumentFileUploadHelper.uploadTaxDocumentPdf.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    return ReportsController.updateAnnualTaxDocument(req, res, next);
+  },
 );
 
 export const ReportsRoutes = router;

@@ -1,6 +1,6 @@
 "use client";
 import AnnualReportDetails from "@/components/reports/AnnualReportDetails";
-import AnnualTaxDocument from "@/components/reports/AnnualTaxDocument";
+import AnnualTaxDocument from "@/components/reports/AnnualTaxDocumentDetails";
 import MonthlyReportDetails from "@/components/reports/MonthlyReportDetails";
 import TenantInformation from "@/components/reports/TenantInformation";
 import { useGetReportDetailsQuery } from "@/redux/features/reports/reportsApi";
