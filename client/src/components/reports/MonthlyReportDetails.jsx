@@ -47,7 +47,7 @@ const MonthlyReportDetails = ({ reportData }) => {
       <div className="my-5">
         <div ref={pdfRef} className="md:px-5">
           {/* photo */}
-          <div className="border  rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
+          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
             <div className="md:col-span-2 h-[220px]">
               <Image
                 className="h-full w-full object-cover rounded-md"
@@ -63,7 +63,7 @@ const MonthlyReportDetails = ({ reportData }) => {
                   <div className="space-y-2">
                     <p>${information?.monthlyRent?.toLocaleString()}</p>
                     <p>
-                      {information?.numOfBed} Beds {information?.numOfBath} Baths
+                      {information?.numOfBed} Beds | {information?.numOfBath} Baths
                     </p>
                     <p>{information?.address}</p>
                   </div>
