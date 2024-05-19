@@ -9,7 +9,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { Button } from "rsuite";
 import { useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import EditMonthlyReportModal from "./EditReportModal";
+import EditMonthlyOrAnnualReportModal from "./EditReportModal";
 
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -51,27 +51,26 @@ const MonthlyReportDetails = ({ reportData }) => {
       <div className="my-5">
         <div ref={pdfRef} className="md:px-5">
           {/* photo */}
-          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
-            <div className="md:col-span-2 h-[220px]">
+          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-2 lg:gap-y-5">
+            <div className="md:col-span-2  h-[220px]">
               <Image
                 className="h-full w-full object-cover rounded-md"
                 src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
-                width={800}
-                height={800}
-                alt="apartment"
+                width={600}
+                height={600}
+                alt="Apartment Photo"
               />
             </div>
-            <div className="md:col-span-2 py-6">
+
+            <div className="md:col-span-2 py-2 lg:py-6">
               {reportData?.information?.map((information, index) => (
-                <div key={index} className="space-y-5">
-                  <div className="space-y-2">
-                    <p>${information?.monthlyRent?.toLocaleString()}</p>
-                    <p>
-                      {information?.numOfBed} Beds | {information?.numOfBath} Baths
-                    </p>
-                    <p>{information?.address}</p>
-                  </div>
-                  <div className="border mt-5 bg-gray-50 rounded-xl px-3 py-5 flex gap-3 items-center">
+                <div key={index} className="space-y-1 md:space-y-5">
+                  <p>${information?.monthlyRent.toLocaleString()}</p>
+                  <p>
+                    {information?.numOfBed} Beds | {information?.numOfBath} Baths
+                  </p>
+                  <p>{information?.address}</p>
+                  <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
                     {information?.tenantName ? (
                       <>
                         <div className="rounded-full flex items-center justify-center">
@@ -98,8 +97,8 @@ const MonthlyReportDetails = ({ reportData }) => {
             </div>
           </div>
           {/*  other */}
-          <div className="mt-10">
-            <div className="grid sm:grid-cols-4  gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
+          <div className="lg:mt-10">
+            <div className="grid sm:grid-cols-4  gap-x-4 lg:gap-x-10 gap-y-2.5 md:gap-y-5 max-md:mt-3">
               <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
                 <h2>Monthly Rent</h2>
                 <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
@@ -124,6 +123,7 @@ const MonthlyReportDetails = ({ reportData }) => {
               </div>
             </div>
           </div>
+          {/*  */}
           <div className="border rounded-lg bg-white pt-2 mt-6">
             <h2 className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mb-3  text-center font-semibold`}>
               {reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}
@@ -143,7 +143,7 @@ const MonthlyReportDetails = ({ reportData }) => {
 
       <>
         {/* edit modal */}
-        <EditMonthlyReportModal isOpen={isOpenEdit} handleClose={handleCloseEdit} reportData={reportData} />
+        <EditMonthlyOrAnnualReportModal isOpen={isOpenEdit} handleClose={handleCloseEdit} reportData={reportData} />
       </>
     </section>
   );

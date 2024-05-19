@@ -47,7 +47,9 @@ const addMonthlyOrAnnualReport = async (
         numOfBed: isExistProperty.numOfBed,
         numOfBath: isExistProperty.numOfBath,
         address: isExistProperty.address,
-        tenantName: `${isExistProperty.Tenant?.firstName} ${isExistProperty.Tenant?.lastName}`,
+        tenantName: isExistProperty?.Tenant
+          ? `${isExistProperty.Tenant?.firstName} ${isExistProperty.Tenant?.lastName}`
+          : "",
         tenantPhoto: isExistProperty.Tenant?.profileImage,
         propertyId,
       },
