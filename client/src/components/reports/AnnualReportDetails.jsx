@@ -3,10 +3,11 @@ import Image from "next/image";
 import { FaUser } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
-import { Avatar, Button } from "rsuite";
-import { useRef } from "react";
+import { Button } from "rsuite";
+import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import EditMonthlyOrAnnualReportModal from "./EditReportModal";
 
 const AnnualReportDetails = ({ reportData }) => {
   const router = useRouter();
@@ -28,9 +29,14 @@ const AnnualReportDetails = ({ reportData }) => {
       pdf.save(`${reportData?.reportTitle}.pdf` || "download.pdf");
     });
   };
+
+  // ! for update
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const handleCloseEdit = () => setIsOpenEdit(false);
+
   return (
     <section className="max-w-4xl mx-auto">
-      <div className="flex gap-3 items-center max-md:p-3">
+      <div className="flex gap-3 items-center max-md:p-2">
         <div>
           <button className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1" onClick={() => router.back()}>
             <IoChevronBack size={24} />
@@ -42,10 +48,10 @@ const AnnualReportDetails = ({ reportData }) => {
       </div>
       {/* details */}
 
-      <div className="my-5">
+      <div className="lg:my-5">
         <div ref={pdfRef} className="md:px-5">
-          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-5">
-            <div className="md:col-span-2 h-[220px]">
+          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-2 lg:gap-y-5">
+            <div className="md:col-span-2  h-[220px]">
               <Image
                 className="h-full w-full object-cover rounded-md"
                 src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
@@ -55,9 +61,9 @@ const AnnualReportDetails = ({ reportData }) => {
               />
             </div>
 
-            <div className="md:col-span-2 py-6">
+            <div className="md:col-span-2 py-2 lg:py-6">
               {reportData?.information?.map((information, index) => (
-                <div key={index} className="space-y-5">
+                <div key={index} className="space-y-1 md:space-y-5">
                   <p>${information?.monthlyRent.toLocaleString()}</p>
                   <p>
                     {information?.numOfBed} Beds | {information?.numOfBath} Baths
@@ -89,7 +95,9 @@ const AnnualReportDetails = ({ reportData }) => {
               ))}
             </div>
           </div>
-          <div className="grid sm:grid-cols-4 mt-10 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
+
+          {/*  */}
+          <div className="grid sm:grid-cols-4 mt-10 gap-x-4 lg:gap-x-10 gap-y-2.5 lg:gap-y-5 max-md:mt-3">
             <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
               <h2>Annual Rent</h2>
               <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
@@ -104,7 +112,14 @@ const AnnualReportDetails = ({ reportData }) => {
             </div>
             <div className="col-span-2 flex bg-white items-center justify-between p-3 border rounded-lg">
               <h2>Gross Profit</h2>
-              <p className="text-lg font-semibold">${reportData?.grossProfit?.toLocaleString()}</p>
+
+              <p className="text-lg font-semibold">
+                {reportData?.grossProfit !== undefined
+                  ? reportData.grossProfit < 0
+                    ? `-$${Math.abs(reportData.grossProfit).toLocaleString()}`
+                    : `$${reportData.grossProfit.toLocaleString()}`
+                  : null}
+              </p>
             </div>
           </div>
           <div
@@ -115,14 +130,18 @@ const AnnualReportDetails = ({ reportData }) => {
         </div>
       </div>
       {/* download */}
-      <div className="my-10 md:mt-10 flex justify-between items-center mx-5">
+      <div className="my-5 md:my-10 md:mt-10 flex justify-between items-center mx-5">
         <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Download
         </Button>
-        <Button type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
+        <Button type="button" size="lg" onClick={() => setIsOpenEdit(true)} className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Edit
         </Button>
       </div>
+      <>
+        {/* edit modal */}
+        <EditMonthlyOrAnnualReportModal isOpen={isOpenEdit} handleClose={handleCloseEdit} reportData={reportData} />
+      </>
     </section>
   );
 };

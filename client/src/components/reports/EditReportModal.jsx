@@ -21,8 +21,8 @@ const EditMonthlyOrAnnualReportModal = ({ reportData, isOpen, handleClose }) => 
   // submit
   const handleUpdateReport = async (postData) => {
     const newReportData = {
-      collectedRent: postData?.collectedRent ? parseFloat(postData?.monthlyCollectedRent) : undefined,
-      expenses: postData?.expenses ? parseFloat(postData?.monthlyExpenses) : undefined,
+      collectedRent: postData?.collectedRent ? parseFloat(postData?.collectedRent) : undefined,
+      expenses: postData?.expenses ? parseFloat(postData?.expenses) : undefined,
     };
 
     await updateMonthlyOrAnnualReportData({
@@ -133,7 +133,7 @@ const EditMonthlyOrAnnualReportModal = ({ reportData, isOpen, handleClose }) => 
                 </div>
                 {/* Monthly Expenses */}
                 <div className="space-y-1">
-                  <label htmlFor="expenses">Monthly Expenses</label>
+                  <label htmlFor="expenses"> Expenses</label>
                   <Controller
                     name="expenses"
                     rules={{
