@@ -82,7 +82,7 @@ const TenantSignUp = () => {
         {/* input forms */}
         <div className="w-full max-lg:px-5 lg:w-3/4 mx-auto ">
           <form onSubmit={handleSubmit(handleTenantSignUp)}>
-            <div className="space-y-6 lg:space-y-5">
+            <div className="space-y-5">
               {/* first Name */}
               <div>
                 <Controller
@@ -240,7 +240,7 @@ const TenantSignUp = () => {
               {errors?.password?.type === "pattern" && <p className="text-red-500 py-2 rounded-md">{errors?.password?.message}</p>}
             </div>
 
-            <div className="mt-10 flex justify-center">
+            <div className="mt-2 flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-md !px-8 !py-3 w-full" appearance="default">
                 Sign Up
               </Button>

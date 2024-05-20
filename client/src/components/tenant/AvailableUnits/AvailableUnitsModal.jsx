@@ -9,6 +9,7 @@ import { SaveUnitNotificationError, SaveUnitNotificationSuccess } from "@/compon
 import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 import Score from "@/components/Shared/Score/Score";
 import { CgClose } from "react-icons/cg";
+import AvailableUnitsModalSwiper from "./swiper/AvailableUnitsModalSwiper";
 
 const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
   const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
@@ -55,7 +56,7 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
               appearance="subtle"
               icon={<CgClose className="group-hover:scale-125 group-hover:text-red-600 duration-300 transition-all" size={22} />}
             />
-            <h3>Unit Information Of : {unitInfo?.title}</h3>
+            {/* <h3>Unit Information Of : {unitInfo?.title}</h3> */}
           </div>
         }
         overflow={false}
@@ -71,18 +72,18 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
           }}
         >
           <div>
-            <div className="grid md:grid-cols-12    justify-between   items-stretch  ">
-              <div className="md:col-span-5 md:hidden">
-                <Carousel className="custom-slider max-h-[250px] ">
-                  {unitInfo?.images?.length > 0
-                    ? unitInfo?.images?.map((photo, index) => (
-                        <div key={index}>
-                          <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
-                        </div>
-                      ))
-                    : null}
-                </Carousel>
-              </div>
+            <div className="grid md:grid-cols-12 justify-between items-stretch ">
+              <AvailableUnitsModalSwiper unitImage={unitInfo} />
+              {/* <Carousel className="custom-slider max-h-[250px]">
+                {unitInfo?.images?.length > 0
+                  ? unitInfo?.images?.map((photo, index) => (
+                      <div key={index}>
+                        <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
+                      </div>
+                    ))
+                  : null}
+              </Carousel> */}
+
               <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
                 {unitInfo?.images?.length
                   ? unitInfo?.images?.map((photo) => (
