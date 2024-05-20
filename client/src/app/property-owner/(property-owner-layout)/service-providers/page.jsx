@@ -2,7 +2,7 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Pagination, SelectPicker } from "rsuite";
+import { Input, Pagination, SelectPicker } from "rsuite";
 import { AutoComplete, InputGroup } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
@@ -10,34 +10,12 @@ import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useGetAllServiceProvidersQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 import AvailableServiceProviderModal from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderModal";
 import AvailableServiceProviderList from "@/components/property-owner/availableServiceProviders/AvailableServiceProviderList";
+import { pricePicker } from "@/constants/selectPicker.const";
 // !
 const AvailableServiceProviders = () => {
-  const datas = [
-    "Eugenia",
-    "Bryan",
-    "Linda",
-    "Nancy",
-    "Lloyd",
-    "Alice",
-    "Julia",
-    "Albert",
-    "Louisa",
-    "Lester",
-    "Lola",
-    "Lydia",
-    "Hal",
-    "Hannah",
-    "Harriet",
-    "Hattie",
-    "Hazel",
-    "Hilda",
-  ];
-
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  // const [sortBy, setSortBy] = useState("");
-  // const [sortOrder, setSortOrder] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedServiceAvailability, setSelectedServiceAvailability] = useState(undefined);
   const [selectedServiceType, setSelectedServiceType] = useState(undefined);
@@ -45,10 +23,16 @@ const AvailableServiceProviders = () => {
   // filter
   query["limit"] = size;
   query["page"] = page;
-  // query["sortBy"] = sortBy;
-  // query["sortOrder"] = sortOrder;
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("desc");
+  //
+
+  query["sortOrder"] = sortOrder;
+  query["sortBy"] = sortBy;
+  query["limit"] = 20;
+
   query["serviceAvailability"] = selectedServiceAvailability;
-  query["serviceType"] = selectedServiceType;
+  query["ServiceType"] = selectedServiceType;
 
   // debounce for slow search
   const debouncedTerm = useDebounced({
@@ -74,7 +58,7 @@ const AvailableServiceProviders = () => {
       <div className="grid grid-cols-12 gap-3 mt-2">
         <div className="lg:col-span-3 col-span-6">
           <InputGroup size="lg" inside>
-            <AutoComplete onChange={(e) => setSearchTerm(e)} placeholder="Service Provider" size="lg" data={datas} />
+            <Input onChange={(e) => setSearchTerm(e)} placeholder="Service Provider" size="lg" />
             <InputGroup.Addon>
               <FaSearch size={15} />
             </InputGroup.Addon>
@@ -92,12 +76,21 @@ const AvailableServiceProviders = () => {
           />
         </div>
         <div className="lg:col-span-3 col-span-6">
-          <InputGroup size="lg" inside className="rounded-none">
-            <AutoComplete size="lg" placeholder="Price" data={datas} />
-            <InputGroup.Addon>
-              <FaSearch size={15} />
-            </InputGroup.Addon>
-          </InputGroup>
+          <SelectPicker
+            searchable={false}
+            size="lg"
+            placeholder="Price"
+            data={pricePicker}
+            onChange={(e) => {
+              setSortBy("minPrice");
+              setSortOrder(e);
+            }}
+            onClean={() => {
+              setSortBy("createdAt");
+              setSortOrder("");
+            }}
+            className="!w-full"
+          />
         </div>
         <div className="lg:col-span-3 col-span-6">
           <SelectPicker
@@ -153,7 +146,7 @@ const AvailableServiceProviders = () => {
       <div>
         {/* if no data */}
         {!isLoading && !allServiceProviderLists?.data?.data?.length > 0 && (
-          <div className="flex justify-center items-center min-h-[50vh] ">
+          <div className="flex justify-center items-center min-h-[16vh] ">
             <h2 className="text-3xl font-semibold text-rose-500">No Service Providers Found !</h2>
           </div>
         )}

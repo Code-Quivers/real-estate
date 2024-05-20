@@ -1,4 +1,4 @@
-import { ServiceAvailabilityEnum } from "@prisma/client";
+import { ServiceAvailabilityEnum, ServiceType } from "@prisma/client";
 
 export type IServiceProviderUpdateRequest = {
   firstName?: string;
@@ -10,10 +10,6 @@ export type IServiceProviderUpdateRequest = {
   companyPhoneNumber?: string;
   companyEmailAddress?: string;
 };
-export type IServiceProviderFilterRequest = {
-  searchTerm?: string | undefined;
-  serviceAvailability?: ServiceAvailabilityEnum | undefined;
-};
 
 export type ServiceData = {
   serviceId?: string;
@@ -22,4 +18,9 @@ export type ServiceData = {
   serviceDescription?: string;
   serviceLocation?: string;
   serviceCancellationPolicy?: string;
+};
+export type IServiceProviderFilterRequest = {
+  searchTerm?: string | undefined;
+  serviceAvailability?: ServiceAvailabilityEnum | undefined;
+  ServiceType?: ServiceType | undefined;
 };
