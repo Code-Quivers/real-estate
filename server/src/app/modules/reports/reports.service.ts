@@ -9,6 +9,7 @@ import {
   IAddMonthlyOrAnnualReport,
   IInformationType,
   IReportFilterRequest,
+  IUpdateMonthlyOrAnnualReport,
 } from "./reports.interfaces";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
@@ -46,7 +47,9 @@ const addMonthlyOrAnnualReport = async (
         numOfBed: isExistProperty.numOfBed,
         numOfBath: isExistProperty.numOfBath,
         address: isExistProperty.address,
-        tenantName: `${isExistProperty.Tenant?.firstName} ${isExistProperty.Tenant?.lastName}`,
+        tenantName: isExistProperty?.Tenant
+          ? `${isExistProperty.Tenant?.firstName} ${isExistProperty.Tenant?.lastName}`
+          : "",
         tenantPhoto: isExistProperty.Tenant?.profileImage,
         propertyId,
       },
@@ -180,7 +183,7 @@ const getPropertyOwnerReports = async (
   propertyOwnerId: string,
 ): Promise<IGenericResponse<Report[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, startDate, endDate, ...filterData } = filters;
   //
   const andConditions = [];
   if (searchTerm) {
@@ -191,6 +194,16 @@ const getPropertyOwnerReports = async (
           mode: "insensitive",
         },
       })),
+    });
+  }
+
+  //
+  if (startDate && endDate) {
+    andConditions.push({
+      createdAt: {
+        gte: startDate, // Greater than or equal to startDate
+        lte: endDate, // Less than or equal to endDate
+      },
     });
   }
   //
@@ -252,7 +265,6 @@ const getPropertyOwnerReports = async (
   return result;
 };
 
-// ! createOrUpdateService
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const getReportDetails = async (reportId: string, propertyOwnerId: string): Promise<Report> => {
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -271,10 +283,108 @@ const getReportDetails = async (reportId: string, propertyOwnerId: string): Prom
   return result;
 };
 
+// ! update report data
+const updateAnnualOrMonthly = async (
+  reportId: string,
+  propertyOwnerId: string,
+  payload: IUpdateMonthlyOrAnnualReport,
+): Promise<Partial<Report>> => {
+  const { collectedRent, expenses } = payload;
+  const res = await prisma.$transaction(async (transactionClient) => {
+    const isExistReport = await transactionClient.report.findUnique({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+    });
+
+    if (!isExistReport) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Report not Found !!");
+    }
+
+    //  rent collected - expenses
+    const newData: IUpdateMonthlyOrAnnualReport = {};
+    // grossProfit: payload.collectedRent - payload.expenses,
+    if (collectedRent) newData["collectedRent"] = payload.collectedRent;
+    if (expenses) newData["expenses"] = payload.expenses;
+
+    // Calculate and update grossProfit if either collectedRent or expenses is provided
+    if ((collectedRent !== undefined && collectedRent !== null) || (expenses !== undefined && expenses !== null)) {
+      const updatedCollectedRent =
+        collectedRent !== undefined && collectedRent !== null ? collectedRent : isExistReport.collectedRent;
+      const updatedExpenses = expenses !== undefined && expenses !== null ? expenses : isExistReport.expenses;
+      if (updatedCollectedRent !== null && updatedExpenses !== null) {
+        newData["grossProfit"] = updatedCollectedRent - updatedExpenses;
+      }
+    }
+    //
+    const result = await transactionClient.report.update({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+      data: newData,
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Update Report");
+    }
+    return result;
+  });
+  return res;
+};
+
+// ! update tax Document data
+const updateAnnualTaxDocument = async (
+  reportId: string,
+  propertyOwnerId: string,
+  req: Request,
+): Promise<Partial<Report>> => {
+  const file = req.file as IUploadFile;
+  const filePath = file?.path?.substring(13);
+
+  const res = await prisma.$transaction(async (transactionClient) => {
+    // checking if exist report
+
+    const isExistReport = await transactionClient.report.findUnique({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+    });
+    if (!isExistReport) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Report Not Found");
+    }
+
+    // updating
+
+    const newData = {
+      reportTitle: `Annual Tax Document`,
+      documentFile: filePath,
+    };
+
+    const result = await transactionClient.report.update({
+      where: {
+        reportId,
+        propertyOwnerId,
+      },
+      data: newData,
+    });
+
+    if (!result) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Update Report");
+    }
+    return result;
+  });
+  return res;
+};
+
 export const ReportsService = {
   addMonthlyOrAnnualReport,
   addAnnualTaxDocument,
   generateTenantInfoReport,
   getPropertyOwnerReports,
   getReportDetails,
+  updateAnnualOrMonthly,
+  updateAnnualTaxDocument,
 };

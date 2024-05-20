@@ -1,113 +1,153 @@
+"use client";
+
 import { fileUrlKey } from "@/configs/envConfig";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { IoChevronBack } from "react-icons/io5";
-import { Avatar, Button } from "rsuite";
-import { useRef } from "react";
+import { Button } from "rsuite";
+import { useRef, useState } from "react";
+import { FaUser } from "react-icons/fa";
+import EditMonthlyOrAnnualReportModal from "./EditMonthlyOrAnnualReportModal";
 
 const MonthlyReportDetails = ({ reportData }) => {
   const router = useRouter();
   const pdfRef = useRef();
   const downloadPdf = () => {
     const input = pdfRef.current;
-    html2canvas(input).then((canvas) => {
+    html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
-      // const pdfWidth = pdf.internal.pageSize.getWidth();
-      // const pdfHeight = pdf.internal.pageSize.getHeight();
-      // const imgWidth = canvas.width;
-      // const imgHeight = canvas.height;
-      // const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      // const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      // const imgY = 30;
-      // pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-      // pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.addImage(imgData, "PNG", 0, 0, );
-      pdf.save("download.pdf");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10; // Adjust Y offset to add some margin at the top
+
+      pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save(`${reportData?.reportTitle}.pdf` || "download.pdf");
     });
   };
 
+  // !
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const handleCloseEdit = () => setIsOpenEdit(false);
   return (
-    <section>
-      <div className="grid grid-cols-7 max-md:p-3 items-center">
-        <div className="col-span-1">
-          <button onClick={() => router.back()}>
+    <section className="max-w-4xl mx-auto">
+      <div className="flex gap-3 items-center max-md:p-3">
+        <div>
+          <button
+            className="mt-1 hover:border-gray-300 duration-300 rounded-lg border border-transparent p-1"
+            onClick={() => router.push("/property-owner/reports")}
+          >
             <IoChevronBack size={24} />
           </button>
         </div>
-        <div className="col-span-5">
+        <div>
           <h1>{reportData?.reportTitle}</h1>
         </div>
       </div>
-      {/* details */}
-      <div ref={pdfRef}>
-        <div className="border m-3 md:m-6 rounded-md  md:h-60 p-2 bg-white grid md:grid-cols-12 md:gap-5 xl:gap-10">
-          <div className="md:col-span-5 h-[220px]">
-            <Image
-              className="h-full w-full object-cover rounded-md"
-              src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
-              width={800}
-              height={800}
-              alt="apartment"
-            />
-          </div>
+      {/*  */}
+      <div className="my-5">
+        <div ref={pdfRef} className="md:px-5">
+          {/* photo */}
+          <div className="border rounded-md p-2 bg-white grid md:grid-cols-4 gap-x-4 lg:gap-x-10 gap-y-2 lg:gap-y-5">
+            <div className="md:col-span-2  h-[220px]">
+              <Image
+                className="h-full w-full object-cover rounded-md"
+                src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
+                width={600}
+                height={600}
+                alt="Apartment Photo"
+              />
+            </div>
 
-          <div className="md:col-span-7 py-6">
-            {reportData?.information?.map((information) => (
-              <div key={Math.random()} className="space-y-2">
-                <p>$ {information?.monthlyRent}</p>
-                <p>
-                  {information?.numOfBed} Beds {information?.numOfBath} Baths
-                </p>
-                <p>{information?.address}</p>
-                <div className="border bg-gray-50    rounded-md p-2 flex gap-3 items-center">
-                  <div className="w-12 h-12 rounded-full  flex items-center justify-center">
-                    <Avatar circle size="md" src={information?.tenantPhoto && `${fileUrlKey()}/${information?.tenantPhoto}`} />
-                    {/* {information?.tenantPhoto ? (
-                    <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
-                  ) : (
-                    <span>
-                      <FaUser size={20} className="text-gray-500" />
-                    </span>
-                  )} */}
+            <div className="md:col-span-2 py-2 lg:py-6">
+              {reportData?.information?.map((information, index) => (
+                <div key={index} className="space-y-1 md:space-y-5">
+                  <p>${information?.monthlyRent.toLocaleString()}</p>
+                  <p>
+                    {information?.numOfBed} Beds | {information?.numOfBath} Baths
+                  </p>
+                  <p>{information?.address}</p>
+                  <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
+                    {information?.tenantName ? (
+                      <>
+                        <div className="rounded-full flex items-center justify-center">
+                          {information?.tenantPhoto ? (
+                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
+                          ) : (
+                            <span>
+                              <FaUser size={20} className="text-gray-500" />
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <h2>{information?.tenantName}</h2>
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <h3>Tenant Not Available</h3>
+                      </div>
+                    )}
                   </div>
-                  <p>{information?.tenantName}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+          {/*  other */}
+          <div className="lg:mt-10">
+            <div className="grid sm:grid-cols-4  gap-x-4 lg:gap-x-10 gap-y-2.5 md:gap-y-5 max-md:mt-3">
+              <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
+                <h2>Monthly Rent</h2>
+                <p className="text-lg font-semibold">${reportData?.rentAmount?.toLocaleString()}</p>
               </div>
-            ))}
+              <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
+                <h2>Monthly Expenses</h2>
+                <p className="text-lg font-semibold">${reportData?.expenses?.toLocaleString()}</p>
+              </div>
+              <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
+                <h2>Rent Collected</h2>
+                <p className="text-lg font-semibold">${reportData?.collectedRent?.toLocaleString()}</p>
+              </div>
+              <div className="col-span-2 bg-white flex items-center justify-between p-4 border rounded-lg">
+                <h2>Gross Profit</h2>
+                <h2 className="text-lg font-semibold">
+                  {reportData?.grossProfit !== undefined
+                    ? reportData.grossProfit < 0
+                      ? `-$${Math.abs(reportData.grossProfit).toLocaleString()}`
+                      : `$${reportData.grossProfit.toLocaleString()}`
+                    : null}
+                </h2>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="grid sm:grid-cols-4 px-5 gap-x-4 lg:gap-x-10 gap-y-5 max-md:mt-5">
-          <div className="col-span-2 bg-white flex items-center justify-between p-3 border rounded-lg">
-            <h2>Monthly Rent</h2>
-            <p className="text-lg font-semibold">${reportData?.rentAmount}</p>
+          {/*  */}
+          <div className="border rounded-lg bg-white pt-2 mt-6">
+            <h2 className={`${reportData?.grossProfit > 0 ? "text-green-500" : "text-red-500"} mb-3  text-center font-semibold`}>
+              {reportData?.grossProfit > 0 ? "You're Profitable" : "You're Loosing"}
+            </h2>
           </div>
-          <div className="col-span-2 bg-white flex items-center justify-between p-3 border rounded-lg">
-            <h2>Monthly Expenses</h2>
-            <p className="text-lg font-semibold">${reportData?.expenses}</p>
-          </div>
-          <div className="col-span-2 bg-white flex items-center justify-between p-3 border rounded-lg">
-            <h2>Rent Collected</h2>
-            <p className="text-lg font-semibold">${reportData?.collectedRent}</p>
-          </div>
-          <div className="col-span-2 bg-white flex items-center justify-between p-3 border rounded-lg">
-            <h2>Gross Profit</h2>
-            <p className="text-lg font-semibold">${reportData?.grossProfit}</p>
-          </div>
-        </div>
-        <div className="mt-5 flex justify-center p-5 mx-5 text-green-500 font-bold text-lg">
-          <h2>{`Your're`} Profitable</h2>
         </div>
       </div>
-
-      {/* download */}
-      <div className="my-10 md:mt-20 flex justify-center items-center">
-        <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-3xl !text-xl !px-10 !py-5 ">
+      {/*  */}
+      <div className="my-10 md:mt-10 flex justify-between items-center mx-5">
+        <Button onClick={downloadPdf} type="button" size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
           Download
         </Button>
+        <Button type="button" onClick={() => setIsOpenEdit(true)} size="lg" className="!bg-primary !text-white !rounded-full !text-xl !px-14 !py-4">
+          Edit
+        </Button>
       </div>
+
+      <>
+        {/* edit modal */}
+        <EditMonthlyOrAnnualReportModal isOpen={isOpenEdit} handleClose={handleCloseEdit} reportData={reportData} />
+      </>
     </section>
   );
 };

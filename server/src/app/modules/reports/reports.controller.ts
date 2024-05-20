@@ -72,6 +72,33 @@ const getReportDetails = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! update report details
+const updateAnnualOrMonthly = catchAsync(async (req: Request, res: Response) => {
+  //
+  const reportId = req.params.reportId;
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const result = await ReportsService.updateAnnualOrMonthly(reportId, propertyOwnerId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully Updated",
+    data: result,
+  });
+});
+// ! Update annual tax document
+const updateAnnualTaxDocument = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const reportId = req.params.reportId;
+  const result = await ReportsService.updateAnnualTaxDocument(reportId, propertyOwnerId, req);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Updated Successfully",
+    data: result,
+  });
+});
 
 export const ReportsController = {
   addMonthlyOrAnnualReport,
@@ -79,4 +106,6 @@ export const ReportsController = {
   generateTenantInfoReport,
   getPropertyOwnerReports,
   getReportDetails,
+  updateAnnualOrMonthly,
+  updateAnnualTaxDocument,
 };

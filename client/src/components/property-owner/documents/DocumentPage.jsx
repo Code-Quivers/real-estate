@@ -25,7 +25,7 @@ const DocumentPage = () => {
       <div className="flex justify-center">
         <div className=" w-full max-w-3xl mx-auto">
           <div className="flex justify-center items-center py-5">
-            <h2 className="text-3xl font-semibold">Document Templates</h2>
+            <h2 className="text-3xl font-semibold">Document Sent</h2>
           </div>
           <div className="min-h-[30vh] w-full space-y-3">
             {!isTenantDataLoading &&

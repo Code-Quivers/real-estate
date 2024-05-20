@@ -21,6 +21,12 @@ const addMonthlyOrAnnualReport = z.object({
     information: z.array(information),
   }),
 });
+const updateReportData = z.object({
+  body: z.object({
+    collectedRent: z.number().optional(),
+    expenses: z.number().optional(),
+  }),
+});
 const addAnnualTaxDocument = z.object({
   reportType: z.enum([...ZodReportType] as [string, ...string[]]),
 });
@@ -33,4 +39,5 @@ export const ReportsValidation = {
   addMonthlyOrAnnualReport,
   sendMessage,
   addAnnualTaxDocument,
+  updateReportData,
 };

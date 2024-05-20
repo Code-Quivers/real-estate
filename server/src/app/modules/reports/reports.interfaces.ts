@@ -1,23 +1,13 @@
-import { ReportType, ServiceAvailabilityEnum, ServiceType } from "@prisma/client";
+import { ReportType } from "@prisma/client";
 
-export type ISendMessage = {
-  text: string;
-};
-
-export type IChatUpdateRequest = {
-  servicePriceRange?: string;
-  serviceDescription?: string;
-  serviceLocation?: string;
-  serviceCancellationPolicy?: string;
-  serviceAvailability?: ServiceAvailabilityEnum;
-  serviceType?: ServiceType;
-};
 export type IReportFilterRequest = {
   searchTerm?: string | undefined;
-  createdAt?: string | undefined;
+  propertyId?: string | undefined;
+  reportType?: ReportType | undefined;
+  startDate?: string | undefined;
+  endDate?: string | undefined;
 };
 
-//
 export type IInformationType = {
   image: string;
   monthlyRent: number;
@@ -45,4 +35,10 @@ export type IAddAnnuallyReport = {
 };
 export type IAddAnnualTaxDocument = {
   reportType: ReportType;
+};
+
+export type IUpdateMonthlyOrAnnualReport = {
+  collectedRent?: number;
+  expenses?: number;
+  grossProfit?: number;
 };

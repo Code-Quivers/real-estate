@@ -106,7 +106,13 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
 
   const whereConditions: Prisma.SavedItemWhereInput = {
     AND: [
-      { userId, itemType: "TENANT" },
+      {
+        userId,
+        itemType: "TENANT",
+        property: {
+          isNot: null,
+        },
+      },
       ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : []),
     ],
   };

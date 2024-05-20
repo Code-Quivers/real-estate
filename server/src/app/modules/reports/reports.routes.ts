@@ -32,7 +32,26 @@ router.post("/generate-tenant-info-report", auth(UserRoles.PROPERTY_OWNER), Repo
 
 // ! get property owner reports
 router.get("/property-owner-reports", auth(UserRoles.PROPERTY_OWNER), ReportsController.getPropertyOwnerReports);
-//
+// ! get single report details
 router.get("/report-details/:reportId", auth(UserRoles.PROPERTY_OWNER), ReportsController.getReportDetails);
+
+// ! update report info
+router.patch(
+  "/report-update/:reportId",
+  auth(UserRoles.PROPERTY_OWNER),
+  validateRequest(ReportsValidation.updateReportData),
+  ReportsController.updateAnnualOrMonthly,
+);
+
+// ! update annual tax document
+
+router.patch(
+  "/update-tax-document/:reportId",
+  auth(UserRoles.PROPERTY_OWNER),
+  TaxDocumentFileUploadHelper.uploadTaxDocumentPdf.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    return ReportsController.updateAnnualTaxDocument(req, res, next);
+  },
+);
 
 export const ReportsRoutes = router;
