@@ -1,36 +1,35 @@
 /* eslint-disable no-extra-boolean-cast */
 "use client";
 import { FaSearch } from "react-icons/fa";
-import { Input, InputGroup, Pagination } from "rsuite";
+import { Input, InputGroup, Pagination, SelectPicker } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { useGetAllAvailableTenantsQuery } from "@/redux/features/tenant/tenantsApi";
 import AvailableTenantsDetailModal from "@/components/property-owner/available-tenants/AvailableTenantsModal";
 import AvailableTenantsList from "@/components/property-owner/available-tenants/AvailableTenantsList";
 import TenantCardSkeleton from "@/components/loading-skeleton/TenantCardSkeleton";
+import { pricePicker } from "@/constants/selectPicker.const";
 
 const PropertyOwnerAvailableTenants = () => {
   const query = {};
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [rentAmount, setRentAmount] = useState("");
-
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("desc");
   // filter
   query["limit"] = size;
   query["page"] = page;
+  query["sortOrder"] = sortOrder;
+  query["sortBy"] = sortBy;
+
   // ! debounce for slow search
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
     delay: 300,
   });
   if (!!debouncedTerm) query["searchTerm"] = debouncedTerm;
-  // ! rent amount
-  const debouncedTermRent = useDebounced({
-    searchQuery: rentAmount,
-    delay: 300,
-  });
-  if (!!debouncedTermRent) query["rent"] = debouncedTermRent;
+
   // ! address
   const debouncedTermAddress = useDebounced({
     searchQuery: searchTerm,
@@ -55,9 +54,9 @@ const PropertyOwnerAvailableTenants = () => {
       </div>
       {/* search with price section start */}
 
-      <div className="flex justify-end gap-2">
+      <div className="grid grid-cols-4 justify-end gap-2">
         {/* tenant name or address. search with */}
-        <div className="w-full">
+        <div className="col-span-3">
           <InputGroup size="lg" inside className="!w-full">
             <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Search with Tenant Name or Address" size="lg" />
             <InputGroup.Addon>
@@ -67,13 +66,22 @@ const PropertyOwnerAvailableTenants = () => {
         </div>
 
         {/* rent */}
-        <div className="">
-          <InputGroup size="lg" inside className="!w-full">
-            <Input type="number" buttonAppearance="subtle" min={0} onChange={(e) => setRentAmount(e)} placeholder="Rent" size="lg" />
-            <InputGroup.Addon>
-              <FaSearch size={20} />
-            </InputGroup.Addon>
-          </InputGroup>
+        <div className="col-span-1">
+          <SelectPicker
+            searchable={false}
+            size="lg"
+            placeholder="Price"
+            data={pricePicker}
+            onChange={(e) => {
+              setSortBy("affordableRentAmount");
+              setSortOrder(e);
+            }}
+            onClean={() => {
+              setSortBy("createdAt");
+              setSortOrder("desc");
+            }}
+            className="!w-full"
+          />
         </div>
       </div>
 
@@ -109,7 +117,7 @@ const PropertyOwnerAvailableTenants = () => {
                     </button>
                     <h3 className="text-sm font-medium">Place to rent : {singleReq?.placeToRent ? singleReq?.placeToRent : "N/A"}</h3>
                     <h3 className="text-sm font-medium">
-                      Rent willing to pay: {`${singleReq?.affordableRentAmount ? `$ ${singleReq?.affordableRentAmount?.toLocaleString()}` : "N/A"}`}
+                      Rent willing to pay: <span className="font-semibold">{`$${singleReq?.affordableRentAmount?.toLocaleString()}`}</span>
                     </h3>
                   </div>
                 </AvailableTenantsList>
