@@ -2,17 +2,16 @@
 /* eslint-disable react/no-unescaped-entities */
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { Input, InputGroup, SelectPicker } from "rsuite";
-import Image from "next/image";
 import { availableUnits } from "./AvailableUnitsCardFakeData";
 import AvailableUnitsModal from "./AvailableUnitsModal";
 import { FiSearch } from "react-icons/fi";
 import { useGetAllAvailableUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
-import { fileUrlKey } from "@/configs/envConfig";
 import { useState } from "react";
 import { pricePicker, sortingPicker } from "@/constants/selectPicker.const";
 import { Loader } from "rsuite";
 import Score from "@/components/Shared/Score/Score";
 import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
+import AvailableUnitsCardSwiper from "./swiper/AvailableUnitsCardSwiper";
 
 const AvailableUnitsCard = () => {
   const [units, setUnits] = useState(null);
@@ -98,13 +97,15 @@ const AvailableUnitsCard = () => {
               key={Math.random()}
               className="border rounded-lg hover:shadow-lg shadow-md hover:border transition-all duration-500 ease-in-out cursor-pointer"
             >
-              <Image
+              <AvailableUnitsCardSwiper unitImage={unit?.images} />
+
+              {/* <Image
                 width={300}
                 height={300}
                 className="w-full h-[200px] object-center object-cover rounded-t-lg  "
                 src={unit?.images?.length ? `${fileUrlKey()}/${unit?.images[0]}` : profileLogo}
                 alt="Unit Image"
-              />
+              /> */}
               <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
                   <h2 className="text-sm font-semibold">${unit?.monthlyRent?.toLocaleString()}</h2>

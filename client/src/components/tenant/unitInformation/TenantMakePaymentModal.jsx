@@ -3,8 +3,10 @@
 import { IoClose } from "react-icons/io5";
 import { Modal } from "rsuite";
 import TenantStripeCheckout from "../payment/TenantStripePayment";
+import { useState } from "react";
 
 const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, dueRent, dueMonths }) => {
+  const [amountToPaid, setAmountToPaid] = useState(dueRent + dueRent * 0.04);
   return (
     <div>
       <Modal

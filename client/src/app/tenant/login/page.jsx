@@ -72,7 +72,7 @@ const LoginPage = () => {
 
         <div className="w-[90%] lg:w-[80%] mx-auto">
           <form onSubmit={handleSubmit(handleTenantSignUp)}>
-            <div className="space-y-6 lg:space-y-3">
+            <div className="space-y-5">
               <div>
                 <Controller
                   name="emailOrUsername"
@@ -125,11 +125,10 @@ const LoginPage = () => {
                   )}
                 />
               </div>
-              {/* password requirement */}
-
-              <div className="h-16 text-xs font-medium text-white">
-                {errors?.password?.type === "pattern" && <p className="text-red-500  rounded-md">{errors?.password?.message}</p>}
-              </div>
+            </div>
+            {/* password requirement */}
+            <div className="h-16 text-xs font-medium text-white mt-2">
+              {errors?.password?.type === "pattern" && <p className="text-red-500  rounded-md">{errors?.password?.message}</p>}
             </div>
             <div className="flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-md w-full !px-8 !py-3" appearance="default">
