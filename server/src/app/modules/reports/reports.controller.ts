@@ -68,7 +68,7 @@ const getReportDetails = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Report Details Retrieved Successfully",
+    message: "Report Retrieved Successfully",
     data: result,
   });
 });
@@ -95,7 +95,7 @@ const updateAnnualTaxDocument = catchAsync(async (req: Request, res: Response) =
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Updated Successfully",
+    message: "Successfully Updated",
     data: result,
   });
 });
