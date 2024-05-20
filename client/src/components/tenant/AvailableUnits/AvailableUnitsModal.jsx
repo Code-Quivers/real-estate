@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Carousel, Drawer, IconButton, useMediaQuery, useToaster } from "rsuite";
+import { Button, Drawer, IconButton, useMediaQuery, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
