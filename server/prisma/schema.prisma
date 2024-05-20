@@ -51,7 +51,7 @@ model Tenant {
   prevLandlordName                     String?
   prevLandlordContactInfo              String?
   lengthOfPrevTenancy                  String?
-  affordableRentAmount                 Int?
+  affordableRentAmount                 Int? @default(0)
   leavingReason                        String?
   isAnyLatePaymentReason               String?
   // income information
