@@ -1,11 +1,10 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-import "./AvailableUnitsCardSwiper.module.css";
-
+import "./SavedUnitsCardSwiper.module.css";
 import Image from "next/image";
 import { fileUrlKey } from "@/configs/envConfig";
-const AvailableUnitsCardSwiper = ({ unitImage }) => {
+const SavedUnitsCardSwiper = ({ propertyImages }) => {
   return (
     <Swiper
       pagination={{
@@ -14,7 +13,7 @@ const AvailableUnitsCardSwiper = ({ unitImage }) => {
       modules={[Pagination]}
       className="mySwiper"
     >
-      {unitImage?.map((image, index) => {
+      {propertyImages?.map((image, index) => {
         return (
           <SwiperSlide key={index}>
             <Image
@@ -31,4 +30,4 @@ const AvailableUnitsCardSwiper = ({ unitImage }) => {
   );
 };
 
-export default AvailableUnitsCardSwiper;
+export default SavedUnitsCardSwiper;

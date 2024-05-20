@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { Button, Carousel, Drawer, IconButton, Notification, useMediaQuery, useToaster } from "rsuite";
+import SavedUnitsModalSwiper from "./swiper/SavedUnitsModalSwiper";
 
 const SavedUnitsModal = ({ open, handleClose, units: item }) => {
   const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
@@ -60,7 +61,7 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
               appearance="subtle"
               icon={<CgClose className="group-hover:scale-125 group-hover:text-red-600 duration-300 transition-all" size={22} />}
             />
-            <h3>Unit Information Of : {item?.property?.title}</h3>
+            {/* <h3>Unit Information Of : {item?.property?.title}</h3> */}
           </div>
         }
         overflow={false}
@@ -75,9 +76,10 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
             margin: 0,
           }}
         >
-          <div className="grid md:grid-cols-12    justify-between   items-stretch  ">
+          <div className="md:grid md:grid-cols-12 justify-between items-stretch">
             {/* images */}
-            <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
+            <SavedUnitsModalSwiper propertyImages={item?.property?.images} />
+            {/* <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
               <div className="md:col-span-5 md:hidden">
                 <Carousel className="custom-slider max-h-[250px] ">
                   {item?.property?.images?.length > 0
@@ -89,7 +91,7 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                     : null}
                 </Carousel>
               </div>
-            </Carousel>
+            </Carousel> */}
             <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
               {item?.property?.images?.length > 0 ? (
                 item?.property?.images?.map((photo, index) => (
