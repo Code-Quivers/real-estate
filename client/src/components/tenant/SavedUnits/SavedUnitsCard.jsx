@@ -7,6 +7,7 @@ import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedIt
 import { fileUrlKey } from "@/configs/envConfig";
 import Score from "@/components/Shared/Score/Score";
 import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
+import SavedUnitsCardSwiper from "./swiper/SavedUnitsCardSwiper";
 
 const SavedUnitsCard = () => {
   const [isOpen, setModalOpen] = useState(false);
@@ -48,13 +49,14 @@ const SavedUnitsCard = () => {
               key={Math.random()}
               className="border  rounded-lg hover:shadow-lg shadow-md hover:border transition-all duration-500 ease-in-out cursor-pointer"
             >
-              <Image
+              <SavedUnitsCardSwiper propertyImages={unit?.property?.images} />
+              {/* <Image
                 width={300}
                 height={300}
                 className="w-full h-[200px]  object-cover rounded-t-lg  "
                 src={unit?.property?.images?.length ? `${fileUrlKey()}/${unit?.property?.images[0]}` : houseLogo}
                 alt="Unit Image"
-              />
+              /> */}
               <div className="flex w-full justify-between items-start px-3 py-4">
                 <div>
                   <h2 className="text-sm lg:font-semibold">${unit?.property?.monthlyRent?.toLocaleString()}</h2>
