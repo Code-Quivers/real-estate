@@ -35,24 +35,27 @@ const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, op
     });
   }
 
+  // Add filter data conditions
   if (Object.keys(filterData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filterData).map((key) => {
-        if (serviceProviderRelationalFields.includes(key)) {
-          return {
+    const filterConditions = Object.keys(filterData).map((key) => {
+      if (serviceProviderRelationalFields.includes(key)) {
+        // For relational fields, create nested objects
+        return {
+          Service: {
             [serviceProviderRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
-            },
-          };
-        } else {
-          return {
-            [key]: {
               equals: (filterData as any)[key],
             },
-          };
-        }
-      }),
+          },
+        };
+      } else {
+        return {
+          [key]: {
+            equals: (filterData as any)[key],
+          },
+        };
+      }
     });
+    andConditions.push({ AND: filterConditions });
   }
 
   const whereConditions: Prisma.ServiceProviderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
@@ -75,11 +78,17 @@ const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, op
       skip,
       take: limit,
       orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
-            },
+        options.sortBy === "minPrice"
+          ? {
+              Service: {
+                minPrice: options.sortOrder,
+              },
+            }
+          : options.sortBy && options.sortOrder
+            ? { [options.sortBy]: options.sortOrder }
+            : {
+                createdAt: "desc",
+              },
     });
 
     const total = await prisma.serviceProvider.count({
@@ -211,7 +220,7 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
 
     if (res) {
       const profileScore = calculateServiceProviderProfileScore(res as any);
-      // console.log(profileScore);
+
       await transactionClient.serviceProvider.update({
         where: {
           serviceProviderId,

@@ -14,7 +14,6 @@ const PropertyOwnerAvailableTenants = () => {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [presentAddress, setPresentAddress] = useState("");
   const [rentAmount, setRentAmount] = useState("");
 
   // filter
@@ -34,7 +33,7 @@ const PropertyOwnerAvailableTenants = () => {
   if (!!debouncedTermRent) query["rent"] = debouncedTermRent;
   // ! address
   const debouncedTermAddress = useDebounced({
-    searchQuery: presentAddress,
+    searchQuery: searchTerm,
     delay: 300,
   });
   if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
