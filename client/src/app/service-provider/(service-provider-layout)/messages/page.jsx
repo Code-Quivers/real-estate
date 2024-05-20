@@ -88,8 +88,8 @@ const ServiceProviderMessagingPage = () => {
             {!isLoading && !allConversations?.data?.data?.length > 0 && (
               <div className="space-y-3 flex justify-center items-center min-h-[60vh] max-md:text-center">
                 <h2 className="max-md:text-sm ">
-                  <span className="md:hidden">Not</span>
-                  <span className="max-md:hidden">No Conversation</span> Found
+                  <span className="md:hidden">N/A</span>
+                  <span className="max-md:hidden">No Conversation Found</span>
                 </h2>
               </div>
             )}
