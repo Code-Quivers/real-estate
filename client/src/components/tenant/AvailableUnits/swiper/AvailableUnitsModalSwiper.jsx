@@ -11,15 +11,15 @@ import { fileUrlKey } from "@/configs/envConfig";
 
 const AvailableUnitsModalSwiper = ({ unitImage }) => {
   return (
-    <Swiper
-      pagination={{
-        dynamicBullets: true,
-      }}
-      modules={[Pagination]}
-      className="mySwiper"
-    >
-      {unitImage?.images?.map((image, index) => {
-        return (
+    <div>
+      <Swiper
+        pagination={{
+          dynamicBullets: true,
+        }}
+        modules={[Pagination]}
+        className="mySwiper"
+      >
+        {unitImage?.images?.map((image, index) => (
           <SwiperSlide key={index}>
             {console.log("image", image)}
             <Image
@@ -30,9 +30,9 @@ const AvailableUnitsModalSwiper = ({ unitImage }) => {
               alt="Unit Image"
             />
           </SwiperSlide>
-        );
-      })}
-    </Swiper>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

@@ -73,7 +73,9 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
         >
           <div>
             <div className="grid md:grid-cols-12 justify-between items-stretch ">
-              <AvailableUnitsModalSwiper unitImage={unitInfo} />
+              <div>
+                <AvailableUnitsModalSwiper unitImage={unitInfo} />
+              </div>
               {/* <Carousel className="custom-slider max-h-[250px]">
                 {unitInfo?.images?.length > 0
                   ? unitInfo?.images?.map((photo, index) => (
