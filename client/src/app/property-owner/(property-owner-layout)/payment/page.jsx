@@ -47,7 +47,7 @@ const Payment = () => {
 
   return (
     <>
-      <section className="mx-auto max-w-4xl">
+      <section className="mx-auto max-w-4xl px-3 pb-20">
         <h1 className="text-center mt-10 text-2xl">Payment</h1>
         <div className="max-w-5xl mx-auto">
           <h3 className="mb-2">Select property that you want to payment</h3>
@@ -66,35 +66,35 @@ const Payment = () => {
                     className={` ${selectedProperties?.includes(singleUnit?.propertyId) && "border-primary"}  duration-300 transition-all border bg-white rounded-md shadow`}
                   >
                     <Checkbox color="green" value={singleUnit?.propertyId} className="!w-full">
-                      <div className="grid grid-cols-11 gap-1.5 w-full select-none">
+                      <div className="grid grid-cols-2 md:grid-cols-11 gap-1.5 w-full select-none max-md:pr-4">
                         {/* unit image */}
-                        <div className="col-span-2  ">
+                        <div className="col-span-2 md:col-span-3 w-full">
                           <Image
-                            width={500}
-                            height={200}
+                            width={1000}
+                            height={1000}
                             src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : apartmentPhoto}
-                            className=" rounded-lg !w-full !h-[100px] object-cover object-center"
+                            className=" rounded-lg !w-full !h-[120px] md:!h-[100px] object-cover object-center"
                             alt=""
                           />
                         </div>
                         {/* unit information */}
-                        <div className="col-span-4    flex flex-col justify-around  w-full space-y-1">
-                          <h3 className="text-xs">Title: {singleUnit?.title || "N/A"}</h3>
+                        <div className="md:col-span-5 flex  flex-col justify-around  w-full">
+                          <h3 className="text-xs line-clamp-1">{singleUnit?.title || "N/A"}</h3>
                           <h3 className="text-xs font-medium">
-                            Monthly Rent: ${singleUnit?.monthlyRent ? singleUnit?.monthlyRent?.toLocaleString() : "N/A"}
+                            ${singleUnit?.monthlyRent ? singleUnit?.monthlyRent?.toLocaleString() : "N/A"}/month
                           </h3>
                           <h3 className="text-xs ">
                             {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Baths
                           </h3>
-                          <h3 className="text-xs ">Address: {singleUnit?.address || "N/A"}</h3>
+                          <h3 className="text-xs line-clamp-1">{singleUnit?.address || "N/A"}</h3>
                         </div>
 
                         {/* payment information */}
-                        <div className="col-span-3   flex flex-col justify-around  w-full">
+                        <div className="md:col-span-3 flex flex-col justify-around  w-full">
                           {singleUnit?.planType === "PREMIUM" ? (
                             <div className="flex flex-col justify-between  w-full h-full ">
                               <div>
-                                <h3 className="text-xs font-semibold">Payment Information </h3>
+                                <h3 className="text-xs font-medium">Payment Information </h3>
                               </div>
                               <div className="">
                                 <h3 className="text-xs">From : {singleUnit?.paidFrom ? moment(singleUnit?.paidFrom).format("ll") : "N/A"}</h3>
@@ -120,11 +120,9 @@ const Payment = () => {
                         </div>
 
                         {/* tenant details */}
-
-                        <div className="col-span-2 border mr-3 rounded-lg flex flex-col justify-around text-center">
-                          <h2 className="text-xs">Tenant Details</h2>
+                        <div className="max-md:col-span-2 col-span-11 mr-3 flex flex-col justify-around border-t">
                           {singleUnit?.isRented ? (
-                            <div className="flex flex-col items-center justify-center   ">
+                            <div className="flex items-center gap-4 mt-2">
                               <div>
                                 <Avatar
                                   circle
@@ -135,6 +133,7 @@ const Payment = () => {
                                 />
                               </div>
                               <div>
+                                <h2 className="text-xs">Tenant</h2>
                                 <h2 className="text-xs">
                                   {singleUnit?.Tenant?.firstName} {singleUnit?.Tenant?.lastName}
                                 </h2>
@@ -142,7 +141,7 @@ const Payment = () => {
                             </div>
                           ) : (
                             <div>
-                              <h2 className="text-xs">No Tenant Available</h2>
+                              <h2 className="text-xs mt-2">No Tenant Available</h2>
                             </div>
                           )}
                         </div>
