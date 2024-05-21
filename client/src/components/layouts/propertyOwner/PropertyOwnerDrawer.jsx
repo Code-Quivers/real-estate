@@ -191,12 +191,24 @@ const PropertyOwnerDrawer = () => {
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
+                      href="/property-owner/payment"
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/payment" && "!bg-[#1b3697]"}`}
+                      style={{
+                        backgroundColor: "#29429f",
+                      }}
+                      eventKey="9"
+                      icon={<Icon style={design} as={BiSolidReport} />}
+                    >
+                      Payment
+                    </Nav.Item>
+                    <Nav.Item
+                      as={Link}
                       href="/property-owner/reports"
                       className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/reports" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      eventKey="9"
+                      eventKey="10"
                       icon={<Icon style={design} as={BiSolidReport} />}
                     >
                       Reports
@@ -208,7 +220,7 @@ const PropertyOwnerDrawer = () => {
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      eventKey="9"
+                      eventKey="11"
                       icon={<Icon style={design} as={GrHostMaintenance} />}
                     >
                       Maintenance Request
@@ -220,7 +232,7 @@ const PropertyOwnerDrawer = () => {
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      eventKey="9"
+                      eventKey="12"
                       icon={<Icon style={design} as={IoSettings} />}
                     >
                       Settings
@@ -232,7 +244,7 @@ const PropertyOwnerDrawer = () => {
                         backgroundColor: "#29429f",
                         borderBottom: "2px solid #000",
                       }}
-                      eventKey="9"
+                      eventKey="13"
                       icon={<Icon style={design} as={TbLogout2} />}
                     >
                       Log Out
