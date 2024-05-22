@@ -19,7 +19,44 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.propertyOwner],
     }),
+    getFinancialInfo: builder.query({
+      query: () => ({
+        url: "/property-owners/financial-info",
+        method: "GET",
+      }),
+      // providesTags: [tagTypes.propertyOwner],
+    }),
+
+    getDashboardInfo: builder.query({
+      query: () => ({
+        url: "/property-owners/dashboard-info",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.propertyOwner],
+    }),
+    getMyTenants: builder.query({
+      query: () => ({
+        url: "/property-owners/get-my-tenants",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.propertyOwner, tagTypes.tenant],
+    }),
+    updateExtraCost: builder.mutation({
+      query: ({ data }) => ({
+        url: `/property-owners/update-extra-cost`,
+        method: "PATCH",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.propertyOwner],
+    }),
   }),
 });
 
-export const { useGetPropertyOwnerMyProfileQuery, useUpdatePropertyOwnerProfileMutation } = propertyOwnerApi;
+export const {
+  useGetPropertyOwnerMyProfileQuery,
+  useUpdatePropertyOwnerProfileMutation,
+  useGetFinancialInfoQuery,
+  useGetDashboardInfoQuery,
+  useUpdateExtraCostMutation,
+  useGetMyTenantsQuery,
+} = propertyOwnerApi;

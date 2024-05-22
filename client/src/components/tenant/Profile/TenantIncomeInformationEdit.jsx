@@ -1,9 +1,9 @@
 "use client";
 
 import { Controller } from "react-hook-form";
-import { Input, InputNumber } from "rsuite";
+import { Form, Input, InputNumber } from "rsuite";
 
-const TenantIncomeInformationEdit = ({ control, responseData }) => {
+const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
   return (
     <div className="mt-10 pb-10">
       {/* title */}
@@ -61,7 +61,20 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" prefix="$" {...field} defaultValue={responseData?.AnnualSalary} min={0} />
+                  <InputNumber
+                    className="!w-full"
+                    prefix="$"
+                    {...field}
+                    defaultValue={responseData?.AnnualSalary}
+                    min={0}
+                    formatter={(value) => {
+                      if (!isNaN(value)) {
+                        return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+                      }
+                      return "";
+                    }}
+                    parser={(value) => parseInt(value.replace(/\D/g, ""), 10) || 0}
+                  />
                 </div>
               )}
             />
@@ -89,10 +102,24 @@ const TenantIncomeInformationEdit = ({ control, responseData }) => {
             <label className="text-sm font-medium">Current Credit Score</label>
             <Controller
               name="CurrentCreditScore"
+              rules={{
+                min: {
+                  value: 100,
+                  message: "Minimum Credit Score is 100",
+                },
+                max: {
+                  value: 850,
+                  message: "Maximum Credit Score is 850",
+                },
+              }}
               control={control}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" {...field} defaultValue={responseData?.CurrentCreditScore} />
+                  <InputNumber className="!w-full" min={100} max={850} {...field} defaultValue={responseData?.CurrentCreditScore} />
+
+                  <Form.ErrorMessage show={(!!errors?.CurrentCreditScore && !!errors?.CurrentCreditScore?.message) || false} placement="topEnd">
+                    {errors?.CurrentCreditScore?.message}
+                  </Form.ErrorMessage>
                 </div>
               )}
             />

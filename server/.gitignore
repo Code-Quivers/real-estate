@@ -5,3 +5,7 @@ node_modules
 dist
 logs
 data
+uploads
+
+# /prisma/migrations
+yarn.lock

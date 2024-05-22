@@ -15,3 +15,17 @@ export type IGenericErrorResponse = {
   message: string;
   errorMessages: IGenericErrorMessage[];
 };
+
+// for socket
+export type UserData = {
+  userId: string;
+};
+
+export type NewMessage = {
+  data: {
+    conversation: {
+      participants: { userId: string }[];
+    };
+    senderId: string;
+  };
+};

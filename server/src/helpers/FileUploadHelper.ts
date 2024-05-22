@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import multer from "multer";
 import path from "path";
 import { NextFunction, Request, Response } from "express";
@@ -61,9 +64,22 @@ const uploadPropertyImages2 = (req: Request, res: Response, next: NextFunction) 
   return cpUpload;
 };
 
+
+const dcoumentStorage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "data/uploads/documents/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueFilename = Date.now() + "-" + file.originalname;
+    cb(null, uniqueFilename);
+  },
+});
+const uploadDocumentFile = multer({ storage: dcoumentStorage });
+
 export const FileUploadHelper = {
   uploadProfileImage,
   uploadPropertyImages,
   uploadUpdatedUserImage,
   uploadPropertyImages2,
+  uploadDocumentFile,
 };

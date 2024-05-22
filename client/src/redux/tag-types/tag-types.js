@@ -8,6 +8,10 @@ export const tagTypes = {
   properties: "properties",
   propertyOwner: "propertyOwner",
   maintenanceRequest: "maintenanceRequest",
+  order: "order",
+  conversation: "conversation",
+  reports: "reports",
+  documents: "documents",
 };
 
 export const tagTypesList = [
@@ -18,4 +22,8 @@ export const tagTypesList = [
   tagTypes.items,
   tagTypes.propertyOwner,
   tagTypes.maintenanceRequest,
+  tagTypes.order,
+  tagTypes.conversation,
+  tagTypes.reports,
+  tagTypes.documents,
 ];

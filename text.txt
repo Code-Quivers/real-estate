@@ -1,0 +1,145 @@
+Property Owner ===========================
+
+1.Name (10%)
+2.phoneNumber    (20%)      
+3. profileImage (10%)          
+4. FinancialAccount (30%) [detailsSubmitted =(true -> 30% || false -> 15%)]
+5. Properties (30%)
+
+
+
+
+Tenant =====================================
+
+---------total 54%--- each for 36%-------------
+default score 10
+
+  // --------------should be total 54  ----------------
+    profileImage: 6,
+    dateOfBirth: 6,
+    socialSecurityNumber: 6,
+    presentAddress: 6,
+    phoneNumber: 6,
+    isCriminalRecord: 6,
+    placeToRent: 6,
+    affordableRentAmount: 6,
+    isPets: 6,
+    
+    // -----------others should be in total 36 ----------
+    
+    criminalRecordDescription: 2,
+    prevLandlordName: 2,
+    prevLandlordContactInfo: 2,
+    lengthOfPrevTenancy: 2,
+    leavingReason: 2,
+    isAnyLatePaymentReason: 1,
+    CurrentEmployerOrBusinessName: 1,
+    CurrentEmployerOrBusinessContactInfo: 1,
+    JobTitle: 2,
+    AnnualSalary: 2,
+    OtherIncomeSource: 2,
+    CurrentCreditScore: 2,
+    typeOfPets: 2,
+    isPetVaccinated: 2,
+    isSmoker: 2,
+    allergies: 2,
+    isHaveOtherMember: 2,
+    numberOfMember: 2,
+    isWillingToSignLeasingAgreement: 2,
+    isAnyExtraToMention: 1,
+//---------------- -------------------------------------------
+
+
+
+
+// unit (property)-------------------------------
+1. title
+2. numOfBed
+3. numOfBath
+4. monthlyRent
+5. address
+6. maintenanceCoveredTenant
+7. maintenanceCoveredOwner
+/------
+8. description
+9. schools
+10. universities
+11. allowedPets
+12. images
+ 
+
+
+
+// Service Provider -----------------------
+1. Name
+2. profileImage
+3. phoneNumber
+4. companyName
+5. companyAddress
+6. companyPhoneNumber
+7. companyEmailAddress  
+
+
+
+
+========================
+// report 
+[
+  {
+    image: "",
+    monthlyRent : 2000,
+    bed:"",
+    bath: "",
+    address: "",
+    tenantName: "",
+    tenantPhoto:"", 
+    
+  }
+]
+
+
+
+
+-------------------for monthly report ----------------------------->
+monthlyRent --> from backend
+rentCollected
+expenses
+information [] --> only 1 object of property and tenantName + image
+
+-------------------for annual report ----------------------------->
+annualRent 
+rentCollected
+expenses
+information [] --> only 1 object of property and tenantName + image
+
+
+
+
+----------------------Service Provider-------------------------------------
+
+// total should be 30
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  Service             Service?
+  
+  ------Service-------
+
+// total should be 70
+  minPrice                  Float?
+  maxPrice                  Float?
+  serviceDescription        String?
+  serviceLocation           String?
+  serviceCancellationPolicy String?
+  serviceAvailability       ServiceAvailabilityEnum?
+  serviceType               ServiceType?
+
+
+--- serviceAvailability
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
+  ALL_PRIORITIES

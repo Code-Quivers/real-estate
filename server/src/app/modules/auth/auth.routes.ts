@@ -3,28 +3,11 @@ import { AuthController } from "./auth.controller";
 
 const router = express.Router();
 
-router.post("/user/create", AuthController.createUser);
+router.post("/tenant/create-user", AuthController.createNewUserForTenant);
 
-router.post(
-  "/tenant/create-user",
+router.post("/property-owner/create-user", AuthController.createNewUserForPropertyOwner);
 
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForTenant,
-);
-
-router.post(
-  "/property-owner/create-user",
-
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForPropertyOwner,
-);
-
-router.post(
-  "/service-provider/create-user",
-
-  // validateRequest(UserValidation.createUser),
-  AuthController.createNewUserForServiceProvider,
-);
+router.post("/service-provider/create-user", AuthController.createNewUserForServiceProvider);
 
 router.post("/login", AuthController.userLogin);
 

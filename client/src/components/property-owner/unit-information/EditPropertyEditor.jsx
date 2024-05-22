@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import "react-quill/dist/quill.snow.css"; // Import Snow theme CSS (base theme)

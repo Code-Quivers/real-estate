@@ -36,6 +36,10 @@ const createNewUserForTenant = async (payload: IUserCreate): Promise<ILoginUserR
     const tenantData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,
@@ -68,6 +72,8 @@ const createNewUserForTenant = async (payload: IUserCreate): Promise<ILoginUserR
     }
 
     const { tenantId, user } = tenantUser;
+
+    //
 
     // ! getting log in information
     const accessToken = jwtHelpers.createToken(
@@ -129,6 +135,10 @@ const createNewUserForPropertyOwner = async (payload: IUserCreate): Promise<ILog
     const propertyOwnerData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,
@@ -221,6 +231,10 @@ const createNewUserForServiceProvider = async (payload: IUserCreate): Promise<IL
     const serviceProviderData: any = {
       firstName: payload.firstName,
       lastName: payload.lastName,
+      scoreRatio: {
+        score: 1,
+        total: 10,
+      },
       user: {
         connect: {
           userId: createdUser.userId,
@@ -376,7 +390,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     verifiedToken = jwtHelpers.verifyToken(token, config.jwt.refresh_secret as Secret);
   } catch (error) {
     // err
-    throw new ApiError(httpStatus.FORBIDDEN, "Invalid Refresh Token");
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid Refresh Token");
   }
   //! if user not exist
   // !checking deleted user's refresh token
@@ -411,7 +425,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     },
   });
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User does not exists!!");
+    throw new ApiError(httpStatus.UNAUTHORIZED, "User does not exists!!");
   }
 
   const { tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;

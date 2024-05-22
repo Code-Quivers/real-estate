@@ -4,14 +4,24 @@ import { Drawer, IconButton, Nav, Sidenav } from "rsuite";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
-import GroupIcon from "@rsuite/icons/legacy/Group";
-import DashboardIcon from "@rsuite/icons/Dashboard";
+import { Icon } from "@rsuite/icons";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { PiArrowLeftBold } from "react-icons/pi";
 import Image from "next/image";
+
+import { BsBuildingsFill } from "react-icons/bs";
+import { FaUsers, FaUsersCog } from "react-icons/fa";
+import { FaUserLarge } from "react-icons/fa6";
+import { IoDocumentText, IoSettings } from "react-icons/io5";
+import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
+import { MdCleanHands } from "react-icons/md";
+import { GrHostMaintenance } from "react-icons/gr";
+import { TbLogout2 } from "react-icons/tb";
+// import { useDispatch } from "react-redux";
+
 const PropertyOwnerDrawer = () => {
   const [open, setOpen] = useState(false);
 
@@ -21,17 +31,21 @@ const PropertyOwnerDrawer = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const { data: dataResponse, isError, isLoading, error } = useGetPropertyOwnerMyProfileQuery();
+  const { data: dataResponse } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
 
-  // console.log(data);
+  // Clear all caches
+  // const dispatch = useDispatch();
 
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    // dispatch(baseApi.util.resetApiState());
   };
-
+  const design = {
+    fontSize: "25px",
+  };
   return (
     <div>
       <div className="border-b py-1 shadow-lg flex justify-between items-center pr-3">
@@ -57,7 +71,7 @@ const PropertyOwnerDrawer = () => {
                 <Sidenav.Body>
                   <div
                     className="
-                    bg-[#29429f] p-5
+                    bg-[#29429f] p-3
                   
                   "
                   >
@@ -87,17 +101,17 @@ const PropertyOwnerDrawer = () => {
                     </div>
                   </div>
 
-                  <Nav appearance="subtle" className="divide-y-2 border-t-2 border-black divide-black">
+                  <Nav appearance="subtle" onClick={() => setOpen(false)} className="divide-y-2 divide-black">
                     <Nav.Item
                       as={Link}
                       href="/property-owner"
                       eventKey="1"
-                      icon={<DashboardIcon />}
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
-                        borderTop: "2px solid #000 !important",
+                        borderTop: "2px solid #000",
                       }}
+                      icon={<Icon style={design} as={FaUserLarge} />}
                     >
                       Account Information
                     </Nav.Item>
@@ -105,112 +119,133 @@ const PropertyOwnerDrawer = () => {
                       eventKey="2"
                       as={Link}
                       href="/property-owner/available-tenants"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/available-tenants" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/available-tenants" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={FaUsers} />}
                     >
                       Available Tenants
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
                       href="/property-owner/saved-tenants"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-tenants" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-tenants" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="3"
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={FaUsersCog} />}
                     >
                       Saved Tenants
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
                       href="/property-owner/unit-information"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/unit-information" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/unit-information" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="4"
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={BsBuildingsFill} />}
                     >
                       Unit Information
                     </Nav.Item>
-                    <Nav.Item style={{ backgroundColor: "#29429f" }} eventKey="5" className="hover:!bg-[#1b3697]" icon={<GroupIcon />}>
+                    <Nav.Item
+                      as={Link}
+                      href="/property-owner/documents"
+                      style={{ backgroundColor: "#29429f" }}
+                      eventKey="5"
+                      className="hover:!bg-[#1b3697]"
+                      icon={<Icon style={design} as={IoDocumentText} />}
+                    >
                       Documents
                     </Nav.Item>
+                    {/* messages */}
                     <Nav.Item
                       as={Link}
                       href="/property-owner/messages"
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="6"
-                      className="hover:!bg-[#1b3697]"
-                      icon={<GroupIcon />}
+                      className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/property-owner/messages") && "!bg-[#1b3697]"}`}
+                      icon={<Icon style={design} as={BiSolidMessageSquareDetail} />}
                     >
                       Messages
                     </Nav.Item>
+                    {/* Service Provider */}
                     <Nav.Item
                       as={Link}
                       href="/property-owner/service-providers"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/service-providers" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/service-providers" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="7"
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={MdCleanHands} />}
                     >
                       Service Providers
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
                       href="/property-owner/saved-service-providers"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-service-providers" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-service-providers" && "!bg-[#1b3697]"}`}
                       style={{ backgroundColor: "#29429f" }}
                       eventKey="8"
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={MdCleanHands} />}
                     >
                       Saved Service Providers
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
-                      href="/property-owner/reports"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/reports" && "!bg-[#17318f]"}`}
+                      href="/property-owner/payment"
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/payment" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
                       eventKey="9"
-                      icon={<GroupIcon />}
+                      icon={<Icon style={design} as={BiSolidReport} />}
+                    >
+                      Payment
+                    </Nav.Item>
+                    <Nav.Item
+                      as={Link}
+                      href="/property-owner/reports"
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/reports" && "!bg-[#1b3697]"}`}
+                      style={{
+                        backgroundColor: "#29429f",
+                      }}
+                      eventKey="10"
+                      icon={<Icon style={design} as={BiSolidReport} />}
                     >
                       Reports
                     </Nav.Item>
                     <Nav.Item
                       as={Link}
-                      href="/property-owner/settings"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#17318f]"}`}
+                      href="/property-owner/maintenance-requests"
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
                       style={{
                         backgroundColor: "#29429f",
                       }}
-                      eventKey="9"
-                      icon={<GroupIcon />}
+                      eventKey="11"
+                      icon={<Icon style={design} as={GrHostMaintenance} />}
+                    >
+                      Maintenance Request
+                    </Nav.Item>{" "}
+                    <Nav.Item
+                      as={Link}
+                      href="/property-owner/settings"
+                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#1b3697]"}`}
+                      style={{
+                        backgroundColor: "#29429f",
+                      }}
+                      eventKey="12"
+                      icon={<Icon style={design} as={IoSettings} />}
                     >
                       Settings
                     </Nav.Item>
                     <Nav.Item
-                      as={Link}
-                      href="/property-owner/maintenance-requests"
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#17318f]"}`}
-                      style={{
-                        backgroundColor: "#29429f",
-                      }}
-                      eventKey="9"
-                      icon={<GroupIcon />}
-                    >
-                      Maintenance Request
-                    </Nav.Item>
-                    <Nav.Item
                       onClick={logOut}
-                      className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#17318f]"}`}
+                      className={`hover:!bg-[#1b3697]`}
                       style={{
                         backgroundColor: "#29429f",
                         borderBottom: "2px solid #000",
                       }}
-                      eventKey="9"
-                      icon={<GroupIcon />}
+                      eventKey="13"
+                      icon={<Icon style={design} as={TbLogout2} />}
                     >
                       Log Out
                     </Nav.Item>

@@ -1,10 +1,5 @@
 import { RequestMaintenancePriorityEnum, ServiceType } from "@prisma/client";
 
-export type ISavedItem = {
-  userId: string;
-  tenantId: string;
-  itemType: string;
-};
 export type IAddRequestMaintenance = {
   isAnimal: boolean;
   animalDetails?: string;
@@ -12,4 +7,7 @@ export type IAddRequestMaintenance = {
   priority: RequestMaintenancePriorityEnum;
   issueType: ServiceType;
   description: string;
+};
+export type IUpdateRequestMaintenance = {
+  status: "PAUSED" | "COMPLETED";
 };

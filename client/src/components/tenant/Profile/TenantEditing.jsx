@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import { useForm } from "react-hook-form";
 import TenantIncomeInformationEdit from "./TenantIncomeInformationEdit";
@@ -39,17 +40,17 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: 
 
     const obj = {
       ...allData,
-      numberOfMember: convertToNumber(numberOfMember),
-      dateOfBirth: dateOfBirth?.toISOString(),
-      affordableRentAmount: convertToNumber(affordableRentAmount),
-      AnnualSalary: convertToNumber(AnnualSalary),
-      CurrentCreditScore: convertToNumber(CurrentCreditScore),
-      isCriminalRecord: convertToBoolean(isCriminalRecord),
-      isPets: convertToBoolean(isPets),
-      isPetVaccinated: convertToBoolean(isPetVaccinated),
-      isHaveOtherMember: convertToBoolean(isHaveOtherMember),
-      isSmoker: convertToBoolean(isSmoker),
-      isWillingToSignLeasingAgreement: convertToBoolean(isWillingToSignLeasingAgreement),
+      numberOfMember: numberOfMember !== undefined ? convertToNumber(numberOfMember) : undefined,
+      dateOfBirth: dateOfBirth !== undefined ? dateOfBirth?.toISOString() : undefined,
+      affordableRentAmount: affordableRentAmount !== undefined ? convertToNumber(affordableRentAmount) : undefined,
+      AnnualSalary: AnnualSalary !== undefined ? convertToNumber(AnnualSalary) : undefined,
+      CurrentCreditScore: CurrentCreditScore !== undefined ? convertToNumber(CurrentCreditScore) : undefined,
+      isCriminalRecord: isCriminalRecord !== undefined ? convertToBoolean(isCriminalRecord) : undefined,
+      isPets: isPets !== undefined ? convertToBoolean(isPets) : undefined,
+      isPetVaccinated: isPetVaccinated !== undefined ? convertToBoolean(isPetVaccinated) : undefined,
+      isHaveOtherMember: isHaveOtherMember !== undefined ? convertToBoolean(isHaveOtherMember) : undefined,
+      isSmoker: isSmoker !== undefined ? convertToBoolean(isSmoker) : undefined,
+      isWillingToSignLeasingAgreement: isWillingToSignLeasingAgreement !== undefined ? convertToBoolean(isWillingToSignLeasingAgreement) : undefined,
     };
 
     // creating form data
@@ -84,7 +85,7 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: 
           />
         )}
         {tabActive === 3 && <TenantRentalHistoryEdit responseData={responseData} control={control} />}
-        {tabActive === 4 && <TenantIncomeInformationEdit responseData={responseData} control={control} />}
+        {tabActive === 4 && <TenantIncomeInformationEdit errors={errors} responseData={responseData} control={control} />}
         {tabActive === 5 && <TenantPetsInformationEdit responseData={responseData} control={control} />}
         {tabActive === 6 && <TenantOtherInformationEdit responseData={responseData} control={control} />}
 

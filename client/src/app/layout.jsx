@@ -1,6 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "rsuite/dist/rsuite-no-reset.min.css";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
 import Providers from "@/lib/Provider";
 
 const inter = Inter({ subsets: ["latin"] });

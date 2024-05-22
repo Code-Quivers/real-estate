@@ -9,6 +9,14 @@ export const fileUrlKey = () => {
   return process.env.NEXT_PUBLIC_FILE_URL_KEY;
 };
 
+export const getMsgEndPoint = () => {
+  return process.env.NEXT_PUBLIC_MSG_ENDPOINT;
+};
+
+export const getClientUrl = () => {
+  return process.env.NEXT_PUBLIC_CLIENT_URL;
+};
+
 // ! for payment
 export const paymentClientId = () => {
   return process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
@@ -21,4 +29,11 @@ export const paymentDataSdk = () => {
 };
 export const paymentCurrency = () => {
   return process.env.NEXT_PUBLIC_PAYMENT_CURRENCY;
+};
+export const getUnitPackagePrices = () => {
+  return {
+    MONTHLY: process.env.NEXT_PUBLIC_MONTHLY_UNIT_PACKAGE_PRICE,
+    BIANNUALLY: process.env.NEXT_PUBLIC_BIANNUALLY_PACKAGE_PRICE,
+    ANNUALLY: process.env.NEXT_PUBLIC_ANNUALLY_PACKAGE_PRICE,
+  };
 };

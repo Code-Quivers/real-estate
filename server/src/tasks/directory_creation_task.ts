@@ -29,6 +29,14 @@ const create_required_directories = () => {
   if (!fs.existsSync("./data/uploads/maintenance-requests")) {
     fs.mkdirSync("./data/uploads/maintenance-requests");
   }
+  // Create tax document file upload
+  if (!fs.existsSync("./data/uploads/tax-documents")) {
+    fs.mkdirSync("./data/uploads/tax-documents");
+  }
+  // Create  document file upload
+  if (!fs.existsSync("./data/uploads/documents")) {
+    fs.mkdirSync("./data/uploads/documents");
+  }
 
   // Create backup directory where database backup file will be stored.
   if (!fs.existsSync("./data/backup")) {

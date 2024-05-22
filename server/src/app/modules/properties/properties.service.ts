@@ -22,29 +22,28 @@ import {
   propertiesRelationalFieldsMapper,
   propertiesSearchableFields,
 } from "./properties.constants";
-import { extractNonNullValues } from "./properties.utils";
+import { calculatePropertyScore } from "./properties.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
   // Ensure req.files and req.body exist and have correct types
   const images: IUploadFile[] = (req.files as any) || [];
   const data: any[] = req?.body || [];
-
   // Use meaningful variable names
   const imagesPath: { [key: number]: string[] } = {};
   // Process images
-  images.forEach((image: IUploadFile) => {
+  images?.forEach((image: IUploadFile) => {
     const propId: number = parseInt(image.originalname.split("_")[0]);
-
     // Use the logical nullish assignment operator to handle undefined case
     imagesPath[propId] ??= [];
-    imagesPath[propId].push(`property/${image.originalname}`);
+    imagesPath[propId].push(`property/${image.filename}`);
   });
 
   // Process property info
-  const propertyInfo: IPropertyData[] = data.map((item: any) => {
-    const propId: number = item.id;
+  const propertyInfo: IPropertyData[] = data?.map((item: any) => {
+    const propId: number = item?.fieldId;
     const imagesForId: string[] = imagesPath[propId] || []; // Handle case when no images found for property id
+
     return {
       ...item, // Spread the properties of item
       images: imagesForId,
@@ -54,28 +53,63 @@ const createNewProperty = async (profileId: string, req: Request) => {
 
   // Remove the 'id' property from each item in propertyInfo
   propertyInfo.forEach((item: any) => {
-    delete item["id"];
+    delete item["fieldId"];
   });
+  // if property is created , creating a new order
 
-  const property = await prisma.$transaction(async (transactionClient) => {
-    const result = await transactionClient.property.createMany({
-      data: propertyInfo,
-    });
-    if (!result) {
+  const createdData = await prisma.$transaction(async (transactionClient) => {
+    //
+    const result = [];
+    for (const singleProperty of propertyInfo) {
+      // updating unit score
+      const unitScore = calculatePropertyScore(singleProperty);
+      //
+      const createdProperty = await transactionClient.property.create({
+        data: { ...singleProperty, score: unitScore.propertyScore, scoreRatio: unitScore.scoreRatio },
+      });
+      result.push(createdProperty.propertyId);
+    }
+
+    // const results = await transactionClient.property.createMany({
+    //   data: propertyInfo,
+
+    // });
+    if (!result?.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
     }
-    return result;
+
+    const createOrder = await transactionClient.order.create({
+      data: {
+        ownerId: profileId,
+        properties: {
+          connect: result.map((propertyId) => ({ propertyId })),
+        },
+      },
+      include: {
+        _count: true,
+        properties: {
+          select: {
+            propertyId: true,
+            title: true,
+          },
+        },
+        owner: true,
+      },
+    });
+
+    return createOrder;
   });
-  return property;
+  return createdData;
 };
 
-// ! Getting all property
+// ! Getting all property========================================================================
 const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
+  // Search
   if (searchTerm) {
     andConditions.push({
       OR: propertiesSearchableFields.map((field: any) => ({
@@ -87,6 +121,7 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
     });
   }
 
+  // Filter
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map((key) => {
@@ -109,23 +144,24 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
 
   const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
+
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
       include: {
         owner: true,
       },
-      where: whereConditions,
+      where: { ...whereConditions, isRented: false },
       skip,
       take: limit,
       orderBy:
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
           : {
-              createdAt: "desc",
+              createdAt: "asc",
             },
     });
     const total = await prisma.property.count({
-      where: whereConditions,
+      where: { ...whereConditions, isRented: false },
     });
 
     const totalPage = Math.ceil(total / limit);
@@ -151,7 +187,6 @@ const getPropertyOwnerAllProperty = async (
   options: IPaginationOptions,
 ) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-
   const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
@@ -188,14 +223,31 @@ const getPropertyOwnerAllProperty = async (
 
   const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
   //
+
   const result = await prisma.$transaction(async (transactionClient) => {
     const properties = await transactionClient.property.findMany({
       include: {
-        owner: true,
+        owner: {
+          select: {
+            createdAt: true,
+            firstName: true,
+            lastName: true,
+            userId: true,
+          },
+        },
         Tenant: true,
         _count: true,
         maintenanceRequests: true,
-        serviceProviders: true,
+        serviceProviders: {
+          include: {
+            Service: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
 
         // serviceProviders: {
         //   include: {
@@ -210,8 +262,9 @@ const getPropertyOwnerAllProperty = async (
       },
       where: {
         ...whereConditions,
-        owner: {
-          propertyOwnerId: profileId,
+        ownerId: profileId,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
         },
       },
 
@@ -229,6 +282,9 @@ const getPropertyOwnerAllProperty = async (
         ...whereConditions,
         owner: {
           propertyOwnerId: profileId,
+        },
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
         },
       },
     });
@@ -297,10 +353,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
   } = req?.body as IPropertyReqPayload;
 
   const result = await prisma.$transaction(async (transactionClient) => {
-    const updatedPropertyData: Partial<Property> = extractNonNullValues({
+    const updatedPropertyData: any = {
       title,
       address,
-      images: imagesPath,
       allowedPets,
       description,
       maintenanceCoveredOwner,
@@ -310,7 +365,9 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
       schools,
       universities,
       monthlyRent,
-    });
+    };
+
+    if (imagesPath?.length) updatedPropertyData["images"] = imagesPath;
 
     //
     const updatedProperty = await transactionClient.property.update({
@@ -322,6 +379,19 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
     if (!updatedProperty) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Creation Failed !");
     }
+
+    if (updatedProperty) {
+      // updating unit score
+      const unitScore = calculatePropertyScore(updatedProperty);
+      //
+      await transactionClient.property.update({
+        where: {
+          propertyId,
+        },
+        data: { score: unitScore.propertyScore, scoreRatio: unitScore.scoreRatio },
+      });
+    }
+
     return updatedProperty;
   });
   return result;
@@ -388,6 +458,7 @@ const assignServiceProviderToProperty = async (profileId: string, payload: IAssi
 
   return result;
 };
+
 // ! assign tenant user to property or unit -----------------
 const assignTenantToProperty = async (profileId: string, payload: IAssignTenantToProperty) => {
   const { propertyId, tenantId } = payload;
@@ -402,10 +473,26 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
     });
 
     if (!isOwner) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        "You are not the owner of this property or this property does not exist",
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property does not exist");
+    }
+
+    if (isOwner?.planType === "PENDING" || isOwner?.planType === "PREMIUM") {
+      const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
+        where: {
+          propertyOwnerId: profileId,
+          FinancialAccount: {
+            is: {
+              detailsSubmitted: true,
+            },
+          },
+        },
+      });
+
+      // check financial account added or not
+
+      if (!isFinancialAdded) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
+      }
     }
 
     // check if already assigned to other property

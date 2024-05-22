@@ -10,4 +10,5 @@ export type ICreateSavedItem = {
   itemType: ItemType;
   userId: string;
   serviceProviderId?: string;
+  propertyId?: string;
 };

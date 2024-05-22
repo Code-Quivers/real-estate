@@ -9,7 +9,12 @@ import { TenantsRouters } from "../modules/tenants/tenants.routes";
 import { ServicesRoutes } from "../modules/services/services.routes";
 import { SavedItemRouter } from "../modules/savedItem/savedItem.routes";
 import { MaintenanceRequestRouter } from "../modules/maintenanceRequest/maintenanceRequest.routes";
-import { PaypalRoutes } from "../modules/paymentPaypal/paypal.routes";
+import { OrderRoutes } from "../modules/orders/orders.routes";
+import { PaymentRoutes } from "../modules/payment/payment.routes";
+import { StripeRoutes } from "../modules/paymentStripe/stripe.routes";
+import { ConversationRoutes } from "../modules/conversations/conversation.routes";
+import { ReportsRoutes } from "../modules/reports/reports.routes";
+import { DocumentsRoutes } from "../modules/documents/documents.routes";
 
 const router = express.Router();
 
@@ -48,9 +53,29 @@ const moduleRoutes = [
     route: MaintenanceRequestRouter,
   },
   {
-    path: '/payment-paypal',
-    route: PaypalRoutes,
+    path: "/payment",
+    route: PaymentRoutes,
   },
+  {
+    path: "/payment-stripe",
+    route: StripeRoutes,
+  },
+  {
+    path: "/orders",
+    route: OrderRoutes,
+  },
+  {
+    path: "/conversations",
+    route: ConversationRoutes,
+  },
+  {
+    path: "/reports",
+    route: ReportsRoutes,
+  },
+  {
+    path: "/documents",
+    route: DocumentsRoutes,
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

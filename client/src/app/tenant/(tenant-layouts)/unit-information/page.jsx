@@ -8,6 +8,8 @@ import { useGetTenantMyUnitInformationQuery } from "@/redux/features/tenant/tena
 import { fileUrlKey } from "@/configs/envConfig";
 import TenantMakePaymentModal from "@/components/tenant/unitInformation/TenantMakePaymentModal";
 import { useRouter } from "next/navigation";
+import Score from "@/components/Shared/Score/Score";
+import { getPackageExpiredDates } from "@/utils/GetDateCalculation";
 
 const TenantUnitInformation = () => {
   const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery();
@@ -16,56 +18,63 @@ const TenantUnitInformation = () => {
   const handleClose = () => setIsOpenMakePayment(false);
   const router = useRouter();
   return (
-    <div className="max-w-[1050px] mt-6 2xl:mx-auto md:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto">
+    <div className="max-w-6xl mt-6 xl:mx-auto mx-3  max-lg:pb-10">
       <h2 className="text-2xl mb-5 text-center">Unit Information</h2>
 
       {!isLoading && !isError && unitRes && (
         <div>
-          <div className="grid lg:grid-cols-6 max-lg:gap-5  grid-cols-1 lg:border border-[#707070] ">
+          <div className="grid lg:grid-cols-6 max-lg:gap-5 grid-cols-1 lg:border lg:rounded-md">
             <div
               key={Math.random()}
-              className="  lg:col-span-2 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer max-lg:border border-[#707070] max-lg:shadow-lg "
+              className="lg:col-span-2 lg:m-2 border bg-white rounded-md transition-all duration-500 ease-in-out  max-lg:border shadow"
             >
               <Image
                 width={300}
                 height={300}
                 src={unitRes?.property?.images?.length ? `${fileUrlKey()}/${unitRes?.property?.images[0]}` : unitInfoImage}
-                className="object-cover w-full object-center"
+                className="object-cover w-full object-center rounded-t-md"
                 alt=""
               />
 
               <div className="flex justify-between items-start mt-2 px-2.5 py-1">
                 <div>
                   <h2 className="text-lg font-medium">{unitRes?.property?.title}</h2>
-                  <h2 className="text-lg">${unitRes?.property?.monthlyRent}</h2>
+                  <h2 className="text-lg">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unitRes?.property?.numOfBed} bed</span> <span>{unitRes?.property?.numOfBath} bath</span>
                   </h2>
                   <h2 className="text-sm">{unitRes?.property?.address}</h2>
                 </div>
-                <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                  <div className=" flex w-full flex-col justify-center items-center">
-                    <span className="font-medium">9</span>
-                    <span className="w-[70%] border-t border-[#b6b6b6]" />
-                    <span className="font-medium">10</span>
-                  </div>
+                <div>
+                  <Score score={unitRes?.property?.scoreRatio?.score} total={unitRes?.property?.scoreRatio?.total} />
                 </div>
               </div>
             </div>
 
-            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l   border-[#707070] p-20 max-lg:shadow-lg">
+            <div className="  lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l p-20 max-lg:shadow max-lg:rounded-md">
               <div>
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
-                  <span>0.00</span>
+                  <span>{unitRes?.dueRent}</span>
+                  {/* <span>Month : {unitRes?.dueMonths}</span> */}
                 </p>
-                <Button onClick={() => setIsOpenMakePayment(true)} className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full">
-                  Make Payment
+                <Button
+                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-50"
+                  onClick={() => setIsOpenMakePayment(true)}
+                  disabled={
+                    unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired
+                      ? true
+                      : false || unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0
+                        ? true
+                        : false
+                  }
+                >
+                  {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}
                 </Button>
               </div>
             </div>
-            <div className=" relative lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l border-[#707070] p-20 max-lg:shadow-lg">
+            <div className=" relative lg:col-span-2 flex justify-center items-center max-lg:border lg:border-l p-20 max-lg:shadow max-lg:rounded-md">
               <div>
                 <h2 className="text-2xl text-center font-semibold mb-2.5 leading-9">
                   Request <br />
@@ -75,7 +84,7 @@ const TenantUnitInformation = () => {
                 <Button
                   as={Link}
                   href="/tenant/unit-information/request-maintenance"
-                  className="!bg-[#29429F] !text-white !text-xl !px-5 py-1.5 !rounded-full"
+                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full"
                 >
                   Send Request
                 </Button>
@@ -90,9 +99,9 @@ const TenantUnitInformation = () => {
         </div>
       )}
 
-      {!isLoading && isError && unitRes && (
+      {!isLoading && isError && !unitRes && (
         <div className="flex justify-center items-center h-[60vh]">
-          <h3 className="text-2xl font-semibold">{error?.message || "You haven`t assigned to any Unit"}</h3>
+          <h3 className="text-2xl font-semibold text-red-600">{error?.message || "You haven`t assigned to any Unit"}</h3>
         </div>
       )}
       {isLoading && (
@@ -105,7 +114,14 @@ const TenantUnitInformation = () => {
       {/*  */}
 
       <div>
-        <TenantMakePaymentModal isOpen={isOpenMakePayment} handleClose={handleClose} />
+        <TenantMakePaymentModal
+          isOpen={isOpenMakePayment}
+          handleClose={handleClose}
+          propertyInfo={unitRes?.property}
+          tenantId={unitRes?.tenantId}
+          dueRent={unitRes?.dueRent}
+          dueMonths={unitRes?.dueMonths}
+        />
       </div>
     </div>
   );

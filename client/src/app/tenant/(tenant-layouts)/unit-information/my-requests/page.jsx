@@ -10,9 +10,11 @@ const MyMaintenanceRequests = () => {
   const { data: myAllRequests, isError, isLoading, isFetching, error } = useGetMyRequestedMaintenanceQuery();
   return (
     <div className="max-w-[1150px] mt-6 2xl:mx-auto md:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto">
-      <div>
-        <h2>My Maintenance Requests | total {myAllRequests?.data?.length || 0}</h2>
-      </div>
+      {!isError && (
+        <div>
+          <h2>My Maintenance Requests | total {myAllRequests?.data?.length || 0}</h2>
+        </div>
+      )}
 
       {!isLoading && isError && (
         <div className="flex justify-center items-center min-h-[70vh] text-red-400 font-semibold text-3xl">
@@ -21,7 +23,7 @@ const MyMaintenanceRequests = () => {
       )}
       <div></div>
 
-      <div className="mt-10 ">
+      <div className="mt-10 bg-white shadow-md rounded-lg">
         {!isError && (
           <Table
             bordered={true}

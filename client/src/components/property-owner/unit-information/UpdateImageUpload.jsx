@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client"; // UpdateImageUpload.jsx
 import { Uploader, Button } from "rsuite";
 import { Controller } from "react-hook-form";
@@ -16,7 +17,6 @@ const UpdateImageUpload = ({ control, setValue, images }) => {
   const handleChangeImages = (files) => {
     if (files.length > 0) {
       const fileSizeLimit = 512 * 2 * 1024; // 1 MB
-      console.log(files, "handleOnChanges");
       // Update the "files" field in the React Hook Form
       setValue("files", files);
 

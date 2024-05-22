@@ -6,11 +6,13 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { updateTenantData } from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
 import { tenantsRelationalFields, tenantsRelationalFieldsMapper, tenantsSearchableFields } from "./tenants.constants";
+import bcrypt from "bcrypt";
+import config from "../../../config";
 
 // ! get all tenants
 const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
@@ -113,7 +115,7 @@ const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: I
         if (tenantsRelationalFields.includes(key)) {
           return {
             [tenantsRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
+              [key]: (filterData as any)[key],
             },
           };
         } else {
@@ -135,6 +137,7 @@ const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: I
         user: {
           select: {
             email: true,
+            userId: true,
           },
         },
       },
@@ -188,6 +191,7 @@ const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
           select: {
             email: true,
             createdAt: true,
+            userName: true,
           },
         },
       },
@@ -196,7 +200,10 @@ const getSingleTenant = async (tenantId: string): Promise<Tenant | null> => {
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Not Found!!!");
     }
-    return tenants;
+    const scoreRatio = calculateTenantScoreRatio(tenants.score, 100);
+    //  rented  unit score
+
+    return { ...tenants, scoreRatio };
   });
 
   return result;
@@ -208,14 +215,8 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
   // const profileImagePath = profileImage?.path;
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const { oldProfileImagePath, AnnualSalary, CurrentCreditScore, affordableRentAmount, numberOfMember, ...updates } =
-    req.body as ITenantUpdateRequest;
-
+  const { oldProfileImagePath, password, ...updates } = req.body as ITenantUpdateRequest;
   const tenantReqData = {
-    AnnualSalary: Number(AnnualSalary),
-    CurrentCreditScore: Number(CurrentCreditScore),
-    numberOfMember: Number(numberOfMember),
-    affordableRentAmount: Number(affordableRentAmount),
     profileImage: profileImagePath,
     ...updates,
   };
@@ -234,18 +235,44 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     if (!isTenantProfileExists) throw new ApiError(httpStatus.NOT_FOUND, "Tenant Profile Not Found!");
 
     // updated data from request
-    const newTenantData: Partial<ITenantUpdateRequest> = updateTenantData(tenantReqData);
+    // const newTenantData: Partial<ITenantUpdateRequest> = updateTenantData(tenantReqData);
 
     // ! updating
     const res = await transactionClient.tenant.update({
       where: {
         tenantId,
       },
-      data: newTenantData,
+      data: tenantReqData,
     });
 
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Updating Failed !");
+    }
+
+    if (res) {
+      const profileScore = await calculateTenantProfileScore(res);
+
+      await transactionClient.tenant.update({
+        where: {
+          tenantId,
+        },
+        data: {
+          score: profileScore.profileScore,
+          scoreRatio: profileScore.scoreRatio,
+        },
+      });
+    }
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+      await transactionClient.user.update({
+        where: {
+          userId: res?.userId,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
     }
 
     return res;
@@ -255,23 +282,61 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
+function differenceInMonths(date1: any, date2 = new Date()) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  const yearDiff = d2.getFullYear() - d1.getFullYear();
+  const monthDiff = d2.getMonth() - d1.getMonth();
+
+  return yearDiff * 12 + monthDiff;
+}
+
 // get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const tenants = await transactionClient.tenant.findUnique({
       where: {
         tenantId,
+        property: {
+          isNot: null,
+        },
       },
       select: {
         property: true,
         tenantId: true,
       },
     });
-
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
     }
-    return tenants;
+    const propertyId = tenants.property?.propertyId;
+
+    const orderData = await transactionClient.order.findMany({
+      where: {
+        tenantId: tenantId,
+        properties: {
+          some: { propertyId: propertyId },
+        },
+        orderStatus: "CONFIRMED",
+      },
+      select: {
+        updatedAt: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+
+    const dueMonths = orderData.length > 0 ? differenceInMonths(orderData[0].updatedAt) : 1;
+
+    const tenantUnitInfo = {
+      ...tenants,
+      dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
+      dueMonths: dueMonths,
+    };
+
+    return tenantUnitInfo;
   });
 
   return result;

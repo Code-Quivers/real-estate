@@ -1,49 +1,81 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { availableUnits } from "../AvailableUnits/AvailableUnitsCardFakeData";
 import SavedUnitsModal from "./SavedUnitModal";
+import houseLogo from "@/assets/house/house-logo.jpg";
+import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
+import { fileUrlKey } from "@/configs/envConfig";
+import Score from "@/components/Shared/Score/Score";
+import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
+import SavedUnitsCardSwiper from "./swiper/SavedUnitsCardSwiper";
 
 const SavedUnitsCard = () => {
-  const [units, setUnits] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [isOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const handleClose = () => setModalOpen(false);
+  const query = {};
+  query["itemType"] = "PROPERTY";
+  const { data: availableUnits, isLoading } = useGetAllSavedItemsQuery({ ...query });
 
   return (
-    <div>
-      {/* Available units card start */}
+    <div className="mt-3 mx-3 max-w-6xl lg:mx-auto min-h-screen">
+      {/* if is loading */}
+
+      {/* if not found any units */}
+      {!isLoading && !availableUnits?.data?.data?.length && (
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <h3 className="text-lg ">No Saved Unit Found... </h3>
+        </div>
+      )}
+
+      {/* saved units card start */}
+      {isLoading && (
+        <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+          <UnitCardSkeleton />
+        </div>
+      )}
+
       <div className="mt-2 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-        {availableUnits.map((unit) => (
-          <div
-            onClick={() => {
-              setModalOpen(true);
-              setUnits(unit);
-            }}
-            key={Math.random()}
-            className="border border-gray-700 hover:bg-[#29429F] transition-all duration-500 ease-in-out hover:text-white cursor-pointer"
-          >
-            <Image width="full" objectFit="cover" src={unit.image} alt="Tenant avialable units" />
-            <div className="flex justify-between items-start mt-2 px-2.5 py-1">
-              <div>
-                <h2 className="text-sm">{unit.price}</h2>
-                <h2 className="text-sm">
-                  <span>{unit.bed}</span> <span>{unit.bath}</span>
-                </h2>
-                <h2 className="text-sm">{unit.address}</h2>
-              </div>
-              <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
-                <div className=" flex w-full flex-col justify-center items-center">
-                  <span className="font-medium">9</span>
-                  <span className="w-[70%] border-t border-[#b6b6b6]" />
-                  <span className="font-medium">10</span>
+        {!isLoading &&
+          availableUnits?.data?.data?.length > 0 &&
+          availableUnits?.data?.data?.map((unit) => (
+            <div
+              onClick={() => {
+                setModalOpen(true);
+                setModalData(unit);
+              }}
+              key={Math.random()}
+              className="border  rounded-lg hover:shadow-lg shadow-md hover:border transition-all duration-500 ease-in-out cursor-pointer"
+            >
+              <SavedUnitsCardSwiper propertyImages={unit?.property?.images} />
+              {/* <Image
+                width={300}
+                height={300}
+                className="w-full h-[200px]  object-cover rounded-t-lg  "
+                src={unit?.property?.images?.length ? `${fileUrlKey()}/${unit?.property?.images[0]}` : houseLogo}
+                alt="Unit Image"
+              /> */}
+              <div className="flex w-full justify-between items-start px-3 py-4">
+                <div>
+                  <h2 className="text-sm lg:font-semibold">${unit?.property?.monthlyRent?.toLocaleString()}</h2>
+                  <h2 className="text-sm">
+                    <span>{unit?.property?.numOfBed ? unit?.property?.numOfBed : "0"} Bed </span> |{" "}
+                    <span>{unit?.property?.numOfBath ? unit?.property?.numOfBath : "0"} Bath</span>
+                  </h2>
+                  <h2 className="text-sm">{unit?.property?.address ? unit?.property?.address : "--"}</h2>
+                </div>
+                <div>
+                  <Score score={unit?.property?.scoreRatio?.score} total={unit?.property?.scoreRatio?.total} />
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
+
       {/* modal */}
-      <SavedUnitsModal open={modalOpen} setOpen={setModalOpen} availableUnits={availableUnits} units={units} />
-      {/* Available units card end */}
+      <SavedUnitsModal open={isOpen} handleClose={handleClose} units={modalData} />
     </div>
   );
 };

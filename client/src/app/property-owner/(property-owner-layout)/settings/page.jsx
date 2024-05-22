@@ -1,4 +1,5 @@
 "use client";
+import BankingCredentials from "@/components/property-owner/banking-credentials/BankingCredentials";
 import PropertyOwnerProfileEditModal from "@/components/property-owner/profile/PropertyOwnerProfileEditModal";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { useState } from "react";
@@ -9,17 +10,15 @@ const PropertyOwnerSettingPage = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { data } = useGetPropertyOwnerMyProfileQuery(null);
-  console.log(data, '--------')
-  console.log(data?.paypalMerchentId, 'dddddd')
-  console.log(data?.paypalBussinessEmail)
+
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
       <div className="flex justify-center  py-5">
         <h2 className="text-2xl font-semibold ">Settings</h2>
       </div>
       {/*  */}
-      <div className="border border-[#707070] rounded-2xl">
-        <div className="p-5">
+      <div className="border  bg-white shadow-lg rounded-2xl">
+        <div className=" p-2.5 md:p-5">
           <div className="flex justify-between items-center">
             <div>
               <h4 className="text-xl font-medium">Profile Information</h4>
@@ -30,50 +29,34 @@ const PropertyOwnerSettingPage = () => {
               </button>
             </div>
           </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">
-              Name : {data?.data?.firstName ?? "--"}
-              {data?.data?.lastName ?? "-"}
-            </h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Email : {data?.data?.user?.email}</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Username : {data?.data?.user?.userName}</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Password</h3>
+          <div className="my-5 grid grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-5">
+            <div>
+              <h3 className="text-gray-600">Name</h3>
+              <p>
+                {data?.data?.firstName ?? "--"} {data?.data?.lastName ?? "-"}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-gray-600">Email</h3>
+              <p>{data?.data?.user?.email}</p>
+            </div>
+            <div>
+              <h3 className="text-gray-600">Username</h3>
+              <p>{data?.data?.user?.userName}</p>
+            </div>
           </div>
         </div>
-        <div className="border-t  border-[#707070] p-5">
-          <div>
-            <h4 className="text-xl font-medium">Card Information</h4>
-          </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">First Name</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Last Name</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Card Number</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">CVV</h3>
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Card Expiration</h3>
-          </div>
-          <div>
-            <button className="text-green-600 font-medium hover:underline">Change Card</button>
-          </div>
-        </div>
-        <div className="border-t border-[#707070] p-5">
-          <div>
-            <h4 className="text-xl font-medium">Paypal Information</h4>
-          </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Paypal Bussiness Email:{data?.data?.paypalBussinessEmail}</h3>
-          </div>
-          <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Paypal Merchent Id:{data?.data?.paypalMerchentId}</h3>
-          </div>
 
+        <div className="border-t p-5">
+          <BankingCredentials />
         </div>
         {/* current plan */}
-        <div className="border-t border-[#707070] p-5">
+        <div className="border-t   p-5">
           <div>
             <h4 className="text-xl font-medium">Current Plan</h4>
           </div>
           <div className="my-5 grid  grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-8">
-            <h3 className="border p-3 rounded-2xl border-[#707070]">Monthly Plan - 99$/month</h3>
+            <h3>Monthly Plan - 99$/month</h3>
           </div>
           <div>
             <button className="text-green-600 font-medium hover:underline">Change Plan</button>

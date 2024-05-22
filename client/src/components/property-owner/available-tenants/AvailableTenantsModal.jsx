@@ -5,13 +5,16 @@ import { fileUrlKey } from "@/configs/envConfig";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Button, Modal, Notification, Placeholder, Popover, Progress, Whisper, toaster } from "rsuite";
+import { Drawer, Notification, Placeholder, Popover, Whisper, toaster, useMediaQuery } from "rsuite";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
+import moment from "moment";
 
 const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData }) => {
+  const [isMobile] = useMediaQuery("(max-width: 575px)");
   const handleClose = () => setModalOpened(false);
-  const { data: unitRes, isLoading: isLoadingUnits, isFetching } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
 
   const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
 
@@ -56,6 +59,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
     });
   };
 
+  // ! side effect
   useEffect(() => {
     if (!isLoadingAssign && !isErrorAssign && isSuccessAssign && !errorAssign) {
       toaster.push(
@@ -86,114 +90,180 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
 
   return (
     <>
-      <Modal
-        overflow={false}
-        size="lg"
-        dialogAs="div"
-        className="!rounded-2xl mt-40  bg-white mx-auto w-full"
-        open={isModalOpened}
-        onClose={handleClose}
-      >
-        <Modal.Body className="" style={{ padding: 0 }}>
-          <div className="p-5">
+      <Drawer placement={isMobile ? "bottom" : "right"} size={isMobile ? "lg" : "xs"} open={isModalOpened} onClose={handleClose}>
+        <Drawer.Header>
+          <Drawer.Title>
+            <span className="font-semibold">Tenant Details</span>
+          </Drawer.Title>
+        </Drawer.Header>
+        <Drawer.Body style={{ padding: 0 }}>
+          <div className="px-5 py-2">
             {/* top items */}
-            <div className="grid grid-cols-5">
-              <div className="col-span-4 flex items-center gap-5 ">
-                <div className="">
-                  <Image
-                    width={120}
-                    height={120}
-                    className="w-[120px] ring-2 ring-[#545454] border-black shadow-2xl  h-[120px] object-cover   rounded-full  "
-                    src={modalData?.profileImage ? `${fileUrlKey()}/${modalData?.profileImage}` : profileLogo}
-                    alt="Tenant Photo"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <h3>
-                    {modalData?.firstName} {modalData?.lastName}
-                  </h3>
-                  <h3>Place to rent : -- ?? </h3>
-                  <h3>Rent willing to pay : {modalData?.affordableRentAmount ?? "--"}</h3>
-                </div>
+
+            <div className="flex items-center gap-2 lg:gap-5 ">
+              <div className="">
+                <Image
+                  width={100}
+                  height={100}
+                  className="!w-[80px]   !h-[80px] object-cover   rounded-full  "
+                  src={modalData?.profileImage ? `${fileUrlKey()}/${modalData?.profileImage}` : profileLogo}
+                  alt="Tenant Photo"
+                />
               </div>
-              <div className="col-span-1">
-                <div style={{ width: 120, marginTop: 10 }}>
-                  <Progress.Circle percent="80" strokeColor="green" />
-                </div>
+              {/* tenant data top */}
+              <div className="space-y-1">
+                <h3 className="max-md:font-medium">
+                  {modalData?.firstName} {modalData?.lastName}
+                </h3>
+                <h3 className="max-md:text-sm ">Place to rent : {modalData?.placeToRent ? modalData?.placeToRent : "N/A"} </h3>
+                <h3 className="max-md:text-sm">
+                  Rent willing to pay : {modalData?.affordableRentAmount ? `$${modalData?.affordableRentAmount?.toLocaleString()}` : "N/A"}
+                </h3>
               </div>
             </div>
 
             {/* action */}
-            <div className="flex justify-center gap-5  mx-auto max-w-md mt-10">
-              <Button
-                loading={isLoading}
-                onClick={() => saveTenantData()}
-                className="!bg-primary w-full !text-white !px-2 !py-1 !text-base !rounded-none "
-              >
-                Save
-              </Button>
-              <button className="bg-primary text-white px-2 py-2  w-full">Contact</button>
-              <Whisper
-                placement="bottomStart"
-                trigger="click"
-                speaker={
-                  <Popover as="div" className=" max-h-[450px] w-[370px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                    <div className="p-3 space-y-2">
-                      {!isLoadingUnits &&
-                        unitRes?.data?.length > 0 &&
-                        unitRes?.data?.map((singleUnit) => (
-                          <div key={Math.random()}>
-                            <button
-                              onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                              className="flex  w-full gap-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
-                            >
-                              <div>
-                                <Image
-                                  width={120}
-                                  height={120}
-                                  className="w-[150px] h-[90px]   p-1 object-cover rounded-xl"
-                                  src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
-                                  alt="photo"
-                                />
-                              </div>
-                              <div className="flex w-full flex-col justify-between my-2 text-[14px] font-medium">
-                                <h3>${singleUnit?.monthlyRent}</h3>
-                                <h3>
-                                  {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
-                                </h3>
-                                <h3>{singleUnit?.address}</h3>
-                              </div>
-                            </button>
-                          </div>
-                        ))}
+            <div className="flex  py-3 gap-2">
+              <div className="w-full">
+                <button
+                  onClick={() => saveTenantData()}
+                  className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                >
+                  Save
+                </button>
+              </div>
+              {/* Contact  */}
+              <div className="w-full">
+                <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
+              </div>
+              {/* whisper */}
+              <div className="w-full">
+                <Whisper
+                  preventOverflow
+                  placement="auto"
+                  trigger="click"
+                  speaker={
+                    <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                      <div className="p-3 space-y-2">
+                        {!isLoadingUnits &&
+                          unitRes?.data?.length > 0 &&
+                          unitRes?.data?.map((singleUnit) => (
+                            <div key={Math.random()}>
+                              <button
+                                onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                                className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                              >
+                                <div className="col-span-1 h-full">
+                                  <Image
+                                    width={500}
+                                    height={500}
+                                    className="w-full h-full p-1 object-cover rounded-xl"
+                                    src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
+                                    alt="photo"
+                                  />
+                                </div>
+                                <div className="flex w-full flex-col col-span-2 justify-between my-2 text-sm ml-3">
+                                  <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                                  <h3>
+                                    {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
+                                  </h3>
+                                  <h3>{singleUnit?.address}</h3>
+                                </div>
+                              </button>
+                            </div>
+                          ))}
 
-                      {isLoadingUnits && (
-                        <div className=" mt-10 gap-y-5 flex flex-col">
-                          <div>
-                            <Placeholder.Graph active height={150} />
+                        {isLoadingUnits && (
+                          <div className=" mt-10 gap-y-5 flex flex-col">
+                            <div>
+                              <Placeholder.Graph active height={150} />
+                            </div>
+                            <div>
+                              <Placeholder.Graph active height={150} />
+                            </div>
                           </div>
-                          <div>
-                            <Placeholder.Graph active height={150} />
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* if no data is available */}
-                      {!isLoadingUnits && !unitRes?.data?.length && (
-                        <div className="flex justify-center min-h-[10vh] items-center">
-                          <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
-                        </div>
-                      )}
-                    </div>
-                  </Popover>
-                }
-              >
-                <button className="bg-primary text-white px-2 py-1 w-full">Add</button>
-              </Whisper>
+                        {/* if no data is available */}
+                        {!isLoadingUnits && !unitRes?.data?.length && (
+                          <div className="flex justify-center min-h-[10vh] items-center">
+                            <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
+                          </div>
+                        )}
+                      </div>
+                    </Popover>
+                  }
+                >
+                  <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
+                </Whisper>
+              </div>
+            </div>
+
+            {/* Tenant data bottom */}
+            <div className="pt-2 mt-2 space-y-2">
+              {/* Personal Information */}
+              <div className="border p-2 rounded-md space-y-2 shadow">
+                <h4 className="text-sm font-medium">Personal Information</h4>
+                <div className="*:text-sm  space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Date Of Birth</h4>
+                    <h4>{modalData?.dateOfBirth ? moment(modalData?.dateOfBirth).format("L") : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Present Address</h4>
+                    <h4>{modalData?.presentAddress || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Phone Number</h4>
+                    <h4>{modalData?.phoneNumber ? modalData?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
+                  </div>
+                </div>
+              </div>
+              {/* Personal Information
+               */}
+              <div className="border p-2 rounded-md shadow space-y-2">
+                <h4 className="text-sm font-medium">Income Information</h4>
+                <div className="*:text-sm  space-y-1 ">
+                  <div className="flex justify-between items-center">
+                    <h4>Current Employer/Business Name </h4>
+                    <h4>{modalData?.CurrentEmployerOrBusinessName ? modalData?.CurrentEmployerOrBusinessName : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Job Title</h4>
+                    <h4>{modalData?.JobTitle || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Current Credit Score</h4>
+                    <h4>{modalData?.CurrentCreditScore || "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Annual Salary</h4>
+                    <h4>{modalData?.AnnualSalary ? `$${modalData?.AnnualSalary.toLocaleString()}` : "N/A"}</h4>
+                  </div>
+                </div>
+                {/* Other Information    */}
+              </div>
+              <div className="border p-2 rounded-md shadow space-y-1">
+                <h4 className="text-sm font-medium">Other Information</h4>
+                <div className="*:text-sm space-y-1">
+                  <div className="flex justify-between items-center">
+                    <h4>Number Of Member </h4>
+                    <h4>{modalData?.numberOfMember ? modalData?.numberOfMember : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Does have Allergies</h4>
+                    <h4>{modalData?.allergies !== undefined && modalData?.allergies !== null ? (modalData?.allergies ? "Yes" : "No") : "N/A"}</h4>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <h4>Is Smoker</h4>
+                    <h4>{modalData?.isSmoker !== undefined && modalData?.isSmoker !== null ? (modalData?.isSmoker ? "Yes" : "No") : "N/A"}</h4>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
+        </Drawer.Body>
+      </Drawer>
     </>
   );
 };

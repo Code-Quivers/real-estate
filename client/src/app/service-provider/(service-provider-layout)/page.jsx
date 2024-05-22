@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
@@ -34,10 +35,14 @@ const ServiceProviderProfileInformation = () => {
           </div>
           <div className="max-md:border max-md:p-3 max-md:shadow-lg max-md:space-y-3">
             <h4 className="text-lg font-medium">
-              Company Name : <span className="max-md:block">{`${myProfileData?.companyName ?? "--"}`}</span>
+              Company Name : <span className="max-md:block">{`${myProfileData?.companyName ? myProfileData?.companyName : "-"}`}</span>
             </h4>
-            <h4 className="text-lg font-medium">Company Email Address : {myProfileData?.user?.email ?? "--"}</h4>
-            <h4 className="text-lg font-medium">Company Phone Number : {myProfileData?.companyPhoneNumber ?? "--"}</h4>
+            <h4 className="text-lg font-medium">
+              Company Email Address : {myProfileData?.companyEmailAddress ? myProfileData?.companyEmailAddress : "-"}
+            </h4>
+            <h4 className="text-lg font-medium">
+              Company Phone Number : {myProfileData?.companyPhoneNumber ? myProfileData?.companyPhoneNumber : "-"}
+            </h4>
           </div>
         </div>
         {/* score */}
@@ -46,9 +51,9 @@ const ServiceProviderProfileInformation = () => {
             <h5 className="font-medium text-sm md:text-xl">Score</h5>
             <div className=" outline outline-4 md:outline-6 outline-[#58ba66] border  ring-[#33333360] ring border-[#33333360]  rounded-full   flex justify-center items-center  px-4">
               <div className=" flex w-full flex-col justify-center items-center">
-                <span className="font-medium">9</span>
+                <span className="font-medium">{myProfileData?.scoreRatio?.score ? myProfileData?.scoreRatio?.score : 0}</span>
                 <span className="w-[70%] border-t border-[#b6b6b6]" />
-                <span className="font-medium">10</span>
+                <span className="font-medium">{myProfileData?.scoreRatio?.total ? myProfileData?.scoreRatio?.total : 0}</span>
               </div>
             </div>
           </div>
@@ -86,19 +91,19 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Name</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyName ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyName ? myProfileData?.companyName : "-"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Phone</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyPhoneNumber ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyPhoneNumber ? myProfileData?.companyPhoneNumber : "-"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Address</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyAddress ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyAddress ? myProfileData?.companyAddress : "-"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Email</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyEmailAddress ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyEmailAddress ? myProfileData?.companyEmailAddress : "-"}</p>
               </div>
             </div>
           </div>
@@ -119,21 +124,36 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-5 border-t lg:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Location</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ?? "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ? myProfileData?.Service?.serviceLocation : "--"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceAvailability ?? "--"}</p>
+                <p className="text-lg font-medium">
+                  {myProfileData?.Service?.serviceAvailability
+                    ? myProfileData?.Service?.serviceAvailability
+                        .replace(/_/g, " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())
+                    : "--"}
+                </p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Type</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceType ?? "--"}</p>
+                <p className="text-lg font-medium">
+                  {myProfileData?.Service?.serviceType
+                    ? myProfileData?.Service?.serviceType
+                        .replace(/_/g, " ")
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())
+                    : "--"}
+                </p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {`${myProfileData?.Service?.minPrice}$` ?? "--"} <span>-</span> {`${myProfileData?.Service?.maxPrice}$` ?? "--"}
+                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice?.toLocaleString()}$` : "--"} <span>-</span>{" "}
+                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice?.toLocaleString()}$` : "--"}
                 </p>
               </div>
             </div>
@@ -141,11 +161,15 @@ const ServiceProviderProfileInformation = () => {
             <div className="border-t-2">
               <div className="space-y-2 p-5">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Description</h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceDescription ?? "--"}</p>
+                <p className="text-lg whitespace-pre-wrap font-medium">
+                  {myProfileData?.Service?.serviceDescription ? myProfileData?.Service?.serviceDescription : "--"}
+                </p>
               </div>
               <div className="space-y-2 p-5 border-t">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Cancellation Policy</h2>
-                <p className="text-lg whitespace-pre-wrap font-medium">{myProfileData?.Service?.serviceCancellationPolicy ?? "--"}</p>
+                <p className="text-lg whitespace-pre-wrap font-medium">
+                  {myProfileData?.Service?.serviceCancellationPolicy ? myProfileData?.Service?.serviceCancellationPolicy : "--"}
+                </p>
               </div>
             </div>
           </div>

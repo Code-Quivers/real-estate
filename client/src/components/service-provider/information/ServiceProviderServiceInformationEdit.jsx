@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";
 import { useUpdateServiceInformationMutation } from "@/redux/features/services/servicesApi";
+import { convertToNumber } from "@/utils/tenantEditUtils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -11,17 +13,19 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
   const router = useRouter();
   const [updateServiceInformation, { isLoading, isError, isSuccess, error }] = useUpdateServiceInformationMutation();
   const {
-    control,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
 
   const handleUpdateServiceInformation = async (data) => {
-    if (data?.minPrice) data["minPrice"] = parseFloat(data?.minPrice);
-    if (data?.maxPrice) data["maxPrice"] = parseFloat(data?.maxPrice);
+    const obj = {
+      ...data,
+      minPrice: data?.minPrice !== undefined ? convertToNumber(data?.minPrice) : undefined,
+      maxPrice: data?.maxPrice !== undefined ? convertToNumber(data?.maxPrice) : undefined,
+    };
 
-    const res = await updateServiceInformation({ data });
+    const res = await updateServiceInformation({ data: obj });
     if (res?.data?.success === true) router.push("/service-provider");
   };
 
@@ -42,7 +46,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <label className="text-lg font-medium ">Service Type</label>
                 <div>
                   <SelectPicker
-                    searchable={false}
+                    // searchable={false}
                     onChange={(value) => setValue("serviceType", value)}
                     defaultValue={myProfileData?.Service?.serviceType ?? undefined}
                     data={
@@ -75,7 +79,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1 w-full">
                   <label className="text-lg   font-medium">Min Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.minPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.minPrice ? parseFloat(myProfileData?.Service?.minPrice) : undefined}
                     onChange={(value) => setValue("minPrice", value)}
                     min={0}
                   />
@@ -83,7 +87,7 @@ const ServiceProviderServiceInformationEdit = ({ myProfileData }) => {
                 <div className="space-y-1  w-full">
                   <label className="text-lg   font-medium">Max Price</label>
                   <InputNumber
-                    defaultValue={parseFloat(myProfileData?.Service?.maxPrice) ?? undefined}
+                    defaultValue={myProfileData?.Service?.maxPrice ? parseFloat(myProfileData?.Service?.maxPrice) : undefined}
                     onChange={(value) => setValue("maxPrice", value)}
                     min={0}
                   />

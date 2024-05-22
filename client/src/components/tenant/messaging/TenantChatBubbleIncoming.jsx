@@ -5,7 +5,7 @@ import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 
 const TenantChatBubbleIncoming = ({ message }) => {
-  const { data: dataResponse, isError, isLoading, error } = useGetTenantMyProfileQuery();
+  const { data: dataResponse } = useGetTenantMyProfileQuery();
 
   const { data } = dataResponse || {};
   return (

@@ -1,8 +1,6 @@
 "use client";
 
 import { Sidenav, Nav, useToaster, Message } from "rsuite";
-import DashboardIcon from "@rsuite/icons/Dashboard";
-import GroupIcon from "@rsuite/icons/legacy/Group";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
@@ -11,6 +9,17 @@ import { removeUserInfo } from "@/hooks/services/auth.service";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { useEffect } from "react";
+import { Icon } from "@rsuite/icons";
+import { BsBuildingsFill } from "react-icons/bs";
+import { FaUsers, FaUsersCog } from "react-icons/fa";
+import { FaUserLarge } from "react-icons/fa6";
+import { IoDocumentText, IoSettings } from "react-icons/io5";
+import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
+import { MdCleanHands } from "react-icons/md";
+import { GrHostMaintenance } from "react-icons/gr";
+import { TbLogout2 } from "react-icons/tb";
+// import { useDispatch } from "react-redux";
+// import { baseApi } from "@/redux/api/baseApi";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
@@ -19,12 +28,13 @@ const PropertyOwnerSidebar = () => {
   const { data: dataResponse, isError, isLoading, isSuccess, error } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
+  // Clear all caches
+  // const dispatch = useDispatch();
 
-  // console.log(data);
-
-  const logOut = () => {
-    removeUserInfo(getAuthKey());
+  const logOut = async () => {
     router.push("/");
+    removeUserInfo(getAuthKey());
+    // dispatch(baseApi.util.resetApiState());
   };
   const toaster = useToaster();
 
@@ -41,9 +51,11 @@ const PropertyOwnerSidebar = () => {
       );
     }
   }, [isLoading, isError, isSuccess, error, toaster]);
-
+  const design = {
+    fontSize: "25px",
+  };
   return (
-    <div className="h-screen shadow-md sticky top-0 overflow-y-auto">
+    <div className="h-screen shadow-md sticky top-0 overflow-y-auto custom-scrollbar">
       <Sidenav expanded={true} className="h-screen !bg-[#29429f]" appearance="inverse">
         <Sidenav.Header>
           <div className="bg-[#29429f] flex flex-col py-5  justify-center items-center">
@@ -65,12 +77,12 @@ const PropertyOwnerSidebar = () => {
               as={Link}
               href="/property-owner"
               eventKey="1"
-              icon={<DashboardIcon />}
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner" && "!bg-[#1b3697]"}`}
               style={{
                 backgroundColor: "#29429f",
                 borderTop: "2px solid #000",
               }}
+              icon={<Icon style={design} as={FaUserLarge} />}
             >
               Account Information
             </Nav.Item>
@@ -82,7 +94,7 @@ const PropertyOwnerSidebar = () => {
               style={{
                 backgroundColor: "#29429f",
               }}
-              icon={<GroupIcon />}
+              icon={<Icon style={design} as={FaUsers} />}
             >
               Available Tenants
             </Nav.Item>
@@ -92,7 +104,7 @@ const PropertyOwnerSidebar = () => {
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-tenants" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="3"
-              icon={<GroupIcon />}
+              icon={<Icon style={design} as={FaUsersCog} />}
             >
               Saved Tenants
             </Nav.Item>
@@ -102,30 +114,39 @@ const PropertyOwnerSidebar = () => {
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/unit-information" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="4"
-              icon={<GroupIcon />}
+              icon={<Icon style={design} as={BsBuildingsFill} />}
             >
               Unit Information
             </Nav.Item>
-            <Nav.Item style={{ backgroundColor: "#29429f" }} eventKey="5" className="hover:!bg-[#1b3697]" icon={<GroupIcon />}>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/documents"
+              style={{ backgroundColor: "#29429f" }}
+              eventKey="5"
+              className="hover:!bg-[#1b3697]"
+              icon={<Icon style={design} as={IoDocumentText} />}
+            >
               Documents
             </Nav.Item>
+            {/* messages */}
             <Nav.Item
               as={Link}
               href="/property-owner/messages"
               style={{ backgroundColor: "#29429f" }}
               eventKey="6"
-              className="hover:!bg-[#1b3697]"
-              icon={<GroupIcon />}
+              className={`hover:!bg-[#1b3697] ${activeLink.startsWith("/property-owner/messages") && "!bg-[#1b3697]"}`}
+              icon={<Icon style={design} as={BiSolidMessageSquareDetail} />}
             >
               Messages
             </Nav.Item>
+            {/* Service Provider */}
             <Nav.Item
               as={Link}
               href="/property-owner/service-providers"
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/service-providers" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="7"
-              icon={<GroupIcon />}
+              icon={<Icon style={design} as={MdCleanHands} />}
             >
               Service Providers
             </Nav.Item>
@@ -135,9 +156,21 @@ const PropertyOwnerSidebar = () => {
               className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/saved-service-providers" && "!bg-[#1b3697]"}`}
               style={{ backgroundColor: "#29429f" }}
               eventKey="8"
-              icon={<GroupIcon />}
+              icon={<Icon style={design} as={MdCleanHands} />}
             >
               Saved Service Providers
+            </Nav.Item>
+            <Nav.Item
+              as={Link}
+              href="/property-owner/payment"
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/payment" && "!bg-[#1b3697]"}`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="9"
+              icon={<Icon style={design} as={BiSolidReport} />}
+            >
+              Payment
             </Nav.Item>
             <Nav.Item
               as={Link}
@@ -146,22 +179,10 @@ const PropertyOwnerSidebar = () => {
               style={{
                 backgroundColor: "#29429f",
               }}
-              eventKey="9"
-              icon={<GroupIcon />}
+              eventKey="10"
+              icon={<Icon style={design} as={BiSolidReport} />}
             >
               Reports
-            </Nav.Item>
-            <Nav.Item
-              as={Link}
-              href="/property-owner/settings"
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#1b3697]"}`}
-              style={{
-                backgroundColor: "#29429f",
-              }}
-              eventKey="9"
-              icon={<GroupIcon />}
-            >
-              Settings
             </Nav.Item>
             <Nav.Item
               as={Link}
@@ -170,20 +191,32 @@ const PropertyOwnerSidebar = () => {
               style={{
                 backgroundColor: "#29429f",
               }}
-              eventKey="9"
-              icon={<GroupIcon />}
+              eventKey="11"
+              icon={<Icon style={design} as={GrHostMaintenance} />}
             >
               Maintenance Request
             </Nav.Item>
             <Nav.Item
+              as={Link}
+              href="/property-owner/settings"
+              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/settings" && "!bg-[#1b3697]"}`}
+              style={{
+                backgroundColor: "#29429f",
+              }}
+              eventKey="12"
+              icon={<Icon style={design} as={IoSettings} />}
+            >
+              Settings
+            </Nav.Item>
+            <Nav.Item
               onClick={logOut}
-              className={`hover:!bg-[#1b3697] ${activeLink === "/property-owner/maintenance-requests" && "!bg-[#1b3697]"}`}
+              className={`hover:!bg-[#1b3697]`}
               style={{
                 backgroundColor: "#29429f",
                 borderBottom: "2px solid #000",
               }}
-              eventKey="9"
-              icon={<GroupIcon />}
+              eventKey="13"
+              icon={<Icon style={design} as={TbLogout2} />}
             >
               Log Out
             </Nav.Item>

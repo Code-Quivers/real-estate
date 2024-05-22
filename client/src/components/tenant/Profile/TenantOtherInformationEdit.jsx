@@ -2,7 +2,7 @@
 
 import { booleanSelectPicker } from "@/utils/tenantEditUtils";
 import { Controller } from "react-hook-form";
-import { Input, InputNumber, Radio, RadioGroup, SelectPicker } from "rsuite";
+import { Input, InputNumber, SelectPicker } from "rsuite";
 
 const TenantOtherInformationEdit = ({ control, responseData }) => {
   return (

@@ -78,7 +78,7 @@ const propertyListSlice = createSlice({
       }
     },
     // ! Reset all state
-    resetPropertyList: (state, action) => {
+    resetPropertyList: (state) => {
       // Reset propertyList to contain only the initialProperty
       state.propertyList = [initialProperty];
     },

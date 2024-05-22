@@ -65,7 +65,7 @@ const auth = (...requiredRoles: string[]) => {
 
         if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
           const rolesString = requiredRoles.join(", ");
-          throw new ApiError(httpStatus.UNAUTHORIZED, `Access Forbidden. Required role(s): ${rolesString}`);
+          throw new ApiError(httpStatus.FORBIDDEN, `Access Forbidden. Required role(s): ${rolesString}`);
         }
 
         next();

@@ -1,39 +1,24 @@
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
-import { Line } from "react-chartjs-2";
+"use client";
+import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from "chart.js";
+import { Bar } from "react-chartjs-2";
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const PropertyOwnerChart = () => {
-  ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
+const PropertyOwnerChart = ({ expected, collected, label1, label2, costColor }) => {
   const options = {
     responsive: true,
     plugins: {
       legend: {
         position: "top",
-        labels: {
-          display: false,
-        },
       },
     },
     scales: {
       y: {
-        max: 500,
-        grid: {
-          color: "#000",
-          drawBorder: false,
-          drawTicks: false,
-          drawOnChartArea: false,
-        },
+        max: expected + collected + 500,
         ticks: {
-          display: false,
+          display: true,
         },
       },
       x: {
-        grid: {
-          color: "#ff0000",
-          drawBorder: false,
-          drawTicks: false,
-          drawOnChartArea: false,
-        },
         ticks: {
           display: false,
         },
@@ -47,29 +32,27 @@ const PropertyOwnerChart = () => {
     },
   };
 
-  const labels = ["Expected Rent", "Rent Collected"];
+  const labels = [""];
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Expected Rent",
-        data: [0, 350],
-        borderColor: "#000",
-        backgroundColor: "#000",
+        label: label1,
+        data: [expected],
+        backgroundColor: costColor || "rgba(53, 162, 235, 0.5)",
       },
       {
-        label: "Rent Collected",
-        data: [0, 200],
-        borderColor: "#29429f",
-        backgroundColor: "#29429f",
+        label: label2,
+        data: [collected],
+        backgroundColor: "#2941a0",
       },
     ],
   };
 
   return (
-    <div className="border shadow-lg rounded-2xl border-[#aeaeae] p-5">
-      <Line options={options} data={data} />
+    <div className="border rounded-2xl p-5 bg-white">
+      <Bar options={options} data={data} />
     </div>
   );
 };
