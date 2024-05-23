@@ -86,7 +86,7 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
           </Popover>
         }
       >
-        <button className="bg-primary text-white px-2 py-1 w-full">Contact</button>
+        <button className="bg-primary text-white px-2   py-1 w-full">Contact</button>
       </Whisper>
     </div>
   );

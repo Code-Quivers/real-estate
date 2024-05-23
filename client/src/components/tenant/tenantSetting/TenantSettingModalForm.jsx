@@ -136,7 +136,16 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className=" rs-form-control-wrapper  w-full">
-                          <Input size="lg" placeholder="********" {...field} className="!w-full" type="password" />
+                          <Input
+                            id="password"
+                            size="lg"
+                            placeholder="********"
+                            {...field}
+                            autoComplete="off"
+                            defaultValue=""
+                            className="!w-full"
+                            type="password"
+                          />
                         </div>
                       )}
                     />

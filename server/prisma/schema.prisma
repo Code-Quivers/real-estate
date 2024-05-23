@@ -234,7 +234,7 @@ model MaintenanceRequest {
   // 
   issueLocation        String
   priority             RequestMaintenancePriorityEnum
-  issueType            ServiceType
+  issueType            String
   description          String
   images               String[]
   status               MaintenanceRequestStatus       @default(PENDING)

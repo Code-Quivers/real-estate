@@ -31,6 +31,7 @@ const updateTenantProfile = z.object({
   affordableRentAmount: z.number().optional().nullable(),
   leavingReason: z.string().optional().nullable(),
   isAnyLatePaymentReason: z.string().optional().nullable(),
+  password: z.string().optional().nullable(),
 });
 
 export const TenantsValidation = {

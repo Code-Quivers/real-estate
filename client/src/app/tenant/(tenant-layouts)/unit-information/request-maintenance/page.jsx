@@ -1,12 +1,11 @@
 "use client";
 import AddMaintenanceReqPhotos from "@/components/tenant/maintenanceRequest/AddMaintenanceReqPhotos";
 import { MaintenancePriorityType, issueTypes } from "@/constants/maintenanceReqConst";
-
 import { useAddMaintenanceRequestMutation } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input, Message, Radio, RadioGroup, SelectPicker, useToaster } from "rsuite";
+import { Button, Form, Input, Notification, Radio, RadioGroup, SelectPicker, useToaster } from "rsuite";
 
 const RequestMaintenancePage = () => {
   const {
@@ -38,11 +37,11 @@ const RequestMaintenancePage = () => {
   useEffect(() => {
     if (!isLoading && isSuccess && !isError && data) {
       toaster.push(
-        <Message centered showIcon type="success" closable>
+        <Notification header="Success" type="success" closable>
           {data?.message || "Success"}
-        </Message>,
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 4000,
         },
       );
@@ -52,11 +51,11 @@ const RequestMaintenancePage = () => {
     }
     if (!isLoading && !isSuccess && isError && error) {
       toaster.push(
-        <Message centered showIcon type="error" closable>
+        <Notification header="Error" type="error" closable>
           {error?.message || "Failed to request"}
-        </Message>,
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 4000,
         },
       );
@@ -71,8 +70,8 @@ const RequestMaintenancePage = () => {
       </div>
       {/* form */}
       <form onSubmit={handleSubmit(handleAddRequest)}>
-        <div className="border p-5 border-[#989898] shadow-lg md:grid md:grid-cols-6 max-md:space-y-5 gap-10 items-end">
-          <div className="col-span-4   space-y-4">
+        <div className="border p-5 rounded-lg bg-white shadow-lg xl:grid xl:grid-cols-6 max-xl:space-y-5 lg:gap-10 items-end">
+          <div className="col-span-4   space-y-8">
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Do you have animals?</h2>
               <div>
@@ -98,7 +97,14 @@ const RequestMaintenancePage = () => {
                   control={control}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <Input className="!w-full" {...field} as="textarea" placeholder="if you have anything to add regarding animals" rows={4} />
+                      <Input
+                        size="lg"
+                        className="!w-full"
+                        {...field}
+                        as="textarea"
+                        placeholder="if you have anything to add regarding animals"
+                        rows={4}
+                      />
                       <Form.ErrorMessage show={(!!errors?.animalDetails && !!errors?.animalDetails?.message) || false} placement="topEnd">
                         {errors?.animalDetails?.message}
                       </Form.ErrorMessage>
@@ -107,7 +113,7 @@ const RequestMaintenancePage = () => {
                 />
               </div>
             </div>
-
+            {/* issueLocation */}
             <div className="space-y-2">
               <h2 className="text-lg font-semibold">Issue Details</h2>
               <div>
@@ -115,11 +121,11 @@ const RequestMaintenancePage = () => {
                   name="issueLocation"
                   control={control}
                   rules={{
-                    required: "issueLocation is required",
+                    required: "Issue Location is required",
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <Input {...field} className="!w-full" type="text" placeholder="Issue Location" />
+                      <Input size="lg" {...field} className="!w-full" type="text" placeholder="Issue Location" />
                       <Form.ErrorMessage show={(!!errors?.issueLocation && !!errors?.issueLocation?.message) || false} placement="topEnd">
                         {errors?.issueLocation?.message}
                       </Form.ErrorMessage>
@@ -128,7 +134,7 @@ const RequestMaintenancePage = () => {
                 />
               </div>
             </div>
-
+            {/*  priority*/}
             <div>
               <Controller
                 name="priority"
@@ -139,6 +145,7 @@ const RequestMaintenancePage = () => {
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
                     <SelectPicker
+                      size="lg"
                       onChange={(e) => field.onChange(e)}
                       searchable={false}
                       data={MaintenancePriorityType}
@@ -152,6 +159,7 @@ const RequestMaintenancePage = () => {
                 )}
               />
             </div>
+            {/* issueType */}
             <div>
               <Controller
                 name="issueType"
@@ -161,7 +169,7 @@ const RequestMaintenancePage = () => {
                 }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <SelectPicker onChange={(e) => field.onChange(e)} placeholder="Issue Type" data={issueTypes} className="!w-full" />
+                    <SelectPicker size="lg" onChange={(e) => field.onChange(e)} placeholder="Issue Type" data={issueTypes} className="!w-full" />
                     <Form.ErrorMessage show={(!!errors?.issueType && !!errors?.issueType?.message) || false} placement="topEnd">
                       {errors?.issueType?.message}
                     </Form.ErrorMessage>
@@ -180,7 +188,7 @@ const RequestMaintenancePage = () => {
                   }}
                   render={({ field }) => (
                     <div className="rs-form-control-wrapper ">
-                      <Input as="textarea" {...field} className="!w-full" placeholder="Describe the issue..." rows={6} />
+                      <Input size="lg" as="textarea" {...field} className="!w-full" placeholder="Describe the issue..." rows={6} />
                       <Form.ErrorMessage show={(!!errors?.description && !!errors?.description?.message) || false} placement="topEnd">
                         {errors?.description?.message}
                       </Form.ErrorMessage>

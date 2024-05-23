@@ -1,5 +1,7 @@
 "use client";
 
+import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
+import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
 import { cellCss, headerCss } from "@/constants/tableStyles";
 import { getType } from "@/constants/tableValues";
 import { useGetMyRequestedMaintenanceQuery } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
@@ -69,7 +71,10 @@ const MyMaintenanceRequests = () => {
                     <p>
                       {rowData?.owner?.firstName} {rowData?.owner?.lastName}
                     </p>
-                    <button className="text-xs border px-2 py-1 rounded-full">Send Message</button>
+
+                    <SendMessagePopOverFromTenant receiverId={rowData?.owner?.userId} />
+                    {/*                     
+                    <button className="text-xs border px-2 py-1 rounded-full">Send Message</button> */}
                   </div>
                 )}
               </Cell>

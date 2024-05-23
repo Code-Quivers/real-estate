@@ -1,11 +1,11 @@
-import { RequestMaintenancePriorityEnum, ServiceType } from "@prisma/client";
+import { RequestMaintenancePriorityEnum } from "@prisma/client";
 
 export type IAddRequestMaintenance = {
   isAnimal: boolean;
   animalDetails?: string;
   issueLocation: string;
   priority: RequestMaintenancePriorityEnum;
-  issueType: ServiceType;
+  issueType: string;
   description: string;
 };
 export type IUpdateRequestMaintenance = {
