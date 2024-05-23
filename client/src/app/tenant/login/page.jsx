@@ -28,7 +28,7 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm();
 
-  const handleTenantSignUp = async (user) => {
+  const handleTenantLogin = async (user) => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
@@ -71,7 +71,7 @@ const LoginPage = () => {
         </div>
 
         <div className="w-[90%] lg:w-[80%] mx-auto">
-          <form onSubmit={handleSubmit(handleTenantSignUp)}>
+          <form onSubmit={handleSubmit(handleTenantLogin)}>
             <div className="space-y-5">
               <div>
                 <Controller

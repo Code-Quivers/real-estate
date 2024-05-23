@@ -15,17 +15,7 @@ const TenantLayoutProvider = ({ children }) => {
       router.push("/tenant/login");
     }
     if (userLoggedIn) {
-      switch (role) {
-        case "PROPERTY_OWNER":
-          router.push("/property-owner");
-          break;
-        case "SERVICE_PROVIDER":
-          router.push("/service-provider");
-          break;
-        default:
-          // Handle default case or error
-          break;
-      }
+      if (role === "TENANT") router.push("/tenant/login");
     }
 
     setIsLoading(false);
