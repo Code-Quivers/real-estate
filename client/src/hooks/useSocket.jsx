@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 const ENDPOINT = getMsgEndPoint();
+const nameSpace = '/chatapp'
 
 const myDetails = getUserInfo();
-
 const useSocket = () => {
   const [socket, setSocket] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -14,7 +14,9 @@ const useSocket = () => {
 
   useEffect(() => {
     // Create a new socket instance
-    const newSocket = io(ENDPOINT);
+    const newSocket = io(ENDPOINT,{
+      path:`${nameSpace}/socket.io`
+    });
 
     // Emit the "setup" event with myDetails
     newSocket.emit("setup", myDetails);
