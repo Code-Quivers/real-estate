@@ -153,11 +153,7 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | nu
 
 // ! update property owner profile
 
-const UpdatePropertyOwner = async (
-  propertyOwnerId: string,
-  req: Request,
-  // payload: IPropertyOwner
-) => {
+const UpdatePropertyOwner = async (propertyOwnerId: string, req: Request) => {
   const profileImage: IUploadFile = req.file as any;
   const profileImagePath = profileImage?.path?.substring(13);
   const { firstName, lastName, phoneNumber, oldProfileImagePath, password } = req.body as IPropertyOwnerUpdateRequest;
@@ -217,6 +213,7 @@ const UpdatePropertyOwner = async (
     }
     //  if provided password
     if (password) {
+      console.log("shafinur islam");
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {
