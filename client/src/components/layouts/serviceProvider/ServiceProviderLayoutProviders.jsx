@@ -16,9 +16,7 @@ const ServiceProviderLayoutProvider = ({ children }) => {
     }
 
     // if logged in
-    if (userLoggedIn && role === "SERVICE_PROVIDER") {
-      router.push("/service-provider");
-    } else {
+    if (userLoggedIn && role !== "SERVICE_PROVIDER") {
       router.push("/service-provider/login");
     }
 

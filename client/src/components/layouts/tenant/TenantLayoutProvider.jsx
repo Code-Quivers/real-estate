@@ -15,9 +15,7 @@ const TenantLayoutProvider = ({ children }) => {
       router.push("/tenant/login");
     }
 
-    if (userLoggedIn && role === "TENANT") {
-      router.push("/tenant");
-    } else {
+    if (userLoggedIn && role !== "TENANT") {
       router.push("/tenant/login");
     }
 

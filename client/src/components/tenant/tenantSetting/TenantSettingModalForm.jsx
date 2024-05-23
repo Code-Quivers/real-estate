@@ -1,7 +1,7 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input, Modal, Notification, useToaster } from "rsuite";
+import { Button, Input, Modal, Notification, useToaster } from "rsuite";
 import { useEffect } from "react";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 

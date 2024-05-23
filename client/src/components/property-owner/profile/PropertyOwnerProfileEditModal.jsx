@@ -28,11 +28,10 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
     if (data?.file?.blobFile) formData.append("file", data?.file?.blobFile);
     formData.append("data", updatedProfileData);
 
-    const res = await updatePropertyOwnerProfile({
+    await updatePropertyOwnerProfile({
       propertyOwnerId: myProfileData?.propertyOwnerId,
       data: formData,
     });
-    if (res?.data?.success === true) handleClose();
   };
   // ! side effect
   const toaster = useToaster();
@@ -73,7 +72,10 @@ const PropertyOwnerProfileEditModal = ({ open, myProfileData, handleClose }) => 
       open={open}
       overflow={false}
       // classPrefix="!rounded-2xl"
-      onClose={handleClose}
+      onClose={() => {
+        handleClose();
+        resetForm();
+      }}
       // dialogAs="div"
       className="mt-5 flex mx-auto justify-center items-center  "
     >

@@ -15,9 +15,7 @@ const PropertyOwnerProvider = ({ children }) => {
       router.push("/property-owner/login");
     }
 
-    if (userLoggedIn && role === "PROPERTY_OWNER") {
-      router.push("/property-owner");
-    } else {
+    if (userLoggedIn && role !== "PROPERTY_OWNER") {
       router.push("/property-owner/login");
     }
 
