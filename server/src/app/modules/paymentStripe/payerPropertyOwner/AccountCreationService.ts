@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import ApiError from "../../../../errors/ApiError";
 import prisma from "../../../../shared/prisma";
 import { calculatePropertyOwnerProfileScore } from "../../propertyOwner/propertyOwner.utils";
+import config from "../../../../config";
 
 const stripe = new Stripe(
   "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
@@ -58,8 +59,8 @@ class StripeAccountManager {
   static createAccountLink = async (sConnectedAccountId: string) => {
     const accountLink = await stripe.accountLinks.create({
       account: sConnectedAccountId,
-      refresh_url: "http://localhost:3000/property-owner/settings",
-      return_url: "http://localhost:3000/property-owner/settings",
+      refresh_url: `${config.client_url}/property-owner/settings`,
+      return_url: `${config.client_url}/property-owner/settings`,
       type: "account_onboarding",
       collection_options: {
         fields: "eventually_due",
