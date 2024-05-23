@@ -1,16 +1,12 @@
 import { z } from "zod";
-import {
-  ZodMaintenanceIssueType,
-  ZodMaintenancePriority,
-  ZodMaintenanceUpdateStatus,
-} from "./maintenanceRequest.constant";
+import { ZodMaintenancePriority, ZodMaintenanceUpdateStatus } from "./maintenanceRequest.constant";
 
 const addMaintenanceRequest = z.object({
   isAnimal: z.boolean().optional(),
   animalDetails: z.string().optional(),
   issueLocation: z.string(),
   priority: z.enum([...ZodMaintenancePriority] as [string, ...string[]]),
-  issueType: z.enum([...ZodMaintenanceIssueType] as [string, ...string[]]),
+  issueType: z.string(),
   description: z.string(),
 });
 const UpdateMaintenanceRequest = z.object({

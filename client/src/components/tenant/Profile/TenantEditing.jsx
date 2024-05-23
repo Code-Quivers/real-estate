@@ -20,7 +20,10 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: 
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   const handleUpdateTenant = async (updateData) => {
     const {

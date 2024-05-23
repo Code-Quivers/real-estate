@@ -32,6 +32,7 @@ const LoginPage = () => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
+      requestedRole: "SERVICE_PROVIDER",
     };
     const res = await loginUser({ data: userLoginData }).unwrap();
     if (res?.data?.accessToken) {
@@ -40,11 +41,13 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if (isAlreadyLoggedIn) {
-      if (userDetails?.role === "TENANT") router.push("/tenant");
-      else if (userDetails?.role === "PROPERTY_OWNER") router.push("/property-owner");
-      else if (userDetails?.role === "SERVICE_PROVIDER") router.push("/service-provider");
+    if (isAlreadyLoggedIn && userDetails?.role === "SERVICE_PROVIDER") {
+      router.push("/service-provider");
     }
+  }, [isAlreadyLoggedIn, userDetails, router]);
+
+  useEffect(() => {
+    //
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/service-provider");
       toaster.push(LoginSuccessMessage(data?.message), {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input, Modal, Notification, useToaster } from "rsuite";
+import { Button, Input, Modal, Notification, useToaster } from "rsuite";
 import { useEffect } from "react";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 
@@ -136,7 +136,16 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className=" rs-form-control-wrapper  w-full">
-                          <Input size="lg" placeholder="********" {...field} className="!w-full" type="password" />
+                          <Input
+                            id="password"
+                            size="lg"
+                            placeholder="********"
+                            {...field}
+                            autoComplete="off"
+                            defaultValue=""
+                            className="!w-full"
+                            type="password"
+                          />
                         </div>
                       )}
                     />
