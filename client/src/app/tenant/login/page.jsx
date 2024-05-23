@@ -3,7 +3,7 @@
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, toaster } from "rsuite";
+import { Button, Form, Input, InputGroup, Notification, toaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
@@ -32,6 +32,7 @@ const LoginPage = () => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
+      requestedRole: "TENANT",
     };
     const res = await loginUser({ data: userLoginData }).unwrap();
     if (res?.data?.accessToken) {
@@ -43,6 +44,9 @@ const LoginPage = () => {
     if (isAlreadyLoggedIn && userDetails?.role === "TENANT") {
       router.push("/tenant");
     }
+  }, [isAlreadyLoggedIn, userDetails, router]);
+  //
+  useEffect(() => {
     //
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/tenant");
@@ -57,7 +61,7 @@ const LoginPage = () => {
         placement: "bottomStart",
       });
     }
-  }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
+  }, [isSuccess, isLoading, isError, error, data]);
 
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">

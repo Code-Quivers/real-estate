@@ -32,6 +32,7 @@ const LoginPage = () => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
+      requestedRole: "SERVICE_PROVIDER",
     };
     const res = await loginUser({ data: userLoginData }).unwrap();
     if (res?.data?.accessToken) {
@@ -43,6 +44,9 @@ const LoginPage = () => {
     if (isAlreadyLoggedIn && userDetails?.role === "SERVICE_PROVIDER") {
       router.push("/service-provider");
     }
+  }, [isAlreadyLoggedIn, userDetails, router]);
+
+  useEffect(() => {
     //
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/service-provider");

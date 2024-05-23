@@ -32,6 +32,7 @@ const PropertyOwnerLoginPage = () => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
       password: user?.password,
+      requestedRole: "PROPERTY_OWNER",
     };
     const res = await loginUser({ data: userLoginData }).unwrap();
     if (res?.data?.accessToken) {
@@ -39,10 +40,15 @@ const PropertyOwnerLoginPage = () => {
     }
   };
 
+  //
   useEffect(() => {
     if (isAlreadyLoggedIn && userDetails?.role === "PROPERTY_OWNER") {
       router.push("/property-owner");
     }
+  }, [isAlreadyLoggedIn, userDetails, router]);
+
+  //  for api
+  useEffect(() => {
     //
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/property-owner");
@@ -57,7 +63,7 @@ const PropertyOwnerLoginPage = () => {
         placement: "bottomStart",
       });
     }
-  }, [isAlreadyLoggedIn, userDetails, isSuccess, isLoading, isError, error, data]);
+  }, [isSuccess, isLoading, isError, error, data]);
 
   return (
     <div className=" max-md:flex max-md:flex-col max-md:justify-center md:grid grid-cols-2 overflow-hidden items-center flex-col md:flex-row h-screen">
