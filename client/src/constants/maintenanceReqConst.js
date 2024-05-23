@@ -15,43 +15,47 @@ export const MaintenancePriorityType = [
 
 export const issueTypes = [
   {
-    label: "Tenant Screening",
-    value: "TENANT_SCREENING",
+    label: "Structural Issues",
+    value: "Structural Issues",
   },
   {
-    label: "Maintenance & Repair",
-    value: "MAINTENANCE_AND_REPAIR",
+    label: "Plumbing Issues",
+    value: "Plumbing Issues",
   },
   {
-    label: "Cleaning",
-    value: "CLEANING",
+    label: "Electrical Issues",
+    value: "Electrical Issues",
   },
   {
-    label: "Pest Control",
-    value: "PEST_CONTROL",
+    label: "HVAC (Heating, Ventilation, and Air Conditioning) Issues",
+    value: "HVAC (Heating, Ventilation, and Air Conditioning) Issues",
   },
   {
-    label: "Lawn Care",
-    value: "LAWN_CARE",
+    label: "Roofing Issues",
+    value: "Roofing Issues",
   },
   {
-    label: "Security and Safety",
-    value: "SECURITY_AND_SAFETY",
+    label: "Moisture and Waterproofing Issues",
+    value: "Moisture and Waterproofing Issues",
   },
   {
-    label: "Insurance",
-    value: "INSURANCE",
+    label: "Pest Issues",
+    value: "Pest Issues",
   },
   {
-    label: "Inspection",
-    value: "INSPECTION",
+    label: "Interior Issues",
+    value: "Interior Issues",
   },
   {
-    label: "Marketing",
-    value: "MARKETING",
+    label: "Exterior Issues",
+    value: "Exterior Issues",
   },
   {
-    label: "Technology",
-    value: "TECHNOLOGY",
+    label: "Safety Issues",
+    value: "Safety Issues",
+  },
+  {
+    label: "Others",
+    value: "Others",
   },
 ].map((item) => ({ label: item.label, value: item.value }));

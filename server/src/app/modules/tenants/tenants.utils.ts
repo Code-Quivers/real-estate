@@ -112,3 +112,13 @@ export const calculateTenantProfileScore = (data: TenantData) => {
 };
 
 // ! Calculate the score ratio
+
+export function differenceInMonths(date1: any, date2 = new Date()) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  const yearDiff = d2.getFullYear() - d1.getFullYear();
+  const monthDiff = d2.getMonth() - d1.getMonth();
+
+  return yearDiff * 12 + monthDiff;
+}

@@ -11,8 +11,6 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
   // Ensure req.files and req.body exist and have correct types
   const images: IUploadFile[] = (req.files as any) || [];
 
-  console.log(images);
-
   const { isAnimal, description, issueLocation, issueType, priority, animalDetails } =
     req?.body as IAddRequestMaintenance;
   // Process images
@@ -83,7 +81,15 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
         propertyId: isAssigned?.propertyId as string,
       },
       include: {
-        owner: true,
+        owner: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            profileImage: true,
+            userId: true,
+          },
+        },
         property: true,
         serviceProvider: true,
       },

@@ -278,8 +278,8 @@ const PropertyOwnerUnitInformation = () => {
                             <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
                               <div className=" ">
                                 <Image
-                                  width={150}
-                                  height={150}
+                                  width={120}
+                                  height={120}
                                   src={serviceProvider?.profileImage ? `${fileUrlKey()}/${serviceProvider?.profileImage}` : apartmentPhoto}
                                   className=" rounded-xl  object-cover "
                                   alt=""
@@ -288,18 +288,34 @@ const PropertyOwnerUnitInformation = () => {
                               <div className="  w-full lg:grid max-lg:space-y-3 lg:grid-cols-2 justify-between gap-2 lg:divide-x-2  ">
                                 {/* information */}
                                 <div className="*:text-sm space-y-0.5  w-full">
-                                  <h4>
-                                    Name : {serviceProvider?.firstName} {serviceProvider?.lastName}
+                                  <h4 className=" space-x-2 flex justify-between font-semibold items-center">
+                                    <span>Name :</span>
+                                    <span>
+                                      {serviceProvider?.firstName} {serviceProvider?.lastName}
+                                    </span>
                                   </h4>
-                                  <h4>Email : {serviceProvider?.user?.email}</h4>
-                                  <h4>Company Name : {serviceProvider?.companyName ? serviceProvider?.companyName : "N/A"}</h4>
-                                  <h4>Company Email : {serviceProvider?.companyEmailAddress ? serviceProvider?.companyEmailAddress : "N/A"}</h4>
-                                  <h4>Company Address : {serviceProvider?.companyAddress ? serviceProvider?.companyAddress : "N/A"}</h4>
-                                  <h4>Company Phone Number: {serviceProvider?.companyPhoneNumber ? serviceProvider?.companyPhoneNumber : "N/A"}</h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Email :</span> <span> {serviceProvider?.user?.email}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Name :</span> <span>{serviceProvider?.companyName ? serviceProvider?.companyName : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Email :</span>{" "}
+                                    <span>{serviceProvider?.companyEmailAddress ? serviceProvider?.companyEmailAddress : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span> Company Address :</span>
+                                    <span>{serviceProvider?.companyAddress ? serviceProvider?.companyAddress : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Phone Number:</span>{" "}
+                                    <span>{serviceProvider?.companyPhoneNumber ? serviceProvider?.companyPhoneNumber : "N/A"}</span>
+                                  </h4>
                                 </div>
                                 {/* Service details */}
                                 <div className="lg:pl-2 w-full">
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Type :</span>
                                     <span>
                                       {serviceProvider?.Service?.serviceType
@@ -310,7 +326,7 @@ const PropertyOwnerUnitInformation = () => {
                                         : "N/A"}
                                     </span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Availability :</span>{" "}
                                     <span>
                                       {serviceProvider?.Service?.serviceAvailability
@@ -321,17 +337,20 @@ const PropertyOwnerUnitInformation = () => {
                                         : "N/A"}
                                     </span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Location :</span>
                                     <span>{serviceProvider?.Service?.serviceLocation ? serviceProvider?.Service?.serviceLocation : "N/A"}</span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Range :</span>
                                     <span>
                                       ${serviceProvider?.Service?.minPrice ? serviceProvider?.Service?.minPrice?.toLocaleString() : "0"} - $
                                       {serviceProvider?.Service?.maxPrice ? serviceProvider?.Service?.maxPrice?.toLocaleString() : "0"}
                                     </span>
                                   </h4>
+                                  <div className="mt-3">
+                                    <SendMessagePopOverFromPropertyOwner />
+                                  </div>
                                 </div>
                               </div>
                             </div>

@@ -2,7 +2,6 @@
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
-import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
 import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
 import Score from "@/components/Shared/Score/Score";
 import { Avatar } from "rsuite";

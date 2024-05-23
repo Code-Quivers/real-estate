@@ -5,7 +5,6 @@ import { Button, Input, MaskedInput, Modal, Notification, useToaster } from "rsu
 import { useEffect, useState } from "react";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 
-//
 const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
   const toaster = useToaster();
   const [updateTenantProfile, { data: updateMyProfileRes, isLoading, isError, isSuccess, error, reset }] = useUpdateTenantProfileMutation();
@@ -154,7 +153,16 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className=" rs-form-control-wrapper  w-full">
-                          <Input size="lg" placeholder="********" {...field} className="!w-full" type="password" />
+                          <Input
+                            id="password"
+                            size="lg"
+                            placeholder="********"
+                            {...field}
+                            autoComplete="off"
+                            defaultValue=""
+                            className="!w-full"
+                            type="password"
+                          />
                         </div>
                       )}
                     />

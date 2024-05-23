@@ -33,7 +33,7 @@ const PropertyOwnerSettingPage = () => {
             <div>
               <h3 className="text-gray-600">Name</h3>
               <p>
-                {data?.data?.firstName ?? "--"} {data?.data?.lastName ?? "-"}
+                {data?.data?.firstName ?? "N/A"} {data?.data?.lastName ?? ""}
               </p>
             </div>
             <div>
