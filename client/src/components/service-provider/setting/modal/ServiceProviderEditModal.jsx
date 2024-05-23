@@ -2,11 +2,16 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Message, Modal, useToaster } from "rsuite";
-import { useEffect } from "react";
+import { Button, Input, MaskedInput, Message, Modal, useToaster } from "rsuite";
+import { useEffect, useState } from "react";
 import { useUpdateServiceProviderMyProfileMutation } from "@/redux/features/serviceProvider/serviceProviderApi";
 
 const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
+  const [optionNumber] = useState({
+    name: "US phone number",
+    mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    placeholder: "(XXX) XXX-XXX",
+  });
   const toaster = useToaster();
   const [updateServiceProviderMyProfile, { data: updateMyProfileRes, isLoading, isError, isSuccess, error, reset }] =
     useUpdateServiceProviderMyProfileMutation();
@@ -104,7 +109,18 @@ const ServiceProviderEditModal = ({ open, myProfileData, handleClose }) => {
                     render={({ field }) => (
                       <div className="space-y-2">
                         <label className="text-base font-medium">Phone Number</label>
-                        <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
+                        {/* <Input defaultValue={myProfileData?.phoneNumber} {...field} type="text" /> */}
+                        <MaskedInput
+                          className="!w-full"
+                          {...field}
+                          defaultValue={myProfileData?.phoneNumber}
+                          mask={optionNumber.mask}
+                          guide
+                          // showMask
+                          keepCharPositions={true}
+                          placeholder={optionNumber.placeholder}
+                          placeholderChar={"_"}
+                        />
                       </div>
                     )}
                   />

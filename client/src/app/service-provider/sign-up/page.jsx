@@ -276,7 +276,7 @@ const ServiceProviderSignUpPage = () => {
           <p className="font-semibold">
             Already have an Account?{" "}
             <Link className="text-blue-800 hover:underline" href="/service-provider/login">
-              Sign In
+              Sign up
             </Link>
           </p>
         </div>
