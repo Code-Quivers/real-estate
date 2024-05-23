@@ -51,7 +51,7 @@ const PropertyOwnerSettingPage = () => {
           <BankingCredentials />
         </div>
         {/* current plan */}
-        <div className="border-t   p-5">
+        {/* <div className="border-t   p-5">
           <div>
             <h4 className="text-xl font-medium">Current Plan</h4>
           </div>
@@ -61,7 +61,7 @@ const PropertyOwnerSettingPage = () => {
           <div>
             <button className="text-green-600 font-medium hover:underline">Change Plan</button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* profile editing modal */}
