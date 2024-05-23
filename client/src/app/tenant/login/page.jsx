@@ -40,11 +40,10 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if (isAlreadyLoggedIn) {
-      if (userDetails?.role === "TENANT") router.push("/tenant");
-      else if (userDetails?.role === "PROPERTY_OWNER") router.push("/property-owner");
-      else if (userDetails?.role === "SERVICE_PROVIDER") router.push("/service-provider");
+    if (isAlreadyLoggedIn && userDetails?.role === "TENANT") {
+      router.push("/tenant");
     }
+    //
     if ((isSuccess && !isLoading && !isError, !error && data)) {
       router.push("/tenant");
       toaster.push(LoginSuccessMessage(data?.message), {

@@ -16,6 +16,16 @@ const nextConfig = {
         port: "7000",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "managerentalunit.com/backend",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "managerentalunit.com/backend/api/v1",
+        pathname: "/**",
+      },
     ],
     domains: [
       "localhost",

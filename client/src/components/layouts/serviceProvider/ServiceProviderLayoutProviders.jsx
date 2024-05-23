@@ -2,7 +2,7 @@
 import { getUserInfo, isLoggedIn } from "@/hooks/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader, Placeholder } from "rsuite";
+import { Loader } from "rsuite";
 
 const ServiceProviderLayoutProvider = ({ children }) => {
   const role = getUserInfo()?.role;
@@ -14,8 +14,12 @@ const ServiceProviderLayoutProvider = ({ children }) => {
     if (!userLoggedIn) {
       router.push("/service-provider/login");
     }
-    if (userLoggedIn) {
-      if (role === "SERVICE_PROVIDER") router.push("/service-provider");
+
+    //
+    if (userLoggedIn && role === "SERVICE_PROVIDER") {
+      router.push("/service-provider");
+    } else {
+      router.push("/service-provider/login");
     }
 
     setIsLoading(false);
@@ -24,7 +28,6 @@ const ServiceProviderLayoutProvider = ({ children }) => {
   if (isLoading) {
     return (
       <div>
-        <Placeholder.Paragraph rows={8} />
         <Loader size="lg" backdrop content="loading..." vertical />
       </div>
     );

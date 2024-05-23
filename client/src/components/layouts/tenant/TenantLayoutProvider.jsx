@@ -2,7 +2,7 @@
 import { getUserInfo, isLoggedIn } from "@/hooks/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader, Placeholder } from "rsuite";
+import { Loader } from "rsuite";
 
 const TenantLayoutProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,17 +14,19 @@ const TenantLayoutProvider = ({ children }) => {
     if (!userLoggedIn) {
       router.push("/tenant/login");
     }
-    if (userLoggedIn) {
-      if (role === "TENANT") router.push("/tenant/login");
+
+    if (userLoggedIn && role === "TENANT") {
+      router.push("/tenant");
+    } else {
+      router.push("/tenant/login");
     }
 
     setIsLoading(false);
-  }, [isLoading, userLoggedIn, router, role]);
+  }, [isLoading, userLoggedIn, router]);
 
   if (isLoading) {
     return (
       <div>
-        <Placeholder.Paragraph rows={8} />
         <Loader size="lg" backdrop content="loading..." vertical />
       </div>
     );
