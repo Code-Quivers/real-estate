@@ -17,7 +17,15 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    domains: ["localhost", "77.237.234.238", "77.237.234.238:7000"],
+    domains: [
+      "localhost",
+      "77.237.234.238",
+      "77.237.234.238:7000",
+      "managerentalunit.com/backend",
+      "managerentalunit.com/backend/",
+      "managerentalunit.com/backend/api/v1",
+      "managerentalunit.com/backend/api/v1/",
+    ],
   },
   webpack: (config) => {
     /**
