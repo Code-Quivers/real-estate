@@ -14,16 +14,15 @@ const PropertyOwnerProvider = ({ children }) => {
     if (!userLoggedIn) {
       router.push("/property-owner/login");
     }
-    if (userLoggedIn) {
-      if (userLoggedIn && role === "PROPERTY_OWNER") {
-        router.push("/property-owner");
-      } else {
-        router.push("/property-owner/login");
-      }
+
+    if (userLoggedIn && role === "PROPERTY_OWNER") {
+      router.push("/property-owner");
+    } else {
+      router.push("/property-owner/login");
     }
 
     setIsLoading(false);
-  }, [isLoading, userLoggedIn, router]);
+  }, [isLoading, userLoggedIn, router, role]);
 
   if (isLoading) {
     return (
@@ -33,7 +32,10 @@ const PropertyOwnerProvider = ({ children }) => {
     );
   }
 
-  if (userLoggedIn && !isLoading) return <div>{children}</div>;
+  if (userLoggedIn && role === "PROPERTY_OWNER" && !isLoading) return <div>{children}</div>;
+  else {
+    <div>Hello Shafin</div>;
+  }
 };
 
 export default PropertyOwnerProvider;

@@ -35,7 +35,7 @@ model PropertyOwner {
 
 model Tenant {
   tenantId                             String               @id @default(uuid())
-  userId                               String               @unique
+  userId                               String?               @unique
   // personal information
   firstName                            String
   lastName                             String
@@ -75,7 +75,7 @@ model Tenant {
   // 
   createdAt                            DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt                            DateTime             @updatedAt @db.Timestamptz(0)
-  user                                 User                 @relation(fields: [userId], references: [userId])
+  user                                 User?                 @relation(fields: [userId], references: [userId], onDelete: SetNull)
   SavedItem                            SavedItem[]
   // assigned in property
   propertyId                           String?              @unique

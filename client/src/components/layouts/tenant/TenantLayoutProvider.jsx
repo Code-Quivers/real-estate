@@ -32,7 +32,7 @@ const TenantLayoutProvider = ({ children }) => {
     );
   }
 
-  if (userLoggedIn && !isLoading) return <div>{children}</div>;
+  if (userLoggedIn && role === "TENANT" && !isLoading) return <div>{children}</div>;
 };
 
 export default TenantLayoutProvider;

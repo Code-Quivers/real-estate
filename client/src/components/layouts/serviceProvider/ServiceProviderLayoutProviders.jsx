@@ -15,7 +15,7 @@ const ServiceProviderLayoutProvider = ({ children }) => {
       router.push("/service-provider/login");
     }
 
-    //
+    // if logged in
     if (userLoggedIn && role === "SERVICE_PROVIDER") {
       router.push("/service-provider");
     } else {
@@ -32,7 +32,7 @@ const ServiceProviderLayoutProvider = ({ children }) => {
       </div>
     );
   }
-  if (userLoggedIn && !isLoading) return <div>{children}</div>;
+  if (userLoggedIn && role === "SERVICE_PROVIDER" && !isLoading) return <div>{children}</div>;
 };
 
 export default ServiceProviderLayoutProvider;
