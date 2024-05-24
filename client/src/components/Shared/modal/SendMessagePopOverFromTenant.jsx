@@ -3,6 +3,9 @@
 import { useStartNewConversationMutation } from "@/redux/features/conversations/conversationApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaRegMessage } from "react-icons/fa6";
+import { FiMessageSquare } from "react-icons/fi";
+import { LuMessageCircle } from "react-icons/lu";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
 const SendMessagePopOverFromTenant = ({ receiverId }) => {
@@ -80,14 +83,16 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
                   type="submit"
                   className="!bg-primary  !text-white !px-3 !py-1 !text-base !rounded-2xl "
                 >
-                  Submit
+                  Send
                 </Button>
               </div>
             </div>
           </Popover>
         }
       >
-        <button className="bg-primary text-white px-2   py-1 w-full">Contact</button>
+        <button className="bg-primary text-white p-3 rounded-lg w-full">
+          <FaRegMessage size={20} />
+        </button>
       </Whisper>
     </div>
   );

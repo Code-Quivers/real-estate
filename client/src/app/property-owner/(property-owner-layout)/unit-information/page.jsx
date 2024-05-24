@@ -105,12 +105,12 @@ const PropertyOwnerUnitInformation = () => {
                           <div className="flex justify-between w-full">
                             <div className="space-y-3 p-5 w-full">
                               <h3 className="text-lg font-medium">
-                                $ {singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
+                                ${singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
                               </h3>
-                              <h3 className="text-lg font-medium">
+                              <h3 className="text-lg">
                                 {singleProperty?.numOfBed} Beds {singleProperty?.numOfBath} Baths
                               </h3>
-                              <h3 className="text-lg font-medium">{singleProperty?.address}</h3>
+                              <h3 className="text-lg">{singleProperty?.address}</h3>
                             </div>
                             <div className="pt-2 pr-2">
                               <IconButton
