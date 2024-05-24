@@ -91,19 +91,23 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-3 lg:p-5 border-t md:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Name</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyName ? myProfileData?.companyName : "-"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyName ? myProfileData?.companyName : "N/A"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Phone</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyPhoneNumber ? myProfileData?.companyPhoneNumber : "-"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyPhoneNumber ? myProfileData?.companyPhoneNumber : "N/A"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Address</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyAddress ? myProfileData?.companyAddress : "-"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyAddress ? myProfileData?.companyAddress : "N/A"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Company Email</h2>
-                <p className="text-lg font-medium">{myProfileData?.companyEmailAddress ? myProfileData?.companyEmailAddress : "-"}</p>
+                <p className="text-lg font-medium">{myProfileData?.companyEmailAddress ? myProfileData?.companyEmailAddress : "N/A"}</p>
+              </div>
+              <div className="space-y-2">
+                <h2 className="font-bold text-xl 2xl:text-2xl">Phone Number</h2>
+                <p className="text-lg font-medium">{myProfileData?.phoneNumber ? myProfileData?.phoneNumber : "N/A"}</p>
               </div>
             </div>
           </div>
@@ -124,7 +128,7 @@ const ServiceProviderProfileInformation = () => {
             <div className="grid p-5 border-t lg:grid-cols-2  gap-5 gap-x-10 ">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Location</h2>
-                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ? myProfileData?.Service?.serviceLocation : "--"}</p>
+                <p className="text-lg font-medium">{myProfileData?.Service?.serviceLocation ? myProfileData?.Service?.serviceLocation : "N/A"}</p>
               </div>
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Availability</h2>
@@ -134,7 +138,7 @@ const ServiceProviderProfileInformation = () => {
                         .replace(/_/g, " ")
                         .toLowerCase()
                         .replace(/\b\w/g, (c) => c.toUpperCase())
-                    : "--"}
+                    : "N/A"}
                 </p>
               </div>
               <div className="space-y-2">
@@ -145,15 +149,15 @@ const ServiceProviderProfileInformation = () => {
                         .replace(/_/g, " ")
                         .toLowerCase()
                         .replace(/\b\w/g, (c) => c.toUpperCase())
-                    : "--"}
+                    : "N/A"}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Price Range</h2>
                 <p className="text-lg font-medium">
-                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice?.toLocaleString()}$` : "--"} <span>-</span>{" "}
-                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice?.toLocaleString()}$` : "--"}
+                  {myProfileData?.Service?.minPrice ? `${myProfileData?.Service?.minPrice?.toLocaleString()}$` : "N/A"} <span>-</span>{" "}
+                  {myProfileData?.Service?.maxPrice ? `${myProfileData?.Service?.maxPrice?.toLocaleString()}$` : "N/A"}
                 </p>
               </div>
             </div>
@@ -162,13 +166,13 @@ const ServiceProviderProfileInformation = () => {
               <div className="space-y-2 p-5">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Description</h2>
                 <p className="text-lg whitespace-pre-wrap font-medium">
-                  {myProfileData?.Service?.serviceDescription ? myProfileData?.Service?.serviceDescription : "--"}
+                  {myProfileData?.Service?.serviceDescription ? myProfileData?.Service?.serviceDescription : "N/A"}
                 </p>
               </div>
               <div className="space-y-2 p-5 border-t">
                 <h2 className="font-bold text-xl 2xl:text-2xl">Service Cancellation Policy</h2>
                 <p className="text-lg whitespace-pre-wrap font-medium">
-                  {myProfileData?.Service?.serviceCancellationPolicy ? myProfileData?.Service?.serviceCancellationPolicy : "--"}
+                  {myProfileData?.Service?.serviceCancellationPolicy ? myProfileData?.Service?.serviceCancellationPolicy : "N/A"}
                 </p>
               </div>
             </div>
