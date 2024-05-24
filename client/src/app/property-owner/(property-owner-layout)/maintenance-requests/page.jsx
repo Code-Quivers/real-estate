@@ -1,4 +1,5 @@
 "use client";
+import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
 import { fileUrlKey } from "@/configs/envConfig";
 import { getType } from "@/constants/tableValues";
 import {
@@ -89,17 +90,24 @@ const MaintenanceRequest = () => {
 
                     {/* <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3> */}
 
-                    <div className="flex gap-2 max-lg:mt-3">
+                    <div className="grid grid-cols-3 gap-4 max-lg:mt-3">
                       {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
 
-                      <Button
+                      <button
+                        type="button"
                         onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)}
-                        className="!bg-primary !px-3 !py-2 !text-white w-full"
+                        className="text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
                       >
                         Accept
-                      </Button>
-                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Reject</Button>
-                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button>
+                      </button>
+                      <button
+                        type="button"
+                        className="!text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                      >
+                        Reject
+                      </button>
+                      <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.tenant?.userId} />
+                      {/* <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button> */}
                     </div>
                   </div>
                 </div>
