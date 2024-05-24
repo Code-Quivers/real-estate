@@ -9,6 +9,7 @@ export type IServiceProviderUpdateRequest = {
   companyAddress?: string;
   companyPhoneNumber?: string;
   companyEmailAddress?: string;
+  password?: string;
 };
 
 export type ServiceData = {

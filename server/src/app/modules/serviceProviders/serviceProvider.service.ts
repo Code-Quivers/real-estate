@@ -16,6 +16,8 @@ import {
   serviceProviderSearchableFields,
 } from "./serviceProvider.constants";
 import { calculateServiceProviderProfileScore } from "./serviceProvider.utils";
+import bcrypt from "bcrypt";
+import config from "../../../config";
 
 // ! get all Service Provider
 const getAllServiceProviders = async (filters: IServiceProviderFilterRequest, options: IPaginationOptions) => {
@@ -173,7 +175,7 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
 
   const profileImagePath = profileImage?.path?.substring(13);
 
-  const { oldProfileImagePath, ...others } = req.body as IServiceProviderUpdateRequest;
+  const { oldProfileImagePath, password, ...others } = req.body as IServiceProviderUpdateRequest;
 
   // deleting old style Image
   const oldFilePaths = "uploads/" + oldProfileImagePath;
@@ -228,6 +230,18 @@ const UpdateServiceProvider = async (serviceProviderId: string, req: Request) =>
         data: {
           score: profileScore.profileScore,
           scoreRatio: profileScore.scoreRatio,
+        },
+      });
+    }
+    // if new password provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+      await transactionClient.user.update({
+        where: {
+          userId: res?.userId as string,
+        },
+        data: {
+          password: hashedPassword,
         },
       });
     }

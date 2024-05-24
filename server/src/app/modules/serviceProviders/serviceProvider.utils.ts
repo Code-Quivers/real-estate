@@ -109,5 +109,6 @@ export const calculateServiceProviderProfileScore = (data: ServiceProviderData) 
 
   // Getting ratio
   const scoreRatio = calculateServiceProviderScoreRatio(profileScore, 100);
+
   return { profileScore, scoreRatio };
 };
