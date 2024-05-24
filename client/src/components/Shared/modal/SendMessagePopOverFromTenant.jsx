@@ -58,7 +58,7 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
         placement="bottomEnd"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md overflow-y-auto mb-5">
+          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md   mb-5">
             <div className="p-5 ">
               <div>
                 <h2>Send Message </h2>
@@ -69,6 +69,7 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
                     setTextMessage(e);
                   }}
                   as="textarea"
+                  className="!resize-none"
                   rows={5}
                 />
               </div>

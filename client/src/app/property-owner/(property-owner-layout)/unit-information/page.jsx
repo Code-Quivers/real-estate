@@ -349,7 +349,7 @@ const PropertyOwnerUnitInformation = () => {
                                     </span>
                                   </h4>
                                   <div className="mt-3">
-                                    <SendMessagePopOverFromPropertyOwner />
+                                    <SendMessagePopOverFromPropertyOwner receiverId={serviceProvider?.userId} />
                                   </div>
                                 </div>
                               </div>

@@ -59,13 +59,14 @@ const SendMessagePopOverFromPropertyOwner = ({ receiverId }) => {
         placement="autoVerticalEnd"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className="w-[350px] max-h-[400px] !rounded-md overflow-y-auto mb-5">
+          <Popover arrow={true} as="div" className="w-[350px] max-h-[400px] !rounded-md  mb-5">
             <div className="p-5 ">
               <div>
                 <h2>Send Message </h2>
               </div>
               <div>
                 <Input
+                  className="!resize-none"
                   onChange={(e) => {
                     setTextMessage(e);
                   }}

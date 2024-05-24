@@ -31,7 +31,7 @@ const SendDocumentPage = ({ params }) => {
   } = useForm();
 
   // ! handle
-  const handleSendDocument = (sendData) => {
+  const handleSendDocument = () => {
     //
   };
   const { propertyId } = watch();
@@ -129,8 +129,8 @@ const SendDocumentPage = ({ params }) => {
 
               {/* submit button */}
               <div className="mt-10 flex justify-end">
-                <Button className="!bg-primary !text-white " size="lg" type="submit">
-                  Send
+                <Button className="!bg-primary !text-white" size="lg" type="submit">
+                  Send Document
                 </Button>
               </div>
             </div>
