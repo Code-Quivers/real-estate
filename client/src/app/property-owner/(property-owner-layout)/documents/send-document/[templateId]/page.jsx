@@ -129,7 +129,7 @@ const SendDocumentPage = ({ params }) => {
 
               {/* submit button */}
               <div className="mt-10 flex justify-end">
-                <Button className="!bg-primary !text-white " size="lg" type="submit">
+                <Button className="!bg-primary !text-white" size="lg" type="submit">
                   Send Document
                 </Button>
               </div>

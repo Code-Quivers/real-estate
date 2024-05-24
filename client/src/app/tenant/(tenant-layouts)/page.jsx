@@ -27,7 +27,7 @@ const TenantProfile = () => {
               {data?.firstName} {data?.lastName}
             </h4>
             <h4 className="text-lg font-medium"> {data?.user?.email} </h4>
-            <h4 className="text-lg font-medium">Phone Number : {data?.phoneNumber ? data?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
+            <h4 className="text-lg font-medium">Phone Number : {data?.phoneNumber ?? "N/A"}</h4>
           </div>
         </div>
         {/* score */}

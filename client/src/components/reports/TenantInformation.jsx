@@ -76,7 +76,7 @@ const TenantInformation = ({ reportData }) => {
                   <div className="p-3">
                     <div className="rounded-full flex gap-3 items-center">
                       {report?.tenantPhoto ? (
-                        <Image src={`${fileUrlKey()}/${report?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
+                        <Image src={`${fileUrlKey()}/${report?.tenantPhoto}`} width={30} height={30} className="rounded-full" />
                       ) : (
                         <span>
                           <FaUser size={20} className="text-gray-500" />
