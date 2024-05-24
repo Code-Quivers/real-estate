@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoChevronBackSharp } from "react-icons/io5";
 import { MdSearchOff } from "react-icons/md";
-import { Button, Loader, Message, Modal, Panel, Tabs, useToaster } from "rsuite";
+import { Button, Loader, Modal, Notification, Panel, Tabs, useToaster } from "rsuite";
 import apartmentPhoto from "@/assets/house/house-logo.jpg";
 
 const UnitPaymentPage = ({ params }) => {
@@ -39,11 +39,11 @@ const UnitPaymentPage = ({ params }) => {
   useEffect(() => {
     if (!isLoadingTrial && !isErrorTrial && isSuccessTrial && !errorTrial) {
       toaster.push(
-        <Message centered showIcon type="success" closable>
+        <Notification header="Success" type="success" closable>
           {dataTrial?.message || "Successfully Activated"}
-        </Message>,
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 3000,
         },
       );
@@ -53,11 +53,11 @@ const UnitPaymentPage = ({ params }) => {
     }
     if (!isLoadingTrial && isErrorTrial && !isSuccessTrial) {
       toaster.push(
-        <Message centered showIcon type="error" closable>
+        <Notification header="Error" type="error" closable>
           {errorTrial?.message || "Failed to Activate"}
-        </Message>,
+        </Notification>,
         {
-          placement: "topEnd",
+          placement: "bottomStart",
           duration: 3000,
         },
       );
@@ -104,13 +104,13 @@ const UnitPaymentPage = ({ params }) => {
           <div>
             <Panel>
               <Tabs appearance="tabs" activeKey={activePackagePrice} onSelect={setActivePackagePrice}>
-                <Tabs.Tab eventKey="MONTHLY" title={`Monthly ${getUnitPackagePrices().MONTHLY}`}>
+                <Tabs.Tab eventKey="MONTHLY" title="Monthly">
                   <h2 className="text-xl">You will be charged ${getUnitPackagePrices().MONTHLY}/month for each property you add.</h2>
                 </Tabs.Tab>
-                <Tabs.Tab eventKey="BIANNUALLY" title={`Half Yearly ${getUnitPackagePrices().BIANNUALLY}`}>
+                <Tabs.Tab eventKey="BIANNUALLY" title="6 Month Plan">
                   <h2 className="text-xl">You will be charged ${getUnitPackagePrices().BIANNUALLY}/half year for each property you add</h2>
                 </Tabs.Tab>
-                <Tabs.Tab eventKey="ANNUALLY" title={`Annually ${getUnitPackagePrices().ANNUALLY}`}>
+                <Tabs.Tab eventKey="ANNUALLY" title="Annual Plan">
                   <h2 className="text-xl">You will be charged ${getUnitPackagePrices().ANNUALLY}/year for each property you add.</h2>
                 </Tabs.Tab>
               </Tabs>
@@ -129,7 +129,12 @@ const UnitPaymentPage = ({ params }) => {
                     className="rounded-md !w-[100px] !h-[80px] object-cover object-center"
                     alt=""
                   />
-                  <h2 className="text-lg text-wrap">{singleProperty?.title}</h2>
+                  <div>
+                    <h2 className="text-lg text-wrap">{singleProperty?.title}</h2>
+                    <h2 className="text-lg text-wrap">
+                      {singleProperty?.numOfBed} Beds {singleProperty?.numOfBath} Baths
+                    </h2>
+                  </div>
                 </div>
                 <div>
                   <h2 className="text-3xl font-semibold text-gray-800">${getUnitPackagePrices()[activePackagePrice]}</h2>
@@ -151,16 +156,6 @@ const UnitPaymentPage = ({ params }) => {
               </div>
             </div>
           </div>
-
-          {/* 
-{
-    "propertyIds": [],
-    "package": "MONTHLY",
-    "packagePrice":20,
-    "totalAmountToPay":20,
-    "orderId":"",
-}
-*/}
 
           {/* paypal or payment method */}
           <div className="mt-7">
