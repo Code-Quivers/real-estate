@@ -86,7 +86,23 @@ const acceptRequestMaintenanceForOwner = catchAsync(async (req: Request, res: Re
     data: result,
   });
 });
-// ! accept request and send to service providers
+// ! reject request from (owner)
+const rejectRequestMaintenanceForOwner = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = (req.user as IRequestUser).profileId;
+  const maintenanceRequestId = req.params?.maintenanceRequestId;
+
+  const result = await RequestMaintenanceService.rejectRequestMaintenanceForOwner(
+    maintenanceRequestId,
+    propertyOwnerId,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Maintenance request Rejected",
+    data: result,
+  });
+});
+// ! accept request and start work for service providers
 const acceptRequestMaintenanceForServiceProvider = catchAsync(async (req: Request, res: Response) => {
   const serviceProviderId = (req.user as IRequestUser).profileId;
   const maintenanceRequestId = req.params?.maintenanceRequestId;
@@ -126,4 +142,5 @@ export const MaintenanceRequestControllers = {
   acceptRequestMaintenanceForServiceProvider,
   getMyAllOrdersForServiceProvider,
   updateRequestMaintenanceForServiceProvider,
+  rejectRequestMaintenanceForOwner,
 };
