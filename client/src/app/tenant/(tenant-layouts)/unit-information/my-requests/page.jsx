@@ -48,12 +48,15 @@ const MyMaintenanceRequests = () => {
               <div className="mt-3">
                 <div className="px-3">
                   <div className="flex items-center justify-between">
-                    <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
-                    <span
-                      className={`${request?.status === "PENDING" ? "bg-yellow-100  border-yellow-500 text-yellow-600" : request?.status == "APPROVED" ? "bg-blue-100 text-blue-600 border-blue-500" : ""} px-2.5 font-medium text-xs border rounded-full`}
+                    <div>
+                      <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
+                    </div>
+                    <div></div>
+                    <p
+                      className={`${request?.status === "PENDING" ? "bg-yellow-100  border-yellow-500 text-yellow-600" : request?.status == "APPROVED" ? "bg-blue-100 text-blue-600 border-blue-500" : request?.status === "CANCEL" ? "text-red-600 bg-red-100 border-red-600" : ""} px-2.5 font-medium text-xs border rounded-full`}
                     >
                       {request?.status}
-                    </span>
+                    </p>
                   </div>
                   <p className="text-sm">{getType(request?.priority)}</p>
                   <p className="line-clamp-3 text-sm mt-2">{request?.description}</p>
