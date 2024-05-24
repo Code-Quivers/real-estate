@@ -10,7 +10,9 @@ import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessag
 import RemoveFromSavedServiceProviderModal from "./RemoveFromSavedServiceProviderModal";
 
 const SavedServiceProviderList = ({ singleReq, children }) => {
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
+  const query = {};
+  query["limit"] = 100;
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery({ ...query });
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
 
@@ -100,7 +102,7 @@ const SavedServiceProviderList = ({ singleReq, children }) => {
         </div>
         {/* Contact  */}
         <div className="w-full">
-          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.serviceProvider?.user?.userId} />
+          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.serviceProvider?.userId} />
         </div>
         {/*  assign to property */}
         <div className="w-full">

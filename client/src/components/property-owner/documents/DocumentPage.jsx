@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "rsuite";
+import { Button, Loader } from "rsuite";
 import AddDocumentModalForm from "./AddDocumentModalForm";
 import { useGetMyAllDocumentTemplatesQuery } from "@/redux/features/documents/documentsApi";
 import DocumentList from "./DocumentList";
@@ -27,7 +27,8 @@ const DocumentPage = () => {
           <div className="flex justify-center items-center py-5">
             <h2 className="text-3xl font-semibold">Document Sent</h2>
           </div>
-          <div className="min-h-[30vh] w-full space-y-3">
+
+          <div className="w-full space-y-3">
             {!isTenantDataLoading &&
               tenantData?.data?.map((singleTenant) => (
                 <div key={Math.random()} className="md:flex justify-between  items-start gap-5 border bg-white shadow-md p-5 rounded-lg">
@@ -69,6 +70,19 @@ const DocumentPage = () => {
                 </div>
               ))}
           </div>
+          {/* if nothing */}
+          {!isTenantDataLoading && !tenantData?.data?.length > 0 && (
+            <div className="flex justify-center items-center min-h-[30vh]">
+              <h2>No Tenant Found</h2>
+            </div>
+          )}
+          {/* if loading */}
+          {isTenantDataLoading && (
+            <div className="flex justify-center items-center min-h-[30vh]">
+              <Loader size="lg" content="Loading" />
+            </div>
+          )}
+          {/*  */}
         </div>
       </div>
       {/*  */}
