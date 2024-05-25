@@ -40,7 +40,7 @@ const PropertyOwnerUnitInformation = () => {
 
   return (
     <>
-      <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
+      <section className=" lg:max-w-6xl max-lg:px-3 pb-20 mx-auto mt-6 lg:mt-10 2xl:mx-auto lg:px-5 2xl:px-0">
         <div className="flex justify-between items-center">
           <h2 className="lg:text-2xl">
             Unit Information: <br className="md:hidden" /> Total {data?.meta?.total}

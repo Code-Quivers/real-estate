@@ -123,79 +123,82 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
             </div>
 
             {/* action */}
-            <div className="flex  py-3 gap-2">
-              <div className="w-full">
-                <button
-                  onClick={() => saveTenantData()}
-                  className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
-                >
-                  Save
-                </button>
+            <div className="py-3 flex justify-between items-center gap-3">
+              <div className="flex gap-3 w-full">
+                {/*save  */}
+                <div className="w-full">
+                  <button
+                    onClick={() => saveTenantData()}
+                    className="text-primary w-full text-sm py-2 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                  >
+                    Save
+                  </button>
+                </div>
+                {/* whisper add button */}
+                <div className="w-full">
+                  <Whisper
+                    preventOverflow
+                    placement="autoVerticalEnd"
+                    trigger="click"
+                    speaker={
+                      <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                        <div className="p-3 space-y-2">
+                          {!isLoadingUnits &&
+                            unitRes?.data?.length > 0 &&
+                            unitRes?.data?.map((singleUnit) => (
+                              <div key={Math.random()}>
+                                <button
+                                  onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                                  className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                                >
+                                  <div className="col-span-1 h-full">
+                                    <Image
+                                      width={500}
+                                      height={500}
+                                      className="w-full h-full p-1 object-cover rounded-xl"
+                                      src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
+                                      alt="photo"
+                                    />
+                                  </div>
+                                  <div className="flex w-full flex-col col-span-2 justify-between my-2 text-sm ml-3">
+                                    <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                                    <h3>
+                                      {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
+                                    </h3>
+                                    <h3>{singleUnit?.address}</h3>
+                                  </div>
+                                </button>
+                              </div>
+                            ))}
+
+                          {isLoadingUnits && (
+                            <div className=" mt-10 gap-y-5 flex flex-col">
+                              <div>
+                                <Placeholder.Graph active height={150} />
+                              </div>
+                              <div>
+                                <Placeholder.Graph active height={150} />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* if no data is available */}
+                          {!isLoadingUnits && !unitRes?.data?.length && (
+                            <div className="flex justify-center min-h-[10vh] items-center">
+                              <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
+                            </div>
+                          )}
+                        </div>
+                      </Popover>
+                    }
+                  >
+                    <button className="text-primary w-full text-sm py-2 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
+                  </Whisper>
+                </div>
               </div>
               {/* Contact  */}
-              <div className="w-full">
+              <div>
                 <SendMessagePopOverFromPropertyOwner receiverId={modalData?.user?.userId} />
-              </div>
-              {/* whisper */}
-              <div className="w-full">
-                <Whisper
-                  preventOverflow
-                  placement="auto"
-                  trigger="click"
-                  speaker={
-                    <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                      <div className="p-3 space-y-2">
-                        {!isLoadingUnits &&
-                          unitRes?.data?.length > 0 &&
-                          unitRes?.data?.map((singleUnit) => (
-                            <div key={Math.random()}>
-                              <button
-                                onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                                className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
-                              >
-                                <div className="col-span-1 h-full">
-                                  <Image
-                                    width={500}
-                                    height={500}
-                                    className="w-full h-full p-1 object-cover rounded-xl"
-                                    src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
-                                    alt="photo"
-                                  />
-                                </div>
-                                <div className="flex w-full flex-col col-span-2 justify-between my-2 text-sm ml-3">
-                                  <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                                  <h3>
-                                    {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
-                                  </h3>
-                                  <h3>{singleUnit?.address}</h3>
-                                </div>
-                              </button>
-                            </div>
-                          ))}
-
-                        {isLoadingUnits && (
-                          <div className=" mt-10 gap-y-5 flex flex-col">
-                            <div>
-                              <Placeholder.Graph active height={150} />
-                            </div>
-                            <div>
-                              <Placeholder.Graph active height={150} />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* if no data is available */}
-                        {!isLoadingUnits && !unitRes?.data?.length && (
-                          <div className="flex justify-center min-h-[10vh] items-center">
-                            <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
-                          </div>
-                        )}
-                      </div>
-                    </Popover>
-                  }
-                >
-                  <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
-                </Whisper>
               </div>
             </div>
 
