@@ -38,6 +38,6 @@ services:
       dockerfile: Dockerfile
     container_name: client-container
     depends_on:
-      - server
+      - postgres
     ports:
       - 3000:3000
