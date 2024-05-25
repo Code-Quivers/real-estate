@@ -1,16 +1,18 @@
 "use client";
 import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
-import { fileUrlKey } from "@/configs/envConfig";
+import MaintenanceRequestSwiper from "@/components/property-owner/maintenance-request/MaintenanceRequestSwiper";
+import PropertySingleReqDrawer from "@/components/property-owner/maintenance-request/PropertySingleReqDrawer";
 import { getType } from "@/constants/tableValues";
 import {
   useAcceptMaintenanceRequestForOwnerMutation,
   useGetAllMaintenanceReqForOwnerQuery,
 } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
-import Image from "next/image";
-import { useEffect } from "react";
-import { Button, Message, useToaster } from "rsuite";
+import { useEffect, useState } from "react";
+import { Message, useToaster } from "rsuite";
 
 const MaintenanceRequest = () => {
+  const [open, setOpen] = useState(false);
+  const [requestToDrawer, setRequestToDrawer] = useState(null);
   const { data: maintenanceReq, isLoading } = useGetAllMaintenanceReqForOwnerQuery({});
   const toaster = useToaster();
   const [
@@ -47,68 +49,83 @@ const MaintenanceRequest = () => {
 
   return (
     <>
-      <section className="max-w-5xl  mb-5 mt-14 mx-auto lg:px-5 2xl:px-0 ">
+      <section className="max-w-6xl min-h-screen mt-14 mx-auto lg:px-5 2xl:px-0 ">
         <div className="flex justify-center">
           <h2 className="text-4xl ">Maintenance Request</h2>
         </div>
         {/* requests */}
 
         {!isLoading && (
-          <div className="mt-10 grid mx-3 lg:mx-0 gap-5">
+          <div className="mt-10 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mx-3 lg:mx-0 gap-5">
             {maintenanceReq?.data?.length > 0 &&
               maintenanceReq?.data?.map((singleReq, index) => (
-                <div className="border grid grid-cols-12 bg-white rounded-md p-2" key={index}>
-                  {console.log(singleReq)}
-                  <div className=" gap-6 lg:col-span-5 col-span-12">
-                    <div className="">
-                      <Image
-                        className="h-[200px] object-cover rounded-md w-full"
-                        alt="photo"
-                        width={800}
-                        height={250}
-                        src={singleReq?.property?.images?.length > 0 ? `${fileUrlKey()}/${singleReq?.property?.images[0]}` : ""}
-                      />
+                <div className="border bg-white rounded-lg shadow-sm" key={index}>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setOpen(true);
+                      setRequestToDrawer(singleReq);
+                    }}
+                  >
+                    {/* image */}
+                    <MaintenanceRequestSwiper requestImages={singleReq?.property?.images} />
+                    {/* issue priority and description and status */}
+                    <div className="mx-2">
+                      <div className="w-full flex flex-col justify-between">
+                        <div>
+                          {/* <h3 className="font-medium">Issue Location : {singleReq?.issueLocation}</h3> */}
+                          <div className="mt-2 flex items-center justify-between">
+                            <h3 className="font-semibold line-clamp-1 text-primary">
+                              Issue:{" "}
+                              {singleReq?.issueType
+                                ? singleReq?.issueType?.replace(/_/g, " ").charAt(0).toUpperCase() +
+                                  singleReq?.issueType?.replace(/_/g, " ").slice(1).toLowerCase()
+                                : "N/A"}
+                            </h3>
+                            <span
+                              className={`${singleReq?.status === "PENDING" ? "bg-yellow-100  border-yellow-500 text-yellow-600" : singleReq?.status == "APPROVED" ? "bg-blue-100 text-blue-600 border-blue-500" : ""} px-2.5 font-medium text-xs border rounded-full`}
+                            >
+                              {singleReq?.status}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <h3 className="font-medium text-sm rounded-full">{getType(singleReq?.priority)}</h3>
+                          </div>
+                          <p className="line-clamp-3 text-sm text-gray-900 mt-2">{singleReq?.description}</p>
+                        </div>
+
+                        {/* <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3> */}
+                      </div>
                     </div>
                   </div>
-                  <div className="lg:col-span-7 col-span-12 lg:px-4 py-2 w-full flex flex-col justify-between">
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium">
-                          Owner: {singleReq?.owner?.firstName} {singleReq?.owner?.lastName}{" "}
-                        </h3>
-                        <h3 className="font-medium text-xs px-3 py-1 bg-[#868E96] text-white rounded-full">{getType(singleReq?.priority)}</h3>
+                  <hr className="my-2" />
+                  {/* tenants and contact */}
+                  <div className="mx-2">
+                    <div className=" flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-gray-800">Tenant</p>
+                        <p className="line-clamp-1">
+                          {singleReq?.tenant?.firstName} {singleReq?.tenant?.lastName}
+                        </p>
                       </div>
-                      <h3 className="font-medium">Issue Location : {singleReq?.issueLocation}</h3>
-                      <h3 className="font-medium">
-                        Issue Type :{" "}
-                        {singleReq?.issueType
-                          ? singleReq?.issueType?.replace(/_/g, " ").charAt(0).toUpperCase() +
-                            singleReq?.issueType?.replace(/_/g, " ").slice(1).toLowerCase()
-                          : "N/A"}
-                      </h3>
-                    </div>
-
-                    {/* <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3> */}
-
-                    <div className="grid grid-cols-3 gap-4 max-lg:mt-3">
-                      {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
-
-                      <button
-                        type="button"
-                        onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)}
-                        className="text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        type="button"
-                        className="!text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
-                      >
-                        Reject
-                      </button>
                       <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.tenant?.userId} />
-                      {/* <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button> */}
                     </div>
+                  </div>
+                  {/* <hr className="my-2" /> */}
+                  {/* button accept reject */}
+                  <div className="grid grid-cols-2 gap-4 px-2 my-4">
+                    {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
+
+                    <button
+                      type="button"
+                      onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)}
+                      className="text-primary w-full text-sm py-2 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                    >
+                      Accept
+                    </button>
+                    <button type="button" className="w-full text-sm py-2 px-3 font-semibold rounded-md text-white bg-red-500">
+                      Reject
+                    </button>
                   </div>
                 </div>
               ))}
@@ -121,6 +138,7 @@ const MaintenanceRequest = () => {
           </div>
         )}
       </section>
+      <PropertySingleReqDrawer open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
     </>
   );
 };
