@@ -39,8 +39,8 @@ body::-webkit-scrollbar-thumb {
 }
 
 .rs-panel-body {
-  padding-left:  0px !important;
-  padding-right:  0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
 }
 
 /* rs date picker button */
@@ -58,11 +58,11 @@ body::-webkit-scrollbar-thumb {
 }
 
 /* pop over */
-.rs-popover {
-  /* border-radius: 10px !important; */
+/* .rs-popover { */
+/* border-radius: 10px !important; */
 
-  padding: 0px !important;
-}
+/* padding: 0px !important; */
+/* } */
 
 /* r suit input */
 /* .rs-input {

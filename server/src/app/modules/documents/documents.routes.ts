@@ -44,5 +44,7 @@ router.patch(
 router.get("/documents", auth(UserRoles.TENANT), DocumentsControllers.getDocuments);
 
 router.get("/document/:documentId", auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER), DocumentsControllers.getDocument);
+// ! remove template
+router.delete("/document/remove-template", auth(UserRoles.PROPERTY_OWNER), DocumentsControllers.removeTemplate);
 
 export const DocumentsRoutes = router;

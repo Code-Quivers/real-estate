@@ -6,7 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { calculateTenantProfileScore, calculateTenantScoreRatio } from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -263,11 +263,12 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
       });
     }
 
+    // if new password provided
     if (password) {
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {
-          userId: res?.userId,
+          userId: res?.userId as string,
         },
         data: {
           password: hashedPassword,
@@ -281,16 +282,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 };
 
 // ! get tenant my unit information
-
-function differenceInMonths(date1: any, date2 = new Date()) {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-
-  const yearDiff = d2.getFullYear() - d1.getFullYear();
-  const monthDiff = d2.getMonth() - d1.getMonth();
-
-  return yearDiff * 12 + monthDiff;
-}
 
 // get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {

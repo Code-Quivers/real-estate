@@ -1,13 +1,15 @@
 "use client";
+import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
 import { fileUrlKey } from "@/configs/envConfig";
 import { getType } from "@/constants/tableValues";
 import {
   useAcceptMaintenanceRequestForOwnerMutation,
   useGetAllMaintenanceReqForOwnerQuery,
+  useRejectMaintenanceRequestForOwnerMutation,
 } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
 import Image from "next/image";
 import { useEffect } from "react";
-import { Button, Message, useToaster } from "rsuite";
+import { Message, Notification, useToaster } from "rsuite";
 
 const MaintenanceRequest = () => {
   const { data: maintenanceReq, isLoading } = useGetAllMaintenanceReqForOwnerQuery({});
@@ -20,7 +22,7 @@ const MaintenanceRequest = () => {
   const handleAcceptRequest = async (reqId) => {
     await acceptMaintenanceRequestForOwner(reqId);
   };
-
+  // ! side effect
   useEffect(() => {
     if (!isLoadingApprove && !isErrorApprove && isSuccessApprove) {
       toaster.push(
@@ -43,6 +45,42 @@ const MaintenanceRequest = () => {
       );
     }
   }, [isLoadingApprove, isErrorApprove, isSuccessApprove, errorApprove, toaster]);
+
+  // ! reject request
+  const [
+    rejectMaintenanceRequestForOwner,
+    { data: rejectData, isLoading: isLoadingReject, isSuccess: isSuccessReject, isError: isErrorReject, error: errorReject },
+  ] = useRejectMaintenanceRequestForOwnerMutation();
+
+  // reject
+  const handleRejectRequest = async (reqId) => {
+    await rejectMaintenanceRequestForOwner(reqId);
+  };
+
+  // ! side effect
+
+  useEffect(() => {
+    if (!isLoadingReject && !isErrorReject && isSuccessReject) {
+      toaster.push(
+        <Notification header="Success" type="success">
+          <span>{rejectData?.message || "Rejected"}</span>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+    if (!isLoadingReject && isErrorReject && !isSuccessReject && errorReject) {
+      toaster.push(
+        <Notification header="Error" type="error">
+          <span>{errorReject?.message || "Failed to Accept"}</span>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+    }
+  }, [isLoadingReject, rejectData, isErrorReject, errorReject, isSuccessReject, toaster]);
 
   return (
     <>
@@ -89,17 +127,25 @@ const MaintenanceRequest = () => {
 
                     {/* <h3 className="text-xl  font-medium">PriorityType : {getType(singleReq?.priority)}</h3> */}
 
-                    <div className="flex gap-2 max-lg:mt-3">
+                    <div className="grid grid-cols-3 gap-4 max-lg:mt-3">
                       {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
 
-                      <Button
+                      <button
+                        type="button"
                         onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)}
-                        className="!bg-primary !px-3 !py-2 !text-white w-full"
+                        className="text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
                       >
                         Accept
-                      </Button>
-                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Reject</Button>
-                      <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button>
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(singleReq?.maintenanceRequestId)}
+                        type="button"
+                        className="!text-primary w-full text-sm py-1.5 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                      >
+                        Reject
+                      </button>
+                      <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.tenant?.userId} />
+                      {/* <Button className="!bg-primary !px-3 !py-2 !text-white w-full">Contact</Button> */}
                     </div>
                   </div>
                 </div>

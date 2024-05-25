@@ -109,12 +109,14 @@ const getSavedTenants = async (userId: string, filters: any, options: IPaginatio
       {
         userId,
         itemType: "TENANT",
-        property: {
-          isNot: null,
-        },
       },
       ...(!isEmptyObject(tenantFilteringCondition) ? [{ tenant: tenantFilteringCondition }] : []),
     ],
+    tenant: {
+      property: {
+        is: null,
+      },
+    },
   };
 
   //

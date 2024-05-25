@@ -237,7 +237,7 @@ const getPropertyOwnerAllProperty = async (
         },
         Tenant: true,
         _count: true,
-        maintenanceRequests: true,
+        // maintenanceRequests: true,
         serviceProviders: {
           include: {
             Service: true,

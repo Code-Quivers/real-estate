@@ -51,6 +51,12 @@ router.patch(
   auth(UserRoles.PROPERTY_OWNER),
   MaintenanceRequestControllers.acceptRequestMaintenanceForOwner,
 );
+// ! reject (from owner)
+router.patch(
+  "/reject-maintenance-req-for-owner/:maintenanceRequestId",
+  auth(UserRoles.PROPERTY_OWNER),
+  MaintenanceRequestControllers.rejectRequestMaintenanceForOwner,
+);
 // ! accept request and send start to work for service providers
 router.patch(
   "/accept-maintenance-req-for-service-provider/:maintenanceRequestId",

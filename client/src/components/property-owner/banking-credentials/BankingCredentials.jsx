@@ -21,6 +21,7 @@ const BankingCredentials = () => {
     } else {
       resp = await createConnectedAccount({});
     }
+    // console.log(resp, "resp............");
     router.push(resp?.data?.data?.url);
   };
 
@@ -44,7 +45,7 @@ const BankingCredentials = () => {
       <div className="my-5 grid grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-5">
         {!isLoading && data?.data?.finOrgAccountId && (
           <>
-            {data?.data?.externalAccount?.email && <h3 className="border p-3 rounded-2xl ">Email: {data?.data?.email}</h3>}
+            {data?.data?.externalAccount?.email && <h3 className="">Email: {data?.data?.email}</h3>}
             {/* <h3 className="border p-3 rounded-2xl ">
                             Account: {data?.data?.externalAccount}
                         </h3> */}

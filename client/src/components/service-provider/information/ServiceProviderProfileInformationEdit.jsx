@@ -120,12 +120,36 @@ const ServiceProviderProfileInformationEdit = ({ myProfileData }) => {
               )}
             />
           </div>
+          {/* profile image */}
           <div className="col-span-2 space-y-5 pb-20">
             <label className="text-lg   font-medium">Profile Image</label>
             <Controller
               name="file"
               control={control}
               render={({ field }) => <ServiceProviderProfilePhotoUpload defaultImage={myProfileData?.profileImage} field={field} />}
+            />
+          </div>
+          {/* phone number */}
+          <div className="col-span-2 space-y-5">
+            <Controller
+              name="phoneNumber"
+              control={control}
+              render={({ field }) => (
+                <div className="space-y-1">
+                  <label className="text-lg font-medium">Company Phone Number</label>
+                  <MaskedInput
+                    className="!w-full"
+                    {...field}
+                    defaultValue={myProfileData?.phoneNumber}
+                    mask={optionNumber.mask}
+                    guide
+                    // showMask
+                    // keepCharPositions
+                    placeholder={optionNumber.placeholder}
+                    placeholderChar={"X"}
+                  />
+                </div>
+              )}
             />
           </div>
         </div>

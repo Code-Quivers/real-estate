@@ -102,6 +102,8 @@ const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
             <label className="text-sm font-medium">Current Credit Score</label>
             <Controller
               name="CurrentCreditScore"
+              control={control}
+              defaultValue={responseData?.CurrentCreditScore}
               rules={{
                 min: {
                   value: 100,
@@ -112,12 +114,10 @@ const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
                   message: "Maximum Credit Score is 850",
                 },
               }}
-              control={control}
               render={({ field }) => (
-                <div className="rs-form-control-wrapper ">
-                  <InputNumber className="!w-full" min={100} max={850} {...field} defaultValue={responseData?.CurrentCreditScore} />
-
-                  <Form.ErrorMessage show={(!!errors?.CurrentCreditScore && !!errors?.CurrentCreditScore?.message) || false} placement="topEnd">
+                <div className="rs-form-control-wrapper">
+                  <InputNumber className="!w-full" {...field} />
+                  <Form.ErrorMessage show={!!errors?.CurrentCreditScore} placement="topEnd">
                     {errors?.CurrentCreditScore?.message}
                   </Form.ErrorMessage>
                 </div>

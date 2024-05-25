@@ -31,7 +31,7 @@ export type IUserResponse = {
 export type IUserLogin = {
   emailOrUsername: string;
   password: string;
-  userName: string;
+  requestedRole: UserRoles;
 };
 export type ILoginUserResponse = {
   accessToken: string;

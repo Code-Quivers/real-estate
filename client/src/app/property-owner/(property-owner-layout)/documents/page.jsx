@@ -1,7 +1,7 @@
 import DocumentPage from "@/components/property-owner/documents/DocumentPage";
 
 export const metadata = {
-  title: "Documents",
+  title: "Send Documents",
 };
 const page = () => {
   return (

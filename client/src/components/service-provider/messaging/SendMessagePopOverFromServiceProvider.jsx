@@ -3,12 +3,9 @@
 import { useStartNewConversationMutation } from "@/redux/features/conversations/conversationApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaRegMessage } from "react-icons/fa6";
-import { FiMessageSquare } from "react-icons/fi";
-import { LuMessageCircle } from "react-icons/lu";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
-const SendMessagePopOverFromTenant = ({ receiverId }) => {
+const SendMessagePopOverFromServiceProvider = ({ receiverId }) => {
   const [startNewConversation, { data, isLoading, isSuccess, isError, error }] = useStartNewConversationMutation();
   const [textMessage, setTextMessage] = useState("");
 
@@ -39,7 +36,7 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
           placement: "bottomStart",
         },
       );
-      router.push(`/tenant/messages?chat=${data?.data?.conversationId}`);
+      router.push(`/service-provider/messages?chat=${data?.data?.conversationId}`);
     }
     if (isError && !isSuccess && error && !isLoading) {
       toaster.push(
@@ -58,44 +55,45 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
   return (
     <div>
       <Whisper
-        placement="bottomEnd"
+        preventOverflow
+        placement="autoVerticalEnd"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md   mb-5">
+          <Popover arrow={true} as="div" className="w-[350px] max-h-[400px] !rounded-md  mb-5">
             <div className="p-5 ">
               <div>
                 <h2>Send Message </h2>
               </div>
               <div>
                 <Input
+                  className="!resize-none"
                   onChange={(e) => {
                     setTextMessage(e);
                   }}
                   as="textarea"
-                  className="!resize-none"
-                  rows={5}
+                  rows={4}
                 />
               </div>
-              <div className="flex justify-end items-center gap-3 mt-5">
+              <div className="flex justify-end items-center gap-3 mt-3">
                 <Button
                   onClick={handleStartConversation}
                   disabled={!textMessage}
                   type="submit"
                   className="!bg-primary  !text-white !px-3 !py-1 !text-base !rounded-2xl "
                 >
-                  Send
+                  Submit
                 </Button>
               </div>
             </div>
           </Popover>
         }
       >
-        <button className="bg-primary text-white p-3 rounded-lg w-full">
-          <FaRegMessage size={20} />
+        <button className="text-primary  text-sm py-1.5 px-10 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]   duration-300 transition-all">
+          Contact
         </button>
       </Whisper>
     </div>
   );
 };
 
-export default SendMessagePopOverFromTenant;
+export default SendMessagePopOverFromServiceProvider;
