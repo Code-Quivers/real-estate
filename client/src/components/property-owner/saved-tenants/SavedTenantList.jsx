@@ -104,7 +104,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
         </div>
         {/* Contact  */}
         <div className="w-full">
-          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.user?.userId} />
+          <SendMessagePopOverFromPropertyOwner receiverId={singleReq?.tenant?.userId} />
         </div>
         {/*  assign to property */}
         <div className="w-full">
