@@ -65,7 +65,7 @@ const TenantUnitInformation = () => {
                   disabled={
                     unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired
                       ? true
-                      : false || unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0
+                      : false || unitRes?.dueRent == 0
                         ? true
                         : false
                   }
