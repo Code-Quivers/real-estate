@@ -18,6 +18,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "managerentalunit.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "managerentalunit.com/backend",
         pathname: "/**",
       },
@@ -31,7 +36,6 @@ const nextConfig = {
       "localhost",
       "77.237.234.238",
       "77.237.234.238:7000",
-      "managerentalunit.com/backend",
       "managerentalunit.com/backend/",
       "managerentalunit.com/backend/api/v1",
       "managerentalunit.com/backend/api/v1/",
