@@ -266,7 +266,7 @@ const ServiceProviderSignUpPage = () => {
               </button>
             ) : (
               <button type="submit" className="w-full py-3 rounded-md bg-primary text-white">
-                Sign in
+                Sign up
               </button>
             )}
           </form>
@@ -276,7 +276,7 @@ const ServiceProviderSignUpPage = () => {
           <p className="font-semibold">
             Already have an Account?{" "}
             <Link className="text-blue-800 hover:underline" href="/service-provider/login">
-              Sign up
+              Sign in
             </Link>
           </p>
         </div>
