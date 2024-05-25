@@ -4,6 +4,7 @@ import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
 
+// get my all templates
 const getTemplates = async (ownerId: string) => {
   try {
     const property = await prisma.propertyOwner.findUnique({
@@ -12,12 +13,15 @@ const getTemplates = async (ownerId: string) => {
         templates: true,
       },
     });
+
     return property?.templates;
   } catch (err) {
     console.log("Error in getTemplates service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get templates!");
   }
 };
+
+//  get single
 
 const getTemplate = async (ownerId: string, templateId: number) => {
   try {
@@ -72,7 +76,8 @@ const addTemplate = async (ownerId: string, title: string, filePath: string) => 
   }
 };
 
-const removeTemplate = async (ownerId: string, title: string, filePath: string) => {
+// ! remove template
+const removeTemplate = async (ownerId: string, filePath: string) => {
   try {
     // const template = { title, filePath }
     const result = await prisma.$transaction(async (transactionClient) => {
@@ -82,15 +87,25 @@ const removeTemplate = async (ownerId: string, title: string, filePath: string) 
           templates: true,
         },
       });
-      let data: any[] = [];
-      if (propertyOwner?.templates) {
-        data = propertyOwner.templates.map((template:any) => template?.filePath != filePath);
+
+      if (!propertyOwner?.templates?.length) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Template not Found");
       }
+
+      let data: any[] = [];
+
+      if (propertyOwner?.templates) {
+        data = propertyOwner.templates?.filter((template: any) => {
+          return template?.filePath !== filePath;
+        });
+      }
+
       const updatedData = await transactionClient.propertyOwner.update({
         where: { propertyOwnerId: ownerId },
         data: { templates: data },
       });
       return updatedData;
+      return [];
     });
 
     // Return the result of the transaction

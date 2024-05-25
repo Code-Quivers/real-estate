@@ -101,6 +101,17 @@ const getDocument = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! remove template
+const removeTemplate = catchAsync(async (req: Request, res: Response) => {
+  const ownerId: string = (req.user as IRequestUser).profileId;
+  const result = await DocumentsServices.removeTemplate(ownerId, req.body?.filePath);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Document Removed !",
+    data: result,
+  });
+});
 
 export const DocumentsControllers = {
   getTemplates,
@@ -110,4 +121,5 @@ export const DocumentsControllers = {
   getDocument,
   sendDocument,
   updateDocumentWithTenantSigned,
+  removeTemplate,
 };

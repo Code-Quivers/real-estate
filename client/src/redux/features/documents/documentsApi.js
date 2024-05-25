@@ -50,8 +50,8 @@ export const documentApi = baseApi.injectEndpoints({
     }),
     removeDocumentTemplate: builder.mutation({
       query: ({ data }) => ({
-        url: `${DOCUMENT_API}/remove-tenant-from-property`,
-        method: "POST",
+        url: `${DOCUMENT_API}/document/remove-template`,
+        method: "DELETE",
         data: data,
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.tenant],
@@ -84,4 +84,5 @@ export const {
   useGetSingleDocumentTemplateQuery,
   useGetDocumentsQuery,
   useSendSignedDocumentMutation,
+  useRemoveDocumentTemplateMutation,
 } = documentApi;

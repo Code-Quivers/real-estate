@@ -52,6 +52,13 @@ export const MaintenanceRequestApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
     }),
+    rejectMaintenanceRequestForOwner: builder.mutation({
+      query: (maintenanceRequestId) => ({
+        url: `${MAINTENANCE_REQUEST_API}/reject-maintenance-req-for-owner/${maintenanceRequestId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [tagTypes.maintenanceRequest, tagTypes.propertyOwner, tagTypes.serviceProvider],
+    }),
     acceptMaintenanceRequestForServiceProvider: builder.mutation({
       query: (maintenanceRequestId) => ({
         url: `${MAINTENANCE_REQUEST_API}/accept-maintenance-req-for-service-provider/${maintenanceRequestId}`,
@@ -79,4 +86,5 @@ export const {
   useAcceptMaintenanceRequestForServiceProviderMutation,
   useGetMyAllAcceptedOrdersQuery,
   useUpdateMaintenanceOrderRequestMutation,
+  useRejectMaintenanceRequestForOwnerMutation,
 } = MaintenanceRequestApi;

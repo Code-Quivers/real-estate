@@ -106,9 +106,9 @@ const SendDocumentModal = ({ open, handleClose, sendModalData }) => {
 
             {/* form */}
 
-            <div className="bg-white  p-3 md:p-5 lg:p-10 border shadow-lg rounded-xl">
+            <div className="bg-white  ">
               <form onSubmit={handleSubmit(handleSendDocument)}>
-                <div className="space-y-5">
+                <div className="space-y-7">
                   <div>
                     <label htmlFor="templatePath">Select Document Template</label>
 

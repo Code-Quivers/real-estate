@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 const ENDPOINT = getMsgEndPoint();
-const nameSpace = '/chatapp';
+const nameSpace = "/chatapp";
 
 const myDetails = getUserInfo();
 const useSocket = () => {
@@ -14,8 +14,8 @@ const useSocket = () => {
 
   useEffect(() => {
     // Create a new socket instance
-    const newSocket = io(ENDPOINT,{
-      path:`${nameSpace}/socket.io`,
+    const newSocket = io(ENDPOINT, {
+      path: `${nameSpace}/socket.io`,
     });
 
     // Emit the "setup" event with myDetails
