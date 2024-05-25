@@ -19,5 +19,5 @@ export const getStatusClasses = (status) => {
 
 export const getType = (type) => {
   if (type === "MAINTENANCE_AND_REPAIR") return "MAINTENANCE AND REPAIR";
-  else return type.replace("_", " ");
+  else return type?.replace("_", " ");
 };

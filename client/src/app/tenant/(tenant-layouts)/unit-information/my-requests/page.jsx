@@ -1,23 +1,24 @@
 "use client";
-
 import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
-import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
 import RequestCardSwiper from "@/components/tenant/request/RequestCardSwiper";
-import { fileUrlKey } from "@/configs/envConfig";
-import { cellCss, headerCss } from "@/constants/tableStyles";
+import SingleRequestDrawer from "@/components/tenant/request/SingleRequestDrawer";
 import { getType } from "@/constants/tableValues";
 import { useGetMyRequestedMaintenanceQuery } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
-import Image from "next/image";
-import { Table } from "rsuite";
-const { Column, HeaderCell, Cell } = Table;
+import Link from "next/link";
+import { useState } from "react";
 
 const MyMaintenanceRequests = () => {
-  const { data: myAllRequests, isError, isLoading, isFetching, error } = useGetMyRequestedMaintenanceQuery();
+  const [open, setOpen] = useState(false);
+  const [requestToDrawer, setRequestToDrawer] = useState(null);
+  const { data: myAllRequests, isError, isLoading, error } = useGetMyRequestedMaintenanceQuery();
   return (
     <div className="max-w-[1150px] mt-6 2xl:mx-auto md:px-5 lg:px-5 max-lg:pb-10 2xl:px-0 mx-auto ">
       {!isError && (
-        <div className="my-5 max-md:px-3 text-lg">
+        <div className="my-5 max-md:px-3 text-lg flex justify-between">
           <h2>My Maintenance Requests | total {myAllRequests?.data?.length || 0}</h2>
+          <Link href="/tenant/unit-information/request-maintenance" className="bg-primary px-4 rounded-full py-1 text-white hover:bg-primary/90">
+            Send request
+          </Link>
         </div>
       )}
 
@@ -26,25 +27,50 @@ const MyMaintenanceRequests = () => {
           {error?.message || "Something went wrong"}..
         </div>
       )}
-      <div></div>
+
       {console.log(myAllRequests, "myAllRequests")}
       <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3">
         {myAllRequests?.data?.length > 0 &&
           myAllRequests?.data?.map((request, idx) => (
             <div key={idx} className="border bg-white rounded-md shadow-sm">
-              <RequestCardSwiper requestImages={request?.images} />
-              {/* <Image
-                width={1000}
-                height={1000}
-                alt=""
-                src={`${fileUrlKey()}/${request.images[0]}`}
-                className=" w-full object-center rounded-t-md h-40"
-              /> */}
+              {/* image and description */}
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  setOpen(true);
+                  setRequestToDrawer(request);
+                }}
+              >
+                <RequestCardSwiper requestImages={request?.images} />
+                <div className="mt-3">
+                  <div className="px-3">
+                    <div className="flex items-center justify-between">
+                      <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
+                      <span
+                        className={`${request?.status === "PENDING" ? "bg-yellow-100  border-yellow-500 text-yellow-600" : request?.status == "APPROVED" ? "bg-blue-100 text-blue-600 border-blue-500" : ""} px-2.5 font-medium text-xs border rounded-full`}
+                      >
+                        {request?.status}
+                      </span>
+                    </div>
+                    <p className="text-sm">{getType(request?.priority)}</p>
+                    <p className="line-clamp-3 text-sm mt-2">{request?.description}</p>
+                  </div>
+                </div>
+              </div>
               {/* <div className="absolute inset-0 flex justify-end text-xs mt-2 ">
                 <div>
                   <p className="bg-[#868E96] text-white px-2 py-1 rounded-full">{getType(request?.priority)}</p>
                 </div>
               </div> */}
+
+              {/* owner name and contact */}
+              <div className="flex justify-between items-center border-t my-2 text-base px-3">
+                <div className="mt-2">
+                  <p className="text-gray-900">Owner</p>
+                  <p>
+                    {request?.owner?.firstName} {request?.owner?.lastName}
+                  </p>
+
               <div className="mt-3">
                 <div className="px-3">
                   <div className="flex items-center justify-between">
@@ -60,21 +86,15 @@ const MyMaintenanceRequests = () => {
                   </div>
                   <p className="text-sm">{getType(request?.priority)}</p>
                   <p className="line-clamp-3 text-sm mt-2">{request?.description}</p>
-                </div>
-                <div className="flex justify-between items-center border-t my-2 text-base px-3">
-                  <div className="mt-2">
-                    <p className="text-gray-900">Owner</p>
-                    <p>
-                      {request?.owner?.firstName} {request?.owner?.lastName}
-                    </p>
-                  </div>
 
-                  <SendMessagePopOverFromTenant receiverId={request?.owner?.userId} />
                 </div>
+
+                <SendMessagePopOverFromTenant receiverId={request?.owner?.userId} />
               </div>
             </div>
           ))}
       </section>
+      <SingleRequestDrawer open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
     </div>
   );
 };
