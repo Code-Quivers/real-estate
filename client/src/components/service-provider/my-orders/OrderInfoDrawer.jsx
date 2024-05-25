@@ -4,14 +4,18 @@ import { Drawer, IconButton, useMediaQuery } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import { CgClose } from "react-icons/cg";
 import { getType } from "@/constants/tableValues";
-import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
-import SingleReqDrawerSwiper from "./SingleReqDrawerSwiper";
+import SingleReqDrawerSwiper from "@/components/tenant/request/SingleReqDrawerSwiper";
+import SendMessagePopOverFromServiceProvider from "../messaging/SendMessagePopOverFromServiceProvider";
 import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
+import UpdateMyOrderStatusModal from "./UpdateMyOrderStatusModal";
+import { useState } from "react";
+import { MdModeEditOutline } from "react-icons/md";
 
-const SingleRequestDrawer = ({ open, setOpen, requestToDrawer }) => {
+const OrderInfoDrawer = ({ open, setOpen, requestToDrawer }) => {
   const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
   const handleClose = () => setOpen(false);
-
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const handleCloseUpdate = () => setIsOpenEdit(false);
   return (
     <div>
       <Drawer
@@ -62,21 +66,36 @@ const SingleRequestDrawer = ({ open, setOpen, requestToDrawer }) => {
               </div>
               <div className="md:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar ">
                 <hr className="max-md:hidden" />
-                <div className="px-4 pt-1 pb-2 ">
-                  <div>
-                    <h2 className="mb-1.5 font-medium">Issue Type: {requestToDrawer?.issueType}</h2>
-                    <h2 className="">issue Location: {requestToDrawer?.issueLocation}</h2>
+                <div className="flex justify-between items-end py-3">
+                  <div className="px-4 space-y-2 ">
+                    <h2 className="font-medium">Issue Type: {requestToDrawer?.issueType}</h2>
+                    <h2 className="">issue Location: {requestToDrawer?.issueLocation}</h2>{" "}
+                    <h3 className="font-medium">Priority: {getType(requestToDrawer?.priority)}</h3>
                   </div>
-                </div>
-                <div className="flex px-4 justify-between items-center">
-                  <p>Priority: {getType(requestToDrawer?.priority)}</p>
-                  <span className={`${getMaintenanceStatusStyles(requestToDrawer?.status)} px-2.5  py-0.5 font-medium text-xs border rounded-full `}>
-                    {requestToDrawer?.status}
-                  </span>
+                  <div className=" px-4 flex flex-col gap-y-4 justify-between items-center  ">
+                    <div>
+                      <button
+                        onClick={() => {
+                          setIsOpenEdit(true);
+                        }}
+                        className="bg-primary text-sm flex items-center gap-2 text-white px-3 py-1 rounded-full"
+                      >
+                        <MdModeEditOutline size={18} />
+                        Edit
+                      </button>
+                    </div>
+                    <div>
+                      <span
+                        className={`${getMaintenanceStatusStyles(requestToDrawer?.status)} px-2.5  py-0.5 font-medium text-xs border rounded-full `}
+                      >
+                        {requestToDrawer?.status}
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <hr className="my-2" />
                 {/* */}
-                <div>
+                <div className="">
                   {/* owner info and contact */}
                   <div className="px-4 my-3 flex justify-between items-center">
                     <div>
@@ -85,23 +104,19 @@ const SingleRequestDrawer = ({ open, setOpen, requestToDrawer }) => {
                         {requestToDrawer?.owner?.firstName} {requestToDrawer?.owner?.lastName}
                       </p>
                     </div>
-                    <SendMessagePopOverFromTenant receiverId={requestToDrawer?.owner?.userId} />
+                    <SendMessagePopOverFromServiceProvider receiverId={requestToDrawer?.owner?.userId} />
                   </div>
-                  {/* Service Provider */}
-                  {requestToDrawer?.serviceProvider && (
-                    <>
-                      <hr className="my-2" />
-                      <div className="px-4 my-3 flex justify-between items-center">
-                        <div>
-                          <p className="text-gray-900 font-semibold">Service Provider</p>
-                          <p>
-                            {requestToDrawer?.serviceProvider?.firstName} {requestToDrawer?.serviceProvider?.lastName}
-                          </p>
-                        </div>
-                        <SendMessagePopOverFromTenant receiverId={requestToDrawer?.serviceProvider?.userId} />
-                      </div>
-                    </>
-                  )}
+                  <hr className="my-2" />
+                  {/* Tenant Info */}
+                  <div className="px-4 my-3 flex justify-between items-center">
+                    <div>
+                      <p className="text-gray-900 font-semibold">Tenant</p>
+                      <p>
+                        {requestToDrawer?.tenant?.firstName} {requestToDrawer?.tenant?.lastName}
+                      </p>
+                    </div>
+                    <SendMessagePopOverFromServiceProvider receiverId={requestToDrawer?.tenant?.userId} />
+                  </div>
                 </div>
                 <hr className="my-2" />
 
@@ -123,8 +138,10 @@ const SingleRequestDrawer = ({ open, setOpen, requestToDrawer }) => {
           </div>
         </Drawer.Body>
       </Drawer>
+      {/*  */}
+      <UpdateMyOrderStatusModal handleClose={handleCloseUpdate} editData={requestToDrawer} isOpen={isOpenEdit} handleCloseDrawer={handleClose} />
     </div>
   );
 };
 
-export default SingleRequestDrawer;
+export default OrderInfoDrawer;
