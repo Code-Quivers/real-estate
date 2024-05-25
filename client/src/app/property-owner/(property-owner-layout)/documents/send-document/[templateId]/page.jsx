@@ -6,7 +6,7 @@ import { useGetSingleDocumentTemplateQuery } from "@/redux/features/documents/do
 import { useGetMyTenantsQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input, Loader, SelectPicker } from "rsuite";
+import { Avatar, Button, Form, Input, Loader, SelectPicker } from "rsuite";
 
 const SendDocumentPage = ({ params }) => {
   const { data, isLoading, isError } = useGetSingleDocumentTemplateQuery(
@@ -29,14 +29,22 @@ const SendDocumentPage = ({ params }) => {
     reset: resetForm,
     watch,
   } = useForm();
-
+  // title: z.string({ invalid_type_error: "Title should be string~" }),
+  //   propertyId: z.string({ invalid_type_error: "Property id should be a string" }),
+  //   tenantId: z.string({ invalid_type_error: "Tenant ID should be string!" }),
   // ! handle
-  const handleSendDocument = () => {
+
+  const { propertyId } = watch();
+  const selectedProperty = tenantData?.data?.find((single) => single?.propertyId === propertyId);
+  // handle submit
+  const handleSendDocument = (sendData) => {
+    const obj = {
+      propertyId: sendData?.propertyId,
+      title: `${data?.data?.title} - ${selectedProperty?.title}`,
+      tenantId: selectedProperty?.Tenant?.tenantId,
+    };
     //
   };
-  const { propertyId } = watch();
-  const selectedTenant = tenantData?.data?.find((single) => single?.propertyId === propertyId);
-
   return (
     <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
       <div className="my-5 flex justify-center">
@@ -80,12 +88,12 @@ const SendDocumentPage = ({ params }) => {
                         onChange={(value) => field.onChange(value)}
                         renderMenu={isTenantDataLoading}
                         renderMenuItem={(label, other) => (
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-center gap-3">
                             <div>
-                              <Image
-                                className="w-[50px] h-[50px] object-cover rounded-md"
-                                width={100}
-                                height={100}
+                              <Avatar
+                                size="md"
+                                circle
+                                className=" object-cover rounded-md"
                                 src={other?.image ? `${fileUrlKey()}/${other?.image}` : ""}
                                 alt=""
                               />
@@ -110,7 +118,7 @@ const SendDocumentPage = ({ params }) => {
 
                 <div className="rs-form-control-wrapper ">
                   <Input
-                    value={`${data?.data?.title} - ${selectedTenant?.title ?? ""}`}
+                    value={`${data?.data?.title} - ${selectedProperty?.title ?? ""}`}
                     size="lg"
                     className="!w-full"
                     autoComplete="off"

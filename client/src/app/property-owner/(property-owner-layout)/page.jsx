@@ -59,7 +59,7 @@ const PropertyOwnerInformation = () => {
             </div>
             <div className="">
               <h2 className="text-gray-600">Phone Number</h2>
-              <p className="text-lg">{myProfileData?.phoneNumber ?? "--"}</p>
+              <p className="text-lg">{myProfileData?.phoneNumber ?? "N/A"}</p>
             </div>
             <div className="">
               <h2 className="text-gray-600">Account Registered</h2>

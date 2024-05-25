@@ -4,6 +4,7 @@ import RequestCardSwiper from "@/components/tenant/request/RequestCardSwiper";
 import SingleRequestDrawer from "@/components/tenant/request/SingleRequestDrawer";
 import { getType } from "@/constants/tableValues";
 import { useGetMyRequestedMaintenanceQuery } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
+import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -45,9 +46,7 @@ const MyMaintenanceRequests = () => {
                   <div className="px-3">
                     <div className="flex items-center justify-between">
                       <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
-                      <span
-                        className={`${request?.status === "PENDING" ? "bg-yellow-100  border-yellow-500 text-yellow-600" : request?.status == "APPROVED" ? "bg-blue-100 text-blue-600 border-blue-500" : ""} px-2.5 font-medium text-xs border rounded-full`}
-                      >
+                      <span className={`${getMaintenanceStatusStyles(request?.status)} px-2.5  py-0.5 font-medium text-xs border rounded-full `}>
                         {request?.status}
                       </span>
                     </div>
@@ -61,6 +60,7 @@ const MyMaintenanceRequests = () => {
                   <p className="bg-[#868E96] text-white px-2 py-1 rounded-full">{getType(request?.priority)}</p>
                 </div>
               </div> */}
+
               {/* owner name and contact */}
               <div className="flex justify-between items-center border-t my-2 text-base px-3">
                 <div className="mt-2">
