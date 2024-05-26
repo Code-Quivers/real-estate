@@ -40,7 +40,7 @@ const TenantUnitInformation = () => {
               <div className="flex justify-between items-start mt-2 px-2 py-1">
                 <div>
                   <h2 className="line-clamp-1">{unitRes?.property?.title}</h2>
-                  <h2 className="text-lg">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
+                  <h2 className="text-lg font-semibold">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unitRes?.property?.numOfBed} bed</span> <span>{unitRes?.property?.numOfBath} bath</span>
                   </h2>
@@ -53,13 +53,12 @@ const TenantUnitInformation = () => {
               </div>
               {/* owner */}
               <hr className="my-2" />
-              <div className="px-2 pb-2">
+              <div className="px-2 pb-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-sm ">Owner </h2>
-                    <h2 className="text-sm line-clamp-1 ">
-                      {unitRes?.property?.owner?.firstName}
-                      {unitRes?.property?.owner?.lastName}
+                    <h2 className="">Owner </h2>
+                    <h2 className="line-clamp-1 font-medium">
+                      {unitRes?.property?.owner?.firstName} {unitRes?.property?.owner?.lastName}
                     </h2>
                   </div>
                   <div>
