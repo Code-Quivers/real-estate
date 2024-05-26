@@ -40,20 +40,19 @@ const PropertyOwnerUnitInformation = () => {
 
   return (
     <>
-      <section className=" lg:max-w-6xl max-lg:px-3 pb-20 mx-auto mt-6 lg:mt-10 2xl:mx-auto lg:px-5 2xl:px-0">
+      <section className=" lg:max-w-6xl px-2 pb-20 mx-auto mt-6 lg:mt-10 2xl:mx-auto lg:px-5 2xl:px-0">
         <div className="flex justify-between items-center">
-          <h2 className="lg:text-2xl">
-            Unit Information: <br className="md:hidden" /> Total {data?.meta?.total}
-          </h2>
+          <h2 className="text-sm lg:text-2xl">Unit Information: Total {data?.meta?.total}</h2>
           <Link
             href="/property-owner/unit-information/add-property"
-            className=" bg-primary text-white px-4 rounded-3xl flex items-center gap-2 py-2 drop-shadow-lg"
+            className=" bg-primary text-white px-4 rounded-3xl max-md:text-sm  flex items-center gap-2 py-2 drop-shadow-lg"
           >
             Add new unit / house
           </Link>
         </div>
+        <hr className="mb-3 mt-5" />
         {/* main section */}
-        <div>
+        <div className="max-md:space-y-10">
           {!isLoading &&
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
@@ -61,7 +60,7 @@ const PropertyOwnerUnitInformation = () => {
                 <div className="mt-5">
                   <div className="lg:flex lg:justify-between lg:items-start">
                     <h2 className="text-base mb-2">
-                      Property Title: <span className="font-bold">{singleProperty.title}</span>
+                      <span className="max-md:hidden">Property</span> Title: <span className="font-medium md:font-bold">{singleProperty.title}</span>
                     </h2>
 
                     {/* <div>
@@ -69,7 +68,8 @@ const PropertyOwnerUnitInformation = () => {
                     </div> */}
                     {/*  */}
                   </div>
-                  <div className="w-full lg:border p-3  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
+                  {/*  */}
+                  <div className="w-full lg:border p-2  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
                     {/* top section */}
                     <div>
                       <UnitPackageDate singleProperty={singleProperty} />
@@ -178,14 +178,15 @@ const PropertyOwnerUnitInformation = () => {
                                     src={
                                       singleProperty?.Tenant?.profileImage ? `${fileUrlKey()}/${singleProperty?.Tenant?.profileImage}` : profileLogo
                                     }
-                                    alt="TenantProfileImage"
                                   />
                                 </div>
                                 <div>
-                                  <h2 className="text-lg font-semibold">
+                                  <h2 className="md:text-lg font-medium md:font-semibold">
                                     {singleProperty?.Tenant?.firstName} {singleProperty?.Tenant?.lastName}
                                   </h2>
-                                  <h2 className="text-md font-medium">Phone Number : {singleProperty?.Tenant?.phoneNumber ?? "017"}</h2>
+                                  <h2 className="text-md md:font-medium">
+                                    Phone Number : {singleProperty?.Tenant?.phoneNumber ? singleProperty?.Tenant?.phoneNumber : "N/A"}
+                                  </h2>
                                 </div>
                               </div>
                             </>
@@ -240,13 +241,13 @@ const PropertyOwnerUnitInformation = () => {
                     )}
 
                     {/* service provider */}
-                    <div className="border rounded-xl min-h-[200px] p-5 lg:col-span-5">
+                    <div className="border rounded-xl min-h-[200px] p-2 md:p-5 lg:col-span-5">
                       <div className="md:flex justify-between items-center">
                         <div>
                           <h3 className="text-lg font-semibold">Service Provider Information: Total {singleProperty?.serviceProviders?.length}</h3>
                         </div>
                         {/* action */}
-                        <div className="flex gap-2 items-center">
+                        <div className="flex max-md:mt-2 gap-2 items-center">
                           <Button
                             as={Link}
                             disabled={
@@ -271,10 +272,9 @@ const PropertyOwnerUnitInformation = () => {
                       </div>
                       {/* all service Providers */}
                       <div className="">
-                        {!isLoading &&
-                          singleProperty?.serviceProviders?.length > 0 &&
+                        {singleProperty?.serviceProviders?.length > 0 &&
                           singleProperty?.serviceProviders?.map((serviceProvider) => (
-                            <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
+                            <div key={Math.random()} className="md:flex max-md:space-y-2 gap-3 items-stretch border-t pt-3 mt-3">
                               <div className=" ">
                                 <Image
                                   width={500}
@@ -313,7 +313,7 @@ const PropertyOwnerUnitInformation = () => {
                                   </h4>
                                 </div>
                                 {/* Service details */}
-                                <div className="lg:pl-2 w-full">
+                                <div className="lg:pl-2 w-full *:text-sm ">
                                   <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Type :</span>
                                     <span>

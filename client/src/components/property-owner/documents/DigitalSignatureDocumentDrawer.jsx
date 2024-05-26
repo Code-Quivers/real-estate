@@ -23,7 +23,7 @@ const DigitalSignatureDocumentDrawer = ({ filePath }) => {
       setPageNumber(pageNumber - 1);
     }
   };
-  const [pageWidth, setPageWidth] = useState(400);
+  const [pageWidth, setPageWidth] = useState(300);
   useEffect(() => {
     // Calculate page width based on viewport width or container width
     const width = window.innerWidth * 0.395; // You can adjust the percentage as needed
@@ -31,9 +31,9 @@ const DigitalSignatureDocumentDrawer = ({ filePath }) => {
   }, []);
   return (
     <div className="flex flex-col items-center">
-      <div className="border p-2 shadow-xl">
+      <div className="border p-2 shadow-xl min-h-[300px]">
         <Document file={`${fileUrlKey()}/${filePath}`} onLoadSuccess={onDocumentLoadSuccess}>
-          <Page width={pageWidth} pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
+          <Page height={450} pageNumber={pageNumber} renderTextLayer={false} renderAnnotationLayer={false} />
         </Document>
       </div>
       {/* Pagination */}

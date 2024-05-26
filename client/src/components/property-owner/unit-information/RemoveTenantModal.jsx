@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRemoveTenantFromPropertyMutation } from "@/redux/features/propertyOwner/propertyApi";
 import { useEffect } from "react";
 import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
+import { IoClose } from "react-icons/io5";
 
 const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRemove }) => {
   const {
@@ -67,11 +68,13 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
         <Modal.Body className="">
           <div>
             <div className="bg-red-500 flex justify-between items-center px-5 rounded-t-xl py-4">
-              <h2>Delete Tenant</h2>
-              <button onClick={handleCloseRemove}>x</button>
+              <h2 className="text-white">Delete Tenant</h2>
+              <button onClick={handleCloseRemove} className="text-white">
+                <IoClose size={30} />
+              </button>
             </div>
             {/* Confirmation Message */}
-            <div className="p-5">
+            <div className="p-4 md:p-5">
               <h2>Are you sure you want to delete this Tenant?</h2>
               {/* Display Tenant Details */}
               <div>
@@ -79,8 +82,7 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
                   Name: {tenantRemoveData?.Tenant?.firstName} {tenantRemoveData?.Tenant?.lastName}
                 </p>
                 <p>Phone Number: {tenantRemoveData?.Tenant?.phoneNumber ? tenantRemoveData?.Tenant?.phoneNumber?.replace(/\d/g, "X") : "N/A"}</p>
-                <p>Email: {tenantRemoveData?.Tenant?.user?.email || "N/A"}</p>
-                <p>Address: {tenantRemoveData?.Tenant?.presentAddress}</p>
+                <p>Address: {tenantRemoveData?.Tenant?.presentAddress || "N/A"}</p>
                 {/* Add more relevant tenant details */}
               </div>
             </div>

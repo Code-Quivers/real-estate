@@ -92,10 +92,10 @@ const SendDocumentModal = ({ open, handleClose, sendModalData }) => {
 
   return (
     <div>
-      <Modal size="lg" overflow={false} open={open} onClose={handleClose}>
+      <Modal size="full" overflow={false} open={open} onClose={handleClose}>
         <Modal.Body>
-          <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
-            <div className="my-5 flex justify-center">
+          <section className="max-w-[1050px]    mb-5 mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
+            <div className="flex justify-center">
               <h2 className="text-2xl font-semibold">Document Send</h2>
             </div>
             {isLoading && (

@@ -2,7 +2,7 @@
 import { useGetDocumentsQuery } from "@/redux/features/documents/documentsApi";
 import moment from "moment";
 import { Loader } from "rsuite";
-import { FaDownload, FaRegEye } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import { fileUrlKey } from "@/configs/envConfig";
 import TenantUploadDocument from "./TenantUploadDocument";
 
@@ -19,7 +19,7 @@ const TenantDocuments = () => {
         {!isLoading &&
           data?.data?.length > 0 &&
           data?.data?.map((singleDoc) => (
-            <div key={singleDoc?.documentId} className="flex justify-between items-center p-2 border rounded-lg shadow-lg bg-white">
+            <div key={singleDoc?.documentId} className="flex justify-between items-center p-4 border rounded-xl shadow-md bg-white">
               <div className="space-y-3">
                 <h2>{singleDoc?.documentTitle}</h2>
                 <div className="flex  items-center gap-3">
@@ -27,15 +27,15 @@ const TenantDocuments = () => {
                   {singleDoc?.isSignedByTenant && <p className="text-slate-400">Signed: {moment(singleDoc?.updatedAt).format("L")}</p>}
                 </div>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <button
+              <div className="flex justify-end items-center gap-2">
+                {/* <button
                   className="border p-2 text-blue-600 hover:bg-blue-600 hover:border-transparent hover:text-white rounded-full duration-300"
                   onClick={() => {
                     // Handle preview action
                   }}
                 >
                   <FaRegEye />
-                </button>
+                </button> */}
                 <button
                   className="border p-2 text-blue-600 hover:bg-blue-600 hover:border-transparent hover:text-white rounded-full duration-300"
                   onClick={() => {
