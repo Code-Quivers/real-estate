@@ -6,7 +6,6 @@ import { CgClose } from "react-icons/cg";
 import { getType } from "@/constants/tableValues";
 import SingleReqDrawerSwiper from "@/components/tenant/request/SingleReqDrawerSwiper";
 import SendMessagePopOverFromServiceProvider from "../messaging/SendMessagePopOverFromServiceProvider";
-import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
 import UpdateMyOrderStatusModal from "./UpdateMyOrderStatusModal";
 import { useState } from "react";
 import { MdModeEditOutline } from "react-icons/md";
@@ -86,7 +85,19 @@ const OrderInfoDrawer = ({ open, setOpen, requestToDrawer }) => {
                     </div>
                     <div>
                       <span
-                        className={`${getMaintenanceStatusStyles(requestToDrawer?.status)} px-2.5  py-0.5 font-medium text-xs border rounded-full `}
+                        className={`${
+                          requestToDrawer?.status === "PENDING"
+                            ? "bg-yellow-100 border-yellow-600 text-yellow-600"
+                            : requestToDrawer?.status === "ACTIVE"
+                              ? "bg-blue-100 text-blue-600 border-blue-600"
+                              : requestToDrawer?.status === "COMPLETED"
+                                ? "bg-green-100 text-green-600 border-green-600"
+                                : requestToDrawer?.status === "CANCEL"
+                                  ? "bg-red-100 text-red-600 border-red-600"
+                                  : requestToDrawer?.status === "PAUSED"
+                                    ? "bg-gray-100 text-gray-600 border-gray-600"
+                                    : ""
+                        } px-2.5  py-0.5 font-medium text-xs border rounded-full `}
                       >
                         {requestToDrawer?.status}
                       </span>
