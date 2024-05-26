@@ -1,13 +1,15 @@
 "use client";
 import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
+import SendMessagePopOver from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 import { fileUrlKey } from "@/configs/envConfig";
 import { useRemoveFromSavedItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
-import { Button, Carousel, Drawer, IconButton, Notification, useMediaQuery, useToaster } from "rsuite";
+import { Avatar, Drawer, IconButton, Notification, useMediaQuery, useToaster } from "rsuite";
 import SavedUnitsModalSwiper from "./swiper/SavedUnitsModalSwiper";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const SavedUnitsModal = ({ open, handleClose, units: item }) => {
   const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
@@ -79,19 +81,6 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
           <div className="md:grid md:grid-cols-12 justify-between items-stretch">
             {/* images */}
             <SavedUnitsModalSwiper propertyImages={item?.property?.images} />
-            {/* <Carousel className="custom-slider max-h-[250px] md:col-span-5 md:hidden">
-              <div className="md:col-span-5 md:hidden">
-                <Carousel className="custom-slider max-h-[250px] ">
-                  {item?.property?.images?.length > 0
-                    ? item?.property?.images?.map((photo, index) => (
-                        <div key={index}>
-                          <Image className="w-full h-full object-cover" height={300} width={300} src={`${fileUrlKey()}/${photo}`} alt="Unit Photo" />
-                        </div>
-                      ))
-                    : null}
-                </Carousel>
-              </div>
-            </Carousel> */}
             <div className="max-md:hidden lg:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
               {item?.property?.images?.length > 0 ? (
                 item?.property?.images?.map((photo, index) => (
@@ -117,7 +106,41 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
             {/* others */}
             <div className="lg:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar ">
               <div className="flex px-3 py-1.5  justify-between items-center  bg-white">
-                <div>
+                {/* owner photo and name */}
+                <div className="flex gap-3 items-center">
+                  <div>
+                    {item?.property?.owner?.profileImage ? (
+                      <Image
+                        src={`${fileUrlKey()}/${item?.property?.owner?.profileImage}`}
+                        width={300}
+                        height={300}
+                        className="rounded-full object-cover w-[60px] h-[60px]"
+                      />
+                    ) : (
+                      <Avatar circle size="lg" />
+                    )}
+                  </div>
+                  <div>
+                    <p>Owner</p>
+                    <h1>
+                      {item?.property?.owner?.firstName} {item?.property?.owner?.lastName}
+                    </h1>
+                  </div>
+                </div>
+                {/* save and msg button */}
+                <div className="flex gap-3 items-center">
+                  <SendMessagePopOver receiverId={item?.property?.owner?.userId} />
+                  <div>
+                    <button
+                      type="submit"
+                      onClick={handleRemoveUnit}
+                      className="bg-indigo-100 border hover:bg-indigo-200 text-sm py-2 px-2 rounded-full shadow-sm"
+                    >
+                      <RiDeleteBinLine size={24} className="text-red-700" />
+                    </button>
+                  </div>
+                </div>
+                {/* <div>
                   {item?.property?.owner?.profileImage ? (
                     <Image
                       src={`${fileUrlKey()}/${item?.property?.owner?.profileImage}`}
@@ -139,17 +162,18 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                   <div>
                     <SendMessagePopOverFromTenant receiverId={item?.property?.owner?.userId} />
                   </div>
-                </div>
+                </div> */}
               </div>
               <hr className="border   block" />
 
-              <div className="flex justify-between items-center px-2 py-4 lg:p-5">
+              <div className="flex justify-between items-center p-2 ">
                 <div>
-                  <h2 className="text-xl lg:text-4xl mb-2">${item?.property?.monthlyRent?.toLocaleString()}/month</h2>
-                  <h2 className="lg:text-xl">
+                  <h2 className="text-xl lg:text-2xl font-semibold">${item?.property?.monthlyRent?.toLocaleString()}/month</h2>
+                  <h2>{item?.property?.title}</h2>
+                  <h2 className="">
                     <span>{item?.property?.numOfBed ?? "0"} Bed</span> <span>{item?.property?.numOfBath ? item?.property?.numOfBath : "0"} Bath</span>
                   </h2>
-                  <h2 className="lg:text-xl">{item?.property?.address ? item?.property?.address : "--"}</h2>
+                  <h2 className="">{item?.property?.address ? item?.property?.address : "--"}</h2>
                 </div>
                 <div className="mr-2">
                   <Score score={item?.property?.scoreRatio?.score} total={item?.property?.scoreRatio?.total} />
@@ -223,17 +247,17 @@ const SavedUnitsModal = ({ open, handleClose, units: item }) => {
                     </div>
                   </div>
                   <div className={openTab === 2 ? "block" : "hidden"} id="link2">
-                    <div className="grid grid-cols-2 ">
-                      <div className="col-span-1 border-r  p-1">
-                        <h2 className="text-center font-semibold text-lg">Maintenance covered by Tenant</h2>
-                        <p className="mt-5 whitespace-pre-wrap ">
+                    <div className="">
+                      <div className="">
+                        <h2 className="font-semibold text-lg">Maintenance covered by Tenant</h2>
+                        <p className="mt-1 whitespace-pre-wrap ">
                           {item?.property?.maintenanceCoveredTenant ? item?.property?.maintenanceCoveredTenant : "N/A"}
                         </p>
                       </div>
 
-                      <div className="col-span-1 p-1 pl-1.5">
-                        <h2 className="text-center font-semibold text-lg">Maintenance covered by Property Owner</h2>
-                        <p className="mt-5 whitespace-pre-wrap">
+                      <div className="mt-2">
+                        <h2 className="font-semibold text-lg">Maintenance covered by Property Owner</h2>
+                        <p className="mt-1 whitespace-pre-wrap">
                           {item?.property?.maintenanceCoveredOwner ? item?.property?.maintenanceCoveredOwner : "N/A"}
                         </p>
                       </div>
