@@ -162,7 +162,7 @@ const MaintenanceRequest = () => {
                     <button
                       onClick={() => handleRejectRequest(singleReq?.maintenanceRequestId)}
                       type="button"
-                      className="w-full text-sm py-2 px-3 font-semibold rounded-md text-white bg-red-500"
+                      className="w-full text-sm py-2 px-3 font-semibold rounded-md text-white bg-red-600 hover:bg-red-700"
                     >
                       Reject
                     </button>
