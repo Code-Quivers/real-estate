@@ -298,6 +298,11 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
           include: {
             owner: {
               select: {
+                firstName: true,
+                lastName: true,
+                profileImage: true,
+                phoneNumber: true,
+                userId: true,
                 FinancialAccount: {
                   select: {
                     detailsSubmitted: true,

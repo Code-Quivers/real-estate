@@ -120,9 +120,5 @@ export function differenceInMonths(date1: any, date2 = new Date()) {
   const yearDiff = d2.getFullYear() - d1.getFullYear();
   const monthDiff = d2.getMonth() - d1.getMonth();
 
-  console.log(d1);
-  console.log(d2);
-  console.log(monthDiff);
-
   return yearDiff * 12 + monthDiff;
 }
