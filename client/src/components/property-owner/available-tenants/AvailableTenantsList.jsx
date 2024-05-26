@@ -140,7 +140,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                               <Image
                                 width={500}
                                 height={500}
-                                className=" w-[120px] p-1 h-[100px] object-cover rounded-xl"
+                                className="w-[120px] p-1 h-[100px] object-cover rounded-xl"
                                 src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                                 alt="photo"
                               />

@@ -84,17 +84,14 @@ const MyAcceptedAllOrders = () => {
               </div> */}
 
                 {/* owner name and contact */}
-                <div className="flex justify-between items-center border-t my-2 py-3 text-base px-3">
-                  <div className=" ">
+                <div className="flex justify-between items-center border-t my-3 pt-2 text-base px-3">
+                  <div className="">
                     <p className="text-gray-900 text-xs">Owner </p>
                     <p className="text-sm font-medium">
                       {request?.owner?.firstName} {request?.owner?.lastName}
                     </p>
                   </div>
-
-                  <div>
-                    <SendMessagePopOverFromServiceProvider receiverId={request?.owner?.userId} />
-                  </div>
+                  <SendMessagePopOverFromServiceProvider receiverId={request?.owner?.userId} />
                 </div>
               </div>
             ))}
