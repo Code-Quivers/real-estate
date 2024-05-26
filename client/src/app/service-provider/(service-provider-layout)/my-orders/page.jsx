@@ -7,7 +7,6 @@ import UpdateMyOrderStatusModal from "@/components/service-provider/my-orders/Up
 import Link from "next/link";
 import RequestCardSwiper from "@/components/tenant/request/RequestCardSwiper";
 import SendMessagePopOverFromServiceProvider from "@/components/service-provider/messaging/SendMessagePopOverFromServiceProvider";
-import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
 import OrderInfoDrawer from "@/components/service-provider/my-orders/OrderInfoDrawer";
 
 const MyAcceptedAllOrders = () => {
@@ -54,7 +53,22 @@ const MyAcceptedAllOrders = () => {
                     <div className="px-3">
                       <div className="flex items-start justify-between">
                         <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
-                        <span className={`${getMaintenanceStatusStyles(request?.status)} px-2.5  py-0.5 font-medium text-xs border rounded-full `}>
+
+                        <span
+                          className={`${
+                            request?.status === "PENDING"
+                              ? "bg-yellow-100 border-yellow-600 text-yellow-600"
+                              : request?.status === "ACTIVE"
+                                ? "bg-blue-100 text-blue-600 border-blue-600"
+                                : request?.status === "COMPLETED"
+                                  ? "bg-green-100 text-green-600 border-green-600"
+                                  : request?.status === "CANCEL"
+                                    ? "bg-red-100 text-red-600 border-red-600"
+                                    : request?.status === "PAUSED"
+                                      ? "bg-gray-100 text-gray-600 border-gray-600"
+                                      : ""
+                          } px-2.5  py-0.5 font-medium text-xs border rounded-full `}
+                        >
                           {request?.status}
                         </span>
                       </div>
@@ -85,6 +99,11 @@ const MyAcceptedAllOrders = () => {
               </div>
             ))}
         </section>
+        {!isLoading && !myAllOrders?.data?.data?.length > 0 && (
+          <div className="flex justify-center items-center min-h-[40vh]">
+            <h2>No Order Found</h2>
+          </div>
+        )}
       </div>
       {/* modal  */}
       <div>
