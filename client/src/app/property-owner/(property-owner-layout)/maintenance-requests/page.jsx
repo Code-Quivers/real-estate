@@ -173,7 +173,7 @@ const MaintenanceRequest = () => {
         )}
         {!isLoading && !maintenanceReq?.data?.length > 0 && (
           <div className="flex justify-center items-center min-h-[60vh]">
-            <h3 className="lg:text-2xl text-red-500">No Maintenance Request Found !!</h3>
+            <h3 className="text-xl">No Maintenance Request Found !!</h3>
           </div>
         )}
       </section>

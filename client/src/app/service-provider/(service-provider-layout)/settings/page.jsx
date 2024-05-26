@@ -1,5 +1,6 @@
 "use client";
 import ServiceProviderEditModal from "@/components/service-provider/setting/modal/ServiceProviderEditModal";
+import { getType } from "@/constants/tableValues";
 import { useGetServiceProviderMyProfileQuery } from "@/redux/features/serviceProvider/serviceProviderApi";
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -36,8 +37,12 @@ const ServiceProviderSettingPage = () => {
             <h3 className="border p-3 rounded-2xl">Email : {data?.data?.user?.email}</h3>
             <h3 className="border p-3 rounded-2xl">Username : {data?.data?.user?.userName}</h3>
             <h3 className="border p-3 rounded-2xl">Password : ******</h3>
-            <h3 className="border p-3 rounded-2xl">Service Type: {data?.data?.Service?.serviceType ?? "N/A"}</h3>
-            <h3 className="border p-3 rounded-2xl">Service Availability : {data?.data?.Service?.serviceAvailability ?? "N/A"}</h3>
+            <h3 className="border p-3 rounded-2xl">
+              Service Type: {data?.data?.Service?.serviceType ? getType(data?.data?.Service?.serviceType) : "N/A"}
+            </h3>
+            <h3 className="border p-3 rounded-2xl">
+              Service Availability: {data?.data?.Service?.serviceAvailability ? getType(data?.data?.Service?.serviceAvailability) : "N/A"}
+            </h3>
           </div>
         </div>
       </div>
