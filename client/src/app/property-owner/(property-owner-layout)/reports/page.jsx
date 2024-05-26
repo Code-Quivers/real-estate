@@ -63,7 +63,7 @@ const PropertyOwnerReportPage = () => {
   };
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5 2xl:px-0 ">
+    <section className="max-w-6xl min-h-screen xl:mx-auto md:px-3 lg:px-5 px-5 2xl:px-0 ">
       <div className="flex justify-center  py-5">
         <h2 className="text-2xl font-semibold">Reports</h2>
       </div>
@@ -106,23 +106,23 @@ const PropertyOwnerReportPage = () => {
             className="!w-full"
             renderMenuItem={(value, item) => {
               return (
-                <div className="  flex gap-2 border items-center rounded-md p-1">
-                  <div>
+                <div className="grid grid-cols-3 max-w-[320px] border rounded-lg hover:border-primary duration-300 transition-all text-start">
+                  <div className="col-span-1 max-h-24 h-full">
                     <Image
-                      width={100}
-                      height={100}
+                      width={500}
+                      height={500}
                       src={item?.others?.image && `${fileUrlKey()}/${item?.others?.image}`}
                       alt="Profile Image"
-                      className="w-[80px] h-[80px] rounded-md object-cover"
+                      className="w-full h-full rounded-xl object-cover p-1"
                     />
                   </div>
-                  <div className="*:text-balance *:text-sm">
-                    <h2 className="font-medium ">{value}</h2>
-                    <h2 className="">${item.others?.monthlyRent}</h2>
-                    <h2 className="">
+                  <div className="*:text-balance *:text-sm mr-2 col-span-2 px-2">
+                    <h2 className="font-medium line-clamp-1">{value}</h2>
+                    <h2 className="line-clamp-1">${item.others?.monthlyRent}</h2>
+                    <h2 className="line-clamp-1">
                       {item?.others?.numOfBed} Beds {item?.others?.numOfBath} Baths
                     </h2>
-                    <h2 className="">{item.others?.address ?? "-"}</h2>
+                    <h2 className="text-xs line-clamp-2">{item.others?.address ?? "-"}</h2>
                   </div>
                 </div>
               );

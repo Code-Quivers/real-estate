@@ -112,6 +112,8 @@ model Property {
   isActive                 Boolean              @default(true)
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
+  tenantAssignedAt          DateTime?
+  
   // 
   ownerId                  String
   owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)

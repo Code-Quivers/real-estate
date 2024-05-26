@@ -48,15 +48,15 @@ const PropertyOwnerAvailableTenants = () => {
   const [selectedService, setTenantDetails] = useState(null);
 
   return (
-    <section className="max-w-[1050px]  max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
+    <section className="max-w-6xl max-lg:px-3 min-h-screen pb-20 mx-auto mt-6 lg:mt-8 2xl:mx-auto lg:px-5    2xl:px-0 ">
       <div className="flex justify-center">
         <h2 className="md:text-3xl mb-3">Available Tenants</h2>
       </div>
       {/* search with price section start */}
 
-      <div className="grid grid-cols-4 justify-end gap-2">
+      <div className="grid grid-cols-12 justify-end gap-2">
         {/* tenant name or address. search with */}
-        <div className="col-span-3">
+        <div className="md:col-span-8 col-span-7">
           <InputGroup size="lg" inside className="!w-full">
             <Input className="!w-full" onChange={(e) => setSearchTerm(e)} placeholder="Search with Tenant Name or Address" size="lg" />
             <InputGroup.Addon>
@@ -66,7 +66,7 @@ const PropertyOwnerAvailableTenants = () => {
         </div>
 
         {/* rent */}
-        <div className="col-span-1">
+        <div className="md:col-span-4 col-span-5">
           <SelectPicker
             searchable={false}
             size="lg"

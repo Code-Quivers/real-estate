@@ -1,7 +1,7 @@
 "use client";
 
 import { Controller } from "react-hook-form";
-import { Form, Input, InputNumber } from "rsuite";
+import { Form, Input, InputNumber, MaskedInput } from "rsuite";
 
 const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
   return (
@@ -116,7 +116,17 @@ const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
               }}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper">
-                  <InputNumber className="!w-full" {...field} />
+                  <MaskedInput
+                    className="!w-full"
+                    {...field}
+                    defaultValue={responseData?.CurrentCreditScore}
+                    mask={[/[1-8]/, /\d/, /\d/]}
+                    guide
+                    // showMask
+                    keepCharPositions
+                    placeholder={"XXX"}
+                    placeholderChar={"X"}
+                  />
                   <Form.ErrorMessage show={!!errors?.CurrentCreditScore} placement="topEnd">
                     {errors?.CurrentCreditScore?.message}
                   </Form.ErrorMessage>

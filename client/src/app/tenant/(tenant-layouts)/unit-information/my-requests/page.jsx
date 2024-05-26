@@ -25,11 +25,11 @@ const MyMaintenanceRequests = () => {
 
       {!isLoading && isError && (
         <div className="flex justify-center items-center min-h-[70vh] text-red-400 font-semibold text-3xl">
-          {error?.message || "Something went wrong"}..
+          {error?.message || "Something went wrong"}...
         </div>
       )}
 
-      <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3 ">
+      <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3">
         {myAllRequests?.data?.length > 0 &&
           myAllRequests?.data?.map((request, idx) => (
             <div key={idx} className="border bg-white rounded-md shadow-sm">
@@ -75,6 +75,14 @@ const MyMaintenanceRequests = () => {
             </div>
           ))}
       </section>
+      <div>
+        {!isError && !isLoading && !myAllRequests?.data?.length > 0 && (
+          <div className="flex justify-center items-center min-h-[40vh]">
+            <h2>No Request Found</h2>
+          </div>
+        )}
+      </div>
+
       <SingleRequestDrawer open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
     </div>
   );

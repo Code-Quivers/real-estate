@@ -124,80 +124,81 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
               </div>
             </div>
             {/* action */}
-            <div className="flex px-3 py-3 gap-2">
-              <div className="w-full">
-                <button
-                  onClick={() => setOpen(true)}
-                  className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
-                >
-                  Remove
-                </button>
+            <div className="flex px-3 py-3 gap-3 justify-between items-center">
+              <div className="flex w-full gap-3">
+                <div className="w-full">
+                  <button
+                    onClick={() => setOpen(true)}
+                    className="text-primary w-full text-sm py-2 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                {/* assign property */}
+                <div className="w-full">
+                  <Whisper
+                    preventOverflow
+                    placement="autoHorizontal"
+                    trigger="click"
+                    speaker={
+                      <Popover className="max-h-[400px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                        <div className="space-y-2">
+                          {!isLoadingUnits &&
+                            unitRes?.data?.length > 0 &&
+                            unitRes?.data?.map((singleDetail) => (
+                              <div key={Math.random()}>
+                                <button
+                                  onClick={() => handleAddServiceProviderToProperty(singleDetail?.serviceProviderId)}
+                                  className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                                >
+                                  <div className="col-span-1 h-full ">
+                                    <Image
+                                      width={500}
+                                      height={500}
+                                      className="w-full h-full p-1 object-cover rounded-xl"
+                                      src={singleDetail?.images?.length ? `${fileUrlKey()}/${singleDetail?.images[0]}` : profileLogo}
+                                      alt="photo"
+                                    />
+                                  </div>
+                                  <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                                    <h3 className="font-semibold line-clamp-1">${singleDetail?.monthlyRent?.toLocaleString()}</h3>
+                                    <h3 className="line-clamp-1">
+                                      {singleDetail?.numOfBed} Beds {singleDetail?.numOfBath} Bath
+                                    </h3>
+                                    <h3 className="line-clamp-2">{singleDetail?.address}</h3>
+                                  </div>
+                                </button>
+                              </div>
+                            ))}
+
+                          {isLoadingUnits && (
+                            <div className=" mt-10 gap-y-5 flex flex-col">
+                              <div>
+                                <Placeholder.Graph active height={150} />
+                              </div>
+                              <div>
+                                <Placeholder.Graph active height={150} />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* if no data is available */}
+                          {!isLoadingUnits && !unitRes?.data?.length && (
+                            <div className="flex justify-center min-h-[10vh] items-center">
+                              <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
+                            </div>
+                          )}
+                        </div>
+                      </Popover>
+                    }
+                  >
+                    <button className="text-primary w-full text-sm py-2 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
+                  </Whisper>
+                </div>
               </div>
               {/* Contact  */}
-              <div className="w-full">
-                <SendMessagePopOverFromPropertyOwner receiverId={modalData?.serviceProvider?.user?.userId} />
-              </div>
-              {/*  */}
-              <div className="w-full">
-                <Whisper
-                  preventOverflow
-                  placement="auto"
-                  trigger="click"
-                  speaker={
-                    <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                      <div className="p-3 space-y-2">
-                        {!isLoadingUnits &&
-                          unitRes?.data?.length > 0 &&
-                          unitRes?.data?.map((singleDetail) => (
-                            <div key={Math.random()}>
-                              <button
-                                onClick={() => handleAddServiceProviderToProperty(singleDetail?.serviceProviderId)}
-                                className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
-                              >
-                                <div className="col-span-1 h-full ">
-                                  <Image
-                                    width={500}
-                                    height={500}
-                                    className="w-full h-full p-1 object-cover rounded-xl"
-                                    src={singleDetail?.images?.length ? `${fileUrlKey()}/${singleDetail?.images[0]}` : profileLogo}
-                                    alt="photo"
-                                  />
-                                </div>
-                                <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
-                                  <h3 className="font-semibold">${singleDetail?.monthlyRent?.toLocaleString()}</h3>
-                                  <h3>
-                                    {singleDetail?.numOfBed} Beds {singleDetail?.numOfBath} Bath
-                                  </h3>
-                                  <h3>{singleDetail?.address}</h3>
-                                </div>
-                              </button>
-                            </div>
-                          ))}
-
-                        {isLoadingUnits && (
-                          <div className=" mt-10 gap-y-5 flex flex-col">
-                            <div>
-                              <Placeholder.Graph active height={150} />
-                            </div>
-                            <div>
-                              <Placeholder.Graph active height={150} />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* if no data is available */}
-                        {!isLoadingUnits && !unitRes?.data?.length && (
-                          <div className="flex justify-center min-h-[10vh] items-center">
-                            <h2 className="text-2xl font-semibold text-rose-400">No Available Unit Found !</h2>
-                          </div>
-                        )}
-                      </div>
-                    </Popover>
-                  }
-                >
-                  <button className="text-primary w-full text-sm py-1.5 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]">Add</button>
-                </Whisper>
-              </div>
+              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.serviceProvider?.user?.userId} />
             </div>
             {/* company information */}
             <div className="border shadow-sm text-sm mx-3 p-2 rounded-md">
@@ -219,13 +220,13 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
             {/* bottom items */}
             <div className="space-y-5 border-t pt-1 px-3 my-5">
               <div className="">
-                <h4 className="text-sm font-medium">Description</h4>
+                <h4 className="font-medium">Description</h4>
                 <p className="text-sm text-justify ">
                   {modalData?.serviceProvider?.Service?.serviceDescription ? modalData?.serviceProvider?.Service?.serviceDescription : "N/A"}
                 </p>
               </div>
               <div className="">
-                <h4 className="text-sm font-medium">Cancellation Policy</h4>
+                <h4 className="font-medium">Cancellation Policy</h4>
                 <p className="text-sm text-justify ">{modalData?.serviceProvider?.Service?.serviceCancellationPolicy || "N/A"}</p>
               </div>
             </div>

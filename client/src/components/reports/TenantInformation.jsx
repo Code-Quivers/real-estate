@@ -59,10 +59,10 @@ const TenantInformation = ({ reportData }) => {
               <div>
                 <div className="px-2 py-1">
                   <p className="font-semibold">${report?.monthlyRent?.toLocaleString()}</p>
-                  <p>
+                  <p className="line-clamp-1">
                     {report?.numOfBed} Beds | {report?.numOfBath} Baths
                   </p>
-                  <p className="text-sm">{report?.address}</p>
+                  <p className="text-sm line-clamp-2">{report?.address}</p>
                 </div>
                 {/* Tenant Info */}
                 <hr />
@@ -74,9 +74,9 @@ const TenantInformation = ({ reportData }) => {
                 </div> */}
                 {report?.tenantName ? (
                   <div className="p-3">
-                    <div className="rounded-full flex gap-3 items-center">
+                    <div className="flex gap-3 items-center">
                       {report?.tenantPhoto ? (
-                        <Image src={`${fileUrlKey()}/${report?.tenantPhoto}`} width={30} height={30} className="rounded-full" />
+                        <Image src={`${fileUrlKey()}/${report?.tenantPhoto}`} width={300} height={300} className="rounded-full w-8 h-8" />
                       ) : (
                         <span>
                           <FaUser size={20} className="text-gray-500" />

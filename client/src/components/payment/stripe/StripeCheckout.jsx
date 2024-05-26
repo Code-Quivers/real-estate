@@ -23,7 +23,6 @@ const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFr
 //                 packageType={activePackagePrice}
 
 const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
-  console.log("shafin", others);
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
 

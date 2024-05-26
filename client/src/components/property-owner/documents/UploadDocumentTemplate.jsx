@@ -9,8 +9,6 @@ const UploadDocumentTemplate = ({ field }) => {
       // Take only the first file if multiple files are somehow selected
       const latestFile = files[files?.length - 1]; // Corrected to use the last file
 
-      console.log(files);
-
       const fileSizeLimit = 1024 * 5 * 1024; // 5 MB
 
       if (latestFile.blobFile?.size <= fileSizeLimit) {

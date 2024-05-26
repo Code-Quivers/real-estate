@@ -40,7 +40,7 @@ const PropertyOwnerUnitInformation = () => {
 
   return (
     <>
-      <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
+      <section className=" lg:max-w-6xl max-lg:px-3 pb-20 mx-auto mt-6 lg:mt-10 2xl:mx-auto lg:px-5 2xl:px-0">
         <div className="flex justify-between items-center">
           <h2 className="lg:text-2xl">
             Unit Information: <br className="md:hidden" /> Total {data?.meta?.total}
@@ -141,7 +141,7 @@ const PropertyOwnerUnitInformation = () => {
                             </div>
 
                             {singleProperty?.isRented && singleProperty?.Tenant && (
-                              <div className="flex gap-2 items-center">
+                              <div className="flex gap-4 items-center">
                                 <SendMessagePopOverFromPropertyOwner receiverId={singleProperty?.Tenant?.userId} />
 
                                 {/* <BiSolidMessageAltDetail size={20} /> */}
@@ -158,9 +158,9 @@ const PropertyOwnerUnitInformation = () => {
                                     setIsOpenTenantRemove(true);
                                     setTenantRemoveData(singleProperty);
                                   }}
-                                  className="hover:text-red-600 duration-300 disabled:cursor-not-allowed"
+                                  className="hover:text-red-600 text-primary bg-indigo-100 border p-2 rounded-full  duration-300 disabled:cursor-not-allowed"
                                 >
-                                  <RiDeleteBin5Fill size={20} />
+                                  <RiDeleteBin5Fill size={24} />
                                 </button>
                               </div>
                             )}
@@ -170,7 +170,7 @@ const PropertyOwnerUnitInformation = () => {
                           {/* tenant details */}
                           {singleProperty?.isRented && singleProperty?.Tenant ? (
                             <>
-                              <div className="flex  gap-3   mt-2 ">
+                              <div className="flex gap-3 mt-2 ">
                                 <div>
                                   <Avatar
                                     circle
@@ -178,8 +178,7 @@ const PropertyOwnerUnitInformation = () => {
                                     src={
                                       singleProperty?.Tenant?.profileImage ? `${fileUrlKey()}/${singleProperty?.Tenant?.profileImage}` : profileLogo
                                     }
-                                    className=" rounded-xl border  object-cover object-center"
-                                    alt=""
+                                    alt="TenantProfileImage"
                                   />
                                 </div>
                                 <div>
@@ -278,10 +277,10 @@ const PropertyOwnerUnitInformation = () => {
                             <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
                               <div className=" ">
                                 <Image
-                                  width={120}
-                                  height={120}
+                                  width={500}
+                                  height={500}
                                   src={serviceProvider?.profileImage ? `${fileUrlKey()}/${serviceProvider?.profileImage}` : apartmentPhoto}
-                                  className=" rounded-xl  object-cover "
+                                  className="w-28 h-28 rounded-xl object-cover"
                                   alt=""
                                 />
                               </div>
@@ -348,7 +347,8 @@ const PropertyOwnerUnitInformation = () => {
                                       {serviceProvider?.Service?.maxPrice ? serviceProvider?.Service?.maxPrice?.toLocaleString() : "0"}
                                     </span>
                                   </h4>
-                                  <div className="mt-3">
+                                  <div className="mt-3 flex justify-between items-center">
+                                    <p className="font-semibold">Contact</p>
                                     <SendMessagePopOverFromPropertyOwner receiverId={serviceProvider?.userId} />
                                   </div>
                                 </div>

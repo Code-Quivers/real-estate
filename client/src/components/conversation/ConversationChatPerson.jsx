@@ -22,7 +22,7 @@ const ConversationChatPerson = ({ singleConversation, paramsChatId, participant,
             alt=""
             height={100}
             width={100}
-            className="rounded-full object-cover lg:!w-[30px] lg:!h-[30px] xl:!w-[50px] xl:!h-[50px] "
+            className="object-cover rounded-full h-7 w-7 "
             src={getProfileImageUrl(singleConversation?.perticipants[0])}
           />
         </div>
