@@ -40,15 +40,10 @@ const DocumentPage = () => {
                 <div key={Math.random()} className="md:flex justify-between  items-start gap-5 border bg-white shadow-md p-5 rounded-lg">
                   <div className="sm:flex items-center gap-3">
                     <div>
-                      <Avatar
-                        className="object-cover rounded-full h-[90px] w-[90px]"
-                        src={`${fileUrlKey()}/${singleTenant?.Tenant?.profileImage}`}
-                        size="md"
-                        circle
-                      />
+                      <Avatar src={`${fileUrlKey()}/${singleTenant?.Tenant?.profileImage}`} size="lg" circle />
                     </div>
                     <div>
-                      <h2 className="text-lg">
+                      <h2 className="text-lg font-medium">
                         {singleTenant?.Tenant?.firstName} {singleTenant?.Tenant?.lastName}
                       </h2>
                       <h2 className="text-lg">Place to rent : {singleTenant?.Tenant?.placeToRent || "N/A"}</h2>
@@ -65,7 +60,7 @@ const DocumentPage = () => {
                         setOpenSend(true);
                       }}
                       size="lg"
-                      className="!bg-primary !text-white !text-sm max-md:w-full max-md:mt-2 md:!text-xl !sm:px-7 !py-2"
+                      className="!bg-primary !text-white !text-sm max-md:w-full max-md:mt-2 md:!text-md !sm:px-7 !py-2"
                     >
                       Send Document
                     </Button>

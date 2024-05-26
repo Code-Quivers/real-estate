@@ -93,6 +93,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
 
       {/* action */}
       <div className="px-3 py-5 flex justify-between items-center gap-3">
+        {/* add and remove */}
         <div className="flex gap-3 w-full">
           <div className="w-full">
             <button
@@ -111,8 +112,8 @@ const SavedTenantLists = ({ singleReq, children }) => {
               placement="auto"
               trigger="click"
               speaker={
-                <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                  <div className="p-3 space-y-2">
+                <Popover className="max-h-[450px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                  <div className="space-y-2">
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit) => (
@@ -130,7 +131,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
                                 alt="photo"
                               />
                             </div>
-                            <div className="flex w-full flex-col col-span-2 ml-3 justify-between my-2 text-sm">
+                            <div className="flex w-full flex-col col-span-2 px-2 justify-between my-2 text-sm">
                               <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                               <h3>
                                 {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
