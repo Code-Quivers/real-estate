@@ -548,6 +548,7 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
         },
         data: {
           isRented: true,
+          tenantAssignedAt: new Date(),
         },
       });
     }
