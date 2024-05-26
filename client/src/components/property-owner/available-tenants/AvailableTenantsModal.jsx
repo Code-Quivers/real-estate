@@ -141,8 +141,8 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                     placement="autoVerticalEnd"
                     trigger="click"
                     speaker={
-                      <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                        <div className="p-3 space-y-2">
+                      <Popover className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                        <div className="space-y-2">
                           {!isLoadingUnits &&
                             unitRes?.data?.length > 0 &&
                             unitRes?.data?.map((singleUnit) => (
@@ -160,12 +160,12 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                                       alt="photo"
                                     />
                                   </div>
-                                  <div className="flex w-full flex-col col-span-2 justify-between my-2 text-sm ml-3">
+                                  <div className="flex w-full flex-col col-span-2 justify-between my-2 text-sm px-2">
                                     <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                                     <h3>
                                       {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                                     </h3>
-                                    <h3>{singleUnit?.address}</h3>
+                                    <h3 className="line-clamp-2">{singleUnit?.address}</h3>
                                   </div>
                                 </button>
                               </div>

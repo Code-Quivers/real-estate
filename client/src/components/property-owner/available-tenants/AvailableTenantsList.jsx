@@ -108,6 +108,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
 
       {/* action */}
       <div className="flex justify-between items-center px-3 py-5 gap-3">
+        {/* save and add */}
         <div className="flex gap-3 w-full">
           <div className="w-full">
             <button
@@ -122,11 +123,11 @@ const AvailableTenantsList = ({ singleReq, children }) => {
           <div className="w-full">
             <Whisper
               preventOverflow
-              placement="autoVerticalEnd"
+              placement="autoHorizontal"
               trigger="click"
               speaker={
-                <Popover as="div" className="max-h-[450px] w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                  <div className="p-3 space-y-2">
+                <Popover className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                  <div className="space-y-2">
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit, index) => (
@@ -144,12 +145,12 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                                 alt="photo"
                               />
                             </div>
-                            <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                            <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
                               <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                               <h3>
                                 {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                               </h3>
-                              <h3>{singleUnit?.address || "N/A"}</h3>
+                              <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
                             </div>
                           </button>
                         </div>
