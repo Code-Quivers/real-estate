@@ -169,7 +169,15 @@ const RequestMaintenancePage = () => {
                 }}
                 render={({ field }) => (
                   <div className="rs-form-control-wrapper ">
-                    <SelectPicker size="lg" onChange={(e) => field.onChange(e)} placeholder="Issue Type" data={issueTypes} className="!w-full" />
+                    <SelectPicker
+                      placement="auto"
+                      searchable={false}
+                      size="lg"
+                      onChange={(e) => field.onChange(e)}
+                      placeholder="Issue Type"
+                      data={issueTypes}
+                      className="!w-full"
+                    />
                     <Form.ErrorMessage show={(!!errors?.issueType && !!errors?.issueType?.message) || false} placement="topEnd">
                       {errors?.issueType?.message}
                     </Form.ErrorMessage>
