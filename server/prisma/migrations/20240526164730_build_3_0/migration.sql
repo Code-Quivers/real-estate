@@ -119,6 +119,7 @@ CREATE TABLE "properties" (
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "tenantAssignedAt" TIMESTAMP(3),
     "ownerId" TEXT NOT NULL,
     "score" DOUBLE PRECISION NOT NULL DEFAULT 60,
     "scoreRatio" JSONB,
