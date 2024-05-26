@@ -213,7 +213,6 @@ const UpdatePropertyOwner = async (propertyOwnerId: string, req: Request) => {
     }
     //  if provided password
     if (password) {
-      console.log("shafinur islam");
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {

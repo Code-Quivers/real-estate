@@ -255,12 +255,12 @@ const TenantSignUp = () => {
               Sign In
             </Link>
           </p>
-          <p className="font-semibold text-center">
+          {/* <p className="font-semibold text-center">
             Forgot?{" "}
             <Link className="text-blue-800" href="#">
               Reset
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
       {/* right image */}
