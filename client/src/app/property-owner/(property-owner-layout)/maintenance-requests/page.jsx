@@ -8,7 +8,6 @@ import {
   useGetAllMaintenanceReqForOwnerQuery,
   useRejectMaintenanceRequestForOwnerMutation,
 } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Message, Notification, useToaster } from "rsuite";
 
@@ -160,18 +159,21 @@ const MaintenanceRequest = () => {
                     >
                       Accept
                     </button>
-                    <button type="button" className="w-full text-sm py-2 px-3 font-semibold rounded-md text-white bg-red-500">
+                    <button
+                      onClick={() => handleRejectRequest(singleReq?.maintenanceRequestId)}
+                      type="button"
+                      className="w-full text-sm py-2 px-3 font-semibold rounded-md text-white bg-red-500"
+                    >
                       Reject
                     </button>
                   </div>
                 </div>
               ))}
-
-            {!maintenanceReq?.data?.length > 0 && (
-              <div className="flex justify-center items-center min-h-[60vh]">
-                <h3 className="lg:text-2xl text-red-500">No Maintenance Request Found !!</h3>
-              </div>
-            )}
+          </div>
+        )}
+        {!isLoading && !maintenanceReq?.data?.length > 0 && (
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <h3 className="lg:text-2xl text-red-500">No Maintenance Request Found !!</h3>
           </div>
         )}
       </section>
