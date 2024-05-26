@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiSolidMessageRounded } from "react-icons/bi";
 import { FaRegMessage } from "react-icons/fa6";
-import { FiMessageSquare } from "react-icons/fi";
-import { LuMessageCircle } from "react-icons/lu";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
 const SendMessagePopOverFromTenant = ({ receiverId }) => {
