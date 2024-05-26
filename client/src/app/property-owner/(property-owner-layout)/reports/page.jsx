@@ -106,7 +106,7 @@ const PropertyOwnerReportPage = () => {
             className="!w-full"
             renderMenuItem={(value, item) => {
               return (
-                <div className="grid grid-cols-3 max-w-[320px] border rounded-lg hover:border-primary duration-300 transition-all text-start">
+                <div className="grid grid-cols-3  max-w-[320px] rounded-lg  duration-300 transition-all text-start">
                   <div className="col-span-1 max-h-24 h-full">
                     <Image
                       width={500}
@@ -116,7 +116,7 @@ const PropertyOwnerReportPage = () => {
                       className="w-full h-full rounded-xl object-cover p-1"
                     />
                   </div>
-                  <div className="*:text-balance *:text-sm mr-2 col-span-2 px-2">
+                  <div className="*:text-balance *:text-sm mr-2 col-span-2  px-2">
                     <h2 className="font-medium line-clamp-1">{value}</h2>
                     <h2 className="line-clamp-1">${item.others?.monthlyRent}</h2>
                     <h2 className="line-clamp-1">

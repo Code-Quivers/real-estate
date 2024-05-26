@@ -126,8 +126,8 @@ const AvailableTenantsList = ({ singleReq, children }) => {
               placement="autoHorizontal"
               trigger="click"
               speaker={
-                <Popover className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
-                  <div className="space-y-2">
+                <Popover className="max-h-[400px] max-w-[380px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                  <div className="space-y-2 ">
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit, index) => (
@@ -136,21 +136,23 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                             onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
                             className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm"
                           >
-                            <div className="col-span-1 max-h-24 h-full">
+                            <div className="col-span-1">
                               <Image
                                 width={500}
                                 height={500}
-                                className="h-full w-full p-1 object-cover rounded-xl"
+                                className=" w-[120px] p-1 h-[100px] object-cover rounded-xl"
                                 src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                                 alt="photo"
                               />
                             </div>
-                            <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
-                              <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                              <h3 className="line-clamp-1">
-                                {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
-                              </h3>
-                              <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
+                            <div className="col-span-2">
+                              <div className="flex w-full flex-col justify-between my-2 text-sm  px-2">
+                                <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                                <h3 className="line-clamp-1">
+                                  {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
+                                </h3>
+                                <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
+                              </div>
                             </div>
                           </button>
                         </div>
