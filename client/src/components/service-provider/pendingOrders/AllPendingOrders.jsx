@@ -114,7 +114,7 @@ const AllPendingOrders = () => {
                     <SendMessagePopOverFromServiceProvider receiverId={request?.owner?.userId} />
                   </div>
                 </div>
-                {/* button accept reject */}
+                {/* button accept */}
                 <div className="gap-4 px-2 my-4 w-full">
                   {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
                   <button

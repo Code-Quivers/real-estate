@@ -119,11 +119,11 @@ const SavedServiceProviderList = ({ singleReq, children }) => {
                             onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
                             className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                           >
-                            <div className="col-span-1 h-full">
+                            <div className="col-span-1">
                               <Image
                                 width={500}
                                 height={500}
-                                className="w-full h-full p-1 object-cover rounded-xl"
+                                className="w-[120px] p-1 h-[100px] object-cover rounded-xl"
                                 src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                                 alt="photo"
                               />
