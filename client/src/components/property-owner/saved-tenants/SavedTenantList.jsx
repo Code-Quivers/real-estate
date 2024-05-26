@@ -109,7 +109,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
           <div className="w-full">
             <Whisper
               preventOverflow
-              placement="auto"
+              placement="autoHorizontal"
               trigger="click"
               speaker={
                 <Popover className="max-h-[450px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
@@ -122,7 +122,7 @@ const SavedTenantLists = ({ singleReq, children }) => {
                             onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
                             className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                           >
-                            <div className="col-span-1 h-full">
+                            <div className="col-span-1 max-h-24 h-full">
                               <Image
                                 width={500}
                                 height={500}
@@ -132,11 +132,11 @@ const SavedTenantLists = ({ singleReq, children }) => {
                               />
                             </div>
                             <div className="flex w-full flex-col col-span-2 px-2 justify-between my-2 text-sm">
-                              <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                              <h3>
+                              <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                              <h3 className="line-clamp-1">
                                 {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                               </h3>
-                              <h3>{singleUnit?.address}</h3>
+                              <h3 className="line-clamp-2">{singleUnit?.address}</h3>
                             </div>
                           </button>
                         </div>

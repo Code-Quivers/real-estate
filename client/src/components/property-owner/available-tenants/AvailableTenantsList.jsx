@@ -136,7 +136,7 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                             onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
                             className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm"
                           >
-                            <div className="col-span-1 h-full">
+                            <div className="col-span-1 max-h-24 h-full">
                               <Image
                                 width={500}
                                 height={500}
@@ -146,8 +146,8 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                               />
                             </div>
                             <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
-                              <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                              <h3>
+                              <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                              <h3 className="line-clamp-1">
                                 {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                               </h3>
                               <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
