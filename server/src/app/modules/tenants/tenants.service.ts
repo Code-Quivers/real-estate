@@ -294,14 +294,26 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
         },
       },
       select: {
-        property: true,
+        property: {
+          include: {
+            owner: {
+              select: {
+                FinancialAccount: {
+                  select: {
+                    detailsSubmitted: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         tenantId: true,
       },
     });
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
     }
-    const propertyId = tenants.property?.propertyId;
+    const propertyId = tenants?.property?.propertyId;
 
     const orderData = await transactionClient.order.findMany({
       where: {
@@ -313,13 +325,33 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
       select: {
         updatedAt: true,
+        properties: {
+          select: {
+            tenantAssignedAt: true,
+          },
+        },
       },
       orderBy: {
         updatedAt: "desc",
       },
     });
 
-    const dueMonths = orderData.length > 0 ? differenceInMonths(orderData[0].updatedAt) : 1;
+    //
+
+    //
+    const tenantAssignedDate = tenants?.property?.tenantAssignedAt;
+
+    // const tenantUpdatedDate = orderData?.length ? orderData[0]?.properties[0]?.tenantAssignedAt : null;
+    let dueMonths;
+
+    if (orderData?.length === 0) {
+      dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+      dueMonths = 0;
+    } else {
+      dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+    }
+    //
 
     const tenantUnitInfo = {
       ...tenants,

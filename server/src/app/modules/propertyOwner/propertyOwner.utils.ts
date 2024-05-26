@@ -89,10 +89,7 @@ export const getMonthlyTotalRentToCollect = async (propertyOwnerId: string): Pro
 export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<number> => {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
-  const data = await prisma.property.aggregate({
-    _sum: {
-      monthlyRent: true,
-    },
+  const data = await prisma.property.findMany({
     where: {
       ownerId: ownerId,
       isRented: true,
@@ -106,8 +103,25 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
         },
       },
     },
+    select: {
+      orders: {
+        select: {
+          PaymentInformation: {
+            select: {
+              amountPaid: true,
+            },
+          },
+        },
+      },
+    },
   });
-  return data._sum.monthlyRent || 0;
+  let totalCollectedRent = 0;
+  for (const item of data as any) {
+    for (const it of item?.orders as any) {
+      totalCollectedRent += it?.PaymentInformation?.amountPaid;
+    }
+  }
+  return totalCollectedRent || 0;
 };
 
 export const getOwnerTotalCostOfCurrentMonth = async (ownerId: string): Promise<number> => {

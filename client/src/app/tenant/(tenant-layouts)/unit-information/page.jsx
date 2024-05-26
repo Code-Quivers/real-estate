@@ -67,7 +67,9 @@ const TenantUnitInformation = () => {
                       ? true
                       : false || unitRes?.dueRent == 0
                         ? true
-                        : false
+                        : false || !unitRes?.property?.owner?.FinancialAccount?.detailsSubmitted
+                          ? true
+                          : false
                   }
                 >
                   {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}

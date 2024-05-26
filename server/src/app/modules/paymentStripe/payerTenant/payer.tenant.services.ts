@@ -53,7 +53,7 @@ class TenantPaymentProcessor {
       where: {
         propertyId,
         ownerId,
-        monthlyRent: amountToPaid,
+        // monthlyRent: amountToPaid,
       },
       select: {
         monthlyRent: true,
@@ -68,7 +68,8 @@ class TenantPaymentProcessor {
         },
       },
     });
-    const amount: number = propertyInfo?.monthlyRent || 0.0;
+    // const amount: number = amountToPaid || propertyInfo?.monthlyRent || 0.0;
+    const amount: number = amountToPaid || 0.0;
     const connectedAccountId: string = propertyInfo?.owner?.FinancialAccount?.finOrgAccountId || "";
 
     if (!amount || !connectedAccountId) {
