@@ -3,6 +3,7 @@
 import { useStartNewConversationMutation } from "@/redux/features/conversations/conversationApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BiSolidMessageRounded } from "react-icons/bi";
 import { FaRegMessage } from "react-icons/fa6";
 import { FiMessageSquare } from "react-icons/fi";
 import { LuMessageCircle } from "react-icons/lu";
@@ -61,8 +62,8 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
         placement="bottomEnd"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md   mb-5">
-            <div className="p-5 ">
+          <Popover arrow={true} className="w-60 md:w-[450px] !rounded-md   mb-5">
+            <div className="p-1">
               <div>
                 <h2>Send Message </h2>
               </div>
@@ -90,8 +91,8 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
           </Popover>
         }
       >
-        <button className="bg-primary text-white p-3 rounded-lg w-full">
-          <FaRegMessage size={20} />
+        <button className="bg-indigo-100 border hover:bg-indigo-200 text-sm py-2 px-2 rounded-full shadow-sm p-3">
+          <BiSolidMessageRounded size={24} className="text-primary" />
         </button>
       </Whisper>
     </div>
