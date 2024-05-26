@@ -218,7 +218,7 @@ const AvailableTenantsDetailModal = ({ isModalOpened, setModalOpened, modalData 
                   </div>
                   <div className="flex justify-between items-center">
                     <h4>Phone Number</h4>
-                    <h4>{modalData?.phoneNumber ? modalData?.phoneNumber.replace(/\d/g, "X") : "N/A"}</h4>
+                    <h4>{modalData?.phoneNumber ? modalData?.phoneNumber : "N/A"}</h4>
                   </div>
                 </div>
               </div>
