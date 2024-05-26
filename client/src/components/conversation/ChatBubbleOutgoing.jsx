@@ -15,13 +15,7 @@ const ChatBubbleOutgoing = ({ message }) => {
         </div>
         {/* image */}
         <div className="lg:col-span-1 max-lg:hidden">
-          <Image
-            alt=""
-            height={100}
-            width={100}
-            className="rounded-full object-cover  xl:h-[50px] xl:w-[50px]   mt-1"
-            src={getProfileImageUrl(message?.sender)}
-          />
+          <Image alt="" height={300} width={300} className="rounded-full object-cover w-7 h-7 mt-1" src={getProfileImageUrl(message?.sender)} />
         </div>
       </div>
       <div className="flex  justify-end mt-2 lg:mt-1.5 mr-1 lg:mr-14">
