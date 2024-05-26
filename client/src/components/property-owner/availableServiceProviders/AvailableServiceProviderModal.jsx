@@ -188,7 +188,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
               <div className="w-full">
                 <Whisper
                   preventOverflow
-                  placement="autoVerticalEnd"
+                  placement="autoHorizontal"
                   trigger="click"
                   speaker={
                     <Popover className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
@@ -201,7 +201,7 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                                 onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
                                 className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                               >
-                                <div className="col-span-1 h-full">
+                                <div className="col-span-1 h-full max-h-24">
                                   <Image
                                     width={500}
                                     height={500}
@@ -211,11 +211,11 @@ const AvailableServiceProviderModal = ({ isModalOpened, setModalOpened, modalDat
                                   />
                                 </div>
                                 <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
-                                  <h3 className="font-semibold">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                                  <h3>
+                                  <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                                  <h3 className="line-clamp-1">
                                     {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                                   </h3>
-                                  <h3>{singleUnit?.address}</h3>
+                                  <h3 className="line-clamp-2">{singleUnit?.address}</h3>
                                 </div>
                               </button>
                             </div>

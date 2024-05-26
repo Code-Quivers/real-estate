@@ -61,7 +61,7 @@ const MonthlyReportDetails = ({ reportData }) => {
                 src={`${fileUrlKey()}/${reportData?.information[0]?.image}`}
                 width={600}
                 height={600}
-                alt="Apartment Photo"
+                alt="T"
               />
             </div>
 
@@ -76,9 +76,9 @@ const MonthlyReportDetails = ({ reportData }) => {
                   <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
                     {information?.tenantName ? (
                       <>
-                        <div className="rounded-full flex items-center justify-center">
+                        <div>
                           {information?.tenantPhoto ? (
-                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
+                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={400} height={400} className="rounded-full w-8 h-8" />
                           ) : (
                             <span>
                               <FaUser size={20} className="text-gray-500" />
