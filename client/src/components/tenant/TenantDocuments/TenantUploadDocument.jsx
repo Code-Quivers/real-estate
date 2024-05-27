@@ -141,7 +141,7 @@ const TenantUploadDocument = ({ allDocuments }) => {
                   )}
                 />
               </div>
-              <div className="flex mt-5 justify-end">
+              <div className="flex mt-5 justify-end gap-5">
                 <Button
                   onClick={() => {
                     handleClose();
@@ -151,7 +151,7 @@ const TenantUploadDocument = ({ allDocuments }) => {
                 >
                   Close
                 </Button>
-                <Button loading={isLoading} type="submit" className="!bg-primary !text-white ">
+                <Button loading={isLoading} type="submit" className="!bg-primary !text-white !font-semibold">
                   Submit
                 </Button>
               </div>

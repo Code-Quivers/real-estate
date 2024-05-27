@@ -5,7 +5,7 @@ import "./RequestCardSwiper.module.css";
 
 import Image from "next/image";
 import { fileUrlKey } from "@/configs/envConfig";
-const RequestCardSwiper = ({ requestImages }) => {
+const RequestCardSwiper = ({ requestImages, height }) => {
   return (
     <>
       <Swiper
@@ -21,7 +21,7 @@ const RequestCardSwiper = ({ requestImages }) => {
               <Image
                 width={1000}
                 height={1000}
-                className="w-full h-[200px] object-center object-cover rounded-t-lg"
+                className={`w-full ${height ? height : "h-[200px]"} object-center object-cover rounded-t-lg`}
                 src={`${fileUrlKey()}/${image}`}
                 alt="Unit Image"
               />

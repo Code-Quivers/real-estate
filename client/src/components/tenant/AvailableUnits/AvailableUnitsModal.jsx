@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Drawer, IconButton, useMediaQuery, useToaster } from "rsuite";
+import { Avatar, Drawer, IconButton, useMediaQuery, useToaster } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
+import { HiMiniBookmark } from "react-icons/hi2";
 import "react-quill/dist/quill.bubble.css";
 import { useSaveItemMutation } from "@/redux/features/propertyOwner/savedItemApi";
 import { SaveUnitNotificationError, SaveUnitNotificationSuccess } from "@/components/toasts/notifications/ToastNotification";
@@ -103,30 +104,47 @@ const AvailableUnitsModal = ({ open, setOpen, unitInfo }) => {
                   : ""}
               </div>
               <div className="md:col-span-7 w-full overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar ">
-                <div className="flex px-3 py-1.5  justify-between items-center  bg-white">
-                  <div>
-                    {unitInfo?.owner?.profileImage ? (
-                      <Image src={`${fileUrlKey()}/${unitInfo?.owner?.profileImage}`} width={70} height={70} className="rounded-md object-cover" />
-                    ) : (
-                      "Logo"
-                    )}
-                  </div>
-                  <div className="flex gap-2.5 items-center">
+                <div className="flex px-3 py-1.5 justify-between items-center  bg-white">
+                  {/* owner photo and name */}
+                  <div className="flex gap-3 items-center">
                     <div>
-                      <Button onClick={saveUnitData} className="!bg-primary w-full !text-white !px-3.5 !py-1 !text-base !rounded-none ">
-                        Save
-                      </Button>
+                      {unitInfo?.owner?.profileImage ? (
+                        <Image
+                          src={`${fileUrlKey()}/${unitInfo?.owner?.profileImage}`}
+                          width={300}
+                          height={300}
+                          className="rounded-full object-cover w-[60px] h-[60px]"
+                        />
+                      ) : (
+                        <Avatar circle size="lg" />
+                      )}
                     </div>
                     <div>
-                      <SendMessagePopOver receiverId={unitInfo?.owner?.userId} />
+                      <p>Owner</p>
+                      <h1>
+                        {unitInfo?.owner?.firstName} {unitInfo?.owner?.lastName}
+                      </h1>
+                    </div>
+                  </div>
+                  {/* save and msg button */}
+                  <div className="flex gap-3 items-center">
+                    <SendMessagePopOver receiverId={unitInfo?.owner?.userId} />
+                    <div>
+                      <button
+                        type="submit"
+                        onClick={saveUnitData}
+                        className="bg-indigo-100 border hover:bg-indigo-200 text-sm py-2 px-2 rounded-full shadow-sm"
+                      >
+                        <HiMiniBookmark size={24} className="text-primary" />
+                      </button>
                     </div>
                   </div>
                 </div>
                 <hr className="border   block" />
                 <div className="flex justify-between items-center px-2 lg:pt-1 pb-2 ">
                   <div>
-                    {/* <h2 className="text-xl md:text-2xl text-gray-900 font-medium">{unitInfo?.title}</h2> */}
                     <h2 className="lg:text-2xl mb-1.5 font-semibold">${unitInfo?.monthlyRent?.toLocaleString()}/month</h2>
+                    <h2>{unitInfo?.title}</h2>
                     <h2 className="">
                       <span>{unitInfo?.numOfBed ? unitInfo?.numOfBed : "0"} Bed</span> |
                       <span> {unitInfo?.numOfBath ? unitInfo?.numOfBath : "0"} Bath</span>

@@ -138,7 +138,7 @@ const AvailableServiceProviderList = ({ singleReq, children }) => {
               placement="autoHorizontal"
               trigger="click"
               speaker={
-                <Popover as="div" className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
+                <Popover className="max-h-[400px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
                   <div className="space-y-2">
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
@@ -148,11 +148,11 @@ const AvailableServiceProviderList = ({ singleReq, children }) => {
                             onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
                             className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
                           >
-                            <div className="col-span-1 h-full max-h-24">
+                            <div className="col-span-1">
                               <Image
                                 width={300}
                                 height={300}
-                                className="h-full w-full p-1 object-cover rounded-xl"
+                                className="w-[120px] p-1 h-[100px] object-cover rounded-xl"
                                 src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
                                 alt="photo"
                               />
