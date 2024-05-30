@@ -363,7 +363,7 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
 
     // for testing (5 Minutes)
     if (orderData?.length === 0) {
-      if (differenceInTime(tenantAssignedDate?.toISOString()) > 5) {
+      if (differenceInTime(tenantAssignedDate?.toISOString()) > 10) {
         dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
         if (dueMonths === 0) {
           dueMonths = 1;
@@ -374,7 +374,7 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
       dueMonths = 0;
     } else {
-      if (differenceInTime(orderData[0]?.updatedAt) > 5) {
+      if (differenceInTime(orderData[0]?.updatedAt) > 10) {
         dueMonths = 1;
       } else {
         dueMonths = differenceInMonths(orderData[0]?.updatedAt);
