@@ -122,3 +122,12 @@ export function differenceInMonths(date1: any, date2 = new Date()) {
 
   return yearDiff * 12 + monthDiff;
 }
+export function differenceInTime(date1: any, date2 = new Date()) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  const diff = (d2.getTime() - d1.getTime()) / 60000;
+  console.log("time difference", diff);
+
+  return diff;
+}
