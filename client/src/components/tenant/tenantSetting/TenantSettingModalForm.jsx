@@ -1,14 +1,19 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Input, Modal, Notification, useToaster } from "rsuite";
-import { useEffect } from "react";
+import { Button, Input, MaskedInput, Modal, Notification, useToaster } from "rsuite";
+import { useEffect, useState } from "react";
 import { useUpdateTenantProfileMutation } from "@/redux/features/tenant/tenantsApi";
 
-//
 const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
   const toaster = useToaster();
   const [updateTenantProfile, { data: updateMyProfileRes, isLoading, isError, isSuccess, error, reset }] = useUpdateTenantProfileMutation();
+
+  const [optionNumber] = useState({
+    name: "US phone number",
+    mask: ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    placeholder: "(XXX) XXX-XXX",
+  });
 
   const {
     control,
@@ -117,7 +122,19 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       render={({ field }) => (
                         <div className="space-y-2">
                           <label className="text-base font-medium">Phone Number</label>
-                          <Input size="lg" defaultValue={myProfileData?.phoneNumber} {...field} type="text" />
+                          {/* <Input size="lg" defaultValue={myProfileData?.phoneNumber} {...field} type="text" /> */}
+                          <MaskedInput
+                            className="!w-full"
+                            {...field}
+                            defaultValue={myProfileData?.phoneNumber}
+                            mask={optionNumber.mask}
+                            guide
+                            // showMask
+                            size="lg"
+                            keepCharPositions={true}
+                            placeholder={optionNumber.placeholder}
+                            placeholderChar={"_"}
+                          />
                         </div>
                       )}
                     />
@@ -136,7 +153,16 @@ const TenantSettingModalForm = ({ open, handleClose, myProfileData }) => {
                       control={control}
                       render={({ field }) => (
                         <div className=" rs-form-control-wrapper  w-full">
-                          <Input size="lg" placeholder="********" {...field} className="!w-full" type="password" />
+                          <Input
+                            id="password"
+                            size="lg"
+                            placeholder="********"
+                            {...field}
+                            autoComplete="off"
+                            defaultValue=""
+                            className="!w-full"
+                            type="password"
+                          />
                         </div>
                       )}
                     />

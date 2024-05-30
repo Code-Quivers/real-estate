@@ -75,9 +75,9 @@ const AnnualReportDetails = ({ reportData }) => {
                   <div className="border bg-gray-50 rounded-md p-2 flex gap-3 items-center">
                     {information?.tenantName ? (
                       <>
-                        <div className="rounded-full flex items-center justify-center">
+                        <div>
                           {information?.tenantPhoto ? (
-                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full" />
+                            <Image src={`${fileUrlKey()}/${information?.tenantPhoto}`} width={100} height={100} className="rounded-full w-8 h-8" />
                           ) : (
                             <span>
                               <FaUser size={20} className="text-gray-500" />

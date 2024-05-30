@@ -10,6 +10,7 @@ import TenantMakePaymentModal from "@/components/tenant/unitInformation/TenantMa
 import { useRouter } from "next/navigation";
 import Score from "@/components/Shared/Score/Score";
 import { getPackageExpiredDates } from "@/utils/GetDateCalculation";
+import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 
 const TenantUnitInformation = () => {
   const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery();
@@ -32,21 +33,37 @@ const TenantUnitInformation = () => {
                 width={300}
                 height={300}
                 src={unitRes?.property?.images?.length ? `${fileUrlKey()}/${unitRes?.property?.images[0]}` : unitInfoImage}
-                className="object-cover w-full object-center rounded-t-md"
+                className="object-cover w-full max-h-[200px] object-center rounded-t-md"
                 alt=""
               />
 
-              <div className="flex justify-between items-start mt-2 px-2.5 py-1">
+              <div className="flex justify-between items-start mt-2 px-2 py-1">
                 <div>
-                  <h2 className="text-lg font-medium">{unitRes?.property?.title}</h2>
-                  <h2 className="text-lg">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
+                  <h2 className="line-clamp-1">{unitRes?.property?.title}</h2>
+                  <h2 className="text-lg font-semibold">${unitRes?.property?.monthlyRent?.toLocaleString()}</h2>
                   <h2 className="text-sm">
                     <span>{unitRes?.property?.numOfBed} bed</span> <span>{unitRes?.property?.numOfBath} bath</span>
                   </h2>
-                  <h2 className="text-sm">{unitRes?.property?.address}</h2>
+                  <h2 className="text-sm line-clamp-2">{unitRes?.property?.address}</h2>
                 </div>
+
                 <div>
                   <Score score={unitRes?.property?.scoreRatio?.score} total={unitRes?.property?.scoreRatio?.total} />
+                </div>
+              </div>
+              {/* owner */}
+              <hr className="my-2" />
+              <div className="px-2 pb-3">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="">Owner </h2>
+                    <h2 className="line-clamp-1 font-medium">
+                      {unitRes?.property?.owner?.firstName} {unitRes?.property?.owner?.lastName}
+                    </h2>
+                  </div>
+                  <div>
+                    <SendMessagePopOverFromTenant receiverId={unitRes?.property?.owner?.userId} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -65,9 +82,11 @@ const TenantUnitInformation = () => {
                   disabled={
                     unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired
                       ? true
-                      : false || unitRes?.property?.planType !== "PREMIUM" || unitRes?.dueRent == 0
+                      : false || unitRes?.dueRent == 0
                         ? true
-                        : false
+                        : false || !unitRes?.property?.owner?.FinancialAccount?.detailsSubmitted
+                          ? true
+                          : false
                   }
                 >
                   {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}

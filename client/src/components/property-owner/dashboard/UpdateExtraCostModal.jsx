@@ -65,8 +65,12 @@ const UpdateExtraCostModal = ({ open, handleClose, modalData }) => {
                   rules={{
                     required: "Cost is Required !",
                     min: {
-                      value: modalData?.cost,
+                      value: 0,
                       message: "Cost should be greater than previous",
+                    },
+                    max: {
+                      value: 999999999999999,
+                      message: "Cost must be Valid Number",
                     },
                   }}
                   render={({ field }) => (
@@ -76,7 +80,8 @@ const UpdateExtraCostModal = ({ open, handleClose, modalData }) => {
                         {...field}
                         className="!w-full mt-2"
                         defaultValue={modalData?.cost}
-                        min={modalData?.cost || 0}
+                        min={0}
+                        max={999999999999999}
                         formatter={(value) => {
                           if (!isNaN(value)) {
                             return `${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;

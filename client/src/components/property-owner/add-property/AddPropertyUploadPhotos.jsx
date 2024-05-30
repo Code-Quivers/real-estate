@@ -4,7 +4,6 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { Uploader } from "rsuite";
 
 const AddPropertyUploadPhotos = ({ field, propertyId }) => {
-  console.log("Shafin", propertyId);
   const [fileValue, setFileValue] = useState([]);
 
   const handleChangeImages = (files) => {

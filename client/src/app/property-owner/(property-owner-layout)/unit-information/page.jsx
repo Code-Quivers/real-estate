@@ -40,20 +40,19 @@ const PropertyOwnerUnitInformation = () => {
 
   return (
     <>
-      <section className=" lg:max-w-[1050px]   max-lg:px-3   pb-20 mx-auto mb-5 mt-6 lg:mt-10 2xl:mx-auto lg:px-5    2xl:px-0 ">
+      <section className=" lg:max-w-6xl px-2 pb-20 mx-auto mt-6 lg:mt-10 2xl:mx-auto lg:px-5 2xl:px-0">
         <div className="flex justify-between items-center">
-          <h2 className="lg:text-2xl">
-            Unit Information: <br className="md:hidden" /> Total {data?.meta?.total}
-          </h2>
+          <h2 className="text-sm lg:text-2xl">Unit Information: Total {data?.meta?.total}</h2>
           <Link
             href="/property-owner/unit-information/add-property"
-            className=" bg-primary text-white px-4 rounded-3xl flex items-center gap-2 py-2 drop-shadow-lg"
+            className=" bg-primary text-white px-4 rounded-3xl max-md:text-sm  flex items-center gap-2 py-2 drop-shadow-lg"
           >
             Add new unit / house
           </Link>
         </div>
+        <hr className="mb-3 mt-5" />
         {/* main section */}
-        <div>
+        <div className="max-md:space-y-10">
           {!isLoading &&
             data?.data?.length > 0 &&
             data?.data?.map((singleProperty, idx) => (
@@ -61,7 +60,7 @@ const PropertyOwnerUnitInformation = () => {
                 <div className="mt-5">
                   <div className="lg:flex lg:justify-between lg:items-start">
                     <h2 className="text-base mb-2">
-                      Property Title: <span className="font-bold">{singleProperty.title}</span>
+                      <span className="max-md:hidden">Property</span> Title: <span className="font-medium md:font-bold">{singleProperty.title}</span>
                     </h2>
 
                     {/* <div>
@@ -69,7 +68,8 @@ const PropertyOwnerUnitInformation = () => {
                     </div> */}
                     {/*  */}
                   </div>
-                  <div className="w-full lg:border p-3  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
+                  {/*  */}
+                  <div className="w-full lg:border p-2  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
                     {/* top section */}
                     <div>
                       <UnitPackageDate singleProperty={singleProperty} />
@@ -105,12 +105,12 @@ const PropertyOwnerUnitInformation = () => {
                           <div className="flex justify-between w-full">
                             <div className="space-y-3 p-5 w-full">
                               <h3 className="text-lg font-medium">
-                                $ {singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
+                                ${singleProperty?.monthlyRent ? singleProperty?.monthlyRent?.toLocaleString() : "N/A"}
                               </h3>
-                              <h3 className="text-lg font-medium">
+                              <h3 className="text-lg">
                                 {singleProperty?.numOfBed} Beds {singleProperty?.numOfBath} Baths
                               </h3>
-                              <h3 className="text-lg font-medium">{singleProperty?.address}</h3>
+                              <h3 className="text-lg">{singleProperty?.address}</h3>
                             </div>
                             <div className="pt-2 pr-2">
                               <IconButton
@@ -141,7 +141,7 @@ const PropertyOwnerUnitInformation = () => {
                             </div>
 
                             {singleProperty?.isRented && singleProperty?.Tenant && (
-                              <div className="flex gap-2 items-center">
+                              <div className="flex gap-4 items-center">
                                 <SendMessagePopOverFromPropertyOwner receiverId={singleProperty?.Tenant?.userId} />
 
                                 {/* <BiSolidMessageAltDetail size={20} /> */}
@@ -158,9 +158,9 @@ const PropertyOwnerUnitInformation = () => {
                                     setIsOpenTenantRemove(true);
                                     setTenantRemoveData(singleProperty);
                                   }}
-                                  className="hover:text-red-600 duration-300 disabled:cursor-not-allowed"
+                                  className="hover:text-red-600 text-primary bg-indigo-100 border p-2 rounded-full  duration-300 disabled:cursor-not-allowed"
                                 >
-                                  <RiDeleteBin5Fill size={20} />
+                                  <RiDeleteBin5Fill size={24} />
                                 </button>
                               </div>
                             )}
@@ -170,7 +170,7 @@ const PropertyOwnerUnitInformation = () => {
                           {/* tenant details */}
                           {singleProperty?.isRented && singleProperty?.Tenant ? (
                             <>
-                              <div className="flex  gap-3   mt-2 ">
+                              <div className="flex gap-3 mt-2 ">
                                 <div>
                                   <Avatar
                                     circle
@@ -178,15 +178,15 @@ const PropertyOwnerUnitInformation = () => {
                                     src={
                                       singleProperty?.Tenant?.profileImage ? `${fileUrlKey()}/${singleProperty?.Tenant?.profileImage}` : profileLogo
                                     }
-                                    className=" rounded-xl border  object-cover object-center"
-                                    alt=""
                                   />
                                 </div>
                                 <div>
-                                  <h2 className="text-lg font-semibold">
+                                  <h2 className="md:text-lg font-medium md:font-semibold">
                                     {singleProperty?.Tenant?.firstName} {singleProperty?.Tenant?.lastName}
                                   </h2>
-                                  <h2 className="text-md font-medium">Phone Number : {singleProperty?.Tenant?.phoneNumber ?? "017"}</h2>
+                                  <h2 className="text-md md:font-medium">
+                                    Phone Number : {singleProperty?.Tenant?.phoneNumber ? singleProperty?.Tenant?.phoneNumber : "N/A"}
+                                  </h2>
                                 </div>
                               </div>
                             </>
@@ -241,13 +241,13 @@ const PropertyOwnerUnitInformation = () => {
                     )}
 
                     {/* service provider */}
-                    <div className="border rounded-xl min-h-[200px] p-5 lg:col-span-5">
+                    <div className="border rounded-xl min-h-[200px] p-2 md:p-5 lg:col-span-5">
                       <div className="md:flex justify-between items-center">
                         <div>
                           <h3 className="text-lg font-semibold">Service Provider Information: Total {singleProperty?.serviceProviders?.length}</h3>
                         </div>
                         {/* action */}
-                        <div className="flex gap-2 items-center">
+                        <div className="flex max-md:mt-2 gap-2 items-center">
                           <Button
                             as={Link}
                             disabled={
@@ -272,34 +272,49 @@ const PropertyOwnerUnitInformation = () => {
                       </div>
                       {/* all service Providers */}
                       <div className="">
-                        {!isLoading &&
-                          singleProperty?.serviceProviders?.length > 0 &&
+                        {singleProperty?.serviceProviders?.length > 0 &&
                           singleProperty?.serviceProviders?.map((serviceProvider) => (
-                            <div key={Math.random()} className="flex gap-3 items-stretch border-t pt-3 mt-3">
+                            <div key={Math.random()} className="md:flex max-md:space-y-2 gap-3 items-stretch border-t pt-3 mt-3">
                               <div className=" ">
                                 <Image
-                                  width={150}
-                                  height={150}
+                                  width={500}
+                                  height={500}
                                   src={serviceProvider?.profileImage ? `${fileUrlKey()}/${serviceProvider?.profileImage}` : apartmentPhoto}
-                                  className=" rounded-xl  object-cover "
+                                  className="w-28 h-28 rounded-xl object-cover"
                                   alt=""
                                 />
                               </div>
                               <div className="  w-full lg:grid max-lg:space-y-3 lg:grid-cols-2 justify-between gap-2 lg:divide-x-2  ">
                                 {/* information */}
                                 <div className="*:text-sm space-y-0.5  w-full">
-                                  <h4>
-                                    Name : {serviceProvider?.firstName} {serviceProvider?.lastName}
+                                  <h4 className=" space-x-2 flex justify-between font-semibold items-center">
+                                    <span>Name :</span>
+                                    <span>
+                                      {serviceProvider?.firstName} {serviceProvider?.lastName}
+                                    </span>
                                   </h4>
-                                  <h4>Email : {serviceProvider?.user?.email}</h4>
-                                  <h4>Company Name : {serviceProvider?.companyName ? serviceProvider?.companyName : "N/A"}</h4>
-                                  <h4>Company Email : {serviceProvider?.companyEmailAddress ? serviceProvider?.companyEmailAddress : "N/A"}</h4>
-                                  <h4>Company Address : {serviceProvider?.companyAddress ? serviceProvider?.companyAddress : "N/A"}</h4>
-                                  <h4>Company Phone Number: {serviceProvider?.companyPhoneNumber ? serviceProvider?.companyPhoneNumber : "N/A"}</h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Email :</span> <span> {serviceProvider?.user?.email}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Name :</span> <span>{serviceProvider?.companyName ? serviceProvider?.companyName : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Email :</span>{" "}
+                                    <span>{serviceProvider?.companyEmailAddress ? serviceProvider?.companyEmailAddress : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span> Company Address :</span>
+                                    <span>{serviceProvider?.companyAddress ? serviceProvider?.companyAddress : "N/A"}</span>
+                                  </h4>
+                                  <h4 className=" space-x-2 flex justify-between items-center">
+                                    <span>Company Phone Number:</span>{" "}
+                                    <span>{serviceProvider?.companyPhoneNumber ? serviceProvider?.companyPhoneNumber : "N/A"}</span>
+                                  </h4>
                                 </div>
                                 {/* Service details */}
-                                <div className="lg:pl-2 w-full">
-                                  <h4 className=" space-x-5">
+                                <div className="lg:pl-2 w-full *:text-sm ">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Type :</span>
                                     <span>
                                       {serviceProvider?.Service?.serviceType
@@ -310,7 +325,7 @@ const PropertyOwnerUnitInformation = () => {
                                         : "N/A"}
                                     </span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Availability :</span>{" "}
                                     <span>
                                       {serviceProvider?.Service?.serviceAvailability
@@ -321,17 +336,21 @@ const PropertyOwnerUnitInformation = () => {
                                         : "N/A"}
                                     </span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Location :</span>
                                     <span>{serviceProvider?.Service?.serviceLocation ? serviceProvider?.Service?.serviceLocation : "N/A"}</span>
                                   </h4>
-                                  <h4 className=" space-x-5">
+                                  <h4 className=" space-x-2 flex justify-between items-center">
                                     <span>Service Range :</span>
                                     <span>
                                       ${serviceProvider?.Service?.minPrice ? serviceProvider?.Service?.minPrice?.toLocaleString() : "0"} - $
                                       {serviceProvider?.Service?.maxPrice ? serviceProvider?.Service?.maxPrice?.toLocaleString() : "0"}
                                     </span>
                                   </h4>
+                                  <div className="mt-3 flex justify-between items-center">
+                                    <p className="font-semibold">Contact</p>
+                                    <SendMessagePopOverFromPropertyOwner receiverId={serviceProvider?.userId} />
+                                  </div>
                                 </div>
                               </div>
                             </div>

@@ -2,7 +2,6 @@
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import moment from "moment";
 import { fileUrlKey } from "@/configs/envConfig";
-import PropertyOwnerChart from "@/components/property-owner/profile/PropertyOwnerChart";
 import DashboardInfo from "@/components/property-owner/dashboard/DashboardInfo";
 import Score from "@/components/Shared/Score/Score";
 import { Avatar } from "rsuite";
@@ -11,7 +10,7 @@ const PropertyOwnerInformation = () => {
   const { data, isLoading } = useGetPropertyOwnerMyProfileQuery(null);
   const { data: myProfileData } = data || {};
   return (
-    <section className="max-w-[1050px] mb-5 xl:mx-auto md:px-3 lg:px-5 px-3 2xl:px-0">
+    <section className="max-w-6xl pb-5 lg:mx-auto md:px-3 lg:px-5 px-3 2xl:px-0">
       {/* profile Information */}
       <div className="grid grid-cols-5 w-full  max-md:mb-5 items-start md:items-center   md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between lg:mr-10 ">
         <div className="col-span-4 flex max-md:flex-col  justify-start max-md:gap-2  md:justify-start md:items-center gap-3 md:mt-5">
@@ -22,8 +21,8 @@ const PropertyOwnerInformation = () => {
             <h4>
               Name : {myProfileData?.firstName ?? "--"} {myProfileData?.lastName ?? "--"}
             </h4>
-            <h4>Email Address : {myProfileData?.user?.email ?? "--"}</h4>
-            <h4>Phone Number : {myProfileData?.phoneNumber?.replace(/\d/g, "X") ?? "N/A"}</h4>
+            <h4>Email Address : {myProfileData?.user?.email ?? "N/A"}</h4>
+            <h4>Phone Number : {myProfileData?.phoneNumber ?? "N/A"}</h4>
           </div>
         </div>
         <div>
@@ -60,7 +59,7 @@ const PropertyOwnerInformation = () => {
             </div>
             <div className="">
               <h2 className="text-gray-600">Phone Number</h2>
-              <p className="text-lg">{myProfileData?.phoneNumber ? myProfileData?.phoneNumber.replace(/\d/g, "X") : "N/A"}</p>
+              <p className="text-lg">{myProfileData?.phoneNumber ?? "N/A"}</p>
             </div>
             <div className="">
               <h2 className="text-gray-600">Account Registered</h2>

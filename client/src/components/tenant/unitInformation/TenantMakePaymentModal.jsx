@@ -1,16 +1,17 @@
 /* eslint-disable no-unused-vars */
 "use client";
 import { IoClose } from "react-icons/io5";
-import { Modal } from "rsuite";
+import { Modal, useMediaQuery } from "rsuite";
 import TenantStripeCheckout from "../payment/TenantStripePayment";
 import { useState } from "react";
 
 const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, dueRent, dueMonths }) => {
   const [amountToPaid, setAmountToPaid] = useState(dueRent + dueRent * 0.04);
+  const [isMobile] = useMediaQuery("(max-width: 575px)");
   return (
     <div>
       <Modal
-        size="md"
+        size={isMobile ? "xs" : "md"}
         dialogAs="div"
         overflow={false}
         className="!max-w-5xl bg-white border rounded-xl

@@ -3,6 +3,8 @@
 import { useStartNewConversationMutation } from "@/redux/features/conversations/conversationApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BiSolidMessageRounded } from "react-icons/bi";
+import { FaRegMessage } from "react-icons/fa6";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
 const SendMessagePopOverFromTenant = ({ receiverId }) => {
@@ -55,11 +57,11 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
   return (
     <div>
       <Whisper
-        placement="bottomEnd"
+        placement="autoHorizontal"
         trigger="click"
         speaker={
-          <Popover arrow={true} as="div" className="w-60 md:w-[450px] !rounded-md overflow-y-auto mb-5">
-            <div className="p-5 ">
+          <Popover arrow={true} className="w-60 md:w-[450px] !rounded-md   mb-5">
+            <div className="p-1">
               <div>
                 <h2>Send Message </h2>
               </div>
@@ -69,6 +71,7 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
                     setTextMessage(e);
                   }}
                   as="textarea"
+                  className="!resize-none"
                   rows={5}
                 />
               </div>
@@ -79,14 +82,16 @@ const SendMessagePopOverFromTenant = ({ receiverId }) => {
                   type="submit"
                   className="!bg-primary  !text-white !px-3 !py-1 !text-base !rounded-2xl "
                 >
-                  Submit
+                  Send
                 </Button>
               </div>
             </div>
           </Popover>
         }
       >
-        <button className="bg-primary text-white px-2 py-1 w-full">Contact</button>
+        <button className="bg-indigo-100 border hover:bg-indigo-200 text-sm py-2 px-2 rounded-full shadow-sm p-3">
+          <BiSolidMessageRounded size={24} className="text-primary" />
+        </button>
       </Whisper>
     </div>
   );

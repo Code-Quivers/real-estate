@@ -18,6 +18,12 @@ export const getStatusClasses = (status) => {
 };
 
 export const getType = (type) => {
-  if (type === "MAINTENANCE_AND_REPAIR") return "MAINTENANCE AND REPAIR";
-  else return type.replace("_", " ");
+  const formatString = (str) => {
+    return str
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+  return formatString(type || "");
 };

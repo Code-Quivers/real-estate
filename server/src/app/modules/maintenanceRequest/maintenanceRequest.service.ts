@@ -11,8 +11,6 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
   // Ensure req.files and req.body exist and have correct types
   const images: IUploadFile[] = (req.files as any) || [];
 
-  console.log(images);
-
   const { isAnimal, description, issueLocation, issueType, priority, animalDetails } =
     req?.body as IAddRequestMaintenance;
   // Process images
@@ -83,7 +81,15 @@ const getMyRequestedMaintenance = async (tenantId: string) => {
         propertyId: isAssigned?.propertyId as string,
       },
       include: {
-        owner: true,
+        owner: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            profileImage: true,
+            userId: true,
+          },
+        },
         property: true,
         serviceProvider: true,
       },
@@ -215,7 +221,7 @@ const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ow
       },
     });
 
-    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "You have not assigned to any unit");
+    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "No Unit Found");
     if (isExistReq && isExistReq.status === "APPROVED") {
       throw new ApiError(httpStatus.BAD_REQUEST, "Already Approved !");
     }
@@ -231,6 +237,43 @@ const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ow
     });
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+    return res;
+
+    //
+  });
+  return result;
+};
+
+// ! accept request and send to service providers (Property owner)
+const rejectRequestMaintenanceForOwner = async (maintenanceRequestId: string, ownerId: string) => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // checking if the tenant is assigned to any property or not
+    const isExistReq = await transactionClient.maintenanceRequest.findUnique({
+      where: {
+        maintenanceRequestId,
+        ownerId,
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!isExistReq) throw new ApiError(httpStatus.BAD_REQUEST, "No unit found");
+    if (isExistReq && isExistReq.status === "APPROVED") {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Already Approved !");
+    }
+
+    // ! updating
+    const res = await transactionClient.maintenanceRequest.update({
+      where: {
+        maintenanceRequestId,
+      },
+      data: {
+        status: "CANCEL",
+      },
+    });
+
+    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Reject, try again");
     return res;
 
     //
@@ -323,4 +366,5 @@ export const RequestMaintenanceService = {
   acceptRequestMaintenanceForServiceProvider,
   getMyAllOrdersForServiceProvider,
   updateRequestMaintenanceForServiceProvider,
+  rejectRequestMaintenanceForOwner,
 };

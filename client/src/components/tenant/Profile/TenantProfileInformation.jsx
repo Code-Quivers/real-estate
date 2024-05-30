@@ -34,7 +34,7 @@ const TenantProfileInformation = ({ setTabActive, data }) => {
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Phone Number</h2>
-            <p>{data?.phoneNumber ? data?.phoneNumber.replace(/\d/g, "X") : "N/A"}</p>
+            <p>{data?.phoneNumber ?? "N/A"}</p>
           </div>
           <div className="font-medium">
             <h2 className="text-gray-600">Social Security Number</h2>

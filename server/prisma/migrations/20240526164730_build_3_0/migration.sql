@@ -55,7 +55,7 @@ CREATE TABLE "propertyOwners" (
 -- CreateTable
 CREATE TABLE "tenants" (
     "tenantId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "profileImage" TEXT,
@@ -69,7 +69,7 @@ CREATE TABLE "tenants" (
     "prevLandlordName" TEXT,
     "prevLandlordContactInfo" TEXT,
     "lengthOfPrevTenancy" TEXT,
-    "affordableRentAmount" INTEGER,
+    "affordableRentAmount" INTEGER DEFAULT 0,
     "leavingReason" TEXT,
     "isAnyLatePaymentReason" TEXT,
     "CurrentEmployerOrBusinessName" TEXT,
@@ -119,6 +119,7 @@ CREATE TABLE "properties" (
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "tenantAssignedAt" TIMESTAMP(3),
     "ownerId" TEXT NOT NULL,
     "score" DOUBLE PRECISION NOT NULL DEFAULT 60,
     "scoreRatio" JSONB,
@@ -207,7 +208,7 @@ CREATE TABLE "maintenance_requests" (
     "animalDetails" TEXT,
     "issueLocation" TEXT NOT NULL,
     "priority" "RequestMaintenancePriorityEnum" NOT NULL,
-    "issueType" "ServiceType" NOT NULL,
+    "issueType" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "images" TEXT[],
     "status" "MaintenanceRequestStatus" NOT NULL DEFAULT 'PENDING',
@@ -404,7 +405,7 @@ CREATE INDEX "_ConversationToUser_B_index" ON "_ConversationToUser"("B");
 ALTER TABLE "propertyOwners" ADD CONSTRAINT "propertyOwners_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "tenants" ADD CONSTRAINT "tenants_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tenants" ADD CONSTRAINT "tenants_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "properties"("propertyId") ON DELETE SET NULL ON UPDATE CASCADE;

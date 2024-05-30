@@ -310,6 +310,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
         { email: { contains: emailOrUsername, mode: "insensitive" } },
         { userName: { contains: emailOrUsername, mode: "insensitive" } },
       ],
+      role: loginData.requestedRole,
     },
     include: {
       tenant: {
@@ -337,7 +338,7 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
   });
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "User not found !!");
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect login credentials !");
   }
 
   const isPasswordValid = await bcrypt.compare(password, isUserExist?.password);
@@ -347,6 +348,8 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
   }
 
   const { userId, tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;
+
+  console.log("Signing tenant", isUserExist);
 
   // create access token & refresh token
   const accessToken = jwtHelpers.createToken(

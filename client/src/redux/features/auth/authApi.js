@@ -10,7 +10,7 @@ export const AuthenticationApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.user],
+      invalidatesTags: [tagTypes.user, tagTypes.tenant],
     }),
     // ! service provider sign up
     serviceProviderSignUp: builder.mutation({
@@ -19,7 +19,7 @@ export const AuthenticationApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.user],
+      invalidatesTags: [tagTypes.user, tagTypes.serviceProvider],
     }),
     // ! property owner sign up
     propertyOwnerSignUp: builder.mutation({
@@ -28,7 +28,7 @@ export const AuthenticationApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.user],
+      invalidatesTags: [tagTypes.user, tagTypes.propertyOwner],
     }),
     // login
     loginUser: builder.mutation({
@@ -37,7 +37,7 @@ export const AuthenticationApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.user],
+      invalidatesTags: [tagTypes.user, tagTypes.tenant],
     }),
   }),
 });

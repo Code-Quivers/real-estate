@@ -1,15 +1,16 @@
 "use client";
 
-import requestApartment from "@/assets/propertyOwner/requestApartment.jpg";
-import { fileUrlKey } from "@/configs/envConfig";
-import { getType } from "@/constants/tableValues";
+import { getPriorityTypeClasses, getType } from "@/constants/tableValues";
 import {
   useAcceptMaintenanceRequestForServiceProviderMutation,
   useGetAllMaintenanceReqForServiceProviderQuery,
 } from "@/redux/features/maintenanceRequest/maintenanceRequestApi";
-import Image from "next/image";
-import { useEffect } from "react";
-import { Button, Loader, Message, useToaster } from "rsuite";
+import { useEffect, useState } from "react";
+import { Loader, Message, useToaster } from "rsuite";
+import SendMessagePopOverFromServiceProvider from "../messaging/SendMessagePopOverFromServiceProvider";
+import RequestCardSwiper from "@/components/tenant/request/RequestCardSwiper";
+import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
+import PropertySingleReqDrawer from "@/components/property-owner/maintenance-request/PropertySingleReqDrawer";
 
 const AllPendingOrders = () => {
   const { data: allRequest, isLoading } = useGetAllMaintenanceReqForServiceProviderQuery({});
@@ -49,6 +50,9 @@ const AllPendingOrders = () => {
 
   // !
 
+  const [open, setOpen] = useState(false);
+  const [requestToDrawer, setRequestToDrawer] = useState(null);
+
   return (
     <div>
       {isLoading && (
@@ -56,47 +60,84 @@ const AllPendingOrders = () => {
           <Loader size="lg" content="Loading..." />
         </div>
       )}
-
-      {!isLoading && (
+      <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3 ">
         <div className="mt-5 space-y-5">
-          {allRequest?.data?.length > 0 &&
-            allRequest?.data?.map((singleReq) => (
-              <div className="border lg:flex  shadow-lg border-[#acacac]   lg:gap-3 xl:gap-6 " key={Math.random()}>
-                <div className="border max-md:w-full  border-[#acacac]">
-                  <Image
-                    className="w-full md:w-full lg:w-[300px] xl:w-[500px] h-full lg:h-[180px] object-cover object-left"
-                    width={500}
-                    height={200}
-                    src={singleReq?.property?.images?.length > 0 ? `${fileUrlKey()}/${singleReq?.property?.images[1]}` : requestApartment}
-                    alt="photo"
-                  />
+          {!isLoading &&
+            allRequest?.data?.length > 0 &&
+            allRequest?.data?.map((request, idx) => (
+              <div key={idx} className="border bg-white rounded-md shadow-sm">
+                {/* image and description */}
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setOpen(true);
+                    setRequestToDrawer(request);
+                  }}
+                >
+                  <RequestCardSwiper requestImages={request?.images} />
+                  <div className="mt-3">
+                    <div className="px-3">
+                      <div className="flex items-start justify-between">
+                        <p className="line-clamp-1 font-medium">Issue: {request?.issueType}</p>
+                      </div>
+                      <p className="text-sm mt-1">
+                        Priority: <span>{getType(request?.priority)}</span>
+                      </p>
+                      <p className="line-clamp-3 text-sm mt-2">{request?.description}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="p-3 lg:p-3 flex  max-lg:flex-col justify-between w-full   lg:gap-2">
-                  <div className="space-y-3  ">
-                    <h3 className="text-xl font-medium">
-                      Home Owner Name : {singleReq?.owner?.firstName} {singleReq?.owner?.lastName}
-                    </h3>
-                    <h3 className="text-xl font-medium">Issue Location : {singleReq?.issueLocation}</h3>
-                    <h3 className="text-xl font-medium">Priority Type: {getType(singleReq?.priority)}</h3>
-                    <h3 className="text-xl font-medium">Issue Type: {getType(singleReq?.issueType)}</h3>
-                  </div>
-                  <div className="mt-3 flex flex-col  space-y-4">
-                    <Button onClick={() => handleAcceptRequest(singleReq?.maintenanceRequestId)} className="!bg-primary !px-3 !py-2 !text-white">
-                      Accept
-                    </Button>
 
-                    <Button className="!bg-primary !px-3 !py-2 !text-white">Contact</Button>
+                {/*  */}
+                <hr className="my-2" />
+                {/* tenants and contact */}
+                <div className="mx-2">
+                  <div className=" flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-gray-900 text-xs">Tenant </p>
+                      <p className="line-clamp-1 text-sm">
+                        {request?.tenant?.firstName} {request?.tenant?.lastName}
+                      </p>
+                    </div>
+                    <SendMessagePopOverFromServiceProvider receiverId={request?.tenant?.userId} />
                   </div>
+                </div>
+                <hr className="my-2" />
+                <div className="mx-2">
+                  <div className=" flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-gray-900 text-xs">Owner </p>
+                      <p className="line-clamp-1 text-sm">
+                        {request?.owner?.firstName} {request?.owner?.lastName}
+                      </p>
+                    </div>
+                    <SendMessagePopOverFromServiceProvider receiverId={request?.owner?.userId} />
+                  </div>
+                </div>
+                {/* button accept */}
+                <div className="gap-4 px-2 my-4 w-full">
+                  {/* <ApproveMaintenanceRequest reqId={singleReq?.maintenanceRequestId} /> */}
+                  <button
+                    type="button"
+                    onClick={() => handleAcceptRequest(request?.maintenanceRequestId)}
+                    className="text-primary w-full text-sm py-2 px-3 font-semibold rounded-md bg-[#E8F0FE] hover:bg-[#d4e3f0]"
+                  >
+                    Accept
+                  </button>
                 </div>
               </div>
             ))}
-          {!allRequest?.data?.length > 0 && (
-            <div className="flex justify-center items-center min-h-[60vh]">
-              <h3 className="lg:text-2xl text-red-500">No Pending Order Found !!</h3>
-            </div>
-          )}
         </div>
-      )}
+
+        {/*  if no data */}
+        {!isLoading && !allRequest?.data?.length > 0 && (
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <h3 className="lg:text-2xl">No Pending Order Found !!</h3>
+          </div>
+        )}
+
+        <PropertySingleReqDrawer open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
+      </section>
     </div>
   );
 };

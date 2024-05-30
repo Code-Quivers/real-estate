@@ -167,10 +167,10 @@ const ConversationMessagingChats = ({ size, setSize }) => {
           <div className="  py-2  border-b px-3  sticky top-0 flex justify-between items-center   ">
             <div className="flex items-center gap-3">
               <div className="">
-                <Image alt="" height={45} width={45} className="rounded-full" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
+                <Image alt="" height={300} width={300} className="rounded-full h-7 w-7" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
               </div>
               <div>
-                <h2>{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
+                <h2 className="line-clamp-1 text-xs md:text-base">{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
                 <p className="text-[10px] font-medium">{getParticipantRole(dataResponse?.data?.perticipants[0])}</p>
               </div>
             </div>
@@ -197,9 +197,9 @@ const ConversationMessagingChats = ({ size, setSize }) => {
                 <div>
                   <div className="flex justify-center">
                     <Image
-                      width={150}
-                      height={150}
-                      className="!w-[120px] !h-[120px] object-cover rounded-full"
+                      width={500}
+                      height={500}
+                      className="w-24 h-24 object-cover rounded-full"
                       src={getProfileImageUrl(dataResponse?.data?.perticipants[0])}
                     />
                   </div>

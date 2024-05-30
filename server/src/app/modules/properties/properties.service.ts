@@ -237,7 +237,7 @@ const getPropertyOwnerAllProperty = async (
         },
         Tenant: true,
         _count: true,
-        maintenanceRequests: true,
+        // maintenanceRequests: true,
         serviceProviders: {
           include: {
             Service: true,
@@ -548,6 +548,7 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
         },
         data: {
           isRented: true,
+          tenantAssignedAt: new Date(),
         },
       });
     }

@@ -247,7 +247,7 @@ const AddProperty = () => {
                                     <InputNumber
                                       className="!w-full"
                                       min={0}
-                                      max={200}
+                                      max={99}
                                       {...field}
                                       // onChange={(e) => {
                                       //   field.onChange(parseFloat(e));
@@ -278,7 +278,7 @@ const AddProperty = () => {
                                       // }}
                                       className="!w-full"
                                       min={0}
-                                      max={200}
+                                      max={99}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.numOfBath !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.numOfBath?.message}
@@ -306,6 +306,7 @@ const AddProperty = () => {
                                       // }}
                                       className="!w-full"
                                       min={1}
+                                      max={999999}
                                     />
                                     <Form.ErrorMessage show={errors?.properties?.[idx]?.monthlyRent !== undefined} placement="topEnd">
                                       {errors?.properties?.[idx]?.monthlyRent?.message}

@@ -6,7 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { calculateTenantProfileScore, calculateTenantScoreRatio } from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -263,11 +263,12 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
       });
     }
 
+    // if new password provided
     if (password) {
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {
-          userId: res?.userId,
+          userId: res?.userId as string,
         },
         data: {
           password: hashedPassword,
@@ -282,16 +283,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
-function differenceInMonths(date1: any, date2 = new Date()) {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-
-  const yearDiff = d2.getFullYear() - d1.getFullYear();
-  const monthDiff = d2.getMonth() - d1.getMonth();
-
-  return yearDiff * 12 + monthDiff;
-}
-
 // get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -303,14 +294,31 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
         },
       },
       select: {
-        property: true,
+        property: {
+          include: {
+            owner: {
+              select: {
+                firstName: true,
+                lastName: true,
+                profileImage: true,
+                phoneNumber: true,
+                userId: true,
+                FinancialAccount: {
+                  select: {
+                    detailsSubmitted: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         tenantId: true,
       },
     });
     if (!tenants) {
       throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added to any property");
     }
-    const propertyId = tenants.property?.propertyId;
+    const propertyId = tenants?.property?.propertyId;
 
     const orderData = await transactionClient.order.findMany({
       where: {
@@ -322,13 +330,33 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
       select: {
         updatedAt: true,
+        properties: {
+          select: {
+            tenantAssignedAt: true,
+          },
+        },
       },
       orderBy: {
         updatedAt: "desc",
       },
     });
 
-    const dueMonths = orderData.length > 0 ? differenceInMonths(orderData[0].updatedAt) : 1;
+    //
+
+    //
+    const tenantAssignedDate = tenants?.property?.tenantAssignedAt;
+
+    // const tenantUpdatedDate = orderData?.length ? orderData[0]?.properties[0]?.tenantAssignedAt : null;
+    let dueMonths;
+
+    if (orderData?.length === 0) {
+      dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+      dueMonths = 0;
+    } else {
+      dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+    }
+    //
 
     const tenantUnitInfo = {
       ...tenants,
