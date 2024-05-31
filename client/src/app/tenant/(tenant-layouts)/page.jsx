@@ -15,7 +15,7 @@ const TenantProfile = () => {
   const { data } = dataResponse || {};
 
   return (
-    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-5    2xl:px-0 ">
+    <section className="max-w-[1050px]    mb-5  xl:mx-auto md:px-3 lg:px-5 px-2    2xl:px-0 ">
       {/* profile Information */}
       <div className="grid grid-cols-5 mt-5 w-full max-md:mb-5 items-start md:justify-between max-md:py-5 md:mr-5 justify-between  lg:justify-between  lg:mr-10 ">
         <div className="col-span-4 flex max-md:flex-col justify-start max-md:gap-2 md:justify-start md:items-center md:gap-3">
@@ -43,11 +43,12 @@ const TenantProfile = () => {
       </div>
       {/* Dashboard */}
       <div>
-        <select
+        {/* <select
           name=""
           id=""
-          className="w-full sm:hidden rounded-md p-3 border shadow bg-white"
-          onChange={(e) => setTabActive(parseInt(e.target.value))}
+          className="w-full  hidden rounded-md p-3 border shadow
+           bg-white"
+          // onChange={(e) => setTabActive(parseInt(e.target.value))}
           value={tabActive}
         >
           <option value={2}>Personal information</option>
@@ -55,15 +56,15 @@ const TenantProfile = () => {
           <option value={4}>Income Information</option>
           <option value={5}>Pets</option>
           <option value={6}>Other Information</option>
-        </select>
+        </select> */}
       </div>
-      <div className="max-sm:hidden flex items-center gap-5 p-2 h-11 bg-white rounded-t-lg border mt-4">
+      <div className=" flex items-center max-lg:justify-between  sm:gap-5 p-2 xl:h-11 bg-white rounded-t-lg border mt-4">
         {/* Personal Information */}
         <div className=" ">
           <button
-            onClick={() => setTabActive(2)}
+            // onClick={() => setTabActive(2)}
             type="button"
-            className={`${tabActive == 2 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
+            className={`${tabActive == 2 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold !cursor-text`}
           >
             <span className="max-lg:hidden">Personal information</span>
             <span className="lg:hidden">Personal</span>
@@ -72,9 +73,9 @@ const TenantProfile = () => {
         {/* Rental History */}
         <div>
           <button
-            onClick={() => setTabActive(3)}
+            // onClick={() => setTabActive(3)}
             type="button"
-            className={`${tabActive == 3 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
+            className={`${tabActive == 3 && " !text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold !cursor-text`}
           >
             Rental history
           </button>
@@ -82,9 +83,9 @@ const TenantProfile = () => {
         {/* income information */}
         <div>
           <button
-            onClick={() => setTabActive(4)}
+            // onClick={() => setTabActive(4)}
             type="button"
-            className={`${tabActive == 4 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
+            className={`${tabActive == 4 && " !text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold !cursor-text`}
           >
             <span className="max-lg:hidden">Income Information</span>
             <span className="lg:hidden">Income</span>
@@ -93,9 +94,9 @@ const TenantProfile = () => {
         {/* pets */}
         <div>
           <button
-            onClick={() => setTabActive(5)}
+            // onClick={() => setTabActive(5)}
             type="button"
-            className={`${tabActive == 5 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
+            className={`${tabActive == 5 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} px-2 border-b-2 border-b-white text-gray-600 font-semibold !cursor-text`}
           >
             Pets
           </button>
@@ -103,9 +104,9 @@ const TenantProfile = () => {
         {/* Other Information */}
         <div>
           <button
-            onClick={() => setTabActive(6)}
+            // onClick={() => setTabActive(6)}
             type="button"
-            className={`${tabActive == 6 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold`}
+            className={`${tabActive == 6 && "!text-primary border-b-2 pb-2.5 pt-2.5 !border-b-primary font-semibold"} lg:px-2 border-b-2 border-b-white text-gray-600 font-semibold !cursor-text`}
           >
             <span className="max-lg:hidden">Other Information</span>
             <span className="lg:hidden">Other</span>

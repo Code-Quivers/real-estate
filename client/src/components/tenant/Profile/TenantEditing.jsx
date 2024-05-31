@@ -117,9 +117,10 @@ const TenantEditing = ({ setTabActive, tabActive, defaultImage, tenantId, data: 
             {tabActive >= 2 && tabActive <= 5 && (
               <Button
                 type="button"
+                disabled={tabActive === 4 && errors?.CurrentCreditScore}
                 onClick={() => setTabActive(tabActive + 1)}
                 size="lg"
-                className="!bg-[#29429f] !px-12 !rounded-2xl !py-4 !text-white"
+                className="!bg-[#29429f] disabled:!bg-primary/50 !px-12 !rounded-2xl !py-4 !text-white"
               >
                 Next
               </Button>

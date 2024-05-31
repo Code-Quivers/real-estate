@@ -113,6 +113,10 @@ const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
                   value: 850,
                   message: "Maximum Credit Score is 850",
                 },
+                pattern: {
+                  value: /[1-8]\d{2}/,
+                  message: "Credit Score should not be more than 850",
+                },
               }}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper">
@@ -120,8 +124,13 @@ const TenantIncomeInformationEdit = ({ control, responseData, errors }) => {
                     className="!w-full"
                     {...field}
                     defaultValue={responseData?.CurrentCreditScore}
-                    mask={[/[1-8]/, /\d/, /\d/]}
+                    // mask={[/[1-8]/, /\d/, /\d/]}
                     guide
+                    mask={[
+                      /[1-8]/, // First digit 1-8
+                      field.value?.[0] === "8" ? /[0-5]/ : /\d/, // Second digit based on the first digit
+                      field.value?.[0] === "8" && field.value?.[1] === "5" ? /[0]/ : /\d/, // Third digit based on the first two digits
+                    ]}
                     // showMask
                     keepCharPositions
                     placeholder={"XXX"}
