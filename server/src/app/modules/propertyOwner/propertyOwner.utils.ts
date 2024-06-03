@@ -118,7 +118,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
   let totalCollectedRent = 0;
   for (const item of data as any) {
     for (const it of item?.orders as any) {
-      totalCollectedRent += it?.PaymentInformation?.amountPaid;
+      totalCollectedRent += (it?.PaymentInformation?.amountPaid || 0);
     }
   }
   return totalCollectedRent || 0;
