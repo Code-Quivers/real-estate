@@ -12,20 +12,20 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
     <div>
       <Modal
         size={isMobile ? "xs" : "md"}
-        dialogAs="div"
         overflow={false}
-        className="!max-w-5xl bg-white border rounded-xl
-       mx-auto w-full  mt-2 2xl:mt-5 "
+        backdrop="static"
+        className=""
         open={isOpen}
         onClose={() => {
           handleClose();
         }}
       >
-        <Modal.Body className=" ">
-          <div className="flex px-5 justify-between items-center">
+        <Modal.Body>
+          <div className="flex pb-3 justify-between items-center">
             {console.log(propertyInfo, "from modal")}
 
-            <h3 className="text-lg ml-24 font-semibold">Payment</h3>
+            <h3 className="text-lg max-w-xl mx-auto font-semibold">Payment</h3>
+
             <button
               className="hover:text-rose-600 hover:scale-125 duration-300 transition-all "
               onClick={() => {
@@ -35,7 +35,12 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
               <IoClose size={25} />
             </button>
           </div>
-          <div className="p-5">
+          <div className="max-w-xl mx-auto pt-3">
+            <h3 className="">Total Rent: ${dueRent}</h3>
+            <h3 className="">Charge: ${dueRent * 0.04}</h3>
+            <h3 className="">Total Amount: ${dueRent + dueRent * 0.04}</h3>
+          </div>
+          <div className="py-3">
             <TenantStripeCheckout
               isRentPayment={true}
               amountToPaid={dueRent}
