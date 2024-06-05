@@ -6,7 +6,12 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
+import {
+  calculateTenantProfileScore,
+  calculateTenantScoreRatio,
+  differenceInMonths,
+  differenceInTime,
+} from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -349,12 +354,36 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     // const tenantUpdatedDate = orderData?.length ? orderData[0]?.properties[0]?.tenantAssignedAt : null;
     let dueMonths;
 
+    // if (orderData?.length === 0) {
+    //   dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    // } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+    //   dueMonths = 0;
+    // } else {
+    //   dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+
+    // for testing (5 Minutes)
     if (orderData?.length === 0) {
-      dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+      if (differenceInTime(tenantAssignedDate?.toISOString()) > 10) {
+        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+        if (dueMonths === 0) {
+          dueMonths = 1;
+        }
+      } else {
+        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+      }
     } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
       dueMonths = 0;
+      // console.log("two", tenantAssignedDate);
+      // console.log("two", orderData[0]?.updatedAt);
+      // console.log("two", differenceInTime(tenantAssignedDate?.toISOString()));
+      // console.log("two", differenceInTime(orderData[0]?.updatedAt?.toISOString()));
     } else {
-      dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+      if (differenceInTime(orderData[0]?.updatedAt) > 10) {
+        dueMonths = 1;
+      } else {
+        dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+        // console.log("three");
+      }
     }
     //
 

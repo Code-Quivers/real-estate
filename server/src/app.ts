@@ -7,8 +7,9 @@ import cookieParser from "cookie-parser";
 import create_required_directories from "./tasks/directory_creation_task";
 import { setupSocket } from "./socket";
 import { createServer } from "http";
+import { infoLogger } from "./shared/logger";
 
-const baseURL = '/backend/api/v1';
+const baseURL = "/backend/api/v1";
 const app: Application = express();
 
 // Create required directories
@@ -40,7 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 // call the socket io setup function
 const server = createServer(app);
 setupSocket(server);
-server.listen(4000, () => console.log("Socket is Running"));
+
+server.listen(4000, () => infoLogger.info(`Socket is running on port ${4000}`));
 
 //
 app.use(baseURL, express.static("data/uploads"));

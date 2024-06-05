@@ -6,7 +6,6 @@ const maintenanceRequestStorage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueFilename = Date.now() + "-" + file.originalname;
-    console.log("uniqueFilename", uniqueFilename);
     cb(null, uniqueFilename);
   },
 });

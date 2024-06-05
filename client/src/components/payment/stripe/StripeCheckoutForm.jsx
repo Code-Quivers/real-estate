@@ -4,7 +4,6 @@ import { Loader } from "rsuite";
 import { getClientUrl } from "@/configs/envConfig";
 
 const StripeCheckoutForm = ({ orderData }) => {
-  console.log(orderData, "orderData");
   const stripe = useStripe();
   const elements = useElements();
 

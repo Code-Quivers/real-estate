@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import catchAsync from "../../../../shared/catchAsync";
@@ -19,8 +20,6 @@ class StripeController {
    * Handles payment for an order.
    */
   static createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-    console.log(req.body);
-    console.log("------------------------------------");
     //
     //   amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
     // orderData={orderDetails?.data}
@@ -114,7 +113,7 @@ class StripeController {
   }
 
   static createConnectedAccount = catchAsync(async (req: Request, res: Response) => {
-    console.log("createConnectedAccount API hit..............");
+    // console.log("createConnectedAccount API hit..............");
     const userId: string = (req.user as IRequestUser).userId || "";
     const ownerId: string = (req.user as IRequestUser).profileId || "";
 
@@ -137,7 +136,7 @@ class StripeController {
   });
 
   static createAccountLink = catchAsync(async (req: Request, res: Response) => {
-    console.log("createAccountLink API hit..............");
+    // console.log("createAccountLink API hit..............");
     const userId = (req.user as IRequestUser).userId;
     const profileId = (req.user as IRequestUser).profileId;
 

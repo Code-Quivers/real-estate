@@ -54,7 +54,6 @@ const SendMessageForm = ({ conversationId }) => {
     socket.emit("setup", userDetails);
     socket.on("connection", () => setSocketConnected(true));
 
-    console.log("socket", socket);
     // after sending message
     if (socket && isSuccess && !isError && !isLoading && data) {
       socket.emit("new message", data);

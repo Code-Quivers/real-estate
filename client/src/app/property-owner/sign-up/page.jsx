@@ -39,10 +39,8 @@ const PropertyOwnerSignUpPage = () => {
       email: user?.email,
       password: user?.password,
     };
-    // await propertyOwnerSignUp({ data: propertyOwnerData }).unwrap();
 
     const res = await propertyOwnerSignUp({ data: propertyOwnerData }).unwrap();
-    console.log(res);
     if (res?.data?.accessToken) {
       storeUserInfo({ accessToken: res?.data?.accessToken });
     }
