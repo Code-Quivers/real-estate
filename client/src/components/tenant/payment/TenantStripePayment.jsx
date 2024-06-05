@@ -57,7 +57,11 @@ const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantI
     );
   }
   if (isLoading) {
-    content = <Loader center size="md" content="loading" />;
+    content = (
+      <div className="flex flex-col justify-center items-center   min-h-[220px]">
+        <Loader center size="md" content="loading" />
+      </div>
+    );
   }
 
   if (isError && !isLoading && error && !isSuccess) {
@@ -69,7 +73,7 @@ const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantI
   }
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="max-w-xl mx-auto mt-5">
       <div>{content}</div>
     </div>
   );

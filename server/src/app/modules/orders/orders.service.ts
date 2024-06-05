@@ -134,8 +134,6 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
 
 // Update a specific order info
 const updateOrderInfo = async (orderId: string, orderInfo: any) => {
-  console.log("updating order info............................");
-  console.log(orderInfo);
   const updatedInfo = await prisma.order.update({
     where: { orderId },
     data: orderInfo,
@@ -149,7 +147,6 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
 };
 
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
-  console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
   const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
     const updatedInfo = await transactionClient.order.update({
@@ -182,8 +179,7 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
 
     // if the order is for paying rent then return the result
     if (isRentPayment) return updatedInfo;
-    console.log("9999999999999999999999999999999999999");
-    console.log(updatedInfo);
+
     const packageType = updatedInfo.packageType;
     const updateOperations = updatedInfo.properties.map((property) => {
       let paidFrom = null;
@@ -211,13 +207,13 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
         data: { planType, packageType, paidFrom, paidTo },
       };
     });
-    const updatedProperty = await Promise.all(
+    await Promise.all(
       updateOperations.map(async (updateOperation) => {
         return await prisma.property.update(updateOperation);
       }),
     );
-    console.log("--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.log(updatedProperty);
+    // console.log("--->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    // console.log(updatedProperty);
     // const packageType = updatedInfo.packageType;
     // const paidFrom = updatedInfo.updatedAt;
     // let paidTo = paidFrom;

@@ -62,7 +62,7 @@ export const propertyApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.properties, tagTypes.tenant],
+      invalidatesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.propertyOwner],
     }),
   }),
 });

@@ -373,11 +373,16 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       }
     } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
       dueMonths = 0;
+      // console.log("two", tenantAssignedDate);
+      // console.log("two", orderData[0]?.updatedAt);
+      // console.log("two", differenceInTime(tenantAssignedDate?.toISOString()));
+      // console.log("two", differenceInTime(orderData[0]?.updatedAt?.toISOString()));
     } else {
       if (differenceInTime(orderData[0]?.updatedAt) > 10) {
         dueMonths = 1;
       } else {
         dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+        // console.log("three");
       }
     }
     //
