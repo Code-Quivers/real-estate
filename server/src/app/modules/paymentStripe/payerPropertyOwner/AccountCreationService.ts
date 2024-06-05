@@ -6,6 +6,7 @@ import ApiError from "../../../../errors/ApiError";
 import prisma from "../../../../shared/prisma";
 import { calculatePropertyOwnerProfileScore } from "../../propertyOwner/propertyOwner.utils";
 import config from "../../../../config";
+import { infoLogger } from "../../../../shared/logger";
 
 const stripe = new Stripe(
   "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
@@ -36,7 +37,7 @@ class StripeAccountManager {
         throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create connected account");
       }
 
-      console.log("New account created:", newAccount.id);
+      infoLogger.info("New Stripe  account created:", newAccount?.id);
       const ownerId: string = accountInfo?.ownerId || "";
       const finAcctData = {
         finOrgAccountId: newAccount.id,

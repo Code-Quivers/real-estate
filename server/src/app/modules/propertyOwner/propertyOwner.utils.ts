@@ -92,8 +92,8 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
   const data = await prisma.property.findMany({
     where: {
       ownerId: ownerId,
-      isRented: true,
-      isActive: true,
+      // isRented: true,
+      // isActive: true,
       orders: {
         some: {
           updatedAt: {
@@ -118,7 +118,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
   let totalCollectedRent = 0;
   for (const item of data as any) {
     for (const it of item?.orders as any) {
-      totalCollectedRent += (it?.PaymentInformation?.amountPaid || 0);
+      totalCollectedRent += it?.PaymentInformation?.amountPaid || 0;
     }
   }
   return totalCollectedRent || 0;
@@ -144,6 +144,7 @@ export const getOwnerTotalCostOfCurrentMonth = async (ownerId: string): Promise<
       },
     },
   });
+
   const totalCost = paymentItems.reduce((acc, item) => {
     return acc + (item?.PaymentInformation?.amountPaid || 0);
   }, 0);

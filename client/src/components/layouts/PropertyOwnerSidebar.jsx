@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidenav, Nav, useToaster, Message } from "rsuite";
+import { Sidenav, Nav } from "rsuite";
 import Image from "next/image";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import Link from "next/link";
@@ -8,7 +8,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { fileUrlKey, getAuthKey } from "@/configs/envConfig";
 import { useGetPropertyOwnerMyProfileQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
-import { useEffect } from "react";
 import { Icon } from "@rsuite/icons";
 import { BsBuildingsFill } from "react-icons/bs";
 import { FaUsers, FaUsersCog } from "react-icons/fa";
@@ -18,39 +17,25 @@ import { BiSolidMessageSquareDetail, BiSolidReport } from "react-icons/bi";
 import { MdCleanHands } from "react-icons/md";
 import { GrHostMaintenance } from "react-icons/gr";
 import { TbLogout2 } from "react-icons/tb";
-// import { useDispatch } from "react-redux";
-// import { baseApi } from "@/redux/api/baseApi";
+import { useDispatch } from "react-redux";
+import { baseApi } from "@/redux/api/baseApi";
 
 const PropertyOwnerSidebar = () => {
   const activeLink = usePathname();
   const router = useRouter();
 
-  const { data: dataResponse, isError, isLoading, isSuccess, error } = useGetPropertyOwnerMyProfileQuery();
+  const { data: dataResponse } = useGetPropertyOwnerMyProfileQuery();
 
   const { data: myProfileData } = dataResponse || {};
   // Clear all caches
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const logOut = async () => {
     router.push("/");
     removeUserInfo(getAuthKey());
-    // dispatch(baseApi.util.resetApiState());
+    dispatch(baseApi.util.resetApiState());
   };
-  const toaster = useToaster();
 
-  useEffect(() => {
-    if (!isLoading && isError && !isSuccess) {
-      toaster.push(
-        <Message centered showIcon type="error" closable>
-          {error?.message || "Something went wrong. Please Login Again"}
-        </Message>,
-        {
-          placement: "topEnd",
-          duration: 3000,
-        },
-      );
-    }
-  }, [isLoading, isError, isSuccess, error, toaster]);
   const design = {
     fontSize: "25px",
   };

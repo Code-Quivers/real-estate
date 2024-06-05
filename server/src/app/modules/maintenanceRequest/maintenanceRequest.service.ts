@@ -316,8 +316,6 @@ const acceptRequestMaintenanceForServiceProvider = async (maintenanceRequestId: 
       },
     });
 
-    console.log(res);
-
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
     return res;
   });

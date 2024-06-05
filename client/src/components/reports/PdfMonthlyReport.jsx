@@ -1,5 +1,4 @@
-import { fileUrlKey } from "@/configs/envConfig";
-import { Document, Image, Page, StyleSheet, Text } from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text } from "@react-pdf/renderer";
 
 const PdfMonthlyReport = ({ reportData }) => {
   const styles = StyleSheet.create({
@@ -9,7 +8,6 @@ const PdfMonthlyReport = ({ reportData }) => {
       paddingHorizontal: 35,
     },
   });
-  console.log(reportData?.information[0]?.image);
   return (
     <>
       <Document>

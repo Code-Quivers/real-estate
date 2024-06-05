@@ -11,9 +11,6 @@ const RemoveTemplateModal = ({ open, modalData, handleClose }) => {
   const handleRemoveFromSavedItem = async () => {
     //
 
-    console.log({
-      filePath: modalData?.filePath,
-    });
     await removeDocumentTemplate({
       data: {
         filePath: modalData?.filePath,
@@ -51,7 +48,6 @@ const RemoveTemplateModal = ({ open, modalData, handleClose }) => {
   }, [isLoading, isError, isSuccess, error]);
 
   //
-  console.log(modalData);
   return (
     <Modal open={open} onClose={handleClose}>
       <Modal.Body>
