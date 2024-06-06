@@ -96,6 +96,9 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
       // isActive: true,
       orders: {
         some: {
+          tenant: {
+            isNot: null,
+          },
           updatedAt: {
             gte: new Date(currentDate.getFullYear(), currentMonth - 1, 1), // Beginning of the current month
             lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
@@ -115,6 +118,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
       },
     },
   });
+
   let totalCollectedRent = 0;
   for (const item of data as any) {
     for (const it of item?.orders as any) {
