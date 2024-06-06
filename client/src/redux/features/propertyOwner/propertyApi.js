@@ -45,7 +45,7 @@ export const propertyApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.properties, tagTypes.serviceProvider],
+      invalidatesTags: [tagTypes.properties, tagTypes.serviceProvider, tagTypes.propertyOwner],
     }),
     // ! tenant
     assignTenantToProperty: builder.mutation({
@@ -54,7 +54,7 @@ export const propertyApi = baseApi.injectEndpoints({
         method: "POST",
         data: data,
       }),
-      invalidatesTags: [tagTypes.properties, tagTypes.tenant],
+      invalidatesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.propertyOwner],
     }),
     removeTenantFromProperty: builder.mutation({
       query: ({ data }) => ({

@@ -7,24 +7,28 @@ import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyAp
 import { useGetPropertyOwnerReportsQuery } from "@/redux/features/reports/reportsApi";
 import Image from "next/image";
 import { useState } from "react";
-import { Button, DateRangePicker, Placeholder, SelectPicker } from "rsuite";
+import { Button, DateRangePicker, Pagination, Placeholder, SelectPicker } from "rsuite";
 
 const PropertyOwnerReportPage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const handleClose = () => setIsOpenAdd(false);
   // filter
   const query = {};
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [selectedDate, setSelectedDate] = useState({
     startDate: "",
     endDate: "",
   });
-
+  // setting into query
   query["propertyId"] = selectedProperty;
   query["reportType"] = selectedReportType;
   query["startDate"] = selectedDate.startDate;
   query["endDate"] = selectedDate.endDate;
+  query["limit"] = size;
+  query["page"] = page;
 
   // !
   const { data, isLoading } = useGetPropertyOwnerReportsQuery({ ...query });
@@ -106,7 +110,7 @@ const PropertyOwnerReportPage = () => {
             className="!w-full"
             renderMenuItem={(value, item) => {
               return (
-                <div className="grid grid-cols-3  max-w-[320px] rounded-lg  duration-300 transition-all text-start">
+                <div className="grid grid-cols-3 max-w-[320px] rounded-lg  duration-300 transition-all text-start">
                   <div className="col-span-1 max-h-24 h-full">
                     <Image
                       width={500}
@@ -118,11 +122,11 @@ const PropertyOwnerReportPage = () => {
                   </div>
                   <div className="*:text-balance *:text-sm mr-2 col-span-2  px-2">
                     <h2 className="font-medium line-clamp-1">{value}</h2>
-                    <h2 className="line-clamp-1">${item.others?.monthlyRent}</h2>
+                    <h2 className="line-clamp-1 font-semibold">${item.others?.monthlyRent}</h2>
                     <h2 className="line-clamp-1">
                       {item?.others?.numOfBed} Beds {item?.others?.numOfBath} Baths
                     </h2>
-                    <h2 className="text-xs line-clamp-2">{item.others?.address ?? "-"}</h2>
+                    <h2 className="text-xs line-clamp-2">{item.others?.address ?? "N/A"}</h2>
                   </div>
                 </div>
               );
@@ -161,7 +165,7 @@ const PropertyOwnerReportPage = () => {
           {!isLoading &&
             data?.data?.data?.length > 0 &&
             data?.data?.data?.map((report, idx) => (
-              <div key={idx} className={`flex justify-between border shadow bg-white rounded-lg hover:bg-white/5 duration-300 p-5`}>
+              <div key={idx}>
                 <SingleReport report={report} />
               </div>
             ))}
@@ -179,6 +183,23 @@ const PropertyOwnerReportPage = () => {
               <Placeholder.Graph active height={85} />
             </div>
           )}
+        </div>
+
+        {/* pagination */}
+        <div className="pt-10 pb-20 ">
+          <Pagination
+            total={data?.data?.meta?.total}
+            prev
+            next
+            ellipsis
+            size="sm"
+            layout={["total", "-", "limit", "|", "pager"]}
+            limitOptions={[10, 20, 30, 50]}
+            limit={size}
+            onChangeLimit={(limitChange) => setSize(limitChange)}
+            activePage={page}
+            onChangePage={setPage}
+          />
         </div>
       </div>
 

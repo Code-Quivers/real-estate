@@ -24,7 +24,7 @@ const addMonthlyOrAnnualReport = async (
   propertyOwnerId: string,
   payload: IAddMonthlyOrAnnualReport,
 ): Promise<Partial<Report>> => {
-  const { propertyId } = payload;
+  const { propertyId, reportType, rentAmount } = payload;
   const res = await prisma.$transaction(async (transactionClient) => {
     const isExistProperty = await transactionClient.property.findUnique({
       where: {
@@ -57,7 +57,7 @@ const addMonthlyOrAnnualReport = async (
     //  rent collected - expenses
     const creatingData = {
       reportTitle: `${reportTypePrefix(payload.reportType)} Property Statement - Property ${isExistProperty.title}`,
-      rentAmount: isExistProperty.monthlyRent,
+      rentAmount: reportType === "MONTHLY" ? isExistProperty.monthlyRent : rentAmount,
       information,
       collectedRent: payload.collectedRent,
       expenses: payload.expenses,

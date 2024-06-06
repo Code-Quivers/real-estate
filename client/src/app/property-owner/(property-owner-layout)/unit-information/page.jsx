@@ -17,13 +17,7 @@ import { getPackageExpiredDates } from "@/utils/GetDateCalculation";
 import SendMessagePopOverFromPropertyOwner from "@/components/property-owner/available-tenants/SendMessagePopOver";
 
 const PropertyOwnerUnitInformation = () => {
-  const { data, isLoading } = useGetMyAllUnitsQuery(
-    {},
-    {
-      refetchOnReconnect: true,
-      pollingInterval: 60000,
-    },
-  );
+  const { data, isLoading } = useGetMyAllUnitsQuery({});
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [editData, setEditData] = useState(null);
   const handleCloseEdit = () => {
