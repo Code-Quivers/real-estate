@@ -145,7 +145,7 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
 
   return updatedInfo;
 };
-
+//
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
   const { orderId, orderStatus, planType, isRentPayment } = data;
   const result = await prisma.$transaction(async (transactionClient) => {
@@ -186,7 +186,7 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
       let paidTo = null;
       if (!property.paidFrom) {
         paidFrom = updatedInfo.updatedAt;
-      } else paidFrom = property.paidTo;
+      } else paidFrom = property.paidFrom;
 
       switch (packageType) {
         case "MONTHLY":
@@ -202,11 +202,13 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
           // Handle unexpected package types
           break;
       }
+
       return {
         where: { propertyId: property.propertyId },
         data: { planType, packageType, paidFrom, paidTo },
       };
     });
+
     await Promise.all(
       updateOperations.map(async (updateOperation) => {
         return await prisma.property.update(updateOperation);

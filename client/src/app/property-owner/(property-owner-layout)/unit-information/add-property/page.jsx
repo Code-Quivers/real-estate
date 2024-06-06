@@ -38,7 +38,7 @@ const AddProperty = () => {
         },
       );
 
-      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}`);
+      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}?isPropertyCreating=1`);
       resetReq();
     }
     if (!isLoading && isError && !isSuccess) {

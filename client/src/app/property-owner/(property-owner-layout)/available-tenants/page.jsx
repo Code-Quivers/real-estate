@@ -37,12 +37,7 @@ const PropertyOwnerAvailableTenants = () => {
   });
   if (!!debouncedTermAddress) query["searchTerm"] = debouncedTermAddress;
 
-  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery(
-    { ...query },
-    {
-      pollingInterval: 60000,
-    },
-  );
+  const { data: allTenantsLists, isLoading } = useGetAllAvailableTenantsQuery({ ...query });
   //
   const [serviceModalActive, setServiceModalActive] = useState(false);
   const [selectedService, setTenantDetails] = useState(null);

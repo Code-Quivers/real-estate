@@ -42,7 +42,7 @@ const ConversationMessagingChats = ({ size, setSize }) => {
     error,
     refetch,
     isFetching,
-  } = useGetMessagesQuery({ conversationId, ...query }, { skip: !conversationId, pollingInterval: 30000 });
+  } = useGetMessagesQuery({ conversationId, ...query }, { skip: !conversationId });
 
   // ! socket---------------------
   // join chat
@@ -167,7 +167,13 @@ const ConversationMessagingChats = ({ size, setSize }) => {
           <div className="  py-2  border-b px-3  sticky top-0 flex justify-between items-center   ">
             <div className="flex items-center gap-3">
               <div className="">
-                <Image alt="" height={300} width={300} className="rounded-full h-7 w-7" src={getProfileImageUrl(dataResponse?.data?.perticipants[0])} />
+                <Image
+                  alt=""
+                  height={300}
+                  width={300}
+                  className="rounded-full h-7 w-7"
+                  src={getProfileImageUrl(dataResponse?.data?.perticipants[0])}
+                />
               </div>
               <div>
                 <h2 className="line-clamp-1 text-xs md:text-base">{getParticipantName(dataResponse?.data?.perticipants[0])}</h2>
