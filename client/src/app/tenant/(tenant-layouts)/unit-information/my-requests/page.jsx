@@ -30,7 +30,8 @@ const MyMaintenanceRequests = () => {
       )}
 
       <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3">
-        {myAllRequests?.data?.length > 0 &&
+        {!isLoading &&
+          myAllRequests?.data?.length > 0 &&
           myAllRequests?.data?.map((request, idx) => (
             <div key={idx} className="border bg-white rounded-md shadow-sm">
               {/* image and description */}
