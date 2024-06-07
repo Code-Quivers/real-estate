@@ -124,7 +124,18 @@ const getSinglePropertyOwner = async (propertyOwnerId: string): Promise<any | nu
         score: true,
         userId: true,
         updatedAt: true,
-        _count: true,
+        _count: {
+          select: {
+            maintenanceRequests: true,
+            properties: {
+              where: {
+                planType: {
+                  in: ["ON_TRIAL", "PREMIUM"],
+                },
+              },
+            },
+          },
+        },
         scoreRatio: true,
         user: {
           select: {
@@ -250,6 +261,9 @@ const getDashboardInfo = async (ownerId: string) => {
         ownerId: ownerId,
         isRented: true,
         isActive: true,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
       },
       _count: true,
     });
@@ -290,12 +304,18 @@ const getDashboardInfo = async (ownerId: string) => {
       where: {
         ownerId,
         isRented: true,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
       },
     });
 
     const getTotalUnits = await prisma.property.count({
       where: {
         ownerId,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
       },
     });
 

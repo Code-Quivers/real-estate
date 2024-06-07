@@ -41,10 +41,10 @@ const PropertySingleReqDrawer = ({ open, setOpen, requestToDrawer }) => {
         >
           <div>
             <div className="md:grid md:grid-cols-12 justify-between items-stretch">
-              <PropertyReqDrawerSwiper requestImages={requestToDrawer?.property?.images} />
+              <PropertyReqDrawerSwiper requestImages={requestToDrawer?.images} />
               <div className="max-md:hidden md:col-span-5 w-full  overflow-y-scroll lg:max-h-[92vh] 2xl:max-h-[95vh]  3xl:max-h-[95vh] custom-scrollbar">
-                {requestToDrawer?.property?.images?.length
-                  ? requestToDrawer?.property?.images?.map((photo) => (
+                {requestToDrawer?.images?.length
+                  ? requestToDrawer?.images?.map((photo) => (
                       <div key={Math.random()} className="flex flex-col">
                         <div className=" ">
                           <Image
