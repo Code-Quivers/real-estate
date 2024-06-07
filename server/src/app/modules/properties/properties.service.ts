@@ -150,7 +150,13 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
       include: {
         owner: true,
       },
-      where: { ...whereConditions, isRented: false },
+      where: {
+        ...whereConditions,
+        isRented: false,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
+      },
       skip,
       take: limit,
       orderBy:

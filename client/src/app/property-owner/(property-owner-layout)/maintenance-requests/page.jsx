@@ -105,7 +105,7 @@ const MaintenanceRequest = () => {
                     }}
                   >
                     {/* image */}
-                    <MaintenanceRequestSwiper requestImages={singleReq?.property?.images} />
+                    <MaintenanceRequestSwiper requestImages={singleReq?.images} />
                     {/* issue priority and description and status */}
                     <div className="mx-2">
                       <div className="w-full flex flex-col justify-between">
