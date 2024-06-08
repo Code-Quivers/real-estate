@@ -1,6 +1,6 @@
 "use client";
 
-import { getPriorityTypeClasses, getType } from "@/constants/tableValues";
+import { getType } from "@/constants/tableValues";
 import {
   useAcceptMaintenanceRequestForServiceProviderMutation,
   useGetAllMaintenanceReqForServiceProviderQuery,
@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 import { Loader, Message, useToaster } from "rsuite";
 import SendMessagePopOverFromServiceProvider from "../messaging/SendMessagePopOverFromServiceProvider";
 import RequestCardSwiper from "@/components/tenant/request/RequestCardSwiper";
-import { getMaintenanceStatusStyles } from "@/utils/getStatusStyles";
-import PropertySingleReqDrawer from "@/components/property-owner/maintenance-request/PropertySingleReqDrawer";
+
+import MaintenanceReqDetailsSidebar from "./MaintenanceReqDetailsSidebar";
 
 const AllPendingOrders = () => {
   const { data: allRequest, isLoading } = useGetAllMaintenanceReqForServiceProviderQuery({});
@@ -60,8 +60,8 @@ const AllPendingOrders = () => {
           <Loader size="lg" content="Loading..." />
         </div>
       )}
-      <section className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3 ">
-        <div className="mt-5 space-y-5">
+      <section className="mt-5 space-y-5">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 max-md:px-3 ">
           {!isLoading &&
             allRequest?.data?.length > 0 &&
             allRequest?.data?.map((request, idx) => (
@@ -136,7 +136,7 @@ const AllPendingOrders = () => {
           </div>
         )}
 
-        <PropertySingleReqDrawer open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
+        <MaintenanceReqDetailsSidebar open={open} setOpen={setOpen} requestToDrawer={requestToDrawer} />
       </section>
     </div>
   );

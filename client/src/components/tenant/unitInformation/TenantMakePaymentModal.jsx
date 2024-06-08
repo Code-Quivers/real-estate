@@ -33,8 +33,10 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
           <div className="max-w-xl mx-auto border p-3 rounded-lg ">
             <h3 className="">Total Rent: ${dueRent}</h3>
             <h3 className="">Due Month: {dueMonths}</h3>
-            <h3 className="">Charge: ${dueRent * 0.04}</h3>
-            <h3 className="">Total Amount: ${dueRent + dueRent * 0.04}</h3>
+            <h3 className="">Charge: ${(dueRent * 0.04).toFixed(2)}</h3>
+            <h3 className="">
+              Total Amount: <strong className="text-red-400">${(dueRent + dueRent * 0.04).toFixed(2)}</strong>
+            </h3>
           </div>
           <div className="py-3">
             <TenantStripeCheckout

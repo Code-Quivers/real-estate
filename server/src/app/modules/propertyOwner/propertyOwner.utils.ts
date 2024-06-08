@@ -91,11 +91,15 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
   const currentMonth = currentDate.getMonth() + 1; // Adding 1 since months are zero-based
   const data = await prisma.property.findMany({
     where: {
-      ownerId: ownerId,
-      // isRented: true,
-      // isActive: true,
+      ownerId,
+      planType: "PREMIUM",
+      isActive: true,
+    },
+
+    select: {
       orders: {
-        some: {
+        where: {
+          orderStatus: "CONFIRMED",
           tenant: {
             isNot: null,
           },
@@ -104,11 +108,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
             lt: new Date(currentDate.getFullYear(), currentMonth, 1), // Beginning of the next month
           },
         },
-      },
-    },
-    select: {
-      orders: {
-        select: {
+        include: {
           PaymentInformation: {
             select: {
               amountPaid: true,
@@ -125,6 +125,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
       totalCollectedRent += it?.PaymentInformation?.amountPaid || 0;
     }
   }
+
   return totalCollectedRent || 0;
 };
 
