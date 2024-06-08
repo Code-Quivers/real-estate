@@ -120,6 +120,7 @@ const LoginPage = () => {
                         </InputGroup.Addon>
                         <Input {...field} type={visible ? "text" : "password"} placeholder="Password" />
                         <InputGroup.Button
+                          type="button"
                           onClick={() => {
                             setVisible(!visible);
                           }}
