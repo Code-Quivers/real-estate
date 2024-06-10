@@ -361,8 +361,9 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     // } else {
     //   dueMonths = differenceInMonths(orderData[0]?.updatedAt);
 
-    // for testing (5 Minutes)
+    // for testing (10 Minutes)
     if (orderData?.length === 0) {
+      //
       if (differenceInTime(tenantAssignedDate?.toISOString()) > 10) {
         dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
         if (dueMonths === 0) {
@@ -371,18 +372,15 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       } else {
         dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
       }
-    } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-      dueMonths = 0;
-      // console.log("two", tenantAssignedDate);
-      // console.log("two", orderData[0]?.updatedAt);
-      // console.log("two", differenceInTime(tenantAssignedDate?.toISOString()));
-      // console.log("two", differenceInTime(orderData[0]?.updatedAt?.toISOString()));
-    } else {
+    }
+    //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+    //   dueMonths = 0;
+    // }
+    else {
       if (differenceInTime(orderData[0]?.updatedAt) > 10) {
         dueMonths = 1;
       } else {
         dueMonths = differenceInMonths(orderData[0]?.updatedAt);
-        // console.log("three");
       }
     }
     //

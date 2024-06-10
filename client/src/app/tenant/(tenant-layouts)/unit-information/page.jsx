@@ -13,12 +13,7 @@ import { getPackageExpiredDates } from "@/utils/GetDateCalculation";
 import SendMessagePopOverFromTenant from "@/components/Shared/modal/SendMessagePopOverFromTenant";
 
 const TenantUnitInformation = () => {
-  const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery(
-    {},
-    {
-      pollingInterval: 60000,
-    },
-  );
+  const { data, isLoading, isError, error } = useGetTenantMyUnitInformationQuery({});
   const { data: unitRes } = data || {};
   const [isOpenMakePayment, setIsOpenMakePayment] = useState(false);
   const handleClose = () => setIsOpenMakePayment(false);

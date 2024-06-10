@@ -19,6 +19,9 @@ const UnitPaymentPage = ({ params }) => {
   const [activePackagePrice, setActivePackagePrice] = useState("MONTHLY");
   const searchParam = useSearchParams();
   const searchParams = searchParam.get("paymentMethod");
+  const isPropertyCreating = searchParam.get("isPropertyCreating");
+
+  console.log("isPropertyCreating", isPropertyCreating);
 
   const {
     data: orderDetails,
@@ -198,9 +201,11 @@ const UnitPaymentPage = ({ params }) => {
               )}
             </div>
             <div>
-              <button type="button" onClick={() => setIsOpenFreeTrial(true)} className="hover:underline text-primary">
-                Activate a 1 month free-trial
-              </button>
+              {isPropertyCreating === "1" && (
+                <button type="button" onClick={() => setIsOpenFreeTrial(true)} className="hover:underline text-primary">
+                  Activate a 1 month free-trial
+                </button>
+              )}
             </div>
           </div>
         </div>

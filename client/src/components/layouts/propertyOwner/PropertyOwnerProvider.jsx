@@ -31,9 +31,6 @@ const PropertyOwnerProvider = ({ children }) => {
   }
 
   if (userLoggedIn && role === "PROPERTY_OWNER" && !isLoading) return <div>{children}</div>;
-  else {
-    <div>Hello Shafin</div>;
-  }
 };
 
 export default PropertyOwnerProvider;

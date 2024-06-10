@@ -182,7 +182,7 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                 </div>
               </div>
               {/* Contact  */}
-              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.tenant?.user?.userId} />
+              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.tenant?.userId} />
             </div>
             {/* Tenant data bottom */}
             <div className="pt-2 mt-2 space-y-2">

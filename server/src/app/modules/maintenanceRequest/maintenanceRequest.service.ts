@@ -193,6 +193,9 @@ const getRequestedMaintenanceForServiceProvider = async (serviceProviderId: stri
           },
         ],
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         property: true,
         serviceProvider: true,

@@ -221,6 +221,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
     <div>
       <Modal
         size="md"
+        backdrop="static"
         onClose={() => {
           handleClose();
           resetForm();
@@ -390,6 +391,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                             prefix="$"
                             min={0}
                             step={0.1}
+                            max={999999999999999}
                             className="!w-full"
                             {...field}
                             type="text"
@@ -431,6 +433,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                             prefix="$"
                             min={0}
                             step={0.1}
+                            max={999999999999999}
                             className="!w-full"
                             {...field}
                             type="text"
@@ -479,6 +482,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                             step={0.1}
                             className="!w-full"
                             {...field}
+                            max={999999999999999}
                             type="text"
                             formatter={(value) => {
                               if (!isNaN(value)) {
@@ -515,6 +519,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                           <InputNumber
                             prefix="$"
                             min={0}
+                            max={999999999999999}
                             step={0.1}
                             formatter={(value) => {
                               if (!isNaN(value)) {
@@ -557,6 +562,7 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
                             prefix="$"
                             min={0}
                             step={0.1}
+                            max={999999999999999}
                             className="!w-full"
                             {...field}
                             type="text"

@@ -4,10 +4,10 @@ import { Drawer, IconButton, useMediaQuery } from "rsuite";
 import { fileUrlKey } from "@/configs/envConfig";
 import { CgClose } from "react-icons/cg";
 import { getType } from "@/constants/tableValues";
-import PropertyReqDrawerSwiper from "./PropertyReqDrawerSwiper";
-import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
+import SendMessagePopOverFromServiceProvider from "@/components/service-provider/messaging/SendMessagePopOverFromServiceProvider";
+import PropertyReqDrawerSwiper from "@/components/property-owner/maintenance-request/PropertyReqDrawerSwiper";
 
-const PropertySingleReqDrawer = ({ open, setOpen, requestToDrawer }) => {
+const MaintenanceReqDetailsSidebar = ({ open, setOpen, requestToDrawer }) => {
   const [isMobile] = useMediaQuery(["(max-width: 700px)"]);
   const handleClose = () => setOpen(false);
 
@@ -86,7 +86,7 @@ const PropertySingleReqDrawer = ({ open, setOpen, requestToDrawer }) => {
                         {requestToDrawer?.tenant?.firstName} {requestToDrawer?.tenant?.lastName}
                       </p>
                     </div>
-                    <SendMessagePopOverFromPropertyOwner receiverId={requestToDrawer?.tenant?.userId} />
+                    <SendMessagePopOverFromServiceProvider receiverId={requestToDrawer?.tenant?.userId} />
                   </div>
                 </div>
                 <hr className="my-2" />
@@ -94,7 +94,7 @@ const PropertySingleReqDrawer = ({ open, setOpen, requestToDrawer }) => {
                 {/*  description*/}
                 <div className="px-4">
                   <h1 className="font-semibold">Description</h1>
-                  <p>{requestToDrawer?.description || "N/A"}</p>
+                  <p className="break-all">{requestToDrawer?.description || "N/A"}</p>
                   <div className="mt-1">
                     <h1 className="font-semibold">Animals</h1>
                     <p>{requestToDrawer?.animalDetails || "N/A"}</p>
@@ -109,4 +109,4 @@ const PropertySingleReqDrawer = ({ open, setOpen, requestToDrawer }) => {
   );
 };
 
-export default PropertySingleReqDrawer;
+export default MaintenanceReqDetailsSidebar;

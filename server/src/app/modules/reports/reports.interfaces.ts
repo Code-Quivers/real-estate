@@ -24,6 +24,7 @@ export type IAddMonthlyOrAnnualReport = {
   collectedRent: number;
   expenses: number;
   propertyId: string;
+  rentAmount?: number;
   information: IInformationType[];
 };
 

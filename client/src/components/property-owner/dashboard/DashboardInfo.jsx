@@ -6,12 +6,7 @@ import UpdateExtraCostModal from "./UpdateExtraCostModal";
 import PropertyOwnerChart from "../profile/PropertyOwnerChart";
 
 const DashboardInfo = () => {
-  const { data, isLoading, isError } = useGetDashboardInfoQuery(
-    {},
-    {
-      pollingInterval: 100000,
-    },
-  );
+  const { data, isLoading, isError } = useGetDashboardInfoQuery({});
   // update
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [modalData, setModalData] = useState(null);
