@@ -8,9 +8,7 @@ import { calculatePropertyOwnerProfileScore } from "../../propertyOwner/property
 import config from "../../../../config";
 import { infoLogger } from "../../../../shared/logger";
 
-const stripe = new Stripe(
-  "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
-);
+const stripe = new Stripe(config.stripe_sk);
 
 class StripeAccountManager {
   private static initialAcctInfo: any = {

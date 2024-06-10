@@ -37,3 +37,7 @@ export const getUnitPackagePrices = () => {
     ANNUALLY: process.env.NEXT_PUBLIC_ANNUALLY_PACKAGE_PRICE,
   };
 };
+
+export const getStripePKLive = ()=>{
+  return process.env.NEXT_PUBLIC_STRIPE_PK_LIVE;
+}
