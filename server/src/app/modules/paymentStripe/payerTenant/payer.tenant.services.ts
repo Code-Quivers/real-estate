@@ -4,10 +4,9 @@ import ApiError from "../../../../errors/ApiError";
 import httpStatus from "http-status";
 import prisma from "../../../../shared/prisma";
 import { OrderServices } from "../../orders/orders.service";
+import config from "../../../../config";
 
-const stripe = new Stripe(
-  "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
-);
+const stripe = new Stripe(config.stripe_sk);
 
 class TenantPaymentProcessor {
   private static intentObject = {
