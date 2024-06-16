@@ -116,7 +116,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
         include: {
           PaymentInformation: {
             select: {
-              amountPaid: true,
+              netAmount: true,
             },
           },
         },
@@ -127,7 +127,7 @@ export const getLastMonthTotalCollectedRent = async (ownerId: string): Promise<n
   let totalCollectedRent = 0;
   for (const item of data as any) {
     for (const it of item?.orders as any) {
-      totalCollectedRent += it?.PaymentInformation?.amountPaid || 0;
+      totalCollectedRent += it?.PaymentInformation?.netAmount || 0;
     }
   }
 

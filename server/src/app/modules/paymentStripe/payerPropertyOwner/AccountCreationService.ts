@@ -12,20 +12,25 @@ const stripe = new Stripe(config.stripe_sk);
 
 class StripeAccountManager {
   private static initialAcctInfo: any = {
-    type: "custom",
+    // type: "custom",
     business_type: "individual",
     // email: 'jenny.rosen@example.com',
-    capabilities: {
-      card_payments: {
-        requested: true,
-      },
-      transfers: {
-        requested: true,
-      },
-    },
+    // capabilities: {
+    //   card_payments: {
+    //     requested: true,
+    //   },
+    //   transfers: {
+    //     requested: true,
+    //   },
+    // },
     // tos_acceptance: {
     //   service_agreement: 'recipient',
     // },
+    controller: {
+      stripe_dashboard: {
+        type: "full",
+      },
+    },
   };
   static createConnectedAccount = async (accountInfo: any) => {
     try {
@@ -51,6 +56,7 @@ class StripeAccountManager {
       const resp = await this.createAccountLink(newAccount.id);
       return resp;
     } catch (err) {
+      console.log(err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create Financial Account!");
     }
   };

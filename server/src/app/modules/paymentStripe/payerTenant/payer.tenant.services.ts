@@ -20,12 +20,13 @@ class TenantPaymentProcessor {
     return parseFloat((Math.ceil(amount * 100) / 100).toFixed(2)) * 100;
   };
 
-  static createPaymentIntent = async (amount: number, connectedAccountId: string = "") => {
+  static createPaymentIntent = async (amount: number, connectedAccountId: string = "", metaData: any) => {
     try {
       const paymentIntent = await stripe.paymentIntents.create(
         {
           ...this.intentObject,
           amount: this.fixAmountToTwoDecimal(amount),
+          metadata: metaData,
         },
         {
           stripeAccount: connectedAccountId,
@@ -47,7 +48,11 @@ class TenantPaymentProcessor {
   };
 
   static createPaymentIntentForTenant = async (paymentInfo: any) => {
-    const { tenantId, propertyId, amountToPaid, ownerId } = paymentInfo;
+    const { tenantId, propertyId, amountToPaid, ownerId, charge, netAmount } = paymentInfo;
+    const paymentMetaData: any = {
+      charge,
+      netAmount,
+    };
     const propertyInfo = await prisma.property.findUnique({
       where: {
         propertyId,
@@ -75,7 +80,7 @@ class TenantPaymentProcessor {
       console.log("NO Stripe account found for the property owner", amount, connectedAccountId);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to extract related information!");
     }
-    const { jsonResponse, httpStatusCode } = await this.createPaymentIntent(amount, connectedAccountId);
+    const { jsonResponse, httpStatusCode } = await this.createPaymentIntent(amount, connectedAccountId, paymentMetaData);
 
     // Create order for the payment which is paying by the tenant as monthly rent for the rented property.
     const orderInfo = {
