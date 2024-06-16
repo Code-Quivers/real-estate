@@ -15,13 +15,13 @@ import { getStripePKLive } from "@/configs/envConfig";
 // Sign in to see your own test API key embedded in code samples.
 let stripePromise = loadStripe(getStripePKLive());
 
-const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantId, ownerId }) => {
+const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantId, ownerId, charge, netAmount }) => {
   const [getTenantClientSecret, { data, isError, isLoading, isSuccess, error }] = useGetTenantClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
   const [orderInfo, setOrderInfo] = useState({});
 
   const fetchClientSecret = async () => {
-    const resp = await getTenantClientSecret({ tenantId, propertyId, isRentPayment, amountToPaid, ownerId });
+    const resp = await getTenantClientSecret({ tenantId, propertyId, isRentPayment, amountToPaid, ownerId, charge, netAmount });
     // eslint-disable-next-line no-unsafe-optional-chaining
     const { clientSecret: cs, connectedAccountId, orderId } = resp?.data?.data;
     if (cs && connectedAccountId) {

@@ -42,6 +42,9 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
             <TenantStripeCheckout
               isRentPayment={true}
               amountToPaid={dueRent + dueRent * 0.04}
+              //
+              charge={dueRent * 0.04}
+              netAmount={dueRent}
               propertyId={propertyInfo?.propertyId}
               tenantId={tenantId}
               ownerId={propertyInfo?.ownerId}
