@@ -40,4 +40,5 @@ export const getUnitPackagePrices = () => {
 
 export const getStripePKLive = ()=>{
   return process.env.NEXT_PUBLIC_STRIPE_PK_LIVE;
-}
+};
+

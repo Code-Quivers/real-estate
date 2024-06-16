@@ -14,8 +14,6 @@ import { getStripePKLive } from "@/configs/envConfig";
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
 let stripePromise = loadStripe(getStripePKLive());
-// charge={dueRent * 0.04}
-//               netAmount={dueRent}
 
 const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantId, ownerId, charge, netAmount }) => {
   const [getTenantClientSecret, { data, isError, isLoading, isSuccess, error }] = useGetTenantClientSecretMutation();
