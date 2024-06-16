@@ -29,7 +29,9 @@ class StripeController {
     // orderId={orderDetails?.data?.orderId}
     // packageType={activePackagePrice}
 
-    const { amountToPaid, orderId, packageType } = req.body;
+    // charge={dueRent * 0.04}
+    //           netAmount={dueRent}
+    const { amountToPaid, orderId, packageType, charge, netAmount } = req.body;
     const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.createPaymentIntent(amountToPaid);
     const resp = await OrderServices.updateOrderInfo(orderId, { packageType });
     sendResponse(res, {

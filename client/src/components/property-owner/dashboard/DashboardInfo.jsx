@@ -48,7 +48,7 @@ const DashboardInfo = () => {
                 setIsOpenModal(true);
                 setModalData(data?.data?.extraCost);
               }}
-              className="bg-transparent focus-within:border-none focus-within:outline-none focus-within:ring-0 hover:bg-slate-200 duration-300 p-3 rounded-full"
+              className="bg-transparent outline-none ring-0 hover:bg-slate-200 duration-300 p-3 rounded-full"
             >
               <FaPencilAlt size={16} />
             </button>
