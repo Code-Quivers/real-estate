@@ -48,7 +48,7 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
               isRentPayment={true}
               //
               charge={grossAmount - dueRent}
-              netAmount={netAmount}
+              netAmount={grossAmount > dueRent ? dueRent : grossAmount}
               amountToPaid={grossAmount}
               //
               propertyId={propertyInfo?.propertyId}
