@@ -198,7 +198,7 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                 </div>
               </div>
               {/* Contact  */}
-              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.serviceProvider?.user?.userId} />
+              <SendMessagePopOverFromPropertyOwner receiverId={modalData?.serviceProvider?.userId} />
             </div>
             {/* company information */}
             <div className="border shadow-sm text-sm mx-3 p-2 rounded-md">
