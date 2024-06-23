@@ -12,22 +12,25 @@ import { Controller, useForm } from "react-hook-form";
 import { useLoginUserMutation } from "@/redux/features/auth/authApi";
 import { useRouter } from "next/navigation";
 import { FaLock } from "react-icons/fa";
-import { getUserInfo, isLoggedIn, storeUserInfo } from "@/hooks/services/auth.service";
+import {
+  //  getUserInfo, isLoggedIn,
+  storeUserInfo,
+} from "@/hooks/services/auth.service";
 import { LoginErrorMessage, LoginSuccessMessage } from "@/components/toasts/auth/authToastMessages";
 
 const PropertyOwnerLoginPage = () => {
   const [visible, setVisible] = useState(false);
   const [loginUser, { isLoading, error, isSuccess, isError, data }] = useLoginUserMutation();
   const router = useRouter();
-  const isAlreadyLoggedIn = isLoggedIn();
-  const userDetails = getUserInfo();
+  // const isAlreadyLoggedIn = isLoggedIn();
+  // const userDetails = getUserInfo();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  // ! submit to login
   const handlePropertyOwnerLogin = async (user) => {
     const userLoginData = {
       emailOrUsername: user?.emailOrUsername,
@@ -41,11 +44,11 @@ const PropertyOwnerLoginPage = () => {
   };
 
   //
-  useEffect(() => {
-    if (isAlreadyLoggedIn && userDetails?.role === "PROPERTY_OWNER") {
-      router.push("/property-owner");
-    }
-  }, [isAlreadyLoggedIn, userDetails, router]);
+  // useEffect(() => {
+  //   if (isAlreadyLoggedIn && userDetails?.role === "PROPERTY_OWNER") {
+  //     router.push("/property-owner");
+  //   }
+  // }, [isAlreadyLoggedIn, userDetails, router]);
 
   //  for api
   useEffect(() => {
