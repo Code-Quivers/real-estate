@@ -45,15 +45,14 @@ const BankingCredentials = () => {
     // for creating
     if (isSuccessCreate && linkedAccountData?.data?.url) {
       handleRedirect(linkedAccountData.data.url);
+      setIsLoadingAccount(false);
     }
     // for connect
     if (isSuccessConnect && connectedAccountData?.data?.url) {
       handleRedirect(connectedAccountData.data.url);
-    }
-    // for loading false
-    if (isSuccessCreate || isSuccessConnect) {
       setIsLoadingAccount(false);
     }
+    // for loading false
 
     // for create error
     if (!isSuccessCreate && !isLoadingCreateAccount && isErrorCreate) {
