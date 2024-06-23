@@ -346,21 +346,17 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
     });
 
-    //
-
-    //
+    // for due month calculation
     const tenantAssignedDate = tenants?.property?.tenantAssignedAt;
 
-    // const tenantUpdatedDate = orderData?.length ? orderData[0]?.properties[0]?.tenantAssignedAt : null;
     let dueMonths;
 
-    if (orderData?.length === 0) {
+    if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
       dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-    } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-      dueMonths = 0;
     } else {
       dueMonths = differenceInMonths(orderData[0]?.updatedAt);
     }
+
     // for testing (10 Minutes)
     // if (orderData?.length === 0) {
     //   //
