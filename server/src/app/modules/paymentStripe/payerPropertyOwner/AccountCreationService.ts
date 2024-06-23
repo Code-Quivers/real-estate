@@ -11,26 +11,34 @@ import { infoLogger } from "../../../../shared/logger";
 const stripe = new Stripe(config.stripe_sk);
 
 class StripeAccountManager {
+
+  // For standard account with dashboard access
+  // private static initialAcctInfo: any = {
+  //   type: "standard",
+  //   business_type: "individual",
+  //   controller: {
+  //     stripe_dashboard: {
+  //       type: "full",
+  //     },
+  //   },
+  // };
+
+  // For custom account without dashboard access
   private static initialAcctInfo: any = {
-    // type: "custom",
+    type: "custom",
     business_type: "individual",
     // email: 'jenny.rosen@example.com',
-    // capabilities: {
-    //   card_payments: {
-    //     requested: true,
-    //   },
-    //   transfers: {
-    //     requested: true,
-    //   },
-    // },
+    capabilities: {
+      card_payments: {
+        requested: true,
+      },
+      transfers: {
+        requested: true,
+      },
+    },
     // tos_acceptance: {
     //   service_agreement: 'recipient',
     // },
-    controller: {
-      stripe_dashboard: {
-        type: "full",
-      },
-    },
   };
   static createConnectedAccount = async (accountInfo: any) => {
     try {
