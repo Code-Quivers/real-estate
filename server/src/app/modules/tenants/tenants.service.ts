@@ -10,7 +10,7 @@ import {
   calculateTenantProfileScore,
   calculateTenantScoreRatio,
   differenceInMonths,
-  differenceInTime,
+  // differenceInTime,
 } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
@@ -354,35 +354,35 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     // const tenantUpdatedDate = orderData?.length ? orderData[0]?.properties[0]?.tenantAssignedAt : null;
     let dueMonths;
 
-    // if (orderData?.length === 0) {
-    //   dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-    // } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-    //   dueMonths = 0;
-    // } else {
-    //   dueMonths = differenceInMonths(orderData[0]?.updatedAt);
-
-    // for testing (10 Minutes)
     if (orderData?.length === 0) {
-      //
-      if (differenceInTime(tenantAssignedDate?.toISOString()) > 10) {
-        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-        if (dueMonths === 0) {
-          dueMonths = 1;
-        }
-      } else {
-        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-      }
+      dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    } else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+      dueMonths = 0;
+    } else {
+      dueMonths = differenceInMonths(orderData[0]?.updatedAt);
     }
-    //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-    //   dueMonths = 0;
+    // for testing (10 Minutes)
+    // if (orderData?.length === 0) {
+    //   //
+    //   if (differenceInTime(tenantAssignedDate?.toISOString()) > 2) {
+    //     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    //     if (dueMonths === 0) {
+    //       dueMonths = 1;
+    //     }
+    //   } else {
+    //     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    //   }
     // }
-    else {
-      if (differenceInTime(orderData[0]?.updatedAt) > 10) {
-        dueMonths = 1;
-      } else {
-        dueMonths = differenceInMonths(orderData[0]?.updatedAt);
-      }
-    }
+    // //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+    // //   dueMonths = 0;
+    // // }
+    // else {
+    //   if (differenceInTime(orderData[0]?.updatedAt) > 2) {
+    //     dueMonths = 1;
+    //   } else {
+    //     dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+    //   }
+    // }
     //
 
     const tenantUnitInfo = {
