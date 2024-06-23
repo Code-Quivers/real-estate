@@ -3,7 +3,7 @@
 import tenantLoginImage from "@/assets/loginPage/Login- Tenant.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Notification, toaster } from "rsuite";
+import { Button, Form, Input, InputGroup, toaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";
