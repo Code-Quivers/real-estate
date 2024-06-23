@@ -51,7 +51,7 @@ const BankingCredentials = () => {
       handleRedirect(connectedAccountData.data.url);
     }
     // for loading false
-    if (!isSuccessCreate && !isSuccessConnect && (isSuccessCreate || isSuccessConnect)) {
+    if (isSuccessCreate || isSuccessConnect) {
       setIsLoadingAccount(false);
     }
 
@@ -67,6 +67,7 @@ const BankingCredentials = () => {
           placement: "bottomStart",
         },
       );
+      setIsLoadingAccount(false);
     }
     // for connect error
     if (!isSuccessConnect && !isLoadingConnectAccount && isErrorConnect) {
@@ -80,6 +81,7 @@ const BankingCredentials = () => {
           placement: "bottomStart",
         },
       );
+      setIsLoadingAccount(false);
     }
   }, [
     isLoadingConnectAccount,
