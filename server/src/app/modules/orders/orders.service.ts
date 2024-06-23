@@ -186,17 +186,21 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
       let paidTo = null;
       if (!property.paidFrom) {
         paidFrom = updatedInfo.updatedAt;
-      } else paidFrom = property.paidFrom;
+        paidTo = updatedInfo.updatedAt;
+      } else {
+        paidFrom = property.paidFrom;
+        paidTo = property.paidTo;
+      }
 
       switch (packageType) {
         case "MONTHLY":
-          paidTo = incrementMonth(paidFrom, 1);
+          paidTo = incrementMonth(paidTo, 1);
           break;
         case "BIANNUALLY":
-          paidTo = incrementMonth(paidFrom, 6);
+          paidTo = incrementMonth(paidTo, 6);
           break;
         case "ANNUALLY":
-          paidTo = incrementMonth(paidFrom, 12);
+          paidTo = incrementMonth(paidTo, 12);
           break;
         default:
           // Handle unexpected package types

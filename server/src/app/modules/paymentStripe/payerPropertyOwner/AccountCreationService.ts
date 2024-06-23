@@ -8,11 +8,22 @@ import { calculatePropertyOwnerProfileScore } from "../../propertyOwner/property
 import config from "../../../../config";
 import { infoLogger } from "../../../../shared/logger";
 
-const stripe = new Stripe(
-  "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
-);
+const stripe = new Stripe(config.stripe_sk);
 
 class StripeAccountManager {
+
+  // For standard account with dashboard access
+  // private static initialAcctInfo: any = {
+  //   type: "standard",
+  //   business_type: "individual",
+  //   controller: {
+  //     stripe_dashboard: {
+  //       type: "full",
+  //     },
+  //   },
+  // };
+
+  // For custom account without dashboard access
   private static initialAcctInfo: any = {
     type: "custom",
     business_type: "individual",
@@ -53,6 +64,7 @@ class StripeAccountManager {
       const resp = await this.createAccountLink(newAccount.id);
       return resp;
     } catch (err) {
+      console.log(err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create Financial Account!");
     }
   };

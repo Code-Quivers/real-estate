@@ -57,7 +57,7 @@ const PropertyOwnerSettingPage = () => {
           </div>
         </div>
 
-        <div className="border-t p-5">
+        <div className="border-t p-2.5 md:p-5">
           <BankingCredentials />
         </div>
       </div>

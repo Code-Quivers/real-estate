@@ -3,7 +3,7 @@
 import serviceProviderSignUpImage from "@/assets/loginPage/service_provider_sign_up.png";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import Image from "next/image";
-import { Button, Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
+import { Form, Input, InputGroup, Loader, Notification, useToaster } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import { useEffect, useState } from "react";

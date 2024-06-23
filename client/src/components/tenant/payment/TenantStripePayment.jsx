@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useGetTenantClientSecretMutation } from "@/redux/features/payment/stripePaymentApi";
 import TenantStripeCheckoutForm from "./TenantStripeCheckoutForm";
+import { getStripePKLive } from "@/configs/envConfig";
 
 // import StripeCheckoutForm from "./CheckoutForm";
 
@@ -12,19 +13,19 @@ import TenantStripeCheckoutForm from "./TenantStripeCheckoutForm";
 // This is a public sample test API key.
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
-let stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
+let stripePromise = loadStripe(getStripePKLive());
 
-const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantId, ownerId }) => {
+const TenantStripeCheckout = ({ isRentPayment, amountToPaid, propertyId, tenantId, ownerId, charge, netAmount }) => {
   const [getTenantClientSecret, { data, isError, isLoading, isSuccess, error }] = useGetTenantClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
   const [orderInfo, setOrderInfo] = useState({});
 
   const fetchClientSecret = async () => {
-    const resp = await getTenantClientSecret({ tenantId, propertyId, isRentPayment, amountToPaid, ownerId });
+    const resp = await getTenantClientSecret({ tenantId, propertyId, isRentPayment, amountToPaid, ownerId, charge, netAmount });
     // eslint-disable-next-line no-unsafe-optional-chaining
     const { clientSecret: cs, connectedAccountId, orderId } = resp?.data?.data;
     if (cs && connectedAccountId) {
-      stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN", {
+      stripePromise = loadStripe(getStripePKLive(), {
         stripeAccount: connectedAccountId,
       });
       setClientSecret(cs);

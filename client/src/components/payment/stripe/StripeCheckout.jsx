@@ -4,6 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import StripeCheckoutForm from "./StripeCheckoutForm";
 import { useGetClientSecretMutation } from "@/redux/features/payment/stripePaymentApi";
+import { getStripePKLive } from "@/configs/envConfig";
 
 // import StripeCheckoutForm from "./CheckoutForm";
 
@@ -12,7 +13,9 @@ import { useGetClientSecretMutation } from "@/redux/features/payment/stripePayme
 // This is a public sample test API key.
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
-const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
+// const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
+const stripePromise = loadStripe(getStripePKLive());
+
 
 //  amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
 //                 orderData={orderDetails?.data}

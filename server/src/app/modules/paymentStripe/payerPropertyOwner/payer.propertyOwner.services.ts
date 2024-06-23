@@ -2,15 +2,14 @@
 import Stripe from "stripe";
 import httpStatus from "http-status";
 import ApiError from "../../../../errors/ApiError";
+import config from "../../../../config";
 
 /**
  * Creates a PayPal order for processing payment.
  */
 
 // This is your test secret API key.
-const stripe = new Stripe(
-  "sk_test_51P3kzDBMbxBFdGafgJOAyh9RAFzMyuqWwQgLV3c9lQRRM9mMNxeIwA8JRVyQSsvDblTKrLTTjFjZVhOyEwiFLKHm00OZivN3dg",
-);
+const stripe = new Stripe(config.stripe_sk);
 
 class PropertyOwnerPaymentProcessor {
   private static intentObject = {

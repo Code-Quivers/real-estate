@@ -3,9 +3,13 @@
 import { IoClose } from "react-icons/io5";
 import { Modal, useMediaQuery } from "rsuite";
 import TenantStripeCheckout from "../payment/TenantStripePayment";
+import { useState } from "react";
 
 const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, dueRent, dueMonths }) => {
   const [isMobile] = useMediaQuery("(max-width: 575px)");
+  const grossAmount = (dueRent + 0.3) / (1 - 0.029);
+  const netAmount = grossAmount - (grossAmount * 0.029 - 0.3);
+
   return (
     <div>
       <Modal
@@ -33,15 +37,20 @@ const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, d
           <div className="max-w-xl mx-auto border p-3 rounded-lg ">
             <h3 className="">Total Rent: ${dueRent}</h3>
             <h3 className="">Due Month: {dueMonths}</h3>
-            <h3 className="">Charge: ${(dueRent * 0.04).toFixed(2)}</h3>
-            <h3 className="">
-              Total Amount: <strong className="text-red-400">${(dueRent + dueRent * 0.04).toFixed(2)}</strong>
+            <h3 className="">Charge: ${(grossAmount - dueRent).toFixed(2)}</h3>
+            {/* <h3 className="">Gross amount: ${grossAmount?.toFixed(2)}</h3> */}
+            <h3 className="font-medium">
+              Total Amount: <strong className="text-red-400">${grossAmount?.toFixed(2)}</strong>
             </h3>
           </div>
           <div className="py-3">
             <TenantStripeCheckout
               isRentPayment={true}
-              amountToPaid={dueRent + dueRent * 0.04}
+              //
+              charge={grossAmount - dueRent}
+              netAmount={grossAmount > dueRent ? dueRent : grossAmount}
+              amountToPaid={grossAmount}
+              //
               propertyId={propertyInfo?.propertyId}
               tenantId={tenantId}
               ownerId={propertyInfo?.ownerId}

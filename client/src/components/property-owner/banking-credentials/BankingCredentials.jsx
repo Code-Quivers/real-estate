@@ -4,27 +4,101 @@
 import { useCreateAccountLinkMutation, useCreateConnectedAccountMutation } from "@/redux/features/payment/stripePaymentApi";
 import { useGetFinancialInfoQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { Placeholder } from "rsuite";
+import React, { useEffect, useState } from "react";
+import { Button, Notification, Placeholder, useToaster } from "rsuite";
 
 const BankingCredentials = () => {
+  const toaster = useToaster();
   const router = useRouter();
   const { data, isLoading, isError } = useGetFinancialInfoQuery();
-  // console.log(data, "inside of bankgin details...........");
-  const [createConnectedAccount, { data: connectedAccountData }] = useCreateConnectedAccountMutation();
-  const [createAccountLink, { data: linkedAccountData }] = useCreateAccountLinkMutation();
 
+  //! Create------
+  const [
+    createAccountLink,
+    { data: linkedAccountData, isLoading: isLoadingCreateAccount, isSuccess: isSuccessCreate, isError: isErrorCreate, error: createErrorData },
+  ] = useCreateAccountLinkMutation();
+  //! connect----------
+  const [
+    createConnectedAccount,
+    { data: connectedAccountData, isLoading: isLoadingConnectAccount, isSuccess: isSuccessConnect, isError: isErrorConnect, error: connectErrorData },
+  ] = useCreateConnectedAccountMutation();
+
+  // ! submit
+  const [isLoadingAccount, setIsLoadingAccount] = useState(false);
   const handleCreateAccountForStripe = async () => {
-    let resp = null;
+    setIsLoadingAccount(true);
     if (data?.data?.finOrgAccountId) {
-      resp = await createAccountLink({ sConnectedAccountId: data?.data?.finOrgAccountId });
+      await createAccountLink({ sConnectedAccountId: data?.data?.finOrgAccountId });
     } else {
-      resp = await createConnectedAccount({});
+      await createConnectedAccount({});
     }
-    // console.log(resp, "resp............");
-    router.push(resp?.data?.data?.url);
+    // router.push(resp?.data?.data?.url);
+  };
+  // ! side effect
+  const handleRedirect = (url) => {
+    if (url) {
+      router.push(url);
+    }
   };
 
+  useEffect(() => {
+    // for creating
+    if (isSuccessCreate && linkedAccountData?.data?.url) {
+      handleRedirect(linkedAccountData.data.url);
+      setIsLoadingAccount(false);
+    }
+    // for connect
+    if (isSuccessConnect && connectedAccountData?.data?.url) {
+      handleRedirect(connectedAccountData.data.url);
+      setIsLoadingAccount(false);
+    }
+    // for loading false
+
+    // for create error
+    if (!isSuccessCreate && !isLoadingCreateAccount && isErrorCreate) {
+      toaster.push(
+        <Notification type="error" header="Error" closable>
+          <div>
+            <p className="xl:text-lg xl:font-semibold mb-2">{createErrorData?.message ?? "Error! Something went wrong !"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      setIsLoadingAccount(false);
+    }
+    // for connect error
+    if (!isSuccessConnect && !isLoadingConnectAccount && isErrorConnect) {
+      toaster.push(
+        <Notification type="error" header="Error" closable>
+          <div>
+            <p className="xl:text-lg xl:font-semibold mb-2">{connectErrorData?.message ?? "Error! Something went wrong !"}</p>
+          </div>
+        </Notification>,
+        {
+          placement: "bottomStart",
+        },
+      );
+      setIsLoadingAccount(false);
+    }
+  }, [
+    isLoadingConnectAccount,
+    isSuccessConnect,
+    isErrorConnect,
+    connectedAccountData,
+    createErrorData,
+    //
+    isLoadingCreateAccount,
+    isSuccessCreate,
+    isErrorCreate,
+    linkedAccountData,
+    handleRedirect,
+    connectErrorData,
+    toaster,
+  ]);
+
+  // !
   const maskAccountNumber = (accountNumber) => {
     // Extract last four digits
     const lastFourDigits = accountNumber.slice(-4);
@@ -45,7 +119,7 @@ const BankingCredentials = () => {
       <div className="my-5 grid grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-14 gap-y-5">
         {!isLoading && data?.data?.finOrgAccountId && (
           <>
-            {data?.data?.externalAccount?.email && <h3 className="">Email: {data?.data?.email}</h3>}
+            {data?.data?.email && <h3 className="">Email: {data?.data?.email}</h3>}
             {/* <h3 className="border p-3 rounded-2xl ">
                             Account: {data?.data?.externalAccount}
                         </h3> */}
@@ -68,22 +142,37 @@ const BankingCredentials = () => {
               </div>
             )}
             {data?.data?.detailsSubmitted || (
-              <button className="bg-primary/90 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
+              <Button
+                loading={isLoadingAccount}
+                className="!bg-primary hover:!bg-primary/80  !text-white !font-bold !py-3 !px-4 !rounded-lg !text-base"
+                onClick={handleCreateAccountForStripe}
+              >
                 Complete Stripe Account Onboarding
-              </button>
+              </Button>
+              // <button className="bg-primary/90 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg" onClick={handleCreateAccountForStripe}>
+              //   Complete Stripe Account Onboarding
+              // </button>
             )}
           </>
         )}
         {/*  */}
         {!isLoading && !data?.data?.finOrgAccountId && (
-          <h3 className="border p-3 rounded-2xl ">
-            <button
+          <div className="  p-3 rounded-2xl ">
+            <Button
+              loading={isLoadingAccount}
+              block
+              className="!bg-primary hover:!bg-primary/80  !text-white !font-bold !py-3 !px-4 !rounded-lg !text-base"
+              onClick={handleCreateAccountForStripe}
+            >
+              Create Account For Stripe
+            </Button>
+            {/* <button
               className="bg-primary/80 hover:bg-primary duration-300 text-white font-bold py-2.5 px-4 rounded-xl"
               onClick={handleCreateAccountForStripe}
             >
               Create Account For Stripe
-            </button>
-          </h3>
+            </button> */}
+          </div>
         )}
         {/*  */}
         {isLoading && (

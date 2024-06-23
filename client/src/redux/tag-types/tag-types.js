@@ -20,6 +20,7 @@ export const tagTypesList = [
   tagTypes.serviceProvider,
   tagTypes.services,
   tagTypes.items,
+  tagTypes.properties,
   tagTypes.propertyOwner,
   tagTypes.maintenanceRequest,
   tagTypes.order,
