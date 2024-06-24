@@ -55,7 +55,7 @@ const TenantSidebarDrawer = () => {
         </div>
       </div>
       <div>
-        <Drawer placement="left" open={open} onClose={() => setOpen(false)} closeButton={false} dialogAs="div" className="max-w-xs">
+        <Drawer overflow={false} placement="left" open={open} onClose={() => setOpen(false)} closeButton={false} dialogAs="div" className="max-w-xs">
           <Drawer.Body className="!z-50 !bg-[#29429f] !p-0 !pb-3">
             <div className=" ">
               <Sidenav expanded={true} appearance="inverse" className="!bg-[#29429f]">
