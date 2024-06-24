@@ -65,22 +65,14 @@ const PropertyOwnerDrawer = () => {
               <span className="text-white text-xl font-semibold">Menu</span>
             </Drawer.Title>
           </Drawer.Header> */}
-          <Drawer.Body style={{ padding: 0, backgroundColor: "#29429f" }}>
+          <Drawer.Body className="!z-50 !bg-[#29429f] !p-0 !pb-3">
             <div className=" ">
-              <Sidenav expanded={true} appearance="inverse">
+              <Sidenav expanded={true} appearance="inverse" className="!bg-[#29429f]">
                 <Sidenav.Body>
-                  <div
-                    className="
-                    bg-[#29429f] p-3
-                  
-                  "
-                  >
+                  <div className="bg-[#29429f] p-3">
                     <div className="flex justify-between  items-center">
                       <h3 className="text-white text-2xl font-semibold">Menu</h3>
-                      <button
-                        onClick={() => setOpen(false)}
-                        // border-transparent hover:
-                      >
+                      <button onClick={() => setOpen(false)}>
                         <PiArrowLeftBold size={25} />
                       </button>
                     </div>
