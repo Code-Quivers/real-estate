@@ -30,7 +30,7 @@ const Payment = () => {
   const toaster = useToaster();
   useEffect(() => {
     if (!isLoadingCreateOrder && !isErrorCreateOrder && isSuccessCreateOrder && !errorCreateOrder) {
-      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}`);
+      router.push(`/property-owner/unit-information/payment/${data?.data?.orderId}?isPropertyCreating=0`);
     }
     if (!isLoadingCreateOrder && isErrorCreateOrder && !isSuccessCreateOrder) {
       toaster.push(
