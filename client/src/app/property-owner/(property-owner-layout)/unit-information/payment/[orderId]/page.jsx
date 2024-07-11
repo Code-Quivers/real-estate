@@ -21,8 +21,6 @@ const UnitPaymentPage = ({ params }) => {
   const searchParams = searchParam.get("paymentMethod");
   const isPropertyCreating = searchParam.get("isPropertyCreating");
 
-  console.log("isPropertyCreating", isPropertyCreating);
-
   const {
     data: orderDetails,
     isLoading: isOrderLoading,
@@ -179,7 +177,7 @@ const UnitPaymentPage = ({ params }) => {
               <div className="flex justify-center">
                 <Link
                   href={{
-                    query: { paymentMethod: "stripe-payment" },
+                    query: { paymentMethod: "stripe-payment", isPropertyCreating: isPropertyCreating === "1" ? "1" : "0" },
                   }}
                   className="border w-full  bg-primary hover:bg-primary/80 duration-300 text-center p-10 text-xl py-4 rounded-lg text-white"
                 >
@@ -193,7 +191,14 @@ const UnitPaymentPage = ({ params }) => {
             <div>
               {searchParams === "stripe-payment" && (
                 <Link
-                  href={`/property-owner/unit-information/payment/${params?.orderId}`}
+                  href={
+                    (`/property-owner/unit-information/payment/${params?.orderId}`,
+                    {
+                      query: {
+                        isPropertyCreating: isPropertyCreating === "1" ? "1" : "0",
+                      },
+                    })
+                  }
                   className="  border rounded-2xl hover:bg-gray-200 px-3 py-1 flex items-center gap-1"
                 >
                   <BiLeftArrowAlt /> Back
