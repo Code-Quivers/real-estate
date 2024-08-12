@@ -161,7 +161,7 @@ const ConversationMessagingChats = ({ size, setSize }) => {
   }, [isLoading, isSuccess, shouldScroll, setShouldScroll]);
 
   return (
-    <div className="flex flex-col h-[80vh]  2xl:h-[85vh] border  rounded-lg  bg-white shadow-lg">
+    <div className="flex flex-col h-[80vh]  2xl:h-[85vh] border  rounded-lg  bg-white shadow-md">
       {conversationId && !isError ? (
         <>
           <div className="  py-2  border-b px-3  sticky top-0 flex justify-between items-center   ">

@@ -63,7 +63,7 @@ const PropertyOwnerMessaging = () => {
         {/* messages */}
         {/* conversation */}
         <div className="grid grid-cols-6 gap-1 lg:gap-2 h-[80vh]  2xl:h-[85vh]">
-          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-lg custom-scrollbar overflow-y-scroll space-y-2 lg:space-y-1 ">
+          <div className="col-span-1 lg:col-span-2 border p-2 rounded-lg rounded-t-lg bg-white shadow-md custom-scrollbar overflow-y-scroll space-y-2 lg:space-y-1 ">
             {!isLoading &&
               allConversations?.data?.data?.length > 0 &&
               allConversations?.data?.data?.map((singleConversation) => (

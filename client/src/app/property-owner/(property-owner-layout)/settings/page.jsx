@@ -17,7 +17,7 @@ const PropertyOwnerSettingPage = () => {
         <h2 className="text-2xl font-semibold ">Settings</h2>
       </div>
       {/*  */}
-      <div className="border  bg-white shadow-lg rounded-2xl">
+      <div className="border  bg-white rounded-2xl">
         <div className=" p-2.5 md:p-5">
           <div className="flex justify-between items-center">
             <div>
