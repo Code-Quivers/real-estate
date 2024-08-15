@@ -453,10 +453,59 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+// ! ------------------------------------------------DASHBOARD------------------------------------------------------
+// ! ------ create superadmin
+
+const createSuperAdminUser = async (payload: IUserCreate): Promise<any> => {
+  const { password, email, userName } = payload;
+  const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // find superadmin already exist or not
+    const isExistSuperAdmin = await transactionClient.user.findFirst({
+      where: {
+        role: UserRoles.SUPERADMIN,
+      },
+    });
+    if (isExistSuperAdmin) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Superadmin is already exist");
+    }
+    // find is user already exist or not
+    await userFindUnique(userName, email, transactionClient);
+
+    //
+
+    const createdUser = await transactionClient.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        userName,
+        role: UserRoles.SUPERADMIN,
+        userStatus: UserStatus.ACTIVE,
+      },
+    });
+
+    if (!createdUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "User creation failed");
+    }
+
+    return {
+      userId: createdUser?.userId,
+      email: createdUser?.email,
+      role: createdUser?.role,
+      userStatus: createdUser?.userStatus,
+    };
+  });
+
+  return result;
+};
+
 export const AuthService = {
   createNewUserForTenant,
   createNewUserForPropertyOwner,
   createNewUserForServiceProvider,
   userLogin,
   refreshToken,
+  // for dashboard
+  createSuperAdminUser,
 };
