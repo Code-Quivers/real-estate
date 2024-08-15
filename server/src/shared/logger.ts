@@ -27,17 +27,11 @@ const errorFormat = printf(({ level, message, timestamp, ...srv }) => {
 
 const logger = createLogger({
   level: "info",
-  format: combine(label({ label: "PORTAL-24/7" }), timestamp(), myFormat),
+  format: combine(label({ label: "REALESTATE_" }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(
-        process.cwd(),
-        "logs",
-        "winston",
-        "successes",
-        "portal_247-%DATE%-success.log",
-      ),
+      filename: path.join(process.cwd(), "logs", "winston", "successes", "realestate_-%DATE%-success.log"),
       datePattern: "YYYY-DD-MM-HH",
       zippedArchive: true,
       maxSize: "20m",
@@ -48,17 +42,11 @@ const logger = createLogger({
 
 const infoLogger = createLogger({
   level: "info",
-  format: combine(label({ label: "PORTAL-24/7" }), timestamp(), myFormat),
+  format: combine(label({ label: "REALESTATE_" }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(
-        process.cwd(),
-        "logs",
-        "winston",
-        "info",
-        "portal_247-%DATE%-info.log",
-      ),
+      filename: path.join(process.cwd(), "logs", "winston", "info", "realestate_-%DATE%-info.log"),
       datePattern: "YYYY-DD-MM-HH",
       zippedArchive: true,
       maxSize: "20m",
@@ -69,17 +57,11 @@ const infoLogger = createLogger({
 
 const errorLogger = createLogger({
   level: "error",
-  format: combine(label({ label: "PORTAL-24/7" }), timestamp(), errorFormat),
+  format: combine(label({ label: "REALESTATE_" }), timestamp(), errorFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(
-        process.cwd(),
-        "logs",
-        "winston",
-        "errors",
-        "portal_247-%DATE%-error.log",
-      ),
+      filename: path.join(process.cwd(), "logs", "winston", "errors", "realestate_-%DATE%-error.log"),
       datePattern: "YYYY-DD-MM-HH",
       zippedArchive: true,
       maxSize: "20m",

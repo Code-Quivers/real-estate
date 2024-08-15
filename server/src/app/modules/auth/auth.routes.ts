@@ -12,5 +12,7 @@ router.post("/service-provider/create-user", AuthController.createNewUserForServ
 router.post("/login", AuthController.userLogin);
 
 router.post("/refresh-token", AuthController.refreshToken);
+// for dashboard
+router.post("/create-superadmin", AuthController.createSuperAdminUser);
 
 export const AuthRoutes = router;
