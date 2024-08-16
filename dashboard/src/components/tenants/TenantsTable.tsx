@@ -7,6 +7,7 @@ import {
 } from "mantine-react-table";
 import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { useGetAllTenantsQuery } from "@/redux/api/features/tenantsApi";
 
 type Person = {
   tenantName: string;
@@ -80,6 +81,7 @@ const data: Person[] = [
 ];
 
 const TenantsTable = () => {
+ 
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
