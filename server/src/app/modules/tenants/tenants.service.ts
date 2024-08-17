@@ -19,7 +19,8 @@ import { tenantsRelationalFields, tenantsRelationalFieldsMapper, tenantsSearchab
 import bcrypt from "bcrypt";
 import config from "../../../config";
 
-// ! get all tenants
+// ! get all tenants for superadmin
+
 const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -43,7 +44,7 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
         if (tenantsRelationalFields.includes(key)) {
           return {
             [tenantsRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
+              [key]: (filterData as any)[key],
             },
           };
         } else {
@@ -62,9 +63,26 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
   const result = await prisma.$transaction(async (transactionClient) => {
     const allTenants = await transactionClient.tenant.findMany({
       include: {
+        property: {
+          include: {
+            owner: {
+              include: {
+                user: {
+                  select: {
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        _count: true,
         user: {
           select: {
             email: true,
+            userId: true,
+            userName: true,
+            userStatus: true,
           },
         },
       },
@@ -96,6 +114,7 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
 
   return result;
 };
+
 // ! get all Available tenants which are not already assigned
 const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -288,7 +307,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
-// get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const tenants = await transactionClient.tenant.findUnique({
