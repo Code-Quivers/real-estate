@@ -36,7 +36,7 @@ const DashboardLayout = ({ children }: any) => {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>
-        <h1>Dashboard</h1>
+        {/* <h1>Dashboard</h1> */}
         {/* {Array(15)
           .fill(0)
           .map((_, index) => (

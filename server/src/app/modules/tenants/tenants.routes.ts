@@ -9,7 +9,7 @@ const router = express.Router();
 // ! get all tenants
 router.get(
   "/get-all-tenants",
-  auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN),
+  // auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN),
   TenantsControllers.getAllTenants,
 );
 // ! get all available  tenants
