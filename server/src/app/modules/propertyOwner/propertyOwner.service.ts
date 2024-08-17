@@ -67,11 +67,7 @@ const getAllPropertyOwners = async (filters: IPropertyOwnerFilterRequest, option
   const result = await prisma.$transaction(async (transactionClient) => {
     const allPropertyOwner = await transactionClient.propertyOwner.findMany({
       include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
+        user: true,
       },
       where: whereConditions,
       skip,
