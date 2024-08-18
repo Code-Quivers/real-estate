@@ -2,6 +2,7 @@
 import { AppShell, Burger, Group, Skeleton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import SidebarMenu from "./SidebarMenu";
+import NavHeader from "./NavHeader";
 
 const DashboardLayout = ({ children }: any) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -19,21 +20,23 @@ const DashboardLayout = ({ children }: any) => {
       padding="md"
     >
       <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger
-            opened={mobileOpened}
-            onClick={toggleMobile}
-            hiddenFrom="sm"
-            size="sm"
-          />
-          <Burger
-            opened={desktopOpened}
-            onClick={toggleDesktop}
-            visibleFrom="sm"
-            size="sm"
-          />
-          <div>Mantine</div>
-        </Group>
+        <div className="flex">
+          <Group h="100%"  p="md">
+            <Burger
+              opened={mobileOpened}
+              onClick={toggleMobile}
+              hiddenFrom="sm"
+              size="sm"
+            />
+            <Burger
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              visibleFrom="sm"
+              size="sm"
+            />
+          </Group>
+          <NavHeader />
+        </div>
       </AppShell.Header>
       <AppShell.Navbar>
         {/* <h1>Dashboard</h1> */}
