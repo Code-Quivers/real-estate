@@ -115,15 +115,16 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
     editDisplayMode: "modal",
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
       <>
-       <Stack>
-        <Title order={3}>Edit User</Title>
-        {internalEditComponents}
-        <Flex justify="flex-end" mt="xl">
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
-        </Flex>
-      </Stack>
+        <Stack>
+          <Title order={3}>Edit User</Title>
+          {internalEditComponents}
+          <Flex justify="flex-end" mt="xl">
+            <MRT_EditActionButtons variant="text" table={table} row={row} />
+          </Flex>
+        </Stack>
       </>
     ),
+    enableColumnActions: false,
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
