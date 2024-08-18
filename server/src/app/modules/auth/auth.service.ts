@@ -397,7 +397,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   // !checking deleted user's refresh token
   const { userId } = verifiedToken;
 
-  const isUserExist = await prisma.user.findFirst({
+  const isUserExist = await prisma.user.findUnique({
     where: {
       userId,
     },
@@ -503,7 +503,7 @@ const createSuperAdminUser = async (payload: IUserCreate): Promise<any> => {
 const dashboardLogin = async (loginData: IDashboardLogin): Promise<ILoginUserResponse> => {
   const { email, password } = loginData;
 
-  const isUserExist = await prisma.user.findFirst({
+  const isUserExist = await prisma.user.findUnique({
     where: {
       email,
       role: UserRoles.SUPERADMIN,
