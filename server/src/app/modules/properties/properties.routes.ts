@@ -18,12 +18,14 @@ router.post(
     return PropertiesController.createNewProperty(req, res, next);
   },
 );
-// get all property
+//! get all available property
 router.get(
   "/all",
   auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN, UserRoles.TENANT),
-  PropertiesController.getAllProperty,
+  PropertiesController.getAllAvailableProperty,
 );
+//! get all properties
+router.get("/get-all-properties", auth(UserRoles.SUPERADMIN), PropertiesController.getAllProperties);
 
 // get single property info
 
