@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }: any) => {
       layout="alt"
       header={{ height: 60 }}
       navbar={{
-        width: 260,
+        width: 230,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}

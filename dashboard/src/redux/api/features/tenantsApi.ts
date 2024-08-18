@@ -3,10 +3,10 @@ import { baseApi } from "../baseApi";
 // import { tagTypes } from "@/redux/tag-types";
 
 export const tenantsApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
+  endpoints: (builder: any) => ({
     // get all available tenants
     getAllTenants: builder.query({
-      query: (arg) => ({
+      query: (arg: any) => ({
         url: "/tenants/get-all-tenants",
         method: "GET",
         params: arg,
@@ -14,7 +14,7 @@ export const tenantsApi = baseApi.injectEndpoints({
       // providesTags: [tagTypes.tenant],
     }),
     getAllAvailableTenants: builder.query({
-      query: (arg) => ({
+      query: (arg: any) => ({
         url: "/tenants/get-all-available-tenants",
         method: "GET",
         params: arg,
@@ -29,7 +29,7 @@ export const tenantsApi = baseApi.injectEndpoints({
       // providesTags: [tagTypes.tenant],
     }),
     updateTenantProfile: builder.mutation({
-      query: ({ data, tenantId }) => ({
+      query: ({ data, tenantId }: any) => ({
         url: `/tenants/update-profile/${tenantId}`,
         method: "PATCH",
         data: data,

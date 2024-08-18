@@ -14,60 +14,83 @@ type Person = {
 };
 
 //nested data is ok, see accessorKeys in ColumnDef below
-const data: Person[] = [
-  {
-    email: "John Doe",
-    password: "password",
-  },
-  {
-    email: "Jane Doe",
-    password: "password",
-  },
-  {
-    email: "John Smith",
-    password: "password",
-  },
-  {
-    email: "Jane Smith",
-    password: "password",
-  },
-  {
-    email: "John Johnson",
-    password: "password",
-  },
-  {
-    email: "Jane Johnson",
-    password: "password",
-  },
-  {
-    email: "John Brown",
-    password: "password",
-  },
-  {
-    email: "Jane Brown",
-    password: "password",
-  },
-  {
-    email: "John White",
-    password: "password",
-  },
-  {
-    email: "Jane White",
-    password: "password",
-  },
-];
+// const data: Person[] = [
+//   {
+//     email: "John Doe",
+//     password: "password",
+//   },
+//   {
+//     email: "Jane Doe",
+//     password: "password",
+//   },
+//   {
+//     email: "John Smith",
+//     password: "password",
+//   },
+//   {
+//     email: "Jane Smith",
+//     password: "password",
+//   },
+//   {
+//     email: "John Johnson",
+//     password: "password",
+//   },
+//   {
+//     email: "Jane Johnson",
+//     password: "password",
+//   },
+//   {
+//     email: "John Brown",
+//     password: "password",
+//   },
+//   {
+//     email: "Jane Brown",
+//     password: "password",
+//   },
+//   {
+//     email: "John White",
+//     password: "password",
+//   },
+//   {
+//     email: "Jane White",
+//     password: "password",
+//   },
+// ];
 
-const PropertyOwnerTable = () => {
+const PropertyOwnerTable = ({ propertyOwners }: any) => {
+  const { data } = propertyOwners;
+  console.log(propertyOwners, "propertyOwners");
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "email",
-        header: "Property owner email",
+        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+        id: "name",
+        header: "Name",
+        Cell: ({ cell }) => {
+          console.log(cell, "cell");
+          return (
+            <>
+              <div>{cell.getValue<any>()}</div>
+            </>
+          );
+        },
+      },
+      {
+        accessorKey: "user.email",
+        header: "Email",
       },
       {
         accessorKey: "password",
         header: "Password",
+      },
+      {
+        accessorKey: "user.userName",
+        header: "User name",
+      },
+      {
+        accessorKey: "user.userStatus",
+        header: "User status",
       },
     ],
     []
