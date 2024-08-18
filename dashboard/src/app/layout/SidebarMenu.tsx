@@ -1,9 +1,26 @@
+"use client";
+
 import Link from "next/link";
 import Tenants from "../assets/icons/Tenants";
 import { ActionIcon, Avatar, Tooltip } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { removeUserInfo } from "@/hooks/services/auth.service";
+import { getAuthKey } from "@/helpers/config/envConfig";
+import { baseApi } from "@/redux/api/baseApi";
 
 const SidebarMenu = () => {
+  const router = useRouter();
+
+  // Clear all caches
+  const dispatch = useDispatch();
+
+  const logOut = async () => {
+    router.push("/login");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
+  };
   return (
     <>
       <nav className="mt-16 flex flex-col h-full justify-between">
@@ -31,7 +48,6 @@ const SidebarMenu = () => {
           </Link>
         </div>
         <div className="flex items-center mb-10 px-3 gap-2 border-t pt-2">
-         
           <Avatar color="cyan" radius="xl">
             MK
           </Avatar>
@@ -41,7 +57,7 @@ const SidebarMenu = () => {
           </div>
           <Tooltip label="Logout" position="top">
             <ActionIcon variant="subtle" size="lg">
-              <IconLogout size={24}  />
+              <IconLogout onClick={logOut} size={24} />
             </ActionIcon>
           </Tooltip>
         </div>

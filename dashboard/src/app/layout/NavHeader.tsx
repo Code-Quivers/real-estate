@@ -1,6 +1,22 @@
-import { Avatar, Menu, Popover, UnstyledButton } from "@mantine/core";
+"use client";
+import { getAuthKey } from "@/helpers/config/envConfig";
+import { removeUserInfo } from "@/hooks/services/auth.service";
+import { baseApi } from "@/redux/api/baseApi";
+import { Avatar, Menu, UnstyledButton } from "@mantine/core";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 const NavHeader = () => {
+  const router = useRouter();
+
+  // Clear all caches
+  const dispatch = useDispatch();
+
+  const logOut = async () => {
+    router.push("/login");
+    removeUserInfo(getAuthKey());
+    dispatch(baseApi.util.resetApiState());
+  };
   return (
     <>
       <div className="flex justify-between items-start px-5 w-full">
@@ -18,7 +34,7 @@ const NavHeader = () => {
               <Menu.Item component="a" href="https://mantine.dev">
                 Profile
               </Menu.Item>
-              <Menu.Item component="a" href="https://mantine.dev">
+              <Menu.Item component="button" onClick={logOut}>
                 Log out
               </Menu.Item>
             </Menu.Dropdown>
