@@ -349,8 +349,6 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
 
   const { userId, tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;
 
-  console.log("Signing tenant", isUserExist);
-
   // create access token & refresh token
   const accessToken = jwtHelpers.createToken(
     {
@@ -500,6 +498,63 @@ const createSuperAdminUser = async (payload: IUserCreate): Promise<any> => {
   return result;
 };
 
+// ! dashboard login (superadmin)
+//login
+const dashboardLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => {
+  const { emailOrUsername, password } = loginData;
+
+  const isUserExist = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: { contains: emailOrUsername, mode: "insensitive" } },
+        { userName: { contains: emailOrUsername, mode: "insensitive" } },
+      ],
+      role: loginData.requestedRole,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect login credentials !");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, isUserExist?.password);
+
+  if (isUserExist && !isPasswordValid) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Password is incorrect !!");
+  }
+
+  const { userId, role, userStatus, email: loggedInEmail } = isUserExist;
+
+  // create access token & refresh token
+  const accessToken = jwtHelpers.createToken(
+    {
+      userId: userId,
+      role: role,
+      email: loggedInEmail,
+      userStatus: userStatus,
+      userName: isUserExist?.userName,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
+  );
+  const refreshToken = jwtHelpers.createToken(
+    {
+      userId,
+      role,
+      email: loggedInEmail,
+      userStatus,
+      userName: isUserExist?.userName,
+    },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string,
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
 export const AuthService = {
   createNewUserForTenant,
   createNewUserForPropertyOwner,
@@ -508,4 +563,5 @@ export const AuthService = {
   refreshToken,
   // for dashboard
   createSuperAdminUser,
+  dashboardLogin,
 };
