@@ -20,12 +20,26 @@ const createNewProperty = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-//! get all properties =------------
-const getAllProperty = catchAsync(async (req: Request, res: Response) => {
+//! get all available properties =------------
+const getAllAvailableProperty = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertiesFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-  const result = await PropertiesService.getAllProperty(filters, options);
+  const result = await PropertiesService.getAllAvailableProperty(filters, options);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Properties Successfully fetched!!!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+//! get all properties =------------
+const getAllProperties = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, propertiesFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await PropertiesService.getAllProperties(filters, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -123,11 +137,13 @@ const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Res
 
 export const PropertiesController = {
   createNewProperty,
-  getAllProperty,
+  getAllAvailableProperty,
   getSinglePropertyInfo,
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
   removeTenantFromProperty,
+  // dashboard
+  getAllProperties,
 };
