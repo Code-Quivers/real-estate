@@ -6,7 +6,7 @@ import config from "../../../config";
 import ApiError from "../../../errors/ApiError";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import prisma from "../../../shared/prisma";
-import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
+import { IDashboardLogin, ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
 import { UserRoles, UserStatus } from "@prisma/client";
 import { userFindUnique } from "./auth.utils";
 
@@ -500,16 +500,13 @@ const createSuperAdminUser = async (payload: IUserCreate): Promise<any> => {
 
 // ! dashboard login (superadmin)
 //login
-const dashboardLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => {
-  const { emailOrUsername, password } = loginData;
+const dashboardLogin = async (loginData: IDashboardLogin): Promise<ILoginUserResponse> => {
+  const { email, password } = loginData;
 
   const isUserExist = await prisma.user.findFirst({
     where: {
-      OR: [
-        { email: { contains: emailOrUsername, mode: "insensitive" } },
-        { userName: { contains: emailOrUsername, mode: "insensitive" } },
-      ],
-      role: loginData.requestedRole,
+      email,
+      role: UserRoles.SUPERADMIN,
     },
   });
 

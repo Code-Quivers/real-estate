@@ -33,6 +33,10 @@ export type IUserLogin = {
   password: string;
   requestedRole: UserRoles;
 };
+export type IDashboardLogin = {
+  email: string;
+  password: string;
+};
 export type ILoginUserResponse = {
   accessToken: string;
   refreshToken: string;
