@@ -1,15 +1,14 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   MantineReactTable,
-  MRT_EditActionButtons,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Stack, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useGetAllTenantsQuery } from "@/redux/api/features/tenantsApi";
-
+import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 // type Person = {
 //   tenantName: string;
 //   password: string;
@@ -82,21 +81,42 @@ import { useGetAllTenantsQuery } from "@/redux/api/features/tenantsApi";
 // ];
 
 const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
+  const { data } = tenantData;
+  console.log(data, "tenantData");
+  const [validationErrors, setValidationErrors] = useState<{
+    firstName?: string;
+  }>({});
   //should be memoized or stable
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
+        accessorKey: "user.email",
+        header: "Email",
+        enableEditing: false,
+      },
+      {
         accessorKey: "password",
         header: "Password",
       },
       {
-        accessorKey: "tenantName",
+        accessorKey: "firstName",
         header: "Property owner assigned to",
+        mantineEditTextInputProps: {
+          type: "text",
+          required: true,
+          error: validationErrors?.firstName,
+          onFocus: () => {
+            setValidationErrors({
+              ...validationErrors,
+              firstName: undefined,
+            });
+          },
+        },
       },
 
       {
-        accessorKey: "rentAmount",
+        accessorKey: "affordableRentAmount",
         header: "Rent amount",
       },
       {
@@ -104,25 +124,39 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         header: "Rent paid",
       },
     ],
-    []
+    [validationErrors]
   );
+
+  const validateRequired = (values: any) => values?.length > 0;
+
+  const validateTenant = (tenant: any) => {
+    return {
+      firstName: validateRequired(tenant.firstName)
+        ? ""
+        : "First name required",
+    };
+  };
+
+  const handleSaveTenant = async ({ values, table }: any) => {
+    const newValidationErrors = validateTenant(values);
+    if (Object.values(newValidationErrors).some((error) => error)) {
+      setValidationErrors(newValidationErrors);
+    }
+  };
 
   const table = useMantineReactTable({
     columns,
-    data: tenantData, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     enableRowSelection: true,
     enableEditing: true,
+    onEditingRowSave: handleSaveTenant,
     editDisplayMode: "modal",
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
-      <>
-        <Stack>
-          <Title order={3}>Edit User</Title>
-          {internalEditComponents}
-          <Flex justify="flex-end" mt="xl">
-            <MRT_EditActionButtons variant="text" table={table} row={row} />
-          </Flex>
-        </Stack>
-      </>
+      <TenantsEditModal
+        table={table}
+        row={row}
+        internalEditComponents={internalEditComponents}
+      />
     ),
     enableColumnActions: false,
     positionActionsColumn: "last",

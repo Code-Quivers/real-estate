@@ -101,6 +101,7 @@ const PropertyOwnerTable = ({ propertyOwners }: any) => {
     data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     enableRowSelection: true,
     enableEditing: true,
+    enableColumnActions: false,
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (

@@ -47,12 +47,12 @@ const SidebarMenu = () => {
             Properties
           </Link>
         </div>
-        <div className="flex items-center mb-10 px-3 gap-2 border-t pt-2">
+        <div className="flex items-center justify-around mb-10 px-3 gap-2 border-t pt-2">
           <Avatar color="cyan" radius="xl">
             MK
           </Avatar>
           <div className="text-sm">
-            <p className="line-clamp-1">Muhammad Kudrat</p>
+            {/* <p className="line-clamp-1">Muhammad Kudrat</p> */}
             <p className="line-clamp-1 text-xs">@superadmin</p>
           </div>
           <Tooltip label="Logout" position="top">
