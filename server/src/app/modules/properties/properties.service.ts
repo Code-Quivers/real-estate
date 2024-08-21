@@ -23,6 +23,7 @@ import {
   propertiesSearchableFields,
 } from "./properties.constants";
 import { calculatePropertyScore } from "./properties.utils";
+import { differenceInMonths } from "../tenants/tenants.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -185,7 +186,7 @@ const getAllAvailableProperty = async (filters: IPropertiesFilterRequest, option
   return result;
 };
 
-// ! Getting all available property========================================================================
+// ! Getting all available property for superadmin ========================================================================
 const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
@@ -235,7 +236,19 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
           in: ["ON_TRIAL", "PREMIUM"],
         },
       },
-      include: {
+      select: {
+        propertyId: true,
+        address: true,
+        createdAt: true,
+        isActive: true,
+        isRented: true,
+        monthlyRent: true,
+        packageType: true,
+        paidFrom: true,
+        paidTo: true,
+        planType: true,
+        title: true,
+        tenantAssignedAt: true,
         owner: {
           select: {
             firstName: true,
@@ -244,6 +257,34 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
             user: {
               select: {
                 email: true,
+              },
+            },
+          },
+        },
+        Tenant: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            presentAddress: true,
+            tenantId: true,
+            user: {
+              select: {
+                email: true,
+                userStatus: true,
+              },
+            },
+            orders: {
+              select: {
+                updatedAt: true,
+                properties: {
+                  select: {
+                    tenantAssignedAt: true,
+                  },
+                },
+              },
+              orderBy: {
+                updatedAt: "desc",
               },
             },
           },
@@ -269,6 +310,58 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
               createdAt: "desc",
             },
     });
+
+    const propertiesWithTenantInfo = await Promise.all(
+      properties.map(async (property) => {
+        if (property.Tenant) {
+          const { tenantId } = property.Tenant;
+
+          // Fetch order data for this tenant and property
+          const orderData = await transactionClient.order.findMany({
+            where: {
+              tenantId,
+              properties: {
+                some: { propertyId: property.propertyId },
+              },
+              orderStatus: "CONFIRMED",
+            },
+            select: {
+              updatedAt: true,
+            },
+            orderBy: {
+              updatedAt: "desc",
+            },
+          });
+
+          // Calculate due months
+          const tenantAssignedDate = property?.tenantAssignedAt;
+          let dueMonths;
+
+          if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(new Date(), tenantAssignedDate?.toISOString() as any);
+          } else {
+            dueMonths = differenceInMonths(new Date(), orderData[0]?.updatedAt);
+          }
+
+          // Calculate due rent
+          const dueRent = (property.monthlyRent || 0) * dueMonths;
+
+          return {
+            ...property,
+            Tenant: {
+              ...property.Tenant,
+              dueRent,
+              dueMonths,
+              rentPaid: dueMonths > 0,
+            },
+          };
+        }
+
+        return property;
+      }),
+    );
+
+    // ! ----total
     const total = await prisma.property.count({
       where: {
         ...whereConditions,
@@ -286,7 +379,7 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
         total,
         totalPage,
       },
-      data: properties,
+      data: propertiesWithTenantInfo,
     };
   });
 
