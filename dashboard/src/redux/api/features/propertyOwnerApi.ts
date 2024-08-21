@@ -1,4 +1,4 @@
-import { tagTypes } from "@/redux/tag-types/tag-types";
+import { tagTypes } from "@/redux/tag-types";
 import { baseApi } from "../baseApi";
 
 export const propertyOwnerApi = baseApi.injectEndpoints({
