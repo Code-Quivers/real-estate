@@ -13,6 +13,7 @@ import {
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
+  IPropertyUpdate,
   IRemoveTenantFromProperty,
 } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
@@ -455,17 +456,6 @@ const getPropertyOwnerAllProperty = async (
             },
           },
         },
-
-        // serviceProviders: {
-        //   include: {
-        //     Service: true,
-        //     user: {
-        //       select: {
-        //         email: true,
-        //       },
-        //     },
-        //   },
-        // },
       },
       where: {
         ...whereConditions,
@@ -601,6 +591,64 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
 
     return updatedProperty;
   });
+  return result;
+};
+
+// ! update property details for superadmin
+const updatePropertyDetailsFromAdmin = async (propertyId: string, payload: IPropertyUpdate): Promise<Property> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if property exists
+    const isExistProperty = await transactionClient.property.findUnique({
+      where: { propertyId },
+    });
+
+    if (!isExistProperty) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property not found!");
+    }
+
+    // Prepare updated property data
+    const updatedPropertyData: any = {};
+    if (payload?.address) updatedPropertyData.address = payload.address;
+    if (payload?.rentAmount) updatedPropertyData.monthlyRent = payload.rentAmount;
+
+    // Update property
+    const updatedProperty = await transactionClient.property.update({
+      where: { propertyId },
+      data: updatedPropertyData,
+    });
+
+    // Check and update payment deadline if necessary
+    if (payload?.paymentDeadline) {
+      if (isExistProperty?.paidTo && isExistProperty.planType === "PREMIUM") {
+        if (payload.paymentDeadline <= isExistProperty?.paidTo) {
+          throw new ApiError(httpStatus.BAD_REQUEST, "New payment deadline must be greater than the current one!");
+        }
+
+        await transactionClient.property.update({
+          where: { propertyId },
+          data: { paidTo: payload.paymentDeadline },
+        });
+      } else {
+        throw new ApiError(
+          httpStatus.BAD_REQUEST,
+          `Plan Type is ${isExistProperty.planType}. Premium must be activated!`,
+        );
+      }
+    }
+
+    // Update property score
+    const unitScore = calculatePropertyScore(updatedProperty);
+    await transactionClient.property.update({
+      where: { propertyId },
+      data: {
+        score: unitScore.propertyScore,
+        scoreRatio: unitScore.scoreRatio,
+      },
+    });
+
+    return updatedProperty;
+  });
+
   return result;
 };
 
@@ -839,4 +887,5 @@ export const PropertiesService = {
   removeTenantFromProperty,
   // dashboard
   getAllProperties,
+  updatePropertyDetailsFromAdmin,
 };

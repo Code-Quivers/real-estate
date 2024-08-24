@@ -50,3 +50,10 @@ export type IAssignServiceProviderToProperty = {
   serviceProviderId: string;
   propertyId: string;
 };
+
+export type IPropertyUpdate = {
+  address?: string;
+  rentAmount?: number;
+  isRentPaid?: boolean;
+  paymentDeadline?: Date;
+};
