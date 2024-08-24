@@ -3,6 +3,7 @@ import { getAuthKey } from "@/helpers/config/envConfig";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { baseApi } from "@/redux/api/baseApi";
 import { Avatar, Menu, UnstyledButton } from "@mantine/core";
+import { IconLogout, IconUserCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
@@ -22,7 +23,14 @@ const NavHeader = () => {
       <div className="flex justify-between items-start px-5 w-full">
         <div className="py-4">Welcome back, Edward 👋</div>
         <div className="py-3 pr-5">
-          <Menu trigger="click" position="bottom-end" width={150} shadow="md">
+          <Menu
+            trigger="click"
+            position="bottom-end"
+            width={200}
+            shadow="md"
+            radius="md"
+            styles={{itemSection: {color: "#939393"}}}
+          >
             <Menu.Target>
               <UnstyledButton>
                 <Avatar color="cyan" radius="xl">
@@ -31,10 +39,18 @@ const NavHeader = () => {
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item component="a" href="https://mantine.dev">
+              <Menu.Item
+                component="a"
+                href="https://mantine.dev"
+                leftSection={<IconUserCircle size={18} />}
+              >
                 Profile
               </Menu.Item>
-              <Menu.Item component="button" onClick={logOut}>
+              <Menu.Item
+                component="button"
+                onClick={logOut}
+                leftSection={<IconLogout size={18} />}
+              >
                 Log out
               </Menu.Item>
             </Menu.Dropdown>

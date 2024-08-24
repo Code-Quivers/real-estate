@@ -68,7 +68,6 @@ const PropertyOwnerTable = ({ propertyOwners }: any) => {
         id: "name",
         header: "Name",
         Cell: ({ cell }) => {
-          console.log(cell, "cell");
           return (
             <>
               <div>{cell.getValue<any>()}</div>
