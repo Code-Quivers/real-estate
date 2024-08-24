@@ -10,7 +10,7 @@ import { IconEdit, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import { useUpdatePropertyDetailsMutation } from "@/redux/api/features/properties/propertiesApi";
 
-const PropertiesTable = ({ properties }: any) => {
+const PropertiesTable = ({ properties, queryLoading }: any) => {
   const { data } = properties;
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
@@ -125,11 +125,13 @@ const PropertiesTable = ({ properties }: any) => {
         table={table}
         row={row}
         internalEditComponents={internalEditComponents}
+        isLoading={isLoading}
       />
     ),
     onEditingRowSave: handleUpdateProperty,
     state: {
-      isSaving: isLoading,
+      isSaving: queryLoading,
+      showSkeletons: isLoading,
     },
     positionActionsColumn: "last",
     initialState: { density: "xs" },

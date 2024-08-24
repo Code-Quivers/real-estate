@@ -171,10 +171,14 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
   const table = useMantineReactTable({
     columns,
     data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    enableRowSelection: true,
+    // enableRowSelection: true,
     enableEditing: true,
     onEditingRowSave: handleSaveTenant,
     editDisplayMode: "modal",
+    // mantineSkeletonProps: {
+    //   // visible: true,
+    //   animate: true,
+    // },
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
       <TenantsEditModal
         table={table}
@@ -199,9 +203,12 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         </Tooltip>
       </Flex>
     ),
-    // state: {
-    //   isSaving: true,
-    // }
+    state: {
+      // isSaving: true,
+      // isLoading: true,
+      // showLoadingOverlay: true,
+      // showSkeletons: true,
+    },
   });
 
   return <MantineReactTable table={table} />;

@@ -7,7 +7,9 @@ const PropertiesPage = () => {
 
   return (
     <div>
-      {!isLoading && !isFetching && <PropertiesTable properties={data} />}
+      {!isLoading && !isFetching && (
+        <PropertiesTable properties={data} queryLoading={isLoading} />
+      )}
     </div>
   );
 };
