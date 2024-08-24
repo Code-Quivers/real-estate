@@ -12,7 +12,16 @@ export const propertiesApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties],
     }),
+    updatePropertyDetails: build.mutation({
+      query: ({ data, propertyId }: any) => ({
+        url: `/properties/update-property-details/${propertyId}`,
+        method: "PATCH",
+        data,
+      }),
+      providesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const { useGetAllPropertiesQuery } = propertiesApi;
+export const { useGetAllPropertiesQuery, useUpdatePropertyDetailsMutation } =
+  propertiesApi;

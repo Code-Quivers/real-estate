@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -8,129 +8,13 @@ import {
 import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
-
-// type Person = {
-//   email: string;
-//   password: string;
-// };
-
-//nested data is ok, see accessorKeys in ColumnDef below
-// const data = [
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-//   {
-//     address: "123 Street FL",
-//     owner: "John Doe",
-//     tenantAssigned: "Jhon Cena",
-//     serviceProvider: "Selim Brothers",
-//     propertyRented: "Yes",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//     paymentDeadline: "2022-12-12",
-//     password: "password",
-//   },
-// ];
+import { useUpdatePropertyDetailsMutation } from "@/redux/api/features/properties/propertiesApi";
 
 const PropertiesTable = ({ properties }: any) => {
   const { data } = properties;
-  // console.log(data, "properties");
+  const [validationErrors, setValidationErrors] = useState<{
+    address?: string;
+  }>({});
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -200,6 +84,33 @@ const PropertiesTable = ({ properties }: any) => {
     ],
     []
   );
+  const validateRequired = (values: any) => values?.length > 0;
+  const validateAddress = (property: any) => {
+    return {
+      address: validateRequired(property?.address) ? "" : "Address is required",
+    };
+  };
+  //
+  const [updatePropertyDetails, { isLoading, isSuccess, error }] =
+    useUpdatePropertyDetailsMutation();
+  //
+  const handleUpdateProperty = async ({ values, table, row }: any) => {
+    const propertyId = row.original.propertyId;
+    const newValidationErrors = validateAddress(values);
+    if (Object.values(newValidationErrors).some((error) => error)) {
+      setValidationErrors(newValidationErrors);
+      return;
+    }
+    // update tenant
+    try {
+      await updatePropertyDetails({ data: values, propertyId });
+      table.setEditingRow(null);
+    } catch (error) {
+      console.log(error, "error");
+    }
+
+    // console.log(values, "values");
+  };
 
   const table = useMantineReactTable({
     columns,
@@ -216,6 +127,10 @@ const PropertiesTable = ({ properties }: any) => {
         internalEditComponents={internalEditComponents}
       />
     ),
+    onEditingRowSave: handleUpdateProperty,
+    state: {
+      isSaving: isLoading,
+    },
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (

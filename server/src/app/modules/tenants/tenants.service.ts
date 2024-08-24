@@ -82,6 +82,7 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
             email: true,
             userId: true,
             userName: true,
+            password: true,
             userStatus: true,
           },
         },
