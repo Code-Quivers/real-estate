@@ -7,7 +7,10 @@ import {
 } from "mantine-react-table";
 import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { useGetAllTenantsQuery } from "@/redux/api/features/tenantsApi";
+import {
+  useGetAllTenantsQuery,
+  useUpdateTenantProfileMutation,
+} from "@/redux/api/features/tenantsApi";
 import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 // type Person = {
 //   tenantName: string;
@@ -82,6 +85,7 @@ import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 
 const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
   const { data } = tenantData;
+  const [updateTenant] = useUpdateTenantProfileMutation();
   console.log(data, "tenantData");
   const [validationErrors, setValidationErrors] = useState<{
     firstName?: string;
@@ -96,12 +100,19 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         enableEditing: false,
       },
       {
-        accessorKey: "password",
+        // accessorKey: "password",
+        accessorFn: (row) => "********",
         header: "Password",
       },
       {
-        accessorKey: "firstName",
+        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
         header: "Property owner assigned to",
+        id: "propertyOwner",
+        Cell: ({ cell }) => (
+          <>
+            <div>{cell.getValue<any>()}</div>
+          </>
+        ),
         mantineEditTextInputProps: {
           type: "text",
           required: true,
@@ -120,7 +131,7 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         header: "Rent amount",
       },
       {
-        accessorKey: "rentPaid",
+        accessorFn: (row) => (row.rentPaid ? "Yes" : "No"),
         header: "Rent paid",
       },
     ],
@@ -131,17 +142,30 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
 
   const validateTenant = (tenant: any) => {
     return {
-      firstName: validateRequired(tenant.firstName)
+      firstName: validateRequired(tenant.propertyOwner)
         ? ""
         : "First name required",
     };
   };
 
-  const handleSaveTenant = async ({ values, table }: any) => {
+  const handleSaveTenant = async ({ values, table, row }: any) => {
+    const tenantId = row.original.tenantId;
+    console.log(tenantId, "tenantId");
     const newValidationErrors = validateTenant(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
+      return;
     }
+    // update tenant
+    console.log(values, "values");
+    console.log(row.original, "values");
+    // try {
+    //   await updateTenant({ data: values, tenantId });
+    // } catch (error) {
+    //   console.log(error, "error");
+    // }
+
+    console.log(values, "values");
   };
 
   const table = useMantineReactTable({
@@ -164,8 +188,8 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
     renderRowActions: ({ row, table }) => (
       <Flex gap="md">
         <Tooltip label="Edit">
-          <ActionIcon>
-            <IconEdit onClick={() => table.setEditingRow(row)} />
+          <ActionIcon onClick={() => table.setEditingRow(row)}>
+            <IconEdit />
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Delete">
@@ -175,6 +199,9 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         </Tooltip>
       </Flex>
     ),
+    // state: {
+    //   isSaving: true,
+    // }
   });
 
   return <MantineReactTable table={table} />;

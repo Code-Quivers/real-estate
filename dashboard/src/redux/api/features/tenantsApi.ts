@@ -1,6 +1,5 @@
-import { tagTypes } from "@/redux/tag-types/tag-types";
+import { tagTypes } from "@/redux/tag-types";
 import { baseApi } from "../baseApi";
-// import { tagTypes } from "@/redux/tag-types";
 
 export const tenantsApi = baseApi.injectEndpoints({
   endpoints: (builder: any) => ({
@@ -11,7 +10,7 @@ export const tenantsApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      // providesTags: [tagTypes.tenant],
+      providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
     getAllAvailableTenants: builder.query({
       query: (arg: any) => ({
@@ -19,30 +18,30 @@ export const tenantsApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      // providesTags: [tagTypes.tenant, tagTypes.properties],
+      providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
     getTenantMyProfile: builder.query({
       query: () => ({
         url: "/tenants/get-my-profile",
         method: "GET",
       }),
-      // providesTags: [tagTypes.tenant],
+      providesTags: [tagTypes.tenant],
     }),
     updateTenantProfile: builder.mutation({
       query: ({ data, tenantId }: any) => ({
         url: `/tenants/update-profile/${tenantId}`,
         method: "PATCH",
         data: data,
-        contentType: "multipart/form-data",
+        // contentType: "multipart/form-data",
       }),
-      // invalidatesTags: [tagTypes.tenant],
+      invalidatesTags: [tagTypes.tenant],
     }),
     getTenantMyUnitInformation: builder.query({
       query: () => ({
         url: "/tenants/get-my-unit-information",
         method: "GET",
       }),
-      // providesTags: [tagTypes.tenant, tagTypes.properties],
+      providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
   }),
 });

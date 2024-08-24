@@ -7,6 +7,7 @@ import {
 } from "mantine-react-table";
 import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 
 // type Person = {
 //   email: string;
@@ -14,145 +15,170 @@ import { IconEdit, IconTrash } from "@tabler/icons-react";
 // };
 
 //nested data is ok, see accessorKeys in ColumnDef below
-const data = [
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-  {
-    address: "123 Street FL",
-    owner: "John Doe",
-    tenantAssigned: "Jhon Cena",
-    serviceProvider: "Selim Brothers",
-    propertyRented: "Yes",
-    rentAmount: 1000,
-    rentPaid: 900,
-    paymentDeadline: "2022-12-12",
-    password: "password",
-  },
-];
+// const data = [
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+//   {
+//     address: "123 Street FL",
+//     owner: "John Doe",
+//     tenantAssigned: "Jhon Cena",
+//     serviceProvider: "Selim Brothers",
+//     propertyRented: "Yes",
+//     rentAmount: 1000,
+//     rentPaid: 900,
+//     paymentDeadline: "2022-12-12",
+//     password: "password",
+//   },
+// ];
 
-const PropertiesTable = () => {
+const PropertiesTable = ({ properties }: any) => {
+  const { data } = properties;
+  console.log(data, "properties");
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
         accessorKey: "address",
         header: "Address",
+        minSize: 100, //min size enforced during resizing
+        maxSize: 200, //max size enforced during resizing
+        size: 180, //medium column
       },
       {
-        accessorKey: "password",
+        accessorFn: (row) => row.owner.user.email,
+        id: "owner",
         header: "Owner",
+        Cell: ({ cell }) => (
+          <>
+            <div>{cell.getValue<any>()}</div>
+          </>
+        ),
       },
       {
-        accessorKey: "tenantAssigned",
+        accessorFn: (row) =>
+          row.Tenant ? row.Tenant.user.email : "No Tenant Assigned",
+        id: "tenantAssigned",
+        // accessorKey: "Tenant.user.email",
         header: "Tenant Assigned",
+        Cell: ({ cell }) => (
+          <>
+            <div>{cell.getValue<any>()}</div>
+          </>
+        ),
       },
       {
         accessorKey: "serviceProvider",
         header: "Service Provider",
       },
       {
-        accessorKey: "propertyRented",
+        accessorFn: (row) => (row.isRented ? "Yes" : "No"),
+        id: "propertyRented",
         header: "Property Rented",
+        Cell: ({ cell }) => (
+          <>
+            <div>{cell.getValue<any>()}</div>
+          </>
+        ),
       },
       {
-        accessorKey: "rentAmount",
+        accessorKey: "monthlyRent",
         header: "Rent Amount",
       },
       {
@@ -171,14 +197,23 @@ const PropertiesTable = () => {
     columns,
     data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     enableRowSelection: true,
+    // layoutMode: "semantic",
     enableColumnActions: false,
     enableEditing: true,
+    editDisplayMode: "modal",
+    renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
+      <PropertiesEditModal
+        table={table}
+        row={row}
+        internalEditComponents={internalEditComponents}
+      />
+    ),
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
       <Flex gap="md">
         <Tooltip label="Edit">
-          <ActionIcon>
+          <ActionIcon onClick={() => table.setEditingRow(row)}>
             <IconEdit />
           </ActionIcon>
         </Tooltip>
