@@ -130,7 +130,7 @@ import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 
 const PropertiesTable = ({ properties }: any) => {
   const { data } = properties;
-  console.log(data, "properties");
+  // console.log(data, "properties");
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -150,6 +150,7 @@ const PropertiesTable = ({ properties }: any) => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
+        enableEditing: () => false,
       },
       {
         accessorFn: (row) =>
@@ -162,15 +163,18 @@ const PropertiesTable = ({ properties }: any) => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
+        enableEditing: () => false,
       },
       {
         accessorKey: "serviceProvider",
         header: "Service Provider",
+        enableEditing: () => false,
       },
       {
         accessorFn: (row) => (row.isRented ? "Yes" : "No"),
         id: "propertyRented",
         header: "Property Rented",
+        enableEditing: () => false,
         Cell: ({ cell }) => (
           <>
             <div>{cell.getValue<any>()}</div>
@@ -180,14 +184,18 @@ const PropertiesTable = ({ properties }: any) => {
       {
         accessorKey: "monthlyRent",
         header: "Rent Amount",
+        enableEditing: () => false,
       },
       {
-        accessorKey: "rentPaid",
+        accessorFn: (row) => (row?.Tenant?.rentPaid ? "Yes" : "No"),
         header: "Rent Paid",
+        enableEditing: () => false,
       },
       {
+        accessorFn: (row) => row?.Tenant?.paymentDeadline,
         accessorKey: "paymentDeadline",
         header: "Payment Deadline",
+        enableEditing: () => false,
       },
     ],
     []
