@@ -1,5 +1,9 @@
 import PropertiesPage from "@/components/properties/PropertiesPage";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Properties",
+};
 const Properties = () => {
   return (
     <div>

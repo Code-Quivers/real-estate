@@ -47,6 +47,13 @@ router.patch(
     return PropertiesController.updatePropertyInfo(req, res, next);
   },
 );
+// ! update property details
+router.patch(
+  "/update-property-details/:propertyId",
+  // auth(UserRoles.SUPERADMIN),
+  validateRequest(PropertiesValidation.updatePropertyDetailsFromAdmin),
+  PropertiesController.updatePropertyDetailsFromAdmin,
+);
 
 // ! assign tenant user to property or unit
 

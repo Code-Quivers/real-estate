@@ -46,7 +46,6 @@ export const calculatePropertyScore = (data: IPropertyData | Property) => {
   propertyScore += scoreFromProperty(universities, criteriaWeights.universities);
   propertyScore += scoreFromProperty(allowedPets, criteriaWeights.allowedPets);
   //
-  console.log(data);
 
   const scoreRatio = calculateUnitScoreRatio(propertyScore, 100);
   return { propertyScore, scoreRatio };

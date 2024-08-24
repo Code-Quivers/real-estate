@@ -90,6 +90,19 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! update property details for superadmin
+
+const updatePropertyDetailsFromAdmin = catchAsync(async (req: Request, res: Response) => {
+  const propertyId = req.params?.propertyId;
+  const result = await PropertiesService.updatePropertyDetailsFromAdmin(propertyId, req?.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Updated Successfully",
+    data: result,
+  });
+});
 
 // ! assign tenant user to property or unit -----------------
 
@@ -146,4 +159,5 @@ export const PropertiesController = {
   removeTenantFromProperty,
   // dashboard
   getAllProperties,
+  updatePropertyDetailsFromAdmin,
 };
