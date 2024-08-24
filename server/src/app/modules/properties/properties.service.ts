@@ -245,8 +245,8 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
         isRented: true,
         monthlyRent: true,
         packageType: true,
-        paidFrom: true,
-        paidTo: true,
+        // paidFrom: true,
+        // paidTo: true,
         planType: true,
         title: true,
         tenantAssignedAt: true,
@@ -299,6 +299,11 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
             companyName: true,
             companyPhoneNumber: true,
             phoneNumber: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
           },
         },
       },
@@ -354,6 +359,12 @@ const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPag
               dueRent,
               dueMonths,
               rentPaid: dueMonths > 0,
+              paymentDeadline:
+                orderData[0]?.updatedAt && property?.planType === "PREMIUM"
+                  ? new Date(
+                      new Date(orderData[0].updatedAt).setMonth(new Date(orderData[0].updatedAt).getMonth() + 1),
+                    ).toISOString()
+                  : "N/A",
             },
           };
         }
@@ -609,7 +620,7 @@ const updatePropertyDetailsFromAdmin = async (propertyId: string, payload: IProp
     // Prepare updated property data
     const updatedPropertyData: any = {};
     if (payload?.address) updatedPropertyData.address = payload.address;
-    if (payload?.rentAmount) updatedPropertyData.monthlyRent = payload.rentAmount;
+    // if (payload?.rentAmount) updatedPropertyData.monthlyRent = payload.rentAmount;
 
     // Update property
     const updatedProperty = await transactionClient.property.update({
@@ -618,23 +629,23 @@ const updatePropertyDetailsFromAdmin = async (propertyId: string, payload: IProp
     });
 
     // Check and update payment deadline if necessary
-    if (payload?.paymentDeadline) {
-      if (isExistProperty?.paidTo && isExistProperty.planType === "PREMIUM") {
-        if (payload.paymentDeadline <= isExistProperty?.paidTo) {
-          throw new ApiError(httpStatus.BAD_REQUEST, "New payment deadline must be greater than the current one!");
-        }
+    // if (payload?.paymentDeadline) {
+    //   if (isExistProperty?.paidTo && isExistProperty.planType === "PREMIUM") {
+    //     if (payload.paymentDeadline <= isExistProperty?.paidTo) {
+    //       throw new ApiError(httpStatus.BAD_REQUEST, "New payment deadline must be greater than the current one!");
+    //     }
 
-        await transactionClient.property.update({
-          where: { propertyId },
-          data: { paidTo: payload.paymentDeadline },
-        });
-      } else {
-        throw new ApiError(
-          httpStatus.BAD_REQUEST,
-          `Plan Type is ${isExistProperty.planType}. Premium must be activated!`,
-        );
-      }
-    }
+    //     await transactionClient.property.update({
+    //       where: { propertyId },
+    //       data: { paidTo: payload.paymentDeadline },
+    //     });
+    //   } else {
+    //     throw new ApiError(
+    //       httpStatus.BAD_REQUEST,
+    //       `Plan Type is ${isExistProperty.planType}. Premium must be activated!`,
+    //     );
+    //   }
+    // }
 
     // Update property score
     const unitScore = calculatePropertyScore(updatedProperty);
