@@ -62,21 +62,31 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allTenants = await transactionClient.tenant.findMany({
-      include: {
+      select: {
+        tenantId: true,
+        firstName: true,
+        lastName: true,
         property: {
-          include: {
+          select: {
+            tenantAssignedAt: true,
+            propertyId: true,
+            monthlyRent: true,
+            title: true,
             owner: {
-              include: {
+              select: {
+                firstName: true,
+                lastName: true,
                 user: {
                   select: {
                     email: true,
+                    userId: true,
                   },
                 },
               },
             },
           },
         },
-        _count: true,
+
         user: {
           select: {
             email: true,
@@ -97,6 +107,57 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
               createdAt: "desc",
             },
     });
+    //
+    const tenantsWithPaymentInfo = await Promise.all(
+      allTenants?.map(async (singleTenant) => {
+        const { property, tenantId } = singleTenant || {};
+        //
+        const getOrderData = await transactionClient.order.findMany({
+          where: {
+            tenantId,
+            properties: {
+              some: { propertyId: property?.propertyId },
+            },
+            orderStatus: "CONFIRMED",
+          },
+          select: {
+            updatedAt: true,
+            properties: {
+              select: {
+                tenantAssignedAt: true,
+              },
+            },
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        }); // for due month calculation
+        const tenantAssignedDate = singleTenant?.property?.tenantAssignedAt;
+
+        let dueMonths = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+          } else {
+            dueMonths = differenceInMonths(getOrderData[0]?.updatedAt);
+          }
+        }
+        const dueRent = (singleTenant?.property?.monthlyRent || 0) * dueMonths;
+        const tenantUnitInfo = {
+          ...singleTenant,
+          dueRent: dueRent,
+          dueMonths: dueMonths,
+          rentPaid: dueRent > 0,
+        };
+
+        return tenantUnitInfo;
+      }),
+
+      //
+    );
+
+    //
 
     const total = await prisma.tenant.count({
       where: whereConditions,
@@ -109,7 +170,7 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
         total,
         totalPage,
       },
-      data: allTenants,
+      data: tenantsWithPaymentInfo,
     };
   });
 
