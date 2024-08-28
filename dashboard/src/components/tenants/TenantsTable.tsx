@@ -85,6 +85,7 @@ import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 
 const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
   const { data } = tenantData;
+  console.log(data, "tenantData");
   const [updateTenant] = useUpdateTenantProfileMutation();
   console.log(data, "tenantData");
   const [validationErrors, setValidationErrors] = useState<{
@@ -127,7 +128,7 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
       },
 
       {
-        accessorKey: "affordableRentAmount",
+        accessorKey: "dueRent",
         header: "Rent amount",
       },
       {
