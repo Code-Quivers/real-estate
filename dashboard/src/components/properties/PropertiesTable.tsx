@@ -5,13 +5,15 @@ import {
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import { useUpdatePropertyDetailsMutation } from "@/redux/api/features/properties/propertiesApi";
+import ServiceProviderPopover from "./propertiesComponents/ServiceProviderPopover";
 
 const PropertiesTable = ({ properties, queryLoading }: any) => {
   const { data } = properties;
+  console.log(data, "data");
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
@@ -21,9 +23,9 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
       {
         accessorKey: "address",
         header: "Address",
-        minSize: 100, //min size enforced during resizing
-        maxSize: 200, //max size enforced during resizing
-        size: 180, //medium column
+        minSize: 100,
+        maxSize: 200,
+        size: 150,
       },
       {
         accessorFn: (row) => row.owner.user.email,
@@ -35,6 +37,9 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
           </>
         ),
         enableEditing: () => false,
+        minSize: 100,
+        maxSize: 200,
+        size: 150,
       },
       {
         accessorFn: (row) =>
@@ -48,11 +53,23 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
           </>
         ),
         enableEditing: () => false,
+        maxSize: 130,
+        // maxSize: 160,
       },
       {
         accessorKey: "serviceProvider",
         header: "Service Provider",
+        Header: ({ column }) => (
+          <div>
+            <p>Service</p>
+            <p>Provider</p>
+          </div>
+        ),
+        Cell: ({ row }) => <ServiceProviderPopover row={row} />,
         enableEditing: () => false,
+        minSize: 100,
+        maxSize: 200,
+        size: 100,
       },
       {
         accessorFn: (row) => (row.isRented ? "Yes" : "No"),
@@ -64,22 +81,53 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
+        Header: ({ column }) => (
+          <div>
+            <p>Property</p>
+            <p>rented</p>
+          </div>
+        ),
+        size: 100,
+        maxSize: 150,
       },
       {
         accessorKey: "monthlyRent",
         header: "Rent Amount",
         enableEditing: () => false,
+        Header: ({ column }) => (
+          <div>
+            <p>Rent</p>
+            <p>amount</p>
+          </div>
+        ),
+        maxSize: 120,
+        size: 80,
       },
       {
         accessorFn: (row) => (row?.Tenant?.rentPaid ? "Yes" : "No"),
         header: "Rent Paid",
         enableEditing: () => false,
+        Header: ({ column }) => (
+          <div>
+            <p>Rent</p>
+            <p>paid</p>
+          </div>
+        ),
+        maxSize: 80,
       },
       {
-        accessorFn: (row) => row?.Tenant?.paymentDeadline,
+        accessorFn: (row) => row?.Tenant?.paymentDeadline ?? "N/A",
         accessorKey: "paymentDeadline",
         header: "Payment Deadline",
         enableEditing: () => false,
+        Header: ({ column }) => (
+          <div>
+            <p>Payment</p>
+            <p>Deadline</p>
+          </div>
+        ),
+        maxSize: 120,
+        size: 80,
       },
     ],
     []
@@ -115,8 +163,8 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
   const table = useMantineReactTable({
     columns,
     data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    enableRowSelection: true,
-    // layoutMode: "semantic",
+    // enableRowSelection: true,
+    layoutMode: "grid",
     enableColumnActions: false,
     enableEditing: true,
     editDisplayMode: "modal",
@@ -134,9 +182,10 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
       showSkeletons: isLoading,
     },
     positionActionsColumn: "last",
+
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
-      <Flex gap="md">
+      <Flex gap="md" w="200">
         <Tooltip label="Edit">
           <ActionIcon onClick={() => table.setEditingRow(row)}>
             <IconEdit />
