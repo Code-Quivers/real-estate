@@ -19,7 +19,8 @@ import {
 import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 
 const TenantsTable = ({}: any) => {
-  const [updateTenant] = useUpdateTenantProfileMutation();
+  const [updateTenant, { isLoading: isUpdating }] =
+    useUpdateTenantProfileMutation();
   const [deleteTenantData] = useDeleteTenantDataMutation();
   const [validationErrors, setValidationErrors] = useState<{
     firstName?: string;
@@ -150,11 +151,14 @@ const TenantsTable = ({}: any) => {
     paginationDisplayMode: "pages",
     state: {
       pagination,
+      // isSaving: isUpdating,
+      // isLoading: isLoading,
+      showSkeletons: isUpdating || isLoading,
     },
     //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
     enableEditing: true,
-    onEditingRowSave: handleSaveTenant,
+    // onEditingRowSave: handleSaveTenant,
     editDisplayMode: "modal",
     // mantineSkeletonProps: {
     //   // visible: true,
