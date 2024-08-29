@@ -2,96 +2,48 @@
 import { useMemo, useState } from "react";
 import {
   MantineReactTable,
+  MRT_PaginationState,
   MRT_Row,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
-import { ModalsProvider, modals } from "@mantine/modals";
+import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 
 import {
+  useDeleteTenantDataMutation,
   useGetAllTenantsQuery,
   useUpdateTenantProfileMutation,
 } from "@/redux/api/features/tenantsApi";
 import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
-// type Person = {
-//   tenantName: string;
-//   password: string;
-//   rentAmount: number;
-//   rentPaid: number;
-// };
 
-//nested data is ok, see accessorKeys in ColumnDef below
-// const data: Person[] = [
-//   {
-//     tenantName: "John Doe",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 900,
-//   },
-//   {
-//     tenantName: "Jane Doe",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "John Smith",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "Jane Smith",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "John Johnson",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "Jane Johnson",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "John Brown",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "Jane Brown",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "John White",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-//   {
-//     tenantName: "Jane White",
-//     password: "password",
-//     rentAmount: 1000,
-//     rentPaid: 1000,
-//   },
-// ];
-
-const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
-  const { data } = tenantData;
+const TenantsTable = ({}: any) => {
   const [updateTenant] = useUpdateTenantProfileMutation();
+  const [deleteTenantData] = useDeleteTenantDataMutation();
   const [validationErrors, setValidationErrors] = useState<{
     firstName?: string;
   }>({});
+  // !
+  const query: any = {};
+
+  // Store pagination state in your own state
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: 5, // customize the default page size
+  });
+
+  query["limit"] = pagination.pageSize;
+  query["page"] = pagination.pageIndex + 1;
+  const {
+    data: tenantData,
+    isLoading,
+    isFetching,
+  } = useGetAllTenantsQuery({ ...query });
+  // @ts-ignore
+  const { data } = tenantData || {};
+  // !
+
   //should be memoized or stable
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -171,9 +123,11 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
 
     console.log(values, "values");
   };
-
+  const handleDeleteTenant = async (tenantId: string) => {
+    await deleteTenantData({ tenantId });
+  };
   // delete tenant
-  const openDeleteConfirmModal = (row: MRT_Row<any>) =>
+  const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
     modals.openConfirmModal({
       title: "Are you sure you want to delete this user?",
       children: (
@@ -184,12 +138,20 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
       ),
       labels: { confirm: "Delete", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      // onConfirm: () => deleteUser(row.original.id),
+      onConfirm: () => handleDeleteTenant(row.original.tenantId),
     });
 
   const table = useMantineReactTable({
     columns,
-    data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: data?.data || [],
+    manualPagination: true,
+    onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
+    rowCount: data?.meta?.total,
+    paginationDisplayMode: "pages",
+    state: {
+      pagination,
+    },
+    //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
     enableEditing: true,
     onEditingRowSave: handleSaveTenant,
@@ -222,12 +184,6 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
         </Tooltip>
       </Flex>
     ),
-    state: {
-      // isSaving: true,
-      // isLoading: true,
-      // showLoadingOverlay: true,
-      // showSkeletons: true,
-    },
   });
 
   return <MantineReactTable table={table} />;
