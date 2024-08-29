@@ -6,12 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import {
-  calculateTenantProfileScore,
-  calculateTenantScoreRatio,
-  differenceInMonths,
-  // differenceInTime,
-} from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -449,12 +444,105 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
   return result;
 };
 
+// ! ========================================Delete tenant all data for superadmin===========================
+// get single tenant
+const deleteTenantData = async (tenantId: string): Promise<any | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const tenantData = await transactionClient.tenant.findUnique({
+      where: {
+        tenantId,
+      },
+      include: {
+        property: {
+          select: {
+            propertyId: true,
+            isRented: true,
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            email: true,
+            createdAt: true,
+            userName: true,
+          },
+        },
+      },
+    });
+
+    if (!tenantData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Not Found!!!");
+    }
+
+    // check if tenant assigned to any property
+    if (tenantData?.property?.propertyId && tenantData?.property?.isRented) {
+      // update logic
+      const removeFromProperty = await transactionClient.tenant.update({
+        where: {
+          tenantId, // use tenantId here for the update
+        },
+        data: {
+          property: {
+            disconnect: true,
+            update: {
+              isRented: false,
+            },
+          },
+        },
+      });
+
+      if (!removeFromProperty) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Remove from property Failed");
+      }
+    }
+
+    // removing tenant data
+    const removingTenantData = await transactionClient.tenant.delete({
+      where: {
+        tenantId,
+      },
+      select: {
+        tenantId: true,
+        createdAt: true,
+        firstName: true,
+        lastName: true,
+        userId: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!removingTenantData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Remove Tenant Failed");
+    }
+    // removing user data
+    const removingUserDetails = await transactionClient.user.delete({
+      where: {
+        userId: tenantData?.userId as string,
+      },
+    });
+
+    if (!removingUserDetails) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "User Deleting Failed");
+    }
+
+    return removingTenantData;
+    //
+  });
+
+  return result;
+};
+
 export const TenantServices = {
   getAllTenants,
   updateTenantProfile,
   getSingleTenant,
   getAllAvailableTenants,
   getMyUnitInformation,
+  deleteTenantData,
 };
 // for testing (10 Minutes)
 // if (orderData?.length === 0) {
