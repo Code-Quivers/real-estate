@@ -36,6 +36,8 @@ router.patch(
     return TenantsControllers.updateTenantProfile(req, res, next);
   },
 );
+// ! update tenant profile
+router.delete("/delete-tenant/:tenantId", auth(UserRoles.SUPERADMIN), TenantsControllers.deleteTenantData);
 
 // ! get tenant my unit information
 router.get("/get-my-unit-information", auth(UserRoles.TENANT), TenantsControllers.getMyUnitInformation);
