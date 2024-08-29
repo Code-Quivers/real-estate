@@ -1,25 +1,22 @@
 "use client";
-
 import Link from "next/link";
-import Tenants from "../assets/icons/Tenants";
 import { ActionIcon, Avatar, NavLink, Tooltip } from "@mantine/core";
 import {
   IconBuildingEstate,
   IconBuildingFortress,
   IconLogout,
-  IconUserFilled,
   IconUsers,
 } from "@tabler/icons-react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { getAuthKey } from "@/helpers/config/envConfig";
 import { baseApi } from "@/redux/api/baseApi";
-import { useState } from "react";
 
 const SidebarMenu = () => {
   const router = useRouter();
-  const [active, setActive] = useState("");
+  const path = usePathname();
+  console.log(path, "path");
 
   // Clear all caches
   const dispatch = useDispatch();
@@ -38,34 +35,31 @@ const SidebarMenu = () => {
             component={Link}
             key="Tenant"
             href="/tenants"
-            active={active === "Tenant"}
+            active={path === "/tenants"}
             label="Tenant"
             leftSection={<IconUsers size={18} />}
             variant="filled"
             color="cyan"
-            onClick={() => setActive("Tenant")}
           />
           <NavLink
             component={Link}
             key="Tenant"
             href="/property-owner"
-            active={active === "propertyOwner"}
+            active={path === "/property-owner"}
             label="Property Owner"
             leftSection={<IconBuildingEstate size={18} />}
             variant="filled"
             color="cyan"
-            onClick={() => setActive("propertyOwner")}
           />
           <NavLink
             component={Link}
             key="Tenant"
             href="/properties"
-            active={active === "properties"}
+            active={path === "/properties"}
             label="Properties"
             leftSection={<IconBuildingFortress size={18} />}
             variant="filled"
             color="cyan"
-            onClick={() => setActive("properties")}
           />
 
           {/* <Link
