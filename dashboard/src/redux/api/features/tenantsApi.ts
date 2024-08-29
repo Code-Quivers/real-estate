@@ -43,6 +43,13 @@ export const tenantsApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
+    deleteTenantData: builder.mutation({
+      query: ({ tenantId }: any) => ({
+        url: `/tenants/delete-tenant/${tenantId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.tenant],
+    }),
   }),
 });
 
@@ -52,4 +59,5 @@ export const {
   useGetTenantMyProfileQuery,
   useGetAllTenantsQuery,
   useGetTenantMyUnitInformationQuery,
+  useDeleteTenantDataMutation,
 } = tenantsApi;
