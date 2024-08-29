@@ -32,7 +32,7 @@ export const tenantsApi = baseApi.injectEndpoints({
         url: `/tenants/update-profile/${tenantId}`,
         method: "PATCH",
         data: data,
-        // contentType: "multipart/form-data",
+        contentType: "multipart/form-data",
       }),
       invalidatesTags: [tagTypes.tenant],
     }),

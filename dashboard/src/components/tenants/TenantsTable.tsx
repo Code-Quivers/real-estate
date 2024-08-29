@@ -85,9 +85,7 @@ import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 
 const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
   const { data } = tenantData;
-  console.log(data, "tenantData");
   const [updateTenant] = useUpdateTenantProfileMutation();
-  console.log(data, "tenantData");
   const [validationErrors, setValidationErrors] = useState<{
     firstName?: string;
   }>({});
@@ -151,20 +149,21 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
 
   const handleSaveTenant = async ({ values, table, row }: any) => {
     const tenantId = row.original.tenantId;
-    console.log(tenantId, "tenantId");
     const newValidationErrors = validateTenant(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
       return;
     }
-    // update tenant
-    console.log(values, "values");
-    console.log(row.original, "values");
-    // try {
-    //   await updateTenant({ data: values, tenantId });
-    // } catch (error) {
-    //   console.log(error, "error");
-    // }
+
+    // creating form data
+    const formData = new FormData();
+    const updatedProfileData = JSON.stringify({ password: values?.Password });
+    try {
+      formData.append("data", updatedProfileData);
+      await updateTenant({ data: formData, tenantId });
+    } catch (error) {
+      console.log(error, "error");
+    }
 
     console.log(values, "values");
   };
