@@ -8,6 +8,7 @@ import "@mantine/dates/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Providers from "@/lib/Providers";
 import { Notifications } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,8 +33,10 @@ export default function RootLayout({
       <Providers>
         <body className={inter.className}>
           <MantineProvider>
-            <Notifications />
-            {children}
+            <ModalsProvider>
+              <Notifications />
+              {children}
+            </ModalsProvider>
           </MantineProvider>
         </body>
       </Providers>

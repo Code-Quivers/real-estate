@@ -2,11 +2,14 @@
 import { useMemo, useState } from "react";
 import {
   MantineReactTable,
+  MRT_Row,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
+import { ModalsProvider, modals } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+
 import {
   useGetAllTenantsQuery,
   useUpdateTenantProfileMutation,
@@ -147,6 +150,7 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
     };
   };
 
+  // update tenant
   const handleSaveTenant = async ({ values, table, row }: any) => {
     const tenantId = row.original.tenantId;
     const newValidationErrors = validateTenant(values);
@@ -167,6 +171,21 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
 
     console.log(values, "values");
   };
+
+  // delete tenant
+  const openDeleteConfirmModal = (row: MRT_Row<any>) =>
+    modals.openConfirmModal({
+      title: "Are you sure you want to delete this user?",
+      children: (
+        <Text>
+          Are you sure you want to delete {row.original.firstName}{" "}
+          {row.original.lastName}? This action cannot be undone.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      // onConfirm: () => deleteUser(row.original.id),
+    });
 
   const table = useMantineReactTable({
     columns,
@@ -196,7 +215,7 @@ const TenantsTable = ({ tenantData, isLoading, isFetching }: any) => {
             <IconEdit />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Delete">
+        <Tooltip label="Delete" onClick={() => openDeleteConfirmModal(row)}>
           <ActionIcon color="red">
             <IconTrash />
           </ActionIcon>
