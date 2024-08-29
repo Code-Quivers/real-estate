@@ -334,7 +334,7 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Updating Failed !");
     }
-
+    // updating profile score
     if (res) {
       const profileScore = await calculateTenantProfileScore(res);
 
