@@ -2,18 +2,34 @@
 import { useMemo, useState } from "react";
 import {
   MantineReactTable,
+  MRT_PaginationState,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Button, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
-import { useUpdatePropertyDetailsMutation } from "@/redux/api/features/properties/propertiesApi";
+import {
+  useGetAllPropertiesQuery,
+  useUpdatePropertyDetailsMutation,
+} from "@/redux/api/features/properties/propertiesApi";
 import ServiceProviderPopover from "./propertiesComponents/ServiceProviderPopover";
 
-const PropertiesTable = ({ properties, queryLoading }: any) => {
-  const { data } = properties;
-  console.log(data, "data");
+const PropertiesTable = () => {
+  const query: any = {};
+  // Store pagination state in your own state
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: 10, // customize the default page size
+  });
+  query["limit"] = pagination.pageSize;
+  query["page"] = pagination.pageIndex + 1;
+  // pagination
+  const { data: propertiesData, isLoading: isLoadingProperties } =
+    useGetAllPropertiesQuery({ ...query });
+
+  // @ts-ignore
+  const { data } = propertiesData || {};
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
@@ -162,12 +178,16 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
 
   const table = useMantineReactTable({
     columns,
-    data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: data || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
     layoutMode: "grid",
     enableColumnActions: false,
     enableEditing: true,
     editDisplayMode: "modal",
+    rowCount: data?.meta?.total,
+    manualPagination: true,
+    paginationDisplayMode: "pages",
+    onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
       <PropertiesEditModal
         table={table}
@@ -178,11 +198,11 @@ const PropertiesTable = ({ properties, queryLoading }: any) => {
     ),
     onEditingRowSave: handleUpdateProperty,
     state: {
-      isSaving: queryLoading,
+      pagination,
+      isSaving: isLoadingProperties,
       showSkeletons: isLoading,
     },
     positionActionsColumn: "last",
-
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
       <Flex gap="md" w="200">
