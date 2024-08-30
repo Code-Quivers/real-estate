@@ -3,14 +3,20 @@ import { useMemo, useState } from "react";
 import {
   MantineReactTable,
   MRT_PaginationState,
+  MRT_Row,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { useGetAllPropertyOwnerQuery } from "@/redux/api/features/propertyOwnerApi";
+import {
+  useDeletePropertyOwnerDataMutation,
+  useGetAllPropertyOwnerQuery,
+} from "@/redux/api/features/propertyOwnerApi";
+import { modals } from "@mantine/modals";
 
 const PropertyOwnerTable = () => {
+  const [deletePropertyOwnerData] = useDeletePropertyOwnerDataMutation();
   // !
   const query: any = {};
   // Store pagination state in your own state
@@ -20,15 +26,34 @@ const PropertyOwnerTable = () => {
   });
   query["limit"] = pagination.pageSize;
   query["page"] = pagination.pageIndex + 1;
-  const {
-    data: propertyOwners,
-    isLoading,
-    isFetching,
-  } = useGetAllPropertyOwnerQuery({ ...query });
+  const { data: propertyOwners, isLoading } = useGetAllPropertyOwnerQuery({
+    ...query,
+  });
   // !
 
   // @ts-ignore
   const { data } = propertyOwners || {};
+
+  //
+
+  // delete property owner
+  const handleDeleteTenant = async (propertyOwnerId: string) => {
+    await deletePropertyOwnerData({ propertyOwnerId });
+  };
+  const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
+    modals.openConfirmModal({
+      title: "Are you sure you want to delete this user?",
+      children: (
+        <Text>
+          Are you sure you want to delete {row.original?.firstName}{" "}
+          {row.original?.lastName}? This action cannot be undone.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: () => handleDeleteTenant(row.original?.propertyOwnerId),
+    });
+
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -89,7 +114,7 @@ const PropertyOwnerTable = () => {
             <IconEdit />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Delete">
+        <Tooltip label="Delete" onClick={() => openDeleteConfirmModal(row)}>
           <ActionIcon color="red">
             <IconTrash />
           </ActionIcon>

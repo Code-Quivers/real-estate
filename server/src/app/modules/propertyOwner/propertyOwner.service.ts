@@ -435,6 +435,136 @@ const getMyAssignedTenants = async (propertyOwnerId: string): Promise<Property[]
   return result;
 };
 
+// ! delete single Property Owner (Superadmin)
+const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const propertyOwner = await transactionClient.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId,
+      },
+    });
+
+    if (!propertyOwner) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!!!");
+    }
+
+    // ! checking if any assigned tenant
+    const getAllAssignedTenant = await transactionClient.tenant.findMany({
+      where: {
+        property: {
+          ownerId: propertyOwnerId,
+          isRented: true,
+        },
+      },
+      select: {
+        tenantId: true,
+        property: {
+          select: {
+            isRented: true,
+          },
+        },
+      },
+    });
+    if (getAllAssignedTenant?.length > 0) {
+      // Use Promise.all to handle asynchronous operations within the map
+      await Promise.all(
+        getAllAssignedTenant?.map(async (tenant) => {
+          // update logic
+          const removingTenant = await transactionClient.tenant.update({
+            where: {
+              tenantId: tenant?.tenantId, // use tenantId here for the update
+            },
+            data: {
+              property: {
+                disconnect: true,
+                update: {
+                  isRented: false,
+                },
+              },
+            },
+          });
+
+          if (!removingTenant) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Tenant remove Failed");
+          }
+        }),
+      );
+    } // ! removing all assigned tenant finished
+
+    // ! removing all assigned service provider
+    const getAllAssignedServiceProviders = await transactionClient.serviceProvider.findMany({
+      where: {
+        properties: {
+          some: {
+            ownerId: propertyOwnerId,
+          },
+        },
+      },
+      select: {
+        serviceProviderId: true,
+        properties: {
+          select: {
+            propertyId: true,
+            ownerId: true,
+          },
+          where: {
+            ownerId: propertyOwnerId,
+          },
+        },
+      },
+    });
+
+    if (getAllAssignedServiceProviders?.length > 0) {
+      await Promise.all(
+        getAllAssignedServiceProviders.map(async (serviceProvider: any) => {
+          const removingServiceProvider = await transactionClient.serviceProvider.update({
+            where: {
+              serviceProviderId: serviceProvider?.serviceProviderId,
+            },
+            data: {
+              properties: {
+                disconnect: serviceProvider?.properties?.map((property: any) => ({
+                  propertyId: property?.propertyId,
+                })),
+              },
+            },
+          });
+
+          if (!removingServiceProvider) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Service Providers remove Failed");
+          }
+        }),
+      );
+    }
+
+    // ! removing all properties owned by property owner
+    const removingAllProperties = await transactionClient.property.deleteMany({
+      where: {
+        ownerId: propertyOwnerId,
+      },
+    });
+
+    if (!removingAllProperties) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Properties removing Failed");
+    }
+    // ! removing property owner
+    const removingPropertyOwner = await transactionClient.propertyOwner.delete({
+      where: {
+        propertyOwnerId,
+      },
+    });
+
+    if (!removingPropertyOwner) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner removing Failed");
+    }
+
+    //
+    return removingPropertyOwner;
+  });
+
+  return result;
+};
+
 export const PropertyOwnerServices = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
@@ -443,4 +573,5 @@ export const PropertyOwnerServices = {
   getDashboardInfo,
   updateExtraCost,
   getMyAssignedTenants,
+  deletePropertyOwnerData,
 };
