@@ -12,6 +12,15 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.propertyOwner],
     }),
+    updatePropertyOwnerProfile: builder.mutation({
+      query: ({ data, propertyOwnerId }: any) => ({
+        url: `/property-owners/update-profile/${propertyOwnerId}`,
+        method: "PATCH",
+        data: data,
+        contentType: "multipart/form-data",
+      }),
+      invalidatesTags: [tagTypes.propertyOwner],
+    }),
     deletePropertyOwnerData: builder.mutation({
       query: ({ propertyOwnerId }: any) => ({
         url: `/property-owners/delete-property-owner/${propertyOwnerId}`,
@@ -27,6 +36,7 @@ export const propertyOwnerApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useUpdatePropertyOwnerProfileMutation,
   useGetAllPropertyOwnerQuery,
   useDeletePropertyOwnerDataMutation,
 } = propertyOwnerApi;

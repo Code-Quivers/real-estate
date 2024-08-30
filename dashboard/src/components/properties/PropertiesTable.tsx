@@ -30,6 +30,7 @@ const PropertiesTable = () => {
 
   // @ts-ignore
   const { data } = propertiesData || {};
+  console.log(data, "data");
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
@@ -44,7 +45,7 @@ const PropertiesTable = () => {
         size: 150,
       },
       {
-        accessorFn: (row) => row.owner.user.email,
+        accessorFn: (row) => row?.owner?.user?.email,
         id: "owner",
         header: "Owner",
         Cell: ({ cell }) => (
@@ -52,7 +53,8 @@ const PropertiesTable = () => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
-        enableEditing: () => false,
+        Edit: () => null,
+        // enableEditing: () => false,
         minSize: 100,
         maxSize: 200,
         size: 150,
@@ -68,7 +70,8 @@ const PropertiesTable = () => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
-        enableEditing: () => false,
+        // enableEditing: () => false,
+        Edit: () => null,
         maxSize: 130,
         // maxSize: 160,
       },
@@ -82,7 +85,8 @@ const PropertiesTable = () => {
           </div>
         ),
         Cell: ({ row }) => <ServiceProviderPopover row={row} />,
-        enableEditing: () => false,
+        // enableEditing: () => false,
+        Edit: () => null,
         minSize: 100,
         maxSize: 200,
         size: 100,
@@ -92,6 +96,7 @@ const PropertiesTable = () => {
         id: "propertyRented",
         header: "Property Rented",
         enableEditing: () => false,
+        Edit: () => null,
         Cell: ({ cell }) => (
           <>
             <div>{cell.getValue<any>()}</div>
@@ -110,6 +115,7 @@ const PropertiesTable = () => {
         accessorKey: "monthlyRent",
         header: "Rent Amount",
         enableEditing: () => false,
+        Edit: () => null,
         Header: ({ column }) => (
           <div>
             <p>Rent</p>
@@ -122,7 +128,8 @@ const PropertiesTable = () => {
       {
         accessorFn: (row) => (row?.Tenant?.rentPaid ? "Yes" : "No"),
         header: "Rent Paid",
-        enableEditing: () => false,
+        // enableEditing: () => false,
+        Edit: () => null,
         Header: ({ column }) => (
           <div>
             <p>Rent</p>
@@ -135,7 +142,8 @@ const PropertiesTable = () => {
         accessorFn: (row) => row?.Tenant?.paymentDeadline ?? "N/A",
         accessorKey: "paymentDeadline",
         header: "Payment Deadline",
-        enableEditing: () => false,
+        // renderEditCell: () => null,
+        Edit: () => null,
         Header: ({ column }) => (
           <div>
             <p>Payment</p>
@@ -199,8 +207,9 @@ const PropertiesTable = () => {
     onEditingRowSave: handleUpdateProperty,
     state: {
       pagination,
-      isSaving: isLoadingProperties,
-      showSkeletons: isLoading,
+      // isLoading: isLoadingProperties,
+      // isSaving: isLoadingProperties,
+      showSkeletons: isLoading || isLoadingProperties,
     },
     positionActionsColumn: "last",
     initialState: { density: "xs" },

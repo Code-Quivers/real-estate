@@ -20,7 +20,8 @@ import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 const TenantsTable = ({}: any) => {
   const [updateTenant, { isLoading: isUpdating }] =
     useUpdateTenantProfileMutation();
-  const [deleteTenantData] = useDeleteTenantDataMutation();
+  const [deleteTenantData, { isLoading: isDeleting }] =
+    useDeleteTenantDataMutation();
   const [validationErrors, setValidationErrors] = useState<{
     firstName?: string;
   }>({});
@@ -124,7 +125,12 @@ const TenantsTable = ({}: any) => {
   //   console.log(values, "values");
   // };
   const handleDeleteTenant = async (tenantId: string) => {
-    await deleteTenantData({ tenantId });
+    try {
+      await deleteTenantData({ tenantId });
+      modals.closeAll();
+    } catch (error) {
+      // console.log(error, "error");
+    }
   };
   // delete tenant
   const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
@@ -132,12 +138,17 @@ const TenantsTable = ({}: any) => {
       title: "Are you sure you want to delete this user?",
       children: (
         <Text>
-          Are you sure you want to delete {row.original.firstName}{" "}
-          {row.original.lastName}? This action cannot be undone.
+          Are you sure you want to delete{" "}
+          <strong>
+            {row.original.firstName} {row.original.lastName}?
+          </strong>{" "}
+          <br />
+          This action cannot be undone.
         </Text>
       ),
       labels: { confirm: "Delete", cancel: "Cancel" },
       confirmProps: { color: "red" },
+      closeOnConfirm: false,
       onConfirm: () => handleDeleteTenant(row.original.tenantId),
     });
 
@@ -152,7 +163,7 @@ const TenantsTable = ({}: any) => {
       pagination,
       // isSaving: isUpdating,
       // isLoading: isLoading,
-      showSkeletons: isUpdating || isLoading,
+      showSkeletons: isUpdating || isLoading || isDeleting,
     },
     //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
