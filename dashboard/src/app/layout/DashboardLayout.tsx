@@ -21,7 +21,7 @@ const DashboardLayout = ({ children }: any) => {
     >
       <AppShell.Header>
         <div className="flex">
-          <Group h="100%"  p="md">
+          <Group h="100%" p="md">
             <Burger
               opened={mobileOpened}
               onClick={toggleMobile}
@@ -39,13 +39,21 @@ const DashboardLayout = ({ children }: any) => {
         </div>
       </AppShell.Header>
       <AppShell.Navbar>
+        <Burger
+          pt="xl"
+          pl="lg"
+          opened={mobileOpened}
+          onClick={toggleMobile}
+          hiddenFrom="sm"
+          size="sm"
+        />
         {/* <h1>Dashboard</h1> */}
         {/* {Array(15)
           .fill(0)
           .map((_, index) => (
             <Skeleton key={index} h={28} mt="sm" animate={false} />
           ))} */}
-        <SidebarMenu />
+        <SidebarMenu toggleMobile={toggleMobile} />
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
