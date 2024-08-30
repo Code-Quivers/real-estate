@@ -8,11 +8,7 @@ import validateRequest from "../../middlewares/validateRequest";
 
 const router = express.Router();
 // ! get all property owners
-router.get(
-  "/get-all-property-owners",
-  //  auth(UserRoles.SUPERADMIN),
-  PropertyOwnerControllers.getAllPropertyOwners,
-);
+router.get("/get-all-property-owners", auth(UserRoles.SUPERADMIN), PropertyOwnerControllers.getAllPropertyOwners);
 
 // ! get single property owner
 router.get(
@@ -26,7 +22,7 @@ router.get("/get-my-profile", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerContr
 // ! update property owner
 router.patch(
   "/update-profile/:propertyOwnerId",
-  // auth(UserRoles.PROPERTY_OWNER, UserRoles.SUPERADMIN),
+  auth(UserRoles.PROPERTY_OWNER, UserRoles.SUPERADMIN),
   FileUploadHelper.uploadUpdatedUserImage.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = PropertyOwnerValidation.updatePropertyOwner.parse(JSON.parse(req.body.data));
@@ -47,5 +43,12 @@ router.patch(
 
 // ! get my tenants
 router.get("/get-my-tenants", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getMyAssignedTenants);
+
+// ! delete superadmin (superadmin)
+router.delete(
+  "/delete-property-owner/:propertyOwnerId",
+  auth(UserRoles.SUPERADMIN),
+  PropertyOwnerControllers.deletePropertyOwnerData,
+);
 
 export const PropertyOwnerRouter = router;

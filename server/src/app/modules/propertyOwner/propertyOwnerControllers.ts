@@ -121,6 +121,21 @@ const getMyAssignedTenants = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ! remove property owner data (superadmin)
+
+const deletePropertyOwnerData = catchAsync(async (req: Request, res: Response) => {
+  const propertyOwnerId = req.params?.propertyOwnerId;
+
+  const result = await PropertyOwnerServices.deletePropertyOwnerData(propertyOwnerId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Owner Deleted!",
+    data: result,
+  });
+});
+
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
   getSinglePropertyOwner,
@@ -130,4 +145,5 @@ export const PropertyOwnerControllers = {
   getDashboardInfo,
   updateExtraCost,
   getMyAssignedTenants,
+  deletePropertyOwnerData,
 };
