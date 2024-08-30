@@ -166,6 +166,7 @@ const TenantsTable = ({}: any) => {
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
       <TenantsEditModal
         table={table}
+        updateTenant={updateTenant}
         row={row}
         internalEditComponents={internalEditComponents}
       />

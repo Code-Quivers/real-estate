@@ -887,6 +887,78 @@ const removeTenantFromProperty = async (profileId: string, payload: IRemoveTenan
   return result;
 };
 
+//! get single property info (superadmin)
+const deleteSinglePropertyData = async (propertyId: string): Promise<Property | null> => {
+  const res = await prisma.$transaction(async (transactionClient) => {
+    const isExistProperty = await transactionClient.property.findUnique({
+      where: {
+        propertyId,
+      },
+      include: {
+        owner: true,
+        Tenant: true,
+        serviceProviders: true,
+      },
+    });
+
+    if (!isExistProperty) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Property Not Found");
+    }
+
+    // ! remove tenant
+    if (isExistProperty?.isRented && isExistProperty?.Tenant) {
+      // update logic
+      const removingTenant = await transactionClient.tenant.update({
+        where: {
+          tenantId: isExistProperty?.Tenant?.tenantId, // use tenantId here for the update
+        },
+        data: {
+          property: {
+            disconnect: true,
+            update: {
+              isRented: false,
+            },
+          },
+        },
+      });
+      if (!removingTenant) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed (tenant assigned)");
+      }
+    }
+    // ! remove service providers
+    if (isExistProperty?.serviceProviders?.length > 0) {
+      // update logic
+      const removingServiceProviders = await transactionClient.property.update({
+        where: {
+          propertyId,
+        },
+        data: {
+          serviceProviders: {
+            disconnect: isExistProperty?.serviceProviders?.map((provider) => ({
+              serviceProviderId: provider?.serviceProviderId,
+            })),
+          },
+        },
+      });
+      if (!removingServiceProviders) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed (Service Provider assigned)");
+      }
+    }
+    // ! removing property
+    const removingPropertyData = await transactionClient.property.delete({
+      where: {
+        propertyId,
+      },
+    });
+    if (!removingPropertyData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed");
+    }
+
+    return removingPropertyData;
+  });
+  return res;
+};
+
 export const PropertiesService = {
   createNewProperty,
   getAllAvailableProperty,
@@ -899,4 +971,5 @@ export const PropertiesService = {
   // dashboard
   getAllProperties,
   updatePropertyDetailsFromAdmin,
+  deleteSinglePropertyData,
 };

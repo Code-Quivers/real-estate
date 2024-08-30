@@ -47,12 +47,18 @@ router.patch(
     return PropertiesController.updatePropertyInfo(req, res, next);
   },
 );
-// ! update property details
+// ! update property details (superadmin)
 router.patch(
   "/update-property-details/:propertyId",
-  // auth(UserRoles.SUPERADMIN),
+  auth(UserRoles.SUPERADMIN),
   validateRequest(PropertiesValidation.updatePropertyDetailsFromAdmin),
   PropertiesController.updatePropertyDetailsFromAdmin,
+);
+// ! delete property data (superadmin)
+router.delete(
+  "/delete-property-data/:propertyId",
+  auth(UserRoles.SUPERADMIN),
+  PropertiesController.deleteSinglePropertyData,
 );
 
 // ! assign tenant user to property or unit

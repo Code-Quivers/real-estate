@@ -1,13 +1,14 @@
-import { useUpdateTenantProfileMutation } from "@/redux/api/features/tenantsApi";
 import { Button, Flex, PasswordInput, Stack, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
-import { MRT_EditActionButtons } from "mantine-react-table";
 
-const TenantsEditModal = ({ table, row, internalEditComponents }: any) => {
+const TenantsEditModal = ({
+  table,
+  row,
+  internalEditComponents,
+  updateTenant,
+}: any) => {
   const [visible, { toggle }] = useDisclosure(false);
-  const [updateTenant] = useUpdateTenantProfileMutation();
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
