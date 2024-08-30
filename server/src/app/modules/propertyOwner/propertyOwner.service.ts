@@ -557,6 +557,16 @@ const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | n
     if (!removingPropertyOwner) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner removing Failed");
     }
+    // ! removing property owner user data
+    const removingPropertyOwnerUser = await transactionClient.user.delete({
+      where: {
+        userId: propertyOwner?.userId,
+      },
+    });
+
+    if (!removingPropertyOwnerUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner User removing Failed");
+    }
 
     //
     return removingPropertyOwner;
