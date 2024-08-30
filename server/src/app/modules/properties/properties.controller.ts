@@ -103,7 +103,6 @@ const updatePropertyDetailsFromAdmin = catchAsync(async (req: Request, res: Resp
     data: result,
   });
 });
-
 // ! assign tenant user to property or unit -----------------
 
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
@@ -148,6 +147,20 @@ const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Res
   });
 });
 
+// ! remove property (superadmin)
+
+const deleteSinglePropertyData = catchAsync(async (req: Request, res: Response) => {
+  const propertyId = req.params?.propertyId;
+  const result = await PropertiesService.deleteSinglePropertyData(propertyId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Deleted",
+    data: result,
+  });
+});
+
 export const PropertiesController = {
   createNewProperty,
   getAllAvailableProperty,
@@ -160,4 +173,5 @@ export const PropertiesController = {
   // dashboard
   getAllProperties,
   updatePropertyDetailsFromAdmin,
+  deleteSinglePropertyData,
 };

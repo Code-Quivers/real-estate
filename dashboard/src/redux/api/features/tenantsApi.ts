@@ -12,14 +12,7 @@ export const tenantsApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.tenant, tagTypes.properties],
     }),
-    getAllAvailableTenants: builder.query({
-      query: (arg: any) => ({
-        url: "/tenants/get-all-available-tenants",
-        method: "GET",
-        params: arg,
-      }),
-      providesTags: [tagTypes.tenant, tagTypes.properties],
-    }),
+
     getTenantMyProfile: builder.query({
       query: () => ({
         url: "/tenants/get-my-profile",
@@ -54,7 +47,6 @@ export const tenantsApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetAllAvailableTenantsQuery,
   useUpdateTenantProfileMutation,
   useGetTenantMyProfileQuery,
   useGetAllTenantsQuery,
