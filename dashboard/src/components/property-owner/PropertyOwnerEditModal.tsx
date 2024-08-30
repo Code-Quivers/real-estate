@@ -2,12 +2,7 @@ import { Button, Flex, PasswordInput, Stack, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 
-const TenantsEditModal = ({
-  table,
-  row,
-  internalEditComponents,
-  updateTenant,
-}: any) => {
+const PropertyOwnerEditModal = ({ table, row, updatePropertyOwner }: any) => {
   const [visible, { toggle }] = useDisclosure(false);
   const form = useForm({
     mode: "uncontrolled",
@@ -30,20 +25,19 @@ const TenantsEditModal = ({
     },
   });
   const handleUpdateTenant = async (values: any) => {
-    const tenantId = row.original.tenantId;
+    const propertyOwnerId = row?.original?.propertyOwnerId;
+    // console.log(propertyOwnerId, "propertyOwnerId");
     const formData = new FormData();
     const updatedProfileData = JSON.stringify({ password: values?.password });
     try {
       formData.append("data", updatedProfileData);
-      const response = (await updateTenant({
+      await updatePropertyOwner({
         data: formData,
-        tenantId,
-      })) as any;
-      if (response.data.success) {
-        table.setEditingRow(null);
-      }
+        propertyOwnerId,
+      });
+      table.setEditingRow(null);
     } catch (error) {
-      console.log(error, "error");
+      //   console.log(error, "error");
     }
   };
 
@@ -94,4 +88,4 @@ const TenantsEditModal = ({
   );
 };
 
-export default TenantsEditModal;
+export default PropertyOwnerEditModal;

@@ -12,11 +12,16 @@ import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
   useDeletePropertyOwnerDataMutation,
   useGetAllPropertyOwnerQuery,
+  useUpdatePropertyOwnerProfileMutation,
 } from "@/redux/api/features/propertyOwnerApi";
 import { modals } from "@mantine/modals";
+import PropertyOwnerEditModal from "./PropertyOwnerEditModal";
 
 const PropertyOwnerTable = () => {
-  const [deletePropertyOwnerData] = useDeletePropertyOwnerDataMutation();
+  const [updatePropertyOwner, { isLoading: isUpdating }] =
+    useUpdatePropertyOwnerProfileMutation();
+  const [deletePropertyOwnerData, { isLoading: isDeleting }] =
+    useDeletePropertyOwnerDataMutation();
   // !
   const query: any = {};
   // Store pagination state in your own state
@@ -74,17 +79,17 @@ const PropertyOwnerTable = () => {
         header: "Email",
       },
       {
-        accessorKey: "password",
+        accessorFn: (row) => "********",
         header: "Password",
       },
       {
         accessorKey: "user.userName",
         header: "User name",
       },
-      {
-        accessorKey: "user.userStatus",
-        header: "User status",
-      },
+      // {
+      //   accessorKey: "user.userStatus",
+      //   header: "User status",
+      // },
     ],
     []
   );
@@ -100,22 +105,29 @@ const PropertyOwnerTable = () => {
       pagination,
       // isSaving: isUpdating,
       // isLoading: isLoading,
-      showSkeletons: isLoading,
+      showSkeletons: isLoading || isUpdating || isDeleting,
     },
-    enableRowSelection: true,
+    // enableRowSelection: true,
     enableEditing: true,
+    renderEditRowModalContent: ({ table, row }) => (
+      <PropertyOwnerEditModal
+        table={table}
+        updatePropertyOwner={updatePropertyOwner}
+        row={row}
+      />
+    ),
     enableColumnActions: false,
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
       <Flex gap="md">
         <Tooltip label="Edit">
-          <ActionIcon>
+          <ActionIcon onClick={() => table.setEditingRow(row)}>
             <IconEdit />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Delete" onClick={() => openDeleteConfirmModal(row)}>
-          <ActionIcon color="red">
+        <Tooltip label="Delete">
+          <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
             <IconTrash />
           </ActionIcon>
         </Tooltip>
