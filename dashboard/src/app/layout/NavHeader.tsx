@@ -21,7 +21,7 @@ const NavHeader = () => {
   return (
     <>
       <div className="flex justify-between items-start px-5 w-full">
-        <div className="py-4">Welcome back, Edward 👋</div>
+        <div className="py-4">Welcome back, Super admin 👋</div>
         <div className="py-3 pr-5">
           <Menu
             trigger="click"
@@ -29,7 +29,7 @@ const NavHeader = () => {
             width={200}
             shadow="md"
             radius="md"
-            styles={{itemSection: {color: "#939393"}}}
+            styles={{ itemSection: { color: "#939393" } }}
           >
             <Menu.Target>
               <UnstyledButton>

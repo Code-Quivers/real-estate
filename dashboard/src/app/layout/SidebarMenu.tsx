@@ -13,7 +13,7 @@ import { removeUserInfo } from "@/hooks/services/auth.service";
 import { getAuthKey } from "@/helpers/config/envConfig";
 import { baseApi } from "@/redux/api/baseApi";
 
-const SidebarMenu = () => {
+const SidebarMenu = ({ toggleMobile }: any) => {
   const router = useRouter();
   const path = usePathname();
   console.log(path, "path");
@@ -28,9 +28,13 @@ const SidebarMenu = () => {
   };
   return (
     <>
-      <nav className="mt-16 flex flex-col h-full justify-between">
+      <h1 className="p-4 font-bold text-lg text-indigo-500">
+        Manage Rental Unit
+      </h1>
+      <nav className="mt-12 flex flex-col h-full justify-between">
         <div className="flex flex-col">
           <NavLink
+            onClick={toggleMobile}
             styles={{ label: { fontSize: "1rem" } }}
             component={Link}
             key="Tenant"
@@ -39,9 +43,10 @@ const SidebarMenu = () => {
             label="Tenant"
             leftSection={<IconUsers size={18} />}
             variant="filled"
-            color="cyan"
+            color="indigo"
           />
           <NavLink
+            onClick={toggleMobile}
             component={Link}
             key="Tenant"
             href="/property-owner"
@@ -49,9 +54,10 @@ const SidebarMenu = () => {
             label="Property Owner"
             leftSection={<IconBuildingEstate size={18} />}
             variant="filled"
-            color="cyan"
+            color="indigo"
           />
           <NavLink
+            onClick={toggleMobile}
             component={Link}
             key="Tenant"
             href="/properties"
@@ -59,7 +65,7 @@ const SidebarMenu = () => {
             label="Properties"
             leftSection={<IconBuildingFortress size={18} />}
             variant="filled"
-            color="cyan"
+            color="indigo"
           />
 
           {/* <Link
