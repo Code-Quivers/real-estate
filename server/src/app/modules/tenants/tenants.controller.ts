@@ -17,7 +17,8 @@ const getAllTenants = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Tenants fetching successful",
-    data: result,
+    meta: result?.meta,
+    data: result?.data,
   });
 });
 // ! get all available  tenants

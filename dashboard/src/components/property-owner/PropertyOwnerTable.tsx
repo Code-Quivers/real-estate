@@ -1,65 +1,34 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   MantineReactTable,
+  MRT_PaginationState,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { useGetAllPropertyOwnerQuery } from "@/redux/api/features/propertyOwnerApi";
 
-type Person = {
-  email: string;
-  password: string;
-};
+const PropertyOwnerTable = () => {
+  // !
+  const query: any = {};
+  // Store pagination state in your own state
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: 5, // customize the default page size
+  });
+  query["limit"] = pagination.pageSize;
+  query["page"] = pagination.pageIndex + 1;
+  const {
+    data: propertyOwners,
+    isLoading,
+    isFetching,
+  } = useGetAllPropertyOwnerQuery({ ...query });
+  // !
 
-//nested data is ok, see accessorKeys in ColumnDef below
-// const data: Person[] = [
-//   {
-//     email: "John Doe",
-//     password: "password",
-//   },
-//   {
-//     email: "Jane Doe",
-//     password: "password",
-//   },
-//   {
-//     email: "John Smith",
-//     password: "password",
-//   },
-//   {
-//     email: "Jane Smith",
-//     password: "password",
-//   },
-//   {
-//     email: "John Johnson",
-//     password: "password",
-//   },
-//   {
-//     email: "Jane Johnson",
-//     password: "password",
-//   },
-//   {
-//     email: "John Brown",
-//     password: "password",
-//   },
-//   {
-//     email: "Jane Brown",
-//     password: "password",
-//   },
-//   {
-//     email: "John White",
-//     password: "password",
-//   },
-//   {
-//     email: "Jane White",
-//     password: "password",
-//   },
-// ];
-
-const PropertyOwnerTable = ({ propertyOwners }: any) => {
-  const { data } = propertyOwners;
-  console.log(propertyOwners, "propertyOwners");
+  // @ts-ignore
+  const { data } = propertyOwners || {};
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -97,7 +66,17 @@ const PropertyOwnerTable = ({ propertyOwners }: any) => {
 
   const table = useMantineReactTable({
     columns,
-    data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: data || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    rowCount: data?.meta?.total,
+    paginationDisplayMode: "pages",
+    manualPagination: true,
+    onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
+    state: {
+      pagination,
+      // isSaving: isUpdating,
+      // isLoading: isLoading,
+      showSkeletons: isLoading,
+    },
     enableRowSelection: true,
     enableEditing: true,
     enableColumnActions: false,

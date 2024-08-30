@@ -10,7 +10,6 @@ import {
 import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-
 import {
   useDeleteTenantDataMutation,
   useGetAllTenantsQuery,
@@ -37,12 +36,12 @@ const TenantsTable = ({}: any) => {
   query["limit"] = pagination.pageSize;
   query["page"] = pagination.pageIndex + 1;
   const {
-    data: tenantData,
+    data: tenantsData,
     isLoading,
     isFetching,
   } = useGetAllTenantsQuery({ ...query });
   // @ts-ignore
-  const { data } = tenantData || {};
+  const { data } = tenantsData || {};
   // !
 
   //should be memoized or stable
@@ -104,26 +103,26 @@ const TenantsTable = ({}: any) => {
   };
 
   // update tenant
-  const handleSaveTenant = async ({ values, table, row }: any) => {
-    const tenantId = row.original.tenantId;
-    const newValidationErrors = validateTenant(values);
-    if (Object.values(newValidationErrors).some((error) => error)) {
-      setValidationErrors(newValidationErrors);
-      return;
-    }
+  // const handleSaveTenant = async ({ values, table, row }: any) => {
+  //   const tenantId = row.original.tenantId;
+  //   const newValidationErrors = validateTenant(values);
+  //   if (Object.values(newValidationErrors).some((error) => error)) {
+  //     setValidationErrors(newValidationErrors);
+  //     return;
+  //   }
 
-    // creating form data
-    const formData = new FormData();
-    const updatedProfileData = JSON.stringify({ password: values?.Password });
-    try {
-      formData.append("data", updatedProfileData);
-      await updateTenant({ data: formData, tenantId });
-    } catch (error) {
-      console.log(error, "error");
-    }
+  //   // creating form data
+  //   const formData = new FormData();
+  //   const updatedProfileData = JSON.stringify({ password: values?.Password });
+  //   try {
+  //     formData.append("data", updatedProfileData);
+  //     await updateTenant({ data: formData, tenantId });
+  //   } catch (error) {
+  //     console.log(error, "error");
+  //   }
 
-    console.log(values, "values");
-  };
+  //   console.log(values, "values");
+  // };
   const handleDeleteTenant = async (tenantId: string) => {
     await deleteTenantData({ tenantId });
   };
@@ -144,7 +143,7 @@ const TenantsTable = ({}: any) => {
 
   const table = useMantineReactTable({
     columns,
-    data: data?.data || [],
+    data: data || [],
     manualPagination: true,
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
     rowCount: data?.meta?.total,

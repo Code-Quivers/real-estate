@@ -12,14 +12,14 @@ import StripeAccountManager from "../paymentStripe/payerPropertyOwner/AccountCre
 const getAllPropertyOwners = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertyOwnerFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-
   const result = await PropertyOwnerServices.getAllPropertyOwners(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Property Owners retrieved successful",
-    data: result,
+    meta: result?.meta,
+    data: result?.data,
   });
 });
 
@@ -66,10 +66,10 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
-  console.log("Financial info getting api hit.....");
+  // console.log("Financial info getting api hit.....");
   const ownerId = (req.user as IRequestUser).profileId;
   const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(ownerId);
-  console.log(finOrgAccountId);
+  // console.log(finOrgAccountId);
 
   let result = null;
   if (finOrgAccountId) {
@@ -120,7 +120,6 @@ const getMyAssignedTenants = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 
 export const PropertyOwnerControllers = {
   getAllPropertyOwners,
