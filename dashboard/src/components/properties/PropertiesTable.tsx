@@ -3,17 +3,20 @@ import { useMemo, useState } from "react";
 import {
   MantineReactTable,
   MRT_PaginationState,
+  MRT_Row,
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import {
+  useDeletePropertyMutation,
   useGetAllPropertiesQuery,
   useUpdatePropertyDetailsMutation,
 } from "@/redux/api/features/properties/propertiesApi";
 import ServiceProviderPopover from "./propertiesComponents/ServiceProviderPopover";
+import { modals } from "@mantine/modals";
 
 const PropertiesTable = () => {
   const query: any = {};
@@ -27,10 +30,11 @@ const PropertiesTable = () => {
   // pagination
   const { data: propertiesData, isLoading: isLoadingProperties } =
     useGetAllPropertiesQuery({ ...query });
-
+  const [deleteProperties, { isLoading: isDeleting }] =
+    useDeletePropertyMutation();
   // @ts-ignore
   const { data } = propertiesData || {};
-  console.log(data, "data");
+  // console.log(data, "data");
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
@@ -165,7 +169,8 @@ const PropertiesTable = () => {
   //
   const [updatePropertyDetails, { isLoading, isSuccess, error }] =
     useUpdatePropertyDetailsMutation();
-  //
+
+  // update
   const handleUpdateProperty = async ({ values, table, row }: any) => {
     const propertyId = row.original.propertyId;
     const newValidationErrors = validateAddress(values);
@@ -184,6 +189,37 @@ const PropertiesTable = () => {
     // console.log(values, "values");
   };
 
+  // delete properties
+  const handleDeleteTenant = async (propertyId: string) => {
+    try {
+      await deleteProperties({ propertyId });
+      modals.closeAll();
+    } catch (error) {
+      // console.log(error, "error");
+    }
+  };
+  // delete properties model
+  const openDeleteConfirmModal = (row: MRT_Row<any>) => {
+    console.log(row, "row");
+    const propertyId = row?.original?.propertyId;
+    modals.openConfirmModal({
+      title: "Are you sure you want to delete this user?",
+      children: (
+        <Text>
+          Are you sure you want to delete{" "}
+          <strong>
+            {/* {row.original.firstName} {row.original.lastName}? */}
+          </strong>{" "}
+          <br />
+          This action cannot be undone.
+        </Text>
+      ),
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      closeOnConfirm: false,
+      onConfirm: () => handleDeleteTenant(propertyId),
+    });
+  };
   const table = useMantineReactTable({
     columns,
     data: data || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
@@ -209,7 +245,7 @@ const PropertiesTable = () => {
       pagination,
       // isLoading: isLoadingProperties,
       // isSaving: isLoadingProperties,
-      showSkeletons: isLoading || isLoadingProperties,
+      showSkeletons: isLoading || isLoadingProperties || isDeleting,
     },
     positionActionsColumn: "last",
     initialState: { density: "xs" },
@@ -220,7 +256,7 @@ const PropertiesTable = () => {
             <IconEdit />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Delete">
+        <Tooltip label="Delete" onClick={() => openDeleteConfirmModal(row)}>
           <ActionIcon color="red">
             <IconTrash />
           </ActionIcon>
