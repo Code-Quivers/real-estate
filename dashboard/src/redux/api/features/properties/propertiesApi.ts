@@ -20,8 +20,18 @@ export const propertiesApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.properties],
     }),
+    deleteProperty: build.mutation({
+      query: ({ propertyId }: any) => ({
+        url: `/properties/delete-property-data/${propertyId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.properties],
+    }),
   }),
 });
 
-export const { useGetAllPropertiesQuery, useUpdatePropertyDetailsMutation } =
-  propertiesApi;
+export const {
+  useGetAllPropertiesQuery,
+  useUpdatePropertyDetailsMutation,
+  useDeletePropertyMutation,
+} = propertiesApi;
