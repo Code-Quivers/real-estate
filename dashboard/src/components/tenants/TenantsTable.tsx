@@ -95,35 +95,6 @@ const TenantsTable = ({}: any) => {
 
   const validateRequired = (values: any) => values?.length > 0;
 
-  const validateTenant = (tenant: any) => {
-    return {
-      firstName: validateRequired(tenant.propertyOwner)
-        ? ""
-        : "First name required",
-    };
-  };
-
-  // update tenant
-  // const handleSaveTenant = async ({ values, table, row }: any) => {
-  //   const tenantId = row.original.tenantId;
-  //   const newValidationErrors = validateTenant(values);
-  //   if (Object.values(newValidationErrors).some((error) => error)) {
-  //     setValidationErrors(newValidationErrors);
-  //     return;
-  //   }
-
-  //   // creating form data
-  //   const formData = new FormData();
-  //   const updatedProfileData = JSON.stringify({ password: values?.Password });
-  //   try {
-  //     formData.append("data", updatedProfileData);
-  //     await updateTenant({ data: formData, tenantId });
-  //   } catch (error) {
-  //     console.log(error, "error");
-  //   }
-
-  //   console.log(values, "values");
-  // };
   const handleDeleteTenant = async (tenantId: string) => {
     try {
       await deleteTenantData({ tenantId });
@@ -157,7 +128,8 @@ const TenantsTable = ({}: any) => {
     data: data || [],
     manualPagination: true,
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
-    rowCount: data?.meta?.total,
+    // @ts-ignore
+    rowCount: tenantsData?.meta?.total,
     paginationDisplayMode: "pages",
     state: {
       pagination,
