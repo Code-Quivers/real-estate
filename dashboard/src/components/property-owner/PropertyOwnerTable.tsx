@@ -27,7 +27,7 @@ const PropertyOwnerTable = () => {
   // Store pagination state in your own state
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: 5, // customize the default page size
+    pageSize: 10, // customize the default page size
   });
   query["limit"] = pagination.pageSize;
   query["page"] = pagination.pageIndex + 1;
@@ -97,7 +97,8 @@ const PropertyOwnerTable = () => {
   const table = useMantineReactTable({
     columns,
     data: data || [], //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    rowCount: data?.meta?.total,
+    // @ts-ignore
+    rowCount: propertyOwners?.meta?.total,
     paginationDisplayMode: "pages",
     manualPagination: true,
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
