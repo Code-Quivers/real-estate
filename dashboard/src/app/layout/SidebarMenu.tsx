@@ -28,9 +28,12 @@ const SidebarMenu = ({ toggleMobile }: any) => {
   };
   return (
     <>
-      <h1 className="p-4 font-bold text-lg text-indigo-500">
+      <Link
+        href={"/"}
+        className="p-4 font-bold text-lg text-indigo-500"
+      >
         Manage Rental Unit
-      </h1>
+      </Link>
       <nav className="mt-12 flex flex-col h-full justify-between">
         <div className="flex flex-col">
           <NavLink
