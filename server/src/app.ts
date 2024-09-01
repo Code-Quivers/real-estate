@@ -8,12 +8,25 @@ import create_required_directories from "./tasks/directory_creation_task";
 import { setupSocket } from "./socket";
 import { createServer } from "http";
 import { infoLogger } from "./shared/logger";
+import check_payment_status_tasks from "./tasks/check_payment_status_tasks";
+import cron from "node-cron";
 
+//
 const baseURL = "/backend/api/v1";
 const app: Application = express();
 
 // Create required directories
 create_required_directories();
+
+// task
+// Schedule the status check to run every hour
+
+cron.schedule("* * * * *", () => {
+  console.log("Checking payment status...");
+  check_payment_status_tasks();
+});
+
+//
 
 // Start the database backup task
 // dbBackupTask.start();

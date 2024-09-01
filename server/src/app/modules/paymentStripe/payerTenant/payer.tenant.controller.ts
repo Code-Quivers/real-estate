@@ -41,12 +41,17 @@ class PayerTenantController {
       paymentIntentId,
       connectedAccountId,
     );
+    console.log("testing --------------------------- ", jsonResponse);
+
     const paymentReport = this.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
     const result = await PaymentServices.createPaymnentReport(paymentReport);
 
-    const dataToUpdate = { orderId, orderStatus: "CONFIRMED" };
+    const dataToUpdate = {
+      orderId,
+      // orderStatus: "CONFIRMED"
+    };
 
     const updatedOrderData = OrderServices.updateOrderInfo(orderId, dataToUpdate);
 
