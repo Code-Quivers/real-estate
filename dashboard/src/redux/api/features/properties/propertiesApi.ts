@@ -18,7 +18,7 @@ export const propertiesApi = baseApi.injectEndpoints({
         method: "PATCH",
         data,
       }),
-      providesTags: [tagTypes.properties],
+      invalidatesTags: [tagTypes.properties],
     }),
     deleteProperty: build.mutation({
       query: ({ propertyId }: any) => ({

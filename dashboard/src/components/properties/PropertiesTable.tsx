@@ -8,7 +8,7 @@ import {
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconRefresh, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import {
   useDeletePropertyMutation,
@@ -28,8 +28,11 @@ const PropertiesTable = () => {
   query["limit"] = pagination.pageSize;
   query["page"] = pagination.pageIndex + 1;
   // pagination
-  const { data: propertiesData, isLoading: isLoadingProperties } =
-    useGetAllPropertiesQuery({ ...query });
+  const {
+    data: propertiesData,
+    isLoading: isLoadingProperties,
+    refetch,
+  } = useGetAllPropertiesQuery({ ...query });
   const [deleteProperties, { isLoading: isDeleting }] =
     useDeletePropertyMutation();
   // @ts-ignore
@@ -42,16 +45,23 @@ const PropertiesTable = () => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "address",
+        // accessorKey: "address",
+        accessorFn: (row) => row?.address,
+        id: "address",
         header: "Address",
-        minSize: 100,
-        maxSize: 200,
+        Cell: ({ cell }) => (
+          <>
+            <div className="text-wrap">{cell.getValue<any>()}</div>
+          </>
+        ),
+        // minSize: 100,
+        // maxSize: 200,
         size: 150,
       },
       {
         accessorFn: (row) => row?.owner?.user?.email,
         id: "owner",
-        header: "Owner",
+        header: "Owner email",
         Cell: ({ cell }) => (
           <>
             <div>{cell.getValue<any>()}</div>
@@ -200,7 +210,7 @@ const PropertiesTable = () => {
   };
   // delete properties model
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    console.log(row, "row");
+    // console.log(row, "row");
     const propertyId = row?.original?.propertyId;
     modals.openConfirmModal({
       title: "Are you sure you want to delete this user?",
@@ -240,9 +250,17 @@ const PropertiesTable = () => {
         isLoading={isLoading}
       />
     ),
+    // renderTopToolbarCustomActions: () => (
+    //   <Tooltip label="Refresh Data">
+    //     <ActionIcon onClick={() => refetch()}>
+    //       <IconRefresh />
+    //     </ActionIcon>
+    //   </Tooltip>
+    // ),
     onEditingRowSave: handleUpdateProperty,
     state: {
       pagination,
+      // isLoading,
       // isLoading: isLoadingProperties,
       // isSaving: isLoadingProperties,
       showSkeletons: isLoading || isLoadingProperties || isDeleting,
