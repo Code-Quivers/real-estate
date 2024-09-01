@@ -9,8 +9,8 @@ import { IPaginationOptions } from "../../../interfaces/pagination";
 import { IPaymentFilterRequest, OrderWithPaymentInfo } from "./payment.interface";
 import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
 import Stripe from "stripe";
-const stripe = new Stripe(config.stripe_sk);
 import config from "../../../config";
+const stripe = new Stripe(config.stripe_sk);
 
 /**
  * Retrieves all payment report.
