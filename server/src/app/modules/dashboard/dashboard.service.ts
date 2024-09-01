@@ -44,11 +44,48 @@ const getDashboardData = async () => {
         },
       },
     });
+    // recent 10 properties
+    const recentProperties = await transactionClient.property.findMany({
+      where: {
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
+      },
+      select: {
+        title: true,
+        address: true,
+        isRented: true,
+        monthlyRent: true,
+        planType: true,
+        numOfBed: true,
+        numOfBath: true,
+        images: true,
+        packageType: true,
+        owner: {
+          select: {
+            firstName: true,
+            lastName: true,
+            profileImage: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+      },
+      take: 10,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
     return {
       totalTenants: tenantsCount,
       totalPropertyOwners: propertyOwnersCount,
       totalServiceProviders: serviceProvidersCount,
       totalProperties: propertiesCount,
+      recentProperties,
     };
   });
 
