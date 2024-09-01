@@ -12,7 +12,7 @@ class TenantPaymentProcessor {
   private static intentObject = {
     amount: 0.0,
     currency: "usd",
-    payment_method_types: ["card"],
+    payment_method_types: ["us_bank_account"],
   };
 
   private static fixAmountToTwoDecimal = (amount: number) => {
@@ -80,7 +80,11 @@ class TenantPaymentProcessor {
       console.log("NO Stripe account found for the property owner", amount, connectedAccountId);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to extract related information!");
     }
-    const { jsonResponse, httpStatusCode } = await this.createPaymentIntent(amount, connectedAccountId, paymentMetaData);
+    const { jsonResponse, httpStatusCode } = await this.createPaymentIntent(
+      amount,
+      connectedAccountId,
+      paymentMetaData,
+    );
 
     // Create order for the payment which is paying by the tenant as monthly rent for the rented property.
     const orderInfo = {

@@ -15,7 +15,7 @@ class PropertyOwnerPaymentProcessor {
   private static intentObject = {
     amount: 0.0,
     currency: "usd",
-    payment_method_types: ["card"],
+    payment_method_types: ["us_bank_account"],
   };
 
   private static fixAmountToTwoDecimal = (amount: number) => {
