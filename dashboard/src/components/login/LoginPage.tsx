@@ -87,6 +87,7 @@ const LoginPage = () => {
                 {...form.getInputProps("email")}
               />
               <TextInput
+                type="password"
                 label="Password"
                 placeholder="Input placeholder"
                 size="lg"

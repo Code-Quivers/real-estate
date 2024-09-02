@@ -8,6 +8,7 @@ import {
   IconPhoto,
   IconUserFilled,
 } from "@tabler/icons-react";
+import RecentTenProperties from "./RecentTenProperties";
 
 const Dashboard = () => {
   const { data: dashboardData } = useGetDashboardDataQuery({});
@@ -72,6 +73,9 @@ const Dashboard = () => {
           </div>
           <h1 className="text-gray-600">Total service provider</h1>
         </div>
+      </section>
+      <section className="mt-10">
+        <RecentTenProperties recentProperties={data?.recentProperties} />
       </section>
     </div>
   );

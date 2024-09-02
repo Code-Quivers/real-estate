@@ -7,7 +7,7 @@ import {
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Flex, Text, ThemeIcon, Tooltip } from "@mantine/core";
 import { IconEdit, IconRefresh, IconTrash } from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import {
@@ -210,13 +210,22 @@ const PropertiesTable = () => {
   };
   // delete properties model
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    // console.log(row, "row");
+    console.log(row, "row");
     const propertyId = row?.original?.propertyId;
     modals.openConfirmModal({
       title: "Are you sure you want to delete this user?",
       children: (
         <Text>
           Are you sure you want to delete{" "}
+          <div className="mt-1 border bg-gray-100 p-2 rounded-md flex items-center gap-3">
+            <ThemeIcon color="red" variant="outline">
+              <IconTrash style={{ width: "70%", height: "70%" }} />
+            </ThemeIcon>
+            <div>
+              <p className="font-medium">{row?.original?.title}</p>
+              <p className="text-xs">{row?.original?.address}</p>
+            </div>
+          </div>
           <strong>
             {/* {row.original.firstName} {row.original.lastName}? */}
           </strong>{" "}
