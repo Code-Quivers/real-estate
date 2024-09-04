@@ -6,7 +6,7 @@ import config from "../../../config";
 import ApiError from "../../../errors/ApiError";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import prisma from "../../../shared/prisma";
-import { ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
+import { IDashboardLogin, ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
 import { UserRoles, UserStatus } from "@prisma/client";
 import { userFindUnique } from "./auth.utils";
 
@@ -349,8 +349,6 @@ const userLogin = async (loginData: IUserLogin): Promise<ILoginUserResponse> => 
 
   const { userId, tenant, propertyOwner, serviceProvider, role, userStatus, email: loggedInEmail } = isUserExist;
 
-  console.log("Signing tenant", isUserExist);
-
   // create access token & refresh token
   const accessToken = jwtHelpers.createToken(
     {
@@ -399,7 +397,7 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   // !checking deleted user's refresh token
   const { userId } = verifiedToken;
 
-  const isUserExist = await prisma.user.findFirst({
+  const isUserExist = await prisma.user.findUnique({
     where: {
       userId,
     },
@@ -453,10 +451,114 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   };
 };
 
+// ! ------------------------------------------------DASHBOARD------------------------------------------------------
+// ! ------ create superadmin
+
+const createSuperAdminUser = async (payload: IUserCreate): Promise<any> => {
+  const { password, email, userName } = payload;
+  const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // find superadmin already exist or not
+    const isExistSuperAdmin = await transactionClient.user.findFirst({
+      where: {
+        role: UserRoles.SUPERADMIN,
+      },
+    });
+    if (isExistSuperAdmin) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Superadmin is already exist");
+    }
+    // find is user already exist or not
+    await userFindUnique(userName, email, transactionClient);
+
+    //
+
+    const createdUser = await transactionClient.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        userName,
+        role: UserRoles.SUPERADMIN,
+        userStatus: UserStatus.ACTIVE,
+      },
+    });
+
+    if (!createdUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "User creation failed");
+    }
+
+    return {
+      userId: createdUser?.userId,
+      email: createdUser?.email,
+      role: createdUser?.role,
+      userStatus: createdUser?.userStatus,
+    };
+  });
+
+  return result;
+};
+
+// ! dashboard login (superadmin)
+//login
+const dashboardLogin = async (loginData: IDashboardLogin): Promise<ILoginUserResponse> => {
+  const { email, password } = loginData;
+
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email,
+      role: UserRoles.SUPERADMIN,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect login credentials !");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, isUserExist?.password);
+
+  if (isUserExist && !isPasswordValid) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Password is incorrect !!");
+  }
+
+  const { userId, role, userStatus, email: loggedInEmail } = isUserExist;
+
+  // create access token & refresh token
+  const accessToken = jwtHelpers.createToken(
+    {
+      userId: userId,
+      role: role,
+      email: loggedInEmail,
+      userStatus: userStatus,
+      userName: isUserExist?.userName,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
+  );
+  const refreshToken = jwtHelpers.createToken(
+    {
+      userId,
+      role,
+      email: loggedInEmail,
+      userStatus,
+      userName: isUserExist?.userName,
+    },
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string,
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+};
+
 export const AuthService = {
   createNewUserForTenant,
   createNewUserForPropertyOwner,
   createNewUserForServiceProvider,
   userLogin,
   refreshToken,
+  // for dashboard
+  createSuperAdminUser,
+  dashboardLogin,
 };

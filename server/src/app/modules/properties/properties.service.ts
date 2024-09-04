@@ -13,6 +13,7 @@ import {
   IPropertiesFilterRequest,
   IPropertyData,
   IPropertyReqPayload,
+  IPropertyUpdate,
   IRemoveTenantFromProperty,
 } from "./properties.interfaces";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
@@ -23,6 +24,7 @@ import {
   propertiesSearchableFields,
 } from "./properties.constants";
 import { calculatePropertyScore } from "./properties.utils";
+import { differenceInMonths } from "../tenants/tenants.utils";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -102,8 +104,8 @@ const createNewProperty = async (profileId: string, req: Request) => {
   return createdData;
 };
 
-// ! Getting all property========================================================================
-const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
+// ! Getting all available property========================================================================
+const getAllAvailableProperty = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
@@ -185,6 +187,217 @@ const getAllProperty = async (filters: IPropertiesFilterRequest, options: IPagin
   return result;
 };
 
+// ! Getting all available property for superadmin ========================================================================
+const getAllProperties = async (filters: IPropertiesFilterRequest, options: IPaginationOptions) => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filterData } = filters;
+
+  const andConditions = [];
+  // Search
+  if (searchTerm) {
+    andConditions.push({
+      OR: propertiesSearchableFields.map((field: any) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  // Filter
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => {
+        if (propertiesRelationalFields.includes(key)) {
+          return {
+            [propertiesRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.PropertyWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  //
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const properties = await transactionClient.property.findMany({
+      where: {
+        ...whereConditions,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
+      },
+      select: {
+        propertyId: true,
+        address: true,
+        createdAt: true,
+        isActive: true,
+        isRented: true,
+        monthlyRent: true,
+        packageType: true,
+        // paidFrom: true,
+        // paidTo: true,
+        planType: true,
+        title: true,
+        tenantAssignedAt: true,
+        owner: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+        Tenant: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+            presentAddress: true,
+            tenantId: true,
+            user: {
+              select: {
+                email: true,
+                userStatus: true,
+              },
+            },
+            orders: {
+              select: {
+                updatedAt: true,
+                properties: {
+                  select: {
+                    tenantAssignedAt: true,
+                  },
+                },
+              },
+              orderBy: {
+                updatedAt: "desc",
+              },
+            },
+          },
+        },
+        serviceProviders: {
+          select: {
+            firstName: true,
+            lastName: true,
+            companyAddress: true,
+            companyEmailAddress: true,
+            companyName: true,
+            companyPhoneNumber: true,
+            phoneNumber: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+      },
+      skip,
+      take: limit,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : {
+              createdAt: "desc",
+            },
+    });
+
+    const propertiesWithTenantInfo = await Promise.all(
+      properties.map(async (property) => {
+        if (property.Tenant) {
+          const { tenantId } = property.Tenant;
+
+          // Fetch order data for this tenant and property
+          const orderData = await transactionClient.order.findMany({
+            where: {
+              tenantId,
+              properties: {
+                some: { propertyId: property.propertyId },
+              },
+              orderStatus: "CONFIRMED",
+            },
+            select: {
+              updatedAt: true,
+            },
+            orderBy: {
+              updatedAt: "desc",
+            },
+          });
+
+          // Calculate due months
+          const tenantAssignedDate = property?.tenantAssignedAt;
+          let dueMonths;
+
+          if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(new Date(), tenantAssignedDate?.toISOString() as any);
+          } else {
+            dueMonths = differenceInMonths(new Date(), orderData[0]?.updatedAt);
+          }
+
+          // Calculate due rent
+          const dueRent = (property.monthlyRent || 0) * dueMonths;
+
+          return {
+            ...property,
+            Tenant: {
+              ...property.Tenant,
+              dueRent,
+              dueMonths,
+              rentPaid: dueMonths > 0,
+              paymentDeadline:
+                orderData[0]?.updatedAt && property?.planType === "PREMIUM"
+                  ? new Date(
+                      new Date(orderData[0].updatedAt).setMonth(new Date(orderData[0].updatedAt).getMonth() + 1),
+                    ).toISOString()
+                  : "N/A",
+            },
+          };
+        }
+
+        return property;
+      }),
+    );
+
+    // ! ----total
+    const total = await prisma.property.count({
+      where: {
+        ...whereConditions,
+        planType: {
+          in: ["ON_TRIAL", "PREMIUM"],
+        },
+      },
+    });
+
+    const totalPage = Math.ceil(total / limit);
+    return {
+      meta: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
+      data: propertiesWithTenantInfo,
+    };
+  });
+
+  return result;
+};
+
 // ! get my all properties for property owner
 // Getting all property
 const getPropertyOwnerAllProperty = async (
@@ -254,17 +467,6 @@ const getPropertyOwnerAllProperty = async (
             },
           },
         },
-
-        // serviceProviders: {
-        //   include: {
-        //     Service: true,
-        //     user: {
-        //       select: {
-        //         email: true,
-        //       },
-        //     },
-        //   },
-        // },
       },
       where: {
         ...whereConditions,
@@ -400,6 +602,64 @@ const updatePropertyInfo = async (propertyId: string, req: Request): Promise<Pro
 
     return updatedProperty;
   });
+  return result;
+};
+
+// ! update property details for superadmin
+const updatePropertyDetailsFromAdmin = async (propertyId: string, payload: IPropertyUpdate): Promise<Property> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    // Check if property exists
+    const isExistProperty = await transactionClient.property.findUnique({
+      where: { propertyId },
+    });
+
+    if (!isExistProperty) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property not found!");
+    }
+
+    // Prepare updated property data
+    const updatedPropertyData: any = {};
+    if (payload?.address) updatedPropertyData.address = payload.address;
+    // if (payload?.rentAmount) updatedPropertyData.monthlyRent = payload.rentAmount;
+
+    // Update property
+    const updatedProperty = await transactionClient.property.update({
+      where: { propertyId },
+      data: updatedPropertyData,
+    });
+
+    // Check and update payment deadline if necessary
+    // if (payload?.paymentDeadline) {
+    //   if (isExistProperty?.paidTo && isExistProperty.planType === "PREMIUM") {
+    //     if (payload.paymentDeadline <= isExistProperty?.paidTo) {
+    //       throw new ApiError(httpStatus.BAD_REQUEST, "New payment deadline must be greater than the current one!");
+    //     }
+
+    //     await transactionClient.property.update({
+    //       where: { propertyId },
+    //       data: { paidTo: payload.paymentDeadline },
+    //     });
+    //   } else {
+    //     throw new ApiError(
+    //       httpStatus.BAD_REQUEST,
+    //       `Plan Type is ${isExistProperty.planType}. Premium must be activated!`,
+    //     );
+    //   }
+    // }
+
+    // Update property score
+    const unitScore = calculatePropertyScore(updatedProperty);
+    await transactionClient.property.update({
+      where: { propertyId },
+      data: {
+        score: unitScore.propertyScore,
+        scoreRatio: unitScore.scoreRatio,
+      },
+    });
+
+    return updatedProperty;
+  });
+
   return result;
 };
 
@@ -627,13 +887,89 @@ const removeTenantFromProperty = async (profileId: string, payload: IRemoveTenan
   return result;
 };
 
+//! get single property info (superadmin)
+const deleteSinglePropertyData = async (propertyId: string): Promise<Property | null> => {
+  const res = await prisma.$transaction(async (transactionClient) => {
+    const isExistProperty = await transactionClient.property.findUnique({
+      where: {
+        propertyId,
+      },
+      include: {
+        owner: true,
+        Tenant: true,
+        serviceProviders: true,
+      },
+    });
+
+    if (!isExistProperty) {
+      throw new ApiError(httpStatus.NOT_FOUND, "Property Not Found");
+    }
+
+    // ! remove tenant
+    if (isExistProperty?.isRented && isExistProperty?.Tenant) {
+      // update logic
+      const removingTenant = await transactionClient.tenant.update({
+        where: {
+          tenantId: isExistProperty?.Tenant?.tenantId, // use tenantId here for the update
+        },
+        data: {
+          property: {
+            disconnect: true,
+            update: {
+              isRented: false,
+            },
+          },
+        },
+      });
+      if (!removingTenant) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed (tenant assigned)");
+      }
+    }
+    // ! remove service providers
+    if (isExistProperty?.serviceProviders?.length > 0) {
+      // update logic
+      const removingServiceProviders = await transactionClient.property.update({
+        where: {
+          propertyId,
+        },
+        data: {
+          serviceProviders: {
+            disconnect: isExistProperty?.serviceProviders?.map((provider) => ({
+              serviceProviderId: provider?.serviceProviderId,
+            })),
+          },
+        },
+      });
+      if (!removingServiceProviders) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed (Service Provider assigned)");
+      }
+    }
+    // ! removing property
+    const removingPropertyData = await transactionClient.property.delete({
+      where: {
+        propertyId,
+      },
+    });
+    if (!removingPropertyData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Property removing failed");
+    }
+
+    return removingPropertyData;
+  });
+  return res;
+};
+
 export const PropertiesService = {
   createNewProperty,
-  getAllProperty,
+  getAllAvailableProperty,
   getSinglePropertyInfo,
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
   removeTenantFromProperty,
+  // dashboard
+  getAllProperties,
+  updatePropertyDetailsFromAdmin,
+  deleteSinglePropertyData,
 };

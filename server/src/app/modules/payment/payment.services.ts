@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
-
 import { PaymentInformation, Prisma } from "@prisma/client";
-
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IGenericResponse } from "../../../interfaces/common";
 import { IPaginationOptions } from "../../../interfaces/pagination";
-import { IPaymentFilterRequest } from "./payment.interface";
+import { IPaymentFilterRequest, OrderWithPaymentInfo } from "./payment.interface";
 import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
+import Stripe from "stripe";
+import config from "../../../config";
+const stripe = new Stripe(config.stripe_sk);
 
 /**
  * Retrieves all payment report.
@@ -197,10 +198,111 @@ const createPaymnentReport = async (data: any): Promise<PaymentInformation | nul
   return paymentReport;
 };
 
+// ! ==============================================
+
+const checkAndUpdateBulkOrderStatus = async () => {
+  const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
+    try {
+      // Create a Promise for each payment intent retrieval
+
+      const statusPromises = orders.map(async (order: OrderWithPaymentInfo) => {
+        const paymentIntent = await stripe.paymentIntents.retrieve(order?.paymentPlatformId);
+        return {
+          ...order,
+          paymentStatus: paymentIntent?.status,
+        };
+      });
+
+      // Wait for all Promises to resolve
+      const updatedOrders = await Promise.all(statusPromises);
+
+      return updatedOrders;
+    } catch (error) {
+      console.error("Error checking payment statuses:", error);
+      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
+    }
+  };
+
+  // ! getting from database
+
+  const getAllPendingOrders = async (): Promise<OrderWithPaymentInfo[]> => {
+    try {
+      const allOrdersData = await prisma.order.findMany({
+        where: {
+          orderStatus: "PENDING",
+          PaymentInformation: {
+            isNot: null,
+          },
+        },
+        select: {
+          orderId: true,
+          orderStatus: true,
+          PaymentInformation: {
+            select: {
+              paymentPlatformId: true,
+            },
+          },
+        },
+      });
+
+      // Transform the data to flatten the PaymentInformation object
+      const orders = allOrdersData?.map((order) => ({
+        orderId: order.orderId,
+        orderStatus: order.orderStatus,
+        paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
+      }));
+
+      return orders;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
+    }
+  };
+
+  const otherData = await checkBulkPaymentStatus(await getAllPendingOrders());
+
+  const updatePromises: any[] = otherData?.map((single) => {
+    //
+    if (single.paymentStatus === "succeeded") {
+      return prisma.order.update({
+        where: {
+          orderId: single.orderId,
+        },
+        data: {
+          orderStatus: "CONFIRMED",
+          PaymentInformation: {
+            update: {
+              paymentStatus: single.paymentStatus,
+            },
+          },
+        },
+      });
+    } else if (single.paymentStatus === "canceled") {
+      return prisma.order.update({
+        where: {
+          orderId: single.orderId,
+        },
+        data: {
+          orderStatus: "FAILED",
+          PaymentInformation: {
+            update: {
+              paymentStatus: single.paymentStatus,
+            },
+          },
+        },
+      });
+    }
+  });
+
+  //
+  await prisma.$transaction(updatePromises);
+};
+
 // Exporting PaymentServices object with methods
 export const PaymentServices = {
   getPaymentReports,
   getPaymentReport,
   getPaymentReportsWithOrderId,
   createPaymnentReport,
+  checkAndUpdateBulkOrderStatus,
 };

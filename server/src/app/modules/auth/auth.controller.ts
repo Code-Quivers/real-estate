@@ -125,10 +125,51 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ! -------------------------------------------DASHBOARD---------------------------------------
+//! Superadmin create
+
+const createSuperAdminUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthService.createSuperAdminUser(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Superadmin Created Successfully!",
+    data: result,
+  });
+});
+
+//User Login
+
+const dashboardLogin = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthService.dashboardLogin(req.body);
+
+  const { accessToken, refreshToken } = result;
+  // set refresh token into cookie
+
+  const cookieOptions = {
+    secure: config.env === "production",
+    httpOnly: true,
+  };
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Logged in successfully!",
+    data: {
+      accessToken,
+    },
+  });
+});
+
 export const AuthController = {
   createNewUserForTenant,
   createNewUserForPropertyOwner,
   createNewUserForServiceProvider,
   userLogin,
   refreshToken,
+  // for dashboard
+  createSuperAdminUser,
+  dashboardLogin,
 };

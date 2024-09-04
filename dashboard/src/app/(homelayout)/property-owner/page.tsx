@@ -1,0 +1,17 @@
+import PropertyOwnerTable from "@/components/property-owner/PropertyOwnerTable";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Property Owners",
+};
+
+const PropertyOwner = () => {
+  return (
+    <div>
+      <h1 className="text-lg mb-2">Property Owner</h1>
+      <PropertyOwnerTable />
+    </div>
+  );
+};
+
+export default PropertyOwner;

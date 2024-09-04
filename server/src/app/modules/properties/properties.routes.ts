@@ -18,12 +18,14 @@ router.post(
     return PropertiesController.createNewProperty(req, res, next);
   },
 );
-// get all property
+//! get all available property
 router.get(
   "/all",
   auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN, UserRoles.TENANT),
-  PropertiesController.getAllProperty,
+  PropertiesController.getAllAvailableProperty,
 );
+//! get all properties
+router.get("/get-all-properties", auth(UserRoles.SUPERADMIN), PropertiesController.getAllProperties);
 
 // get single property info
 
@@ -44,6 +46,19 @@ router.patch(
     req.body = PropertiesValidation.updateProperty.parse(JSON.parse(req.body.data));
     return PropertiesController.updatePropertyInfo(req, res, next);
   },
+);
+// ! update property details (superadmin)
+router.patch(
+  "/update-property-details/:propertyId",
+  auth(UserRoles.SUPERADMIN),
+  validateRequest(PropertiesValidation.updatePropertyDetailsFromAdmin),
+  PropertiesController.updatePropertyDetailsFromAdmin,
+);
+// ! delete property data (superadmin)
+router.delete(
+  "/delete-property-data/:propertyId",
+  auth(UserRoles.SUPERADMIN),
+  PropertiesController.deleteSinglePropertyData,
 );
 
 // ! assign tenant user to property or unit

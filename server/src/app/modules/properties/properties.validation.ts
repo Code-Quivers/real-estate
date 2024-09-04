@@ -31,6 +31,14 @@ const updateProperty = z.object({
 
 const propertyCreate = z.array(createProperty);
 
+const updatePropertyDetailsFromAdmin = z.object({
+  body: z.object({
+    address: z.string().optional(),
+    rentAmount: z.string().optional(),
+    isRentPaid: z.boolean().optional(),
+    paymentDeadline: z.string().optional(),
+  }),
+});
 // ! assign tenant user
 
 const assignTenant = z.object({
@@ -65,4 +73,5 @@ export const PropertiesValidation = {
   assignTenant,
   assignServiceProvider,
   removeTenant,
+  updatePropertyDetailsFromAdmin,
 };

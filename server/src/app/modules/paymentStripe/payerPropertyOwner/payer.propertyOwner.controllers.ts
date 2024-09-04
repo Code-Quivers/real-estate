@@ -55,11 +55,16 @@ class StripeController {
     const { jsonResponse, httpStatusCode } =
       await PropertyOwnerPaymentProcessor.retriveStripePaymentInfo(paymentIntentId);
     const paymentReport = StripeController.generatePaymentReport(jsonResponse, orderId, userId);
+    // console.log("testing --------------------------- ", jsonResponse);
 
     // Create payment report in the database
     const result = await PaymentServices.createPaymnentReport(paymentReport);
 
-    const dataToUpdate = { orderId, orderStatus: "CONFIRMED", planType: "PREMIUM" };
+    const dataToUpdate = {
+      orderId,
+      //  orderStatus: "CONFIRMED",
+      planType: "PREMIUM",
+    };
 
     const updatedOrderData = OrderServices.updateOrderStatusAndPropertyPlanType(dataToUpdate);
 
@@ -155,6 +160,8 @@ class StripeController {
       data: jsonResponse,
     });
   });
+
+  //  getting new payment information
 }
 
 export default StripeController;

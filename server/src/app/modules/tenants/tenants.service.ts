@@ -6,12 +6,7 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import {
-  calculateTenantProfileScore,
-  calculateTenantScoreRatio,
-  differenceInMonths,
-  // differenceInTime,
-} from "./tenants.utils";
+import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -19,7 +14,8 @@ import { tenantsRelationalFields, tenantsRelationalFieldsMapper, tenantsSearchab
 import bcrypt from "bcrypt";
 import config from "../../../config";
 
-// ! get all tenants
+// ! get all tenants for superadmin
+
 const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
@@ -43,7 +39,7 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
         if (tenantsRelationalFields.includes(key)) {
           return {
             [tenantsRelationalFieldsMapper[key]]: {
-              id: (filterData as any)[key],
+              [key]: (filterData as any)[key],
             },
           };
         } else {
@@ -61,10 +57,38 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const allTenants = await transactionClient.tenant.findMany({
-      include: {
+      select: {
+        tenantId: true,
+        firstName: true,
+        lastName: true,
+        property: {
+          select: {
+            tenantAssignedAt: true,
+            propertyId: true,
+            monthlyRent: true,
+            title: true,
+            owner: {
+              select: {
+                firstName: true,
+                lastName: true,
+                user: {
+                  select: {
+                    email: true,
+                    userId: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+
         user: {
           select: {
             email: true,
+            userId: true,
+            userName: true,
+            password: true,
+            userStatus: true,
           },
         },
       },
@@ -78,6 +102,57 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
               createdAt: "desc",
             },
     });
+    //
+    const tenantsWithPaymentInfo = await Promise.all(
+      allTenants?.map(async (singleTenant) => {
+        const { property, tenantId } = singleTenant || {};
+        //
+        const getOrderData = await transactionClient.order.findMany({
+          where: {
+            tenantId,
+            properties: {
+              some: { propertyId: property?.propertyId },
+            },
+            orderStatus: "CONFIRMED",
+          },
+          select: {
+            updatedAt: true,
+            properties: {
+              select: {
+                tenantAssignedAt: true,
+              },
+            },
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        }); // for due month calculation
+        const tenantAssignedDate = singleTenant?.property?.tenantAssignedAt;
+
+        let dueMonths = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+          } else {
+            dueMonths = differenceInMonths(getOrderData[0]?.updatedAt);
+          }
+        }
+        const dueRent = (singleTenant?.property?.monthlyRent || 0) * dueMonths;
+        const tenantUnitInfo = {
+          ...singleTenant,
+          dueRent: dueRent,
+          dueMonths: dueMonths,
+          rentPaid: dueRent > 0,
+        };
+
+        return tenantUnitInfo;
+      }),
+
+      //
+    );
+
+    //
 
     const total = await prisma.tenant.count({
       where: whereConditions,
@@ -90,12 +165,13 @@ const getAllTenants = async (filters: ITenantsFilterRequest, options: IPaginatio
         total,
         totalPage,
       },
-      data: allTenants,
+      data: tenantsWithPaymentInfo,
     };
   });
 
   return result;
 };
+
 // ! get all Available tenants which are not already assigned
 const getAllAvailableTenants = async (filters: ITenantsFilterRequest, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -253,7 +329,7 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
     if (!res) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Updating Failed !");
     }
-
+    // updating profile score
     if (res) {
       const profileScore = await calculateTenantProfileScore(res);
 
@@ -288,7 +364,6 @@ const updateTenantProfile = async (tenantId: string, req: Request) => {
 
 // ! get tenant my unit information
 
-// get single tenant
 const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> | null> => {
   const result = await prisma.$transaction(async (transactionClient) => {
     const tenants = await transactionClient.tenant.findUnique({
@@ -357,30 +432,6 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       dueMonths = differenceInMonths(orderData[0]?.updatedAt);
     }
 
-    // for testing (10 Minutes)
-    // if (orderData?.length === 0) {
-    //   //
-    //   if (differenceInTime(tenantAssignedDate?.toISOString()) > 2) {
-    //     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-    //     if (dueMonths === 0) {
-    //       dueMonths = 1;
-    //     }
-    //   } else {
-    //     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-    //   }
-    // }
-    // //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-    // //   dueMonths = 0;
-    // // }
-    // else {
-    //   if (differenceInTime(orderData[0]?.updatedAt) > 2) {
-    //     dueMonths = 1;
-    //   } else {
-    //     dueMonths = differenceInMonths(orderData[0]?.updatedAt);
-    //   }
-    // }
-    //
-
     const tenantUnitInfo = {
       ...tenants,
       dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
@@ -393,10 +444,126 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
   return result;
 };
 
+// ! ========================================Delete tenant all data for superadmin===========================
+// get single tenant
+const deleteTenantData = async (tenantId: string): Promise<any | null> => {
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const tenantData = await transactionClient.tenant.findUnique({
+      where: {
+        tenantId,
+      },
+      include: {
+        property: {
+          select: {
+            propertyId: true,
+            isRented: true,
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            email: true,
+            createdAt: true,
+            userName: true,
+          },
+        },
+      },
+    });
+
+    if (!tenantData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Tenant Profile Not Found!!!");
+    }
+
+    // check if tenant assigned to any property
+    if (tenantData?.property?.propertyId && tenantData?.property?.isRented) {
+      // update logic
+      const removeFromProperty = await transactionClient.tenant.update({
+        where: {
+          tenantId, // use tenantId here for the update
+        },
+        data: {
+          property: {
+            disconnect: true,
+            update: {
+              isRented: false,
+            },
+          },
+        },
+      });
+
+      if (!removeFromProperty) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Remove from property Failed");
+      }
+    }
+
+    // removing tenant data
+    const removingTenantData = await transactionClient.tenant.delete({
+      where: {
+        tenantId,
+      },
+      select: {
+        tenantId: true,
+        createdAt: true,
+        firstName: true,
+        lastName: true,
+        userId: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!removingTenantData) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Remove Tenant Failed");
+    }
+    // removing user data
+    const removingUserDetails = await transactionClient.user.delete({
+      where: {
+        userId: tenantData?.userId as string,
+      },
+    });
+
+    if (!removingUserDetails) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "User Deleting Failed");
+    }
+
+    return removingTenantData;
+    //
+  });
+
+  return result;
+};
+
 export const TenantServices = {
   getAllTenants,
   updateTenantProfile,
   getSingleTenant,
   getAllAvailableTenants,
   getMyUnitInformation,
+  deleteTenantData,
 };
+// for testing (10 Minutes)
+// if (orderData?.length === 0) {
+//   //
+//   if (differenceInTime(tenantAssignedDate?.toISOString()) > 2) {
+//     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+//     if (dueMonths === 0) {
+//       dueMonths = 1;
+//     }
+//   } else {
+//     dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+//   }
+// }
+// //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+// //   dueMonths = 0;
+// // }
+// else {
+//   if (differenceInTime(orderData[0]?.updatedAt) > 2) {
+//     dueMonths = 1;
+//   } else {
+//     dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+//   }
+// }
+//

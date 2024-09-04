@@ -20,12 +20,26 @@ const createNewProperty = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-//! get all properties =------------
-const getAllProperty = catchAsync(async (req: Request, res: Response) => {
+//! get all available properties =------------
+const getAllAvailableProperty = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, propertiesFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-  const result = await PropertiesService.getAllProperty(filters, options);
+  const result = await PropertiesService.getAllAvailableProperty(filters, options);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Properties Successfully fetched!!!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+//! get all properties =------------
+const getAllProperties = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, propertiesFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await PropertiesService.getAllProperties(filters, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -76,7 +90,19 @@ const updatePropertyInfo = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! update property details for superadmin
 
+const updatePropertyDetailsFromAdmin = catchAsync(async (req: Request, res: Response) => {
+  const propertyId = req.params?.propertyId;
+  const result = await PropertiesService.updatePropertyDetailsFromAdmin(propertyId, req?.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Updated Successfully",
+    data: result,
+  });
+});
 // ! assign tenant user to property or unit -----------------
 
 const assignTenantToProperty = catchAsync(async (req: Request, res: Response) => {
@@ -121,13 +147,31 @@ const assignServiceProviderToProperty = catchAsync(async (req: Request, res: Res
   });
 });
 
+// ! remove property (superadmin)
+
+const deleteSinglePropertyData = catchAsync(async (req: Request, res: Response) => {
+  const propertyId = req.params?.propertyId;
+  const result = await PropertiesService.deleteSinglePropertyData(propertyId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Property Deleted",
+    data: result,
+  });
+});
+
 export const PropertiesController = {
   createNewProperty,
-  getAllProperty,
+  getAllAvailableProperty,
   getSinglePropertyInfo,
   updatePropertyInfo,
   getPropertyOwnerAllProperty,
   assignTenantToProperty,
   assignServiceProviderToProperty,
   removeTenantFromProperty,
+  // dashboard
+  getAllProperties,
+  updatePropertyDetailsFromAdmin,
+  deleteSinglePropertyData,
 };

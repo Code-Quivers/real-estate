@@ -11,7 +11,6 @@ import { infoLogger } from "../../../../shared/logger";
 const stripe = new Stripe(config.stripe_sk);
 
 class StripeAccountManager {
-
   // For standard account with dashboard access
   // private static initialAcctInfo: any = {
   //   type: "standard",

@@ -9,7 +9,7 @@ const router = express.Router();
 // ! get all tenants
 router.get(
   "/get-all-tenants",
-  auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN),
+  // auth(UserRoles.PROPERTY_OWNER, UserRoles.SERVICE_PROVIDER, UserRoles.SUPERADMIN),
   TenantsControllers.getAllTenants,
 );
 // ! get all available  tenants
@@ -36,6 +36,8 @@ router.patch(
     return TenantsControllers.updateTenantProfile(req, res, next);
   },
 );
+// ! update tenant profile
+router.delete("/delete-tenant/:tenantId", auth(UserRoles.SUPERADMIN), TenantsControllers.deleteTenantData);
 
 // ! get tenant my unit information
 router.get("/get-my-unit-information", auth(UserRoles.TENANT), TenantsControllers.getMyUnitInformation);

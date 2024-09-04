@@ -17,7 +17,8 @@ const getAllTenants = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Tenants fetching successful",
-    data: result,
+    meta: result?.meta,
+    data: result?.data,
   });
 });
 // ! get all available  tenants
@@ -84,6 +85,18 @@ const getMyUnitInformation = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// !remove tenant data for superadmin
+const deleteTenantData = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = req.params?.tenantId;
+  const result = await TenantServices.deleteTenantData(tenantId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Tenant Deleted",
+    data: result,
+  });
+});
 
 export const TenantsControllers = {
   getAllTenants,
@@ -92,4 +105,5 @@ export const TenantsControllers = {
   getSingleTenant,
   getAllAvailableTenants,
   getMyUnitInformation,
+  deleteTenantData,
 };
