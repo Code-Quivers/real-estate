@@ -28,4 +28,5 @@ EXPOSE 7000 4000
 
 RUN yarn build
 # run the project
-CMD yarn startmigrate
+# CMD yarn startmigrate
+CMD yarn start

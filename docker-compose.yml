@@ -41,3 +41,14 @@ services:
       - postgres
     ports:
       - 3000:3000
+
+  dashboard:
+    stdin_open: true
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: dashboard-container
+    depends_on:
+      - server
+    ports:
+      - 3200:3200
