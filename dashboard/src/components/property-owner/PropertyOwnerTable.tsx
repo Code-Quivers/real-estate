@@ -47,11 +47,15 @@ const PropertyOwnerTable = () => {
   };
   const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
     modals.openConfirmModal({
-      title: "Are you sure you want to delete this user?",
+      // title: "Are you sure you want to delete this user?",
       children: (
         <Text>
-          Are you sure you want to delete {row.original?.firstName}{" "}
-          {row.original?.lastName}? This action cannot be undone.
+          Are you sure you want to delete{" "}
+          <span className="font-bold">
+            {row.original?.firstName} {row.original?.lastName}?
+          </span>{" "}
+          <br />
+          This action cannot be undone.
         </Text>
       ),
       labels: { confirm: "Delete", cancel: "Cancel" },
