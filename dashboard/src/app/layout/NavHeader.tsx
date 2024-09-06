@@ -21,7 +21,7 @@ const NavHeader = () => {
   return (
     <>
       <div className="flex justify-between items-start px-5 w-full">
-        <div className="py-4">Welcome back, Super admin 👋</div>
+        <div className="py-4">Welcome back</div>
         <div className="py-3 pr-5">
           <Menu
             trigger="click"
@@ -39,13 +39,13 @@ const NavHeader = () => {
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item
+              {/* <Menu.Item
                 component="a"
                 href="https://mantine.dev"
                 leftSection={<IconUserCircle size={18} />}
               >
                 Profile
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item
                 component="button"
                 onClick={logOut}
