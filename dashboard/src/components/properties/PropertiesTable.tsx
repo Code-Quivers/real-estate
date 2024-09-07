@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import dayjs from "dayjs";
 import {
   MantineReactTable,
   MRT_PaginationState,
@@ -41,6 +42,7 @@ const PropertiesTable = () => {
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
+  // console.log(data, "data");
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -126,7 +128,12 @@ const PropertiesTable = () => {
         maxSize: 150,
       },
       {
-        accessorKey: "monthlyRent",
+        // accessorKey: "monthlyRent",
+        accessorFn: (row) =>
+          Number(row?.monthlyRent)?.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          }),
         header: "Rent Amount",
         enableEditing: () => false,
         Edit: () => null,
@@ -153,7 +160,11 @@ const PropertiesTable = () => {
         maxSize: 80,
       },
       {
-        accessorFn: (row) => row?.Tenant?.paymentDeadline ?? "N/A",
+        accessorFn: (row) =>
+          row?.Tenant?.paymentDeadline === "N/A" ||
+          !row?.Tenant?.paymentDeadline
+            ? "N/A"
+            : dayjs(row?.Tenant?.paymentDeadline).format("MMMM D, YYYY"),
         accessorKey: "paymentDeadline",
         header: "Payment Deadline",
         // renderEditCell: () => null,
@@ -213,10 +224,10 @@ const PropertiesTable = () => {
     console.log(row, "row");
     const propertyId = row?.original?.propertyId;
     modals.openConfirmModal({
-      title: "Are you sure you want to delete this user?",
+      // title: "Are you sure you want to delete this user?",
       children: (
         <Text>
-          Are you sure you want to delete{" "}
+          Are you sure you want to delete?
           <div className="mt-1 border bg-gray-100 p-2 rounded-md flex items-center gap-3">
             <ThemeIcon color="red" variant="outline">
               <IconTrash style={{ width: "70%", height: "70%" }} />

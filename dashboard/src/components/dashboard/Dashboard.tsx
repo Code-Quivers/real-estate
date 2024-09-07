@@ -13,10 +13,10 @@ import RecentTenProperties from "./RecentTenProperties";
 const Dashboard = () => {
   const { data: dashboardData } = useGetDashboardDataQuery({});
   const { data } = (dashboardData as any) || {};
-  console.log(data);
+  // console.log(data);
   return (
     <div>
-      <section className="grid lg:grid-cols-4 grid-cols-2 gap-8">
+      <section className="grid lg:grid-cols-4 sm:grid-cols-2 sm:gap-8">
         <div className="h-36 bg-white rounded p-6 space-y-4 drop-shadow">
           <div className="flex items-center gap-5">
             <ThemeIcon size="lg" color="#ede9fe">

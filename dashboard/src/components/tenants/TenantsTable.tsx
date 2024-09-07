@@ -82,7 +82,12 @@ const TenantsTable = ({}: any) => {
       },
 
       {
-        accessorKey: "dueRent",
+        accessorFn: (row) =>
+          Number(row?.dueRent)?.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          }),
+        // accessorKey: "dueRent",
         header: "Rent amount",
       },
       {
@@ -106,7 +111,7 @@ const TenantsTable = ({}: any) => {
   // delete tenant
   const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
     modals.openConfirmModal({
-      title: "Are you sure you want to delete this user?",
+      // title: "Are you sure you want to delete this user?",
       children: (
         <Text>
           Are you sure you want to delete{" "}

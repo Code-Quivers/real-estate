@@ -21,8 +21,8 @@ create_required_directories();
 // task
 // Schedule the status check to run every hour
 
-cron.schedule("* * * * *", () => {
-  console.log("Checking payment status...");
+cron.schedule("0 */12 * * *", () => {
+  infoLogger.info("Checking payment status...");
   check_payment_status_tasks();
 });
 
