@@ -1,7 +1,7 @@
 import TenantsPage from "@/components/tenants/TenantsPage";
 import { Metadata } from "next";
 import React from "react";
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: "Tenants list",
   description: "Tenants",
   keywords: "Tenants",
