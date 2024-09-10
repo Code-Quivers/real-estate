@@ -9,6 +9,8 @@ import prisma from "../../../shared/prisma";
 import { IDashboardLogin, ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
 import { UserRoles, UserStatus } from "@prisma/client";
 import { userFindUnique } from "./auth.utils";
+import { errorLogger, logger } from "../../../shared/logger";
+import { error } from "winston";
 
 //! Tenant User Create
 
@@ -564,7 +566,70 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
   if (!isUserExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials !");
   }
-  return isUserExist;
+
+  const findLink = await prisma.forgetPassword.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (findLink) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Reset Link already sent to your email, try again 5 minutes later");
+  }
+
+  // ! send reset link to email
+
+  const generateToken = jwtHelpers.createToken(
+    {
+      email: isUserExist.email,
+    },
+    config.jwt.forget_password as Secret,
+    config.jwt.forget_password_expires_in as string,
+  );
+
+  const resetLink = `${config.client_url}/reset-password/${generateToken}`;
+
+  const forgetObj = {
+    email: isUserExist.email,
+    token: generateToken,
+    link: resetLink, // Temporary Link
+  };
+
+  const forget_result = await prisma.forgetPassword.create({
+    data: forgetObj,
+  });
+
+  if (!forget_result) {
+    throw new ApiError(httpStatus.BAD_REQUEST, " Failed to Generate Reset Link");
+  }
+
+  return forget_result;
+};
+
+// ! forget password to send reset link -->
+const deleteResetLink = async () => {
+  const allForgetLinkData = await prisma.forgetPassword.findMany();
+
+  await Promise.all(
+    allForgetLinkData.map(async (forgetLink) => {
+      const isExpiredLink = jwtHelpers.verifyResetToken(forgetLink.token, config.jwt.forget_password as Secret);
+
+      if (isExpiredLink.isExpired) {
+        const deleteLink = await prisma.forgetPassword.delete({
+          where: {
+            email: forgetLink.email,
+          },
+        });
+        if (!deleteLink) {
+          errorLogger.error("Failed to delete expired reset link");
+        }
+      }
+
+      console.log("expired", isExpiredLink);
+    }),
+  );
+
+  return;
 };
 
 export const AuthService = {
@@ -577,4 +642,5 @@ export const AuthService = {
   createSuperAdminUser,
   dashboardLogin,
   forgetPassword,
+  deleteResetLink,
 };
