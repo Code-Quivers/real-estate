@@ -9,8 +9,7 @@ import prisma from "../../../shared/prisma";
 import { IDashboardLogin, ILoginUserResponse, IRefreshTokenResponse, IUserCreate, IUserLogin } from "./auth.interface";
 import { UserRoles, UserStatus } from "@prisma/client";
 import { userFindUnique } from "./auth.utils";
-import { errorLogger, logger } from "../../../shared/logger";
-import { error } from "winston";
+import { errorLogger, infoLogger } from "../../../shared/logger";
 
 //! Tenant User Create
 
@@ -605,6 +604,49 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
 
   return forget_result;
 };
+// ! verify forget password reset link -->
+const resetPassword = async (resetToken: string, payload: any): Promise<any> => {
+  const isExistToken = await prisma.forgetPassword.findUnique({
+    where: {
+      token: resetToken,
+    },
+  });
+
+  if (!isExistToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Link Invalid");
+  }
+
+  const isExpiredLink = jwtHelpers.verifyResetToken(resetToken, config.jwt.forget_password as Secret);
+  if (isExpiredLink.isExpired) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Link Expired, Try Again");
+  }
+
+  // changing password
+
+  const hashedPassword = await bcrypt.hash(payload?.password, Number(config.bcrypt_salt_rounds));
+
+  const generateNewPassword = await prisma.user.update({
+    where: {
+      email: isExistToken?.email,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+
+  if (!generateNewPassword) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Failed to reset password");
+  }
+
+  // removing reset token
+  await prisma.forgetPassword.delete({
+    where: {
+      token: resetToken,
+    },
+  });
+
+  return;
+};
 
 // ! forget password to send reset link -->
 const deleteResetLink = async () => {
@@ -620,12 +662,11 @@ const deleteResetLink = async () => {
             email: forgetLink.email,
           },
         });
+        infoLogger.info(`Removing forget password token for: email :`, forgetLink?.email);
         if (!deleteLink) {
           errorLogger.error("Failed to delete expired reset link");
         }
       }
-
-      console.log("expired", isExpiredLink);
     }),
   );
 
@@ -643,4 +684,5 @@ export const AuthService = {
   dashboardLogin,
   forgetPassword,
   deleteResetLink,
+  resetPassword,
 };

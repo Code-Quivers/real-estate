@@ -371,7 +371,7 @@ model Document {
 model ForgetPassword {
   id        String   @id @default(uuid())
   email     String    @unique
-  token     String 
+  token     String @unique
   link      String  @unique  
   createdAt DateTime @default(now()) @db.Timestamptz(0)
   updatedAt DateTime @updatedAt @db.Timestamptz(0)

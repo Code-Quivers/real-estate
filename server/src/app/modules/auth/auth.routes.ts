@@ -16,6 +16,8 @@ router.post("/dashboard-login", AuthController.dashboardLogin);
 router.post("/refresh-token", AuthController.refreshToken);
 // forget password , generate reset link
 router.post("/forget-password", AuthController.forgetPassword);
+//
+router.post("/reset-password/:resetToken", AuthController.resetPassword);
 // for dashboard
 router.post("/create-superadmin", AuthController.createSuperAdminUser);
 
