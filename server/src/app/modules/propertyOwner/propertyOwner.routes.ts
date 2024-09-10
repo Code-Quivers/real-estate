@@ -8,7 +8,11 @@ import validateRequest from "../../middlewares/validateRequest";
 
 const router = express.Router();
 // ! get all property owners
-router.get("/get-all-property-owners", auth(UserRoles.SUPERADMIN), PropertyOwnerControllers.getAllPropertyOwners);
+router.get(
+  "/get-all-property-owners",
+  // auth(UserRoles.SUPERADMIN),
+  PropertyOwnerControllers.getAllPropertyOwners,
+);
 
 // ! get single property owner
 router.get(
@@ -44,10 +48,10 @@ router.patch(
 // ! get my tenants
 router.get("/get-my-tenants", auth(UserRoles.PROPERTY_OWNER), PropertyOwnerControllers.getMyAssignedTenants);
 
-// ! delete superadmin (superadmin)
+// ! delete property owner (superadmin)
 router.delete(
   "/delete-property-owner/:propertyOwnerId",
-  auth(UserRoles.SUPERADMIN),
+  // auth(UserRoles.SUPERADMIN),
   PropertyOwnerControllers.deletePropertyOwnerData,
 );
 

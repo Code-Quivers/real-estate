@@ -551,6 +551,21 @@ const dashboardLogin = async (loginData: IDashboardLogin): Promise<ILoginUserRes
     refreshToken,
   };
 };
+// ! forget password to send reset link -->
+const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
+  const { email } = loginData;
+
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials !");
+  }
+  return isUserExist;
+};
 
 export const AuthService = {
   createNewUserForTenant,
@@ -561,4 +576,5 @@ export const AuthService = {
   // for dashboard
   createSuperAdminUser,
   dashboardLogin,
+  forgetPassword,
 };

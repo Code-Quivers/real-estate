@@ -205,7 +205,7 @@ const checkAndUpdateBulkOrderStatus = async () => {
     try {
       // Create a Promise for each payment intent retrieval
 
-      const statusPromises = orders.map(async (order: OrderWithPaymentInfo) => {
+      const statusPromises = orders?.map(async (order: OrderWithPaymentInfo) => {
         const paymentIntent = await stripe.paymentIntents.retrieve(order?.paymentPlatformId);
         return {
           ...order,
@@ -298,6 +298,16 @@ const checkAndUpdateBulkOrderStatus = async () => {
   await prisma.$transaction(updatePromises);
 };
 
+// !==========
+
+const getAccountFromStripe = async (): Promise<any> => {
+  // Fetch a single payment report from the database based on the payment ID
+  const accounts = await stripe.accounts.list({});
+  console.log("accounts", accounts);
+  return accounts;
+};
+// getAccountFromStripe();
+
 // Exporting PaymentServices object with methods
 export const PaymentServices = {
   getPaymentReports,
@@ -305,4 +315,5 @@ export const PaymentServices = {
   getPaymentReportsWithOrderId,
   createPaymnentReport,
   checkAndUpdateBulkOrderStatus,
+  getAccountFromStripe,
 };
