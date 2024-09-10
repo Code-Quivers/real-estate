@@ -11,22 +11,24 @@ const ServiceProviderPopover = ({ row }: any) => {
             </Button>
           </Popover.Target>
           <Popover.Dropdown>
-            {row?.original?.serviceProviders?.map(
-              (serviceProvider: any, index: number) => (
-                <div key={index} className="space-y-3">
-                  <div className="flex text-xs border rounded-md p-2 gap-7 shadow">
-                    <div className="">
-                      <p>{`${serviceProvider?.firstName} ${serviceProvider?.lastName}`}</p>
-                      <p>{serviceProvider?.user?.email}</p>
-                    </div>
-                    <div>
-                      <p>{`${serviceProvider?.companyName}`}</p>
-                      <p>{`${serviceProvider?.companyPhoneNumber}`}</p>
+            <div className="space-y-3">
+              {row?.original?.serviceProviders?.map(
+                (serviceProvider: any, index: number) => (
+                  <div key={index}>
+                    <div className="flex text-xs border rounded-md p-2 gap-7 shadow">
+                      <div className="">
+                        <p>{`${serviceProvider?.firstName} ${serviceProvider?.lastName}`}</p>
+                        <p>{serviceProvider?.user?.email}</p>
+                      </div>
+                      <div>
+                        <p>{`${serviceProvider?.companyName}`}</p>
+                        <p>{`${serviceProvider?.companyPhoneNumber}`}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            )}
+                )
+              )}
+            </div>
           </Popover.Dropdown>
         </Popover>
       ) : (
