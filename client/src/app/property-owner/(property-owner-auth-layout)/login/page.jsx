@@ -147,6 +147,11 @@ const PropertyOwnerLoginPage = () => {
                 {errors?.password?.type === "pattern" && <p className="text-red-500">{errors?.password?.message}</p>}
               </div>
             </div>
+            <div className="mb-4 text-right">
+              <Link href="/forgot-password" className="text-blue-800 hover:underline font-medium">
+                Forgot your password?
+              </Link>
+            </div>
             <div className=" flex justify-center">
               {isLoading ? (
                 <button

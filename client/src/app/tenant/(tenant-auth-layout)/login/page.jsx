@@ -133,8 +133,13 @@ const LoginPage = () => {
               </div>
             </div>
             {/* password requirement */}
-            <div className="h-16 text-xs font-medium text-white mt-2">
+            <div className="h-10 text-xs font-medium text-white mt-2">
               {errors?.password?.type === "pattern" && <p className="text-red-500  rounded-md">{errors?.password?.message}</p>}
+            </div>
+            <div className="mb-4 text-right">
+              <Link href="/forgot-password" className="text-blue-800 hover:underline font-medium">
+                Forgot your password?
+              </Link>
             </div>
             <div className="flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-md w-full !px-8 !py-3" appearance="default">

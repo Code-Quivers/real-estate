@@ -76,8 +76,7 @@ const PropertiesTable = () => {
         size: 150,
       },
       {
-        accessorFn: (row) =>
-          row.Tenant ? row.Tenant.user.email : "No Tenant Assigned",
+        accessorFn: (row) => (row.Tenant ? row.Tenant.user.email : "N/A"),
         id: "tenantAssigned",
         // accessorKey: "Tenant.user.email",
         header: "Tenant Assigned",
