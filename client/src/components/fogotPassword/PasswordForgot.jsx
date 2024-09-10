@@ -57,6 +57,9 @@ const PasswordForgot = () => {
             <button type="submit" className={"w-full py-4 mt-10 bg-primary hover:bg-blue-900 rounded-md text-white text-lg font-medium"}>
               Send Me Reset Instructions
             </button>
+            <Link href="/login" className="text-center mt-5 block text-blue-600 hover:underline">
+              Back to Log In
+            </Link>
           </form>
         </section>
       ) : (
