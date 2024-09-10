@@ -257,7 +257,8 @@ const PropertiesTable = () => {
     enableColumnActions: false,
     enableEditing: true,
     editDisplayMode: "modal",
-    rowCount: data?.meta?.total,
+    // @ts-ignore
+    rowCount: propertiesData?.meta?.total,
     manualPagination: true,
     paginationDisplayMode: "pages",
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally

@@ -174,6 +174,18 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+// ! reset password
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const resetToken = req?.params?.resetToken;
+  const result = await AuthService.resetPassword(resetToken, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Reset Password Successfully!",
+    data: result,
+  });
+});
 
 export const AuthController = {
   createNewUserForTenant,
@@ -185,4 +197,5 @@ export const AuthController = {
   createSuperAdminUser,
   dashboardLogin,
   forgetPassword,
+  resetPassword,
 };
