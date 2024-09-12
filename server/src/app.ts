@@ -22,7 +22,7 @@ create_required_directories();
 // task
 // Schedule the status check to run every hour
 
-cron.schedule("* * * * *", () => {
+cron.schedule("0 */12 * * *", () => {
   infoLogger.info("Checking Delete status...");
   delete_expired_reset_links();
 });
