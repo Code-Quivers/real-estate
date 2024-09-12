@@ -43,29 +43,44 @@ const PaymentTable = ({}: any) => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "business_profile.name",
-        // accessorFn: (row) => row?.business_profile?.name,
+        // accessorKey: "business_profile.name",
+        accessorFn: (row) =>
+          `${row?.individual?.first_name || "N/A"} ${
+            row?.individual?.last_name || ""
+          }`,
         header: "Name",
-        enableEditing: false,
       },
       {
-        // accessorKey: "password",
-        accessorFn: (row) => "********",
-        header: "Password",
+        // accessorKey: "email",
+        accessorFn: (row) =>
+          row?.individual?.email ? row?.individual?.email : "N/A",
+        header: "Email",
       },
 
       {
-        accessorFn: (row) =>
-          Number(row?.dueRent)?.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-          }),
-        // accessorKey: "dueRent",
-        header: "Rent amount",
+        accessorFn: (row) => row?.individual?.address?.line1 || "N/A",
+        // accessorKey: "individual?.address?.line1",
+        id: "address",
+        header: "Address",
+        Cell: ({ row }) => (
+          <div>
+            {row?.original?.individual?.address?.line1 ? (
+              <>
+                <span>{row?.original?.individual?.address?.line1}</span> <br />
+                <span>{row?.original?.individual?.address?.city}</span>
+                {", "}
+                {row?.original?.individual?.address?.state}{" "}
+                {row?.original?.individual?.address?.postal_code}
+              </>
+            ) : (
+              "N/A"
+            )}
+          </div>
+        ),
       },
       {
-        accessorFn: (row) => (row.rentPaid ? "Yes" : "No"),
-        header: "Rent paid",
+        accessorFn: (row) => row?.individual?.phone || "N/A",
+        header: "Phone",
       },
     ],
     []
@@ -112,8 +127,8 @@ const PaymentTable = ({}: any) => {
     state: {
       //   pagination,
       // isSaving: isUpdating,
-      // isLoading: isLoading,
-      //   showSkeletons: isUpdating || isLoading || isDeleting,
+      isLoading: isLoading,
+      showSkeletons: isLoading,
     },
     //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
@@ -129,12 +144,12 @@ const PaymentTable = ({}: any) => {
     positionActionsColumn: "last",
     initialState: { density: "xs" },
     renderRowActions: ({ row, table }) => (
-      <Flex gap="md">
-        <Tooltip label="Edit">
+      <Flex gap="md" justify="center">
+        {/* <Tooltip label="Edit">
           <ActionIcon onClick={() => table.setEditingRow(row)}>
             <IconEdit />
           </ActionIcon>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip label="Delete" onClick={() => openDeleteConfirmModal(row)}>
           <ActionIcon color="red">
             <IconTrash />
