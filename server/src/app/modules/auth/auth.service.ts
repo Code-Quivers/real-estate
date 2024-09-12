@@ -653,7 +653,7 @@ const deleteResetLink = async () => {
   const allForgetLinkData = await prisma.forgetPassword.findMany();
 
   await Promise.all(
-    allForgetLinkData.map(async (forgetLink) => {
+    allForgetLinkData?.map(async (forgetLink) => {
       const isExpiredLink = jwtHelpers.verifyResetToken(forgetLink.token, config.jwt.forget_password as Secret);
 
       if (isExpiredLink.isExpired) {
