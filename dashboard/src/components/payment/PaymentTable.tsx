@@ -27,20 +27,25 @@ const PaymentTable = ({}: any) => {
 
   query["limit"] = pagination.pageSize;
   query["page"] = pagination.pageIndex + 1;
-  const { data, isLoading, isFetching } = useGetPaymentReportsQuery({});
+  const {
+    data: paymentReports,
+    isLoading,
+    isFetching,
+  } = useGetPaymentReportsQuery({});
 
-  console.log(data, "data");
+  //   console.log(data, "data");
   // @ts-ignore
-  //   const { data } = tenantsData || {};
-  // !
+  const { data } = paymentReports || {};
+  console.log(data, "data");
 
   //should be memoized or stable
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "user.email",
-        header: "Email",
+        accessorKey: "business_profile.name",
+        // accessorFn: (row) => row?.business_profile?.name,
+        header: "Name",
         enableEditing: false,
       },
       {
@@ -98,7 +103,7 @@ const PaymentTable = ({}: any) => {
 
   const table = useMantineReactTable({
     columns,
-    data: [],
+    data: data?.data || [],
     manualPagination: true,
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
     // @ts-ignore
