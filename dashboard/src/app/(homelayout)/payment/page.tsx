@@ -1,5 +1,9 @@
 import PaymentTable from "@/components/payment/PaymentTable";
-import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Connected Strip Accounts",
+};
 
 const Payment = () => {
   return (
