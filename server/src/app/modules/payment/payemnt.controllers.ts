@@ -65,12 +65,26 @@ const getPaymentReportsWithOrderId = catchAsync(async (req, res) => {
 });
 
 const getAccountFromStripe = catchAsync(async (req, res) => {
-  const result = await PaymentServices.getAccountFromStripe();
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await PaymentServices.getAccountFromStripe(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Fetching successful!!!",
+    data: result,
+  });
+});
+// deleteConnectedAccount
+const deleteConnectedAccount = catchAsync(async (req, res) => {
+  const accountId = req?.params?.accountId;
+  const result = await PaymentServices.deleteConnectedAccount(accountId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Account Deleted !",
     data: result,
   });
 });
@@ -80,4 +94,5 @@ export const PaymentController = {
   getPaymentReportsWithOrderId,
   getPaymentReport,
   getAccountFromStripe,
+  deleteConnectedAccount,
 };

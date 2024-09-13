@@ -10,6 +10,7 @@ import { IPaymentFilterRequest, OrderWithPaymentInfo } from "./payment.interface
 import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
 import Stripe from "stripe";
 import config from "../../../config";
+import { errorLogger } from "../../../shared/logger";
 const stripe = new Stripe(config.stripe_sk);
 
 /**
@@ -300,14 +301,103 @@ const checkAndUpdateBulkOrderStatus = async () => {
 
 // !==========
 
-const getAccountFromStripe = async (): Promise<any> => {
-  // Fetch a single payment report from the database based on the payment ID
-  const accounts = await stripe.accounts.list({
-    limit: 1,
+const getAccountFromStripe = async (options: IPaginationOptions): Promise<any> => {
+  const { limit, page } = paginationHelpers.calculatePagination(options);
+
+  // Fetch all accounts to get the total count (if this is necessary)
+  const totalResponse = await stripe.accounts.list({
+    limit: 100, // Set a high limit to get as many accounts as possible
   });
-  return accounts;
+  const totalAccountsCount = totalResponse.data.length;
+
+  // Calculate total pages
+  const totalPages = Math.ceil(totalAccountsCount / limit);
+
+  // Make sure the requested page is within the valid range
+  if (page > totalPages) {
+    throw new Error(`Page number exceeds the total number of available pages (${totalPages}).`);
+  }
+
+  // This will hold the last retrieved account for cursor pagination
+  let lastAccountId: string | undefined;
+
+  // We need to "skip" the accounts that belong to the previous pages
+  const accountsToSkip = (page - 1) * limit;
+
+  // Keep fetching pages until we've skipped enough accounts
+  let skippedAccounts = 0;
+
+  while (skippedAccounts < accountsToSkip) {
+    const response = await stripe.accounts.list({
+      limit,
+      ...(lastAccountId && { starting_after: lastAccountId }),
+    });
+
+    if (response.data.length === 0) break; // No more data
+
+    // Set the last account ID for the next batch
+    lastAccountId = response.data[response.data.length - 1].id;
+
+    skippedAccounts += response.data.length;
+  }
+
+  // Now, fetch the actual page of accounts
+  const pageResponse = await stripe.accounts.list({
+    limit,
+    ...(lastAccountId && { starting_after: lastAccountId }),
+  });
+
+  // Structure the returned result
+  return {
+    meta: {
+      page,
+      limit,
+      total: totalAccountsCount,
+      totalPage: totalPages,
+    },
+    data: pageResponse?.data, // Assuming `propertiesWithTenantInfo` is the data here
+  };
 };
-// getAccountFromStripe();
+
+// remove  an account from stripe and database
+const deleteConnectedAccount = async (accountId: string): Promise<any> => {
+  const isExistAccountOnDb = await prisma.financialAccount.findUnique({
+    where: {
+      finOrgAccountId: accountId,
+    },
+  });
+
+  if (isExistAccountOnDb) {
+    const deleteFinancialAccount = await prisma.financialAccount.delete({
+      where: {
+        finOrgAccountId: accountId,
+      },
+    });
+
+    if (!deleteFinancialAccount) {
+      errorLogger.error("Failed to remove financial account from database");
+    }
+  }
+
+  // delete a single account from the database based on the payment ID
+  try {
+    const isExistAcc = await stripe.accounts.retrieve(accountId);
+
+    if (isExistAcc?.id) {
+      try {
+        await stripe.accounts.del(accountId);
+      } catch (error: any) {
+        errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error?.statusCode || httpStatus.NOT_FOUND);
+        throw new ApiError(httpStatus.BAD_REQUEST, "Failed to delete account");
+      }
+    }
+  } catch (error: any) {
+    errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error?.statusCode || httpStatus.NOT_FOUND);
+    throw new ApiError(httpStatus.BAD_REQUEST, "Account not found");
+  }
+
+  return;
+};
 
 // Exporting PaymentServices object with methods
 export const PaymentServices = {
@@ -317,4 +407,5 @@ export const PaymentServices = {
   createPaymnentReport,
   checkAndUpdateBulkOrderStatus,
   getAccountFromStripe,
+  deleteConnectedAccount,
 };

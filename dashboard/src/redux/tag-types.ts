@@ -15,6 +15,7 @@ export const tagTypes = {
   conversation: "conversation",
   reports: "reports",
   documents: "documents",
+  accounts: "accounts",
 };
 
 export const tagTypesList = [
@@ -30,4 +31,5 @@ export const tagTypesList = [
   tagTypes.conversation,
   tagTypes.reports,
   tagTypes.documents,
+  tagTypes.accounts,
 ];

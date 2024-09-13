@@ -7,11 +7,20 @@ export const paymentApi = baseApi.injectEndpoints({
       query: (arg: any) => ({
         url: "/payment/get-connected-accounts",
         method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.accounts],
+    }),
+    deleteFinancialAccount: builder.mutation({
+      query: (paymentId: string) => ({
+        url: `/payment/delete/${paymentId}`,
+        method: "DELETE",
         // params: arg,
       }),
-      //   providesTags: [tagTypes.],
+      invalidatesTags: [tagTypes.accounts],
     }),
   }),
 });
 
-export const { useGetPaymentReportsQuery } = paymentApi;
+export const { useGetPaymentReportsQuery, useDeleteFinancialAccountMutation } =
+  paymentApi;
