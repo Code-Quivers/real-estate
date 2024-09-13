@@ -10,19 +10,24 @@ import {
 import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { useGetPaymentReportsQuery } from "@/redux/api/features/paymentApi";
+import {
+  useDeleteFinancialAccountMutation,
+  useGetPaymentReportsQuery,
+} from "@/redux/api/features/paymentApi";
 // import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
 
 const PaymentTable = ({}: any) => {
-  //   const [deleteTenantData, { isLoading: isDeleting }] =
-  //     useDeleteTenantDataMutation();
+  const [
+    deleteFinancialAccount,
+    { isLoading: isLoadingDelete, isError: isDeleteError, error: deleteError },
+  ] = useDeleteFinancialAccountMutation();
 
   const query: any = {};
 
   // Store pagination state in your own state
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: 5, // customize the default page size
+    pageSize: 15, // customize the default page size
   });
 
   query["limit"] = pagination.pageSize;
@@ -31,12 +36,12 @@ const PaymentTable = ({}: any) => {
     data: paymentReports,
     isLoading,
     isFetching,
-  } = useGetPaymentReportsQuery({});
+  } = useGetPaymentReportsQuery({ ...query });
 
   //   console.log(data, "data");
   // @ts-ignore
   const { data } = paymentReports || {};
-  console.log(data, "data");
+  // console.log(data, "data");
 
   //should be memoized or stable
 
@@ -88,9 +93,9 @@ const PaymentTable = ({}: any) => {
 
   const validateRequired = (values: any) => values?.length > 0;
 
-  const handleDeleteTenant = async (tenantId: string) => {
+  const handleDeleteTenant = async (accountId: string) => {
     try {
-      //   await deleteTenantData({ tenantId });
+      await deleteFinancialAccount(accountId);
       modals.closeAll();
     } catch (error) {
       // console.log(error, "error");
@@ -113,7 +118,7 @@ const PaymentTable = ({}: any) => {
       labels: { confirm: "Delete", cancel: "Cancel" },
       confirmProps: { color: "red" },
       closeOnConfirm: false,
-      onConfirm: () => handleDeleteTenant(row.original.tenantId),
+      onConfirm: () => handleDeleteTenant(row?.original?.id),
     });
 
   const table = useMantineReactTable({
@@ -122,13 +127,13 @@ const PaymentTable = ({}: any) => {
     manualPagination: true,
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally
     // @ts-ignore
-    // rowCount: tenantsData?.meta?.total,
+    rowCount: data?.meta?.total || 0,
     paginationDisplayMode: "pages",
     state: {
-      //   pagination,
+      pagination,
       // isSaving: isUpdating,
       isLoading: isLoading,
-      showSkeletons: isLoading,
+      showSkeletons: isLoading || isFetching,
     },
     //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
