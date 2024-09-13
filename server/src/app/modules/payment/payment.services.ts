@@ -302,8 +302,9 @@ const checkAndUpdateBulkOrderStatus = async () => {
 
 const getAccountFromStripe = async (): Promise<any> => {
   // Fetch a single payment report from the database based on the payment ID
-  const accounts = await stripe.accounts.list({});
-  console.log("accounts", accounts);
+  const accounts = await stripe.accounts.list({
+    limit: 1,
+  });
   return accounts;
 };
 // getAccountFromStripe();

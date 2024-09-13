@@ -573,7 +573,16 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
   });
 
   if (findLink) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Reset Link already sent to your email, try again 5 minutes later");
+    const isExpiredLink = jwtHelpers.verifyResetToken(findLink?.token as string, config.jwt.forget_password as Secret);
+    if (isExpiredLink.isExpired) {
+      await prisma.forgetPassword.delete({
+        where: {
+          email,
+        },
+      });
+    } else if (!isExpiredLink.isExpired) {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Reset Link already sent to your email, try again 5 minutes later");
+    }
   }
 
   // ! send reset link to email
