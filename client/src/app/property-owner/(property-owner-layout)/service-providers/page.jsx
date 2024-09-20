@@ -3,7 +3,7 @@
 "use client";
 import { FaSearch } from "react-icons/fa";
 import { Input, Pagination, SelectPicker } from "rsuite";
-import { AutoComplete, InputGroup } from "rsuite";
+import { InputGroup } from "rsuite";
 import { useState } from "react";
 import { useDebounced } from "@/redux/hook";
 import { serviceAvailability, serviceTypes } from "@/constants/serviceConst";

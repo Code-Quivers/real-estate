@@ -8,9 +8,12 @@ import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redu
 import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 import RemoveFromAvailableTenantsModal from "../available-tenants/RemoveFromSavedTenantsModal";
+import moment from "moment";
 
 const SavedTenantLists = ({ singleReq, children }) => {
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
 
@@ -117,10 +120,14 @@ const SavedTenantLists = ({ singleReq, children }) => {
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit) => (
-                        <div key={Math.random()}>
+                        <div
+                          key={Math.random()}
+                          className={`${singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 ? "bg-red-50" : ""} rounded-lg`}
+                        >
                           <button
                             onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                            className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                            className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm disabled:cursor-not-allowed"
+                            disabled={singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30}
                           >
                             <div className="col-span-1">
                               <Image
@@ -136,7 +143,12 @@ const SavedTenantLists = ({ singleReq, children }) => {
                               <h3 className="line-clamp-1">
                                 {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                               </h3>
-                              <h3 className="line-clamp-2">{singleUnit?.address}</h3>
+                              <h3 className="line-clamp-2">{singleUnit?.address}</h3>{" "}
+                              {singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 && (
+                                <h3 className="bg-red-500 px-3 rounded-md  text-center">
+                                  <span className="text-xs font-semibold text-white ">Trial Period is over</span>
+                                </h3>
+                              )}
                             </div>
                           </button>
                         </div>

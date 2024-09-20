@@ -13,7 +13,9 @@ import moment from "moment";
 const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
   const [isMobile] = useMediaQuery("(max-width: 575px)");
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
 
   const [open, setOpen] = useState(false);
   const [removeModalData, setRemoveModalData] = useState(null);
@@ -128,33 +130,42 @@ const SavedTenantModalDetails = ({ isModalOpened, setModalOpened, modalData }) =
                     speaker={
                       <Popover className="max-h-[450px] max-w-[350px] !rounded-md overflow-y-auto mb-5" arrow={false}>
                         <div className="space-y-2">
-                          {!isLoadingUnits &&
-                            unitRes?.data?.length > 0 &&
-                            unitRes?.data?.map((singleUnit) => (
-                              <div key={Math.random()}>
-                                <button
-                                  onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                                  className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                          {!isLoadingUnits && unitRes?.data?.length > 0
+                            ? unitRes?.data?.map((singleUnit) => (
+                                <div
+                                  key={Math.random()}
+                                  className={`${singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 ? "bg-red-50" : ""} rounded-lg`}
                                 >
-                                  <div className="col-span-1">
-                                    <Image
-                                      width={500}
-                                      height={500}
-                                      className="w-[120px] h-[100px] p-1 object-cover rounded-xl"
-                                      src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
-                                      alt="photo"
-                                    />
-                                  </div>
-                                  <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
-                                    <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
-                                    <h3 className="line-clamp-1">
-                                      {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
-                                    </h3>
-                                    <h3 className="line-clamp-2">{singleUnit?.address}</h3>
-                                  </div>
-                                </button>
-                              </div>
-                            ))}
+                                  <button
+                                    onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
+                                    className="grid grid-cols-3 border rounded-lg hover:border-primary duration-300 transition-all text-start shadow-sm disabled:cursor-not-allowed"
+                                    disabled={singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30}
+                                  >
+                                    <div className="col-span-1">
+                                      <Image
+                                        width={500}
+                                        height={500}
+                                        className="w-[120px] h-[100px] p-1 object-cover rounded-xl"
+                                        src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : profileLogo}
+                                        alt="photo"
+                                      />
+                                    </div>
+                                    <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
+                                      <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                                      <h3 className="line-clamp-1">
+                                        {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
+                                      </h3>
+                                      <h3 className="line-clamp-2">{singleUnit?.address}</h3>
+                                      {singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 && (
+                                        <h3 className="bg-red-500 px-3 rounded-md  text-center">
+                                          <span className="text-xs font-semibold text-white ">Trial Period is over</span>
+                                        </h3>
+                                      )}
+                                    </div>
+                                  </button>
+                                </div>
+                              ))
+                            : "No Units Available"}
 
                           {isLoadingUnits && (
                             <div className=" mt-10 gap-y-5 flex flex-col">
