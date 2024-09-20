@@ -8,6 +8,7 @@ import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } fro
 import Score from "@/components/Shared/Score/Score";
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 import RemoveFromSavedServiceProviderModal from "./RemoveFromSavedServiceProviderModal";
+import moment from "moment";
 
 const SavedServiceProviderList = ({ singleReq, children }) => {
   const query = {};
@@ -114,10 +115,14 @@ const SavedServiceProviderList = ({ singleReq, children }) => {
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit) => (
-                        <div key={Math.random()}>
+                        <div
+                          key={Math.random()}
+                          className={`${singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 ? "bg-red-50" : ""} rounded-lg`}
+                        >
                           <button
                             onClick={() => handleAddServiceProviderToProperty(singleUnit?.propertyId)}
-                            className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                            className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm disabled:cursor-not-allowed"
+                            disabled={singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30}
                           >
                             <div className="col-span-1">
                               <Image
@@ -128,12 +133,17 @@ const SavedServiceProviderList = ({ singleReq, children }) => {
                                 alt="photo"
                               />
                             </div>
-                            <div className="flex w-full flex-col justify-between col-span-2 ml-3 my-2 *:text-sm">
+                            <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
                               <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
                               <h3 className="line-clamp-1">
                                 {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Bath
                               </h3>
                               <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
+                              {singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 && (
+                                <h3 className="bg-red-500 px-3 rounded-md  text-center">
+                                  <span className="text-xs font-semibold text-white ">Trial Period is over</span>
+                                </h3>
+                              )}
                             </div>
                           </button>
                         </div>
