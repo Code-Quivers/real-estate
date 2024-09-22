@@ -29,3 +29,13 @@ export type NewMessage = {
     senderId: string;
   };
 };
+
+export type IServiceProviderDetails = {
+  firstName: string;
+  lastName: string;
+  companyEmailAddress: string;
+  user: {
+    email: string;
+  };
+  companyName: string;
+};

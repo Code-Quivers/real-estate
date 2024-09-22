@@ -22,4 +22,5 @@ export default {
   },
   client_url: process.env.CLIENT_URL,
   stripe_sk: process.env.STIPE_SK_LIVE || "",
+  mailer_send_key: process.env.MAILER_SEND_API_KEY,
 };
