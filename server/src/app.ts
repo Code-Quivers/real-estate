@@ -20,14 +20,13 @@ const app: Application = express();
 create_required_directories();
 
 // task
-// Schedule the status check to run every hour
+// Schedule the status check to run every 12 hour
 
 cron.schedule("0 */12 * * *", () => {
   infoLogger.info("Checking Delete status...");
   delete_expired_reset_links();
-});
+  //
 
-cron.schedule("0 */12 * * *", () => {
   infoLogger.info("Checking payment status...");
   check_payment_status_tasks();
 });

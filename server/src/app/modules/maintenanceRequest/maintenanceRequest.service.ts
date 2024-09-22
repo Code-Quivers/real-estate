@@ -5,6 +5,7 @@ import prisma from "../../../shared/prisma";
 import { IAddRequestMaintenance, IUpdateRequestMaintenance } from "./maintenanceRequest.interfaces";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
+import { sendEmailToServiceProvider } from "../../../shared/emailSender";
 
 // ! add request maintenance request to property owner from tenant user
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
@@ -51,6 +52,39 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
     });
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to add Maintenance Request");
+
+    if (newData.priority === "HIGH_PRIORITY") {
+      // ! send email notification to all service providers
+
+      const allServiceProviders = await transactionClient.property.findUnique({
+        where: {
+          propertyId: res?.propertyId as string,
+        },
+        include: {
+          serviceProviders: {
+            select: {
+              companyEmailAddress: true,
+              user: {
+                select: {
+                  email: true,
+                },
+              },
+              firstName: true,
+              lastName: true,
+              companyName: true,
+            },
+          },
+        },
+      });
+
+      // send email to service provider
+      if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
+        allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
+          await sendEmailToServiceProvider(serviceProvider);
+        });
+      }
+    }
+
     return res;
   });
   return result;
@@ -310,16 +344,52 @@ const acceptRequestMaintenanceForServiceProvider = async (maintenanceRequestId: 
       },
       data: {
         status: "ACTIVE",
-
         serviceProvider: {
           connect: {
             serviceProviderId,
           },
         },
       },
+      include: {
+        serviceProvider: true,
+      },
     });
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+
+    // ! send email notification to all service providers
+
+    const allServiceProviders = await transactionClient.property.findUnique({
+      where: {
+        propertyId: res?.propertyId as string,
+      },
+      include: {
+        serviceProviders: {
+          select: {
+            companyEmailAddress: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+            firstName: true,
+            lastName: true,
+            companyName: true,
+          },
+        },
+      },
+    });
+
+    // send email to service provider
+    if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders.length > 0) {
+      console.log("sending email from property owner accept");
+      allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
+        await sendEmailToServiceProvider(serviceProvider);
+      });
+    }
+
+    //
+
     return res;
   });
   return result;
