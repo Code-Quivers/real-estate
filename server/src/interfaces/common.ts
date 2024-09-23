@@ -30,7 +30,7 @@ export type NewMessage = {
   };
 };
 
-export type IServiceProviderDetails = {
+export type IServiceProviderDetailsForNotification = {
   firstName: string;
   lastName: string;
   companyEmailAddress: string;
@@ -38,4 +38,11 @@ export type IServiceProviderDetails = {
     email: string;
   };
   companyName: string;
+};
+export type ITenantDetailsForNotification = {
+  firstName: string;
+  lastName: string;
+  user: {
+    email: string;
+  };
 };

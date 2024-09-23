@@ -5,7 +5,7 @@ import prisma from "../../../shared/prisma";
 import { IAddRequestMaintenance, IUpdateRequestMaintenance } from "./maintenanceRequest.interfaces";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
-import { sendEmailToServiceProvider } from "../../../shared/emailSender";
+import { sendEmailToServiceProvider, sendEmailToTenantAfterStatusChanged } from "../../../shared/emailSender";
 
 // ! add request maintenance request to property owner from tenant user
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
@@ -420,9 +420,30 @@ const updateRequestMaintenanceForServiceProvider = async (
       data: {
         status: payload.status,
       },
+      include: {
+        tenant: {
+          select: {
+            firstName: true,
+            lastName: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Update, try again");
+
+    // sending email notification to tenant
+
+    // send email to service provider
+    if (res?.tenant) {
+      await sendEmailToTenantAfterStatusChanged(res?.tenant as any);
+    }
+
     return res;
   });
   return result;
