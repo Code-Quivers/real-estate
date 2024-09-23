@@ -46,3 +46,11 @@ export type ITenantDetailsForNotification = {
     email: string;
   };
 };
+export type IOwnerDetailsForNotification = {
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string | null;
+  user: {
+    email: string;
+  };
+};
