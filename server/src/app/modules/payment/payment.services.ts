@@ -11,6 +11,7 @@ import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchab
 import Stripe from "stripe";
 import config from "../../../config";
 import { errorLogger } from "../../../shared/logger";
+import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailSender";
 const stripe = new Stripe(config.stripe_sk);
 
 /**
@@ -183,17 +184,59 @@ const getPaymentReportsWithOrderId = async (userId: string, orderId: string): Pr
   return paymentReports;
 };
 
-// Store payment information in the database from the plaform like Paypal, venmo etc.
+// Store payment information in the database from the platform like Paypal, venmo etc.
 
-const createPaymnentReport = async (data: any): Promise<PaymentInformation | null> => {
+const createPaymnentReport = async (data: any): Promise<any | null> => {
   // Fetch a single payment report from the database based on the payment ID
   const paymentReport = await prisma.paymentInformation.create({
     data: data,
+    select: {
+      order: {
+        select: {
+          tenant: {
+            select: {
+              property: {
+                select: {
+                  ownerId: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   // If the payment report is not found, throw an error
   if (!paymentReport) {
     throw new ApiError(httpStatus.BAD_REQUEST, "No payment information found!!!");
+  }
+
+  // sending email notification to property owner
+
+  // ! send email notification to all service providers
+
+  const ownerOfProperty = await prisma.propertyOwner.findUnique({
+    where: {
+      propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId,
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  });
+
+  // send email to service provider
+  if (ownerOfProperty?.user?.email) {
+    console.log("sending email to property owner for rent received");
+
+    await sendEmailToOwnerAfterRentReceived(ownerOfProperty);
   }
 
   return paymentReport;
