@@ -7,8 +7,13 @@ import {
   useMantineReactTable,
   type MRT_ColumnDef,
 } from "mantine-react-table";
-import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Flex, rem, Text, Tooltip } from "@mantine/core";
+import {
+  IconCheck,
+  IconEdit,
+  IconExclamationCircleFilled,
+  IconTrash,
+} from "@tabler/icons-react";
 import {
   useDeletePropertyOwnerDataMutation,
   useGetAllPropertyOwnerQuery,
@@ -16,9 +21,10 @@ import {
 } from "@/redux/api/features/propertyOwnerApi";
 import { modals } from "@mantine/modals";
 import PropertyOwnerEditModal from "./PropertyOwnerEditModal";
+import { notifications } from "@mantine/notifications";
 
 const PropertyOwnerTable = () => {
-  const [updatePropertyOwner, { isLoading: isUpdating }] =
+  const [updatePropertyOwner, { isLoading: isUpdating, error }] =
     useUpdatePropertyOwnerProfileMutation();
   const [deletePropertyOwnerData, { isLoading: isDeleting }] =
     useDeletePropertyOwnerDataMutation();
@@ -43,11 +49,54 @@ const PropertyOwnerTable = () => {
 
   // delete property owner
   const handleDeleteTenant = async (propertyOwnerId: string) => {
-    await deletePropertyOwnerData({ propertyOwnerId });
+    modals.closeAll();
+    const id = notifications.show({
+      loading: true,
+      title: "Deleting property owner",
+      message: "Please wait while we delete the property owner",
+      autoClose: false,
+      withCloseButton: false,
+      position: "top-right",
+      color: "blue",
+      withBorder: true,
+    });
+    try {
+      const response = await deletePropertyOwnerData({ propertyOwnerId });
+      console.log(response, "response");
+      if ((response?.data as { success?: boolean })?.success) {
+        notifications.update({
+          id,
+          loading: false,
+          message: "Property owner deleted successfully",
+          title: "Property owner deleted",
+          autoClose: true,
+          withCloseButton: true,
+          position: "top-right",
+          icon: <IconCheck />,
+          color: "teal",
+          withBorder: true,
+        });
+      } else {
+        notifications.update({
+          id,
+          loading: false,
+          message: "Failed to delete property owner",
+          title: "Failed",
+          autoClose: true,
+          withCloseButton: true,
+          position: "top-right",
+          color: "red",
+          icon: <IconExclamationCircleFilled />,
+          withBorder: true,
+        });
+      }
+    } catch (error) {
+      // console.log(error, "error");
+    }
   };
   const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
     modals.openConfirmModal({
-      // title: "Are you sure you want to delete this user?",
+      title: "Delete property owner",
       children: (
         <Text>
           Are you sure you want to delete{" "}
@@ -60,7 +109,7 @@ const PropertyOwnerTable = () => {
       ),
       labels: { confirm: "Delete", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      onConfirm: () => handleDeleteTenant(row.original?.propertyOwnerId),
+      onConfirm: () => handleDeleteTenant(row?.original?.propertyOwnerId),
     });
 
   //should be memoized or stable
@@ -119,6 +168,7 @@ const PropertyOwnerTable = () => {
         table={table}
         updatePropertyOwner={updatePropertyOwner}
         row={row}
+        error={error}
       />
     ),
     enableColumnActions: false,

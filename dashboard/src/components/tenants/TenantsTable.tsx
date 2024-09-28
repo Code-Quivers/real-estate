@@ -9,22 +9,25 @@ import {
 } from "mantine-react-table";
 import { ActionIcon, Flex, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconEdit,
+  IconExclamationCircleFilled,
+  IconTrash,
+} from "@tabler/icons-react";
 import {
   useDeleteTenantDataMutation,
   useGetAllTenantsQuery,
   useUpdateTenantProfileMutation,
 } from "@/redux/api/features/tenantsApi";
 import TenantsEditModal from "./TenantsComponents/TenantsEditModal";
+import { notifications } from "@mantine/notifications";
 
 const TenantsTable = ({}: any) => {
   const [updateTenant, { isLoading: isUpdating }] =
     useUpdateTenantProfileMutation();
   const [deleteTenantData, { isLoading: isDeleting }] =
     useDeleteTenantDataMutation();
-  const [validationErrors, setValidationErrors] = useState<{
-    firstName?: string;
-  }>({});
   // !
   const query: any = {};
 
@@ -68,19 +71,7 @@ const TenantsTable = ({}: any) => {
             <div>{cell.getValue<any>()}</div>
           </>
         ),
-        mantineEditTextInputProps: {
-          type: "text",
-          required: true,
-          error: validationErrors?.firstName,
-          onFocus: () => {
-            setValidationErrors({
-              ...validationErrors,
-              firstName: undefined,
-            });
-          },
-        },
       },
-
       {
         accessorFn: (row) =>
           Number(row?.dueRent)?.toLocaleString("en-US", {
@@ -95,15 +86,50 @@ const TenantsTable = ({}: any) => {
         header: "Rent paid",
       },
     ],
-    [validationErrors]
+    []
   );
 
-  const validateRequired = (values: any) => values?.length > 0;
-
   const handleDeleteTenant = async (tenantId: string) => {
+    modals.closeAll();
+    const id = notifications.show({
+      loading: true,
+      title: "Deleting tenant",
+      message: "Please wait while we delete the tenant",
+      autoClose: false,
+      withCloseButton: false,
+      position: "top-right",
+      color: "blue",
+      withBorder: true,
+    });
     try {
-      await deleteTenantData({ tenantId });
-      modals.closeAll();
+      const response = await deleteTenantData({ tenantId });
+      if ((response?.data as { success?: boolean })?.success) {
+        notifications.update({
+          id,
+          loading: false,
+          message: "Property owner deleted successfully",
+          title: "Property owner deleted",
+          autoClose: 3000,
+          withCloseButton: true,
+          position: "top-right",
+          icon: <IconCheck />,
+          color: "green",
+          withBorder: true,
+        });
+      } else {
+        notifications.update({
+          id,
+          loading: false,
+          message: "Failed to delete property owner",
+          title: "Failed",
+          withCloseButton: true,
+          position: "top-right",
+          color: "red",
+          icon: <IconExclamationCircleFilled />,
+          withBorder: true,
+          autoClose: 3000,
+        });
+      }
     } catch (error) {
       // console.log(error, "error");
     }
@@ -111,7 +137,7 @@ const TenantsTable = ({}: any) => {
   // delete tenant
   const openDeleteConfirmModal = async (row: MRT_Row<any>) =>
     modals.openConfirmModal({
-      // title: "Are you sure you want to delete this user?",
+      title: "Delete tenant",
       children: (
         <Text>
           Are you sure you want to delete{" "}
@@ -142,15 +168,10 @@ const TenantsTable = ({}: any) => {
       // isLoading: isLoading,
       showSkeletons: isUpdating || isLoading || isDeleting,
     },
-    //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     // enableRowSelection: true,
     enableEditing: true,
     // onEditingRowSave: handleSaveTenant,
     editDisplayMode: "modal",
-    // mantineSkeletonProps: {
-    //   // visible: true,
-    //   animate: true,
-    // },
     renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
       <TenantsEditModal
         table={table}
