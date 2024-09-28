@@ -73,9 +73,9 @@ const SidebarMenu = ({ toggleMobile }: any) => {
             onClick={toggleMobile}
             component={Link}
             key="Tenant"
-            href="/payment"
-            active={path === "/properties"}
-            label="Payment"
+            href="/connected-accounts"
+            active={path === "/connected-accounts"}
+            label="Connected accounts"
             leftSection={<IconCashBanknote size={18} />}
             variant="filled"
             color="indigo"

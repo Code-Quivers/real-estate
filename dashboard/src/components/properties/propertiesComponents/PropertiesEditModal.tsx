@@ -1,13 +1,4 @@
-import {
-  Box,
-  Flex,
-  LoadingOverlay,
-  Select,
-  Stack,
-  TextInput,
-  Title,
-} from "@mantine/core";
-import { DateInput } from "@mantine/dates";
+import { Flex, Stack, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { MRT_EditActionButtons } from "mantine-react-table";
 
@@ -43,21 +34,14 @@ const PropertiesEditModal = ({
 
   return (
     <>
-      <Box pos="relative">
-        <LoadingOverlay
-          visible={isLoading}
-          overlayProps={{ radius: "md", blur: 2 }}
-          loaderProps={{ color: "cyan", type: "bars" }}
-        />
-        <Stack>
-          <Title order={3}>Edit Property</Title>
-          {internalEditComponents}
+      <Stack>
+        <Title order={3}>Edit Property</Title>
+        {internalEditComponents}
 
-          <Flex justify="flex-end" mt="xl">
-            <MRT_EditActionButtons variant="text" table={table} row={row} />
-          </Flex>
-        </Stack>
-      </Box>
+        <Flex justify="flex-end" mt="xl">
+          <MRT_EditActionButtons variant="text" table={table} row={row} />
+        </Flex>
+      </Stack>
     </>
   );
 };
