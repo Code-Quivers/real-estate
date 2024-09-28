@@ -10,6 +10,7 @@ import { IDashboardLogin, ILoginUserResponse, IRefreshTokenResponse, IUserCreate
 import { UserRoles, UserStatus } from "@prisma/client";
 import { userFindUnique } from "./auth.utils";
 import { errorLogger, infoLogger } from "../../../shared/logger";
+import { sendResetPasswordLink } from "../../../shared/emailNotification/emailForResetPassword";
 
 //! Tenant User Create
 
@@ -562,6 +563,9 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
     where: {
       email,
     },
+    select: {
+      email: true,
+    },
   });
 
   if (!isUserExist) {
@@ -611,6 +615,12 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
 
   if (!forget_result) {
     throw new ApiError(httpStatus.BAD_REQUEST, " Failed to Generate Reset Link");
+  }
+
+  // sending notification email
+
+  if (forget_result) {
+    await sendResetPasswordLink(forgetObj);
   }
 
   return forget_result;

@@ -76,3 +76,9 @@ export type IDueRentForNotification = {
   dueDays: number;
   rentPaid: boolean;
 };
+
+export type IResetPassword = {
+  email: string;
+  token: string;
+  link: string;
+};
