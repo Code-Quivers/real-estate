@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { EmailParams, MailerSend, Recipient, Sender } from "mailersend";
-import config from "../config";
-import { errorLogger, infoLogger } from "./logger";
+import { EmailParams, Recipient, Sender } from "mailersend";
+
+import { errorLogger, infoLogger } from "../logger";
 import {
   IOwnerDetailsForNotification,
   IServiceProviderDetailsForNotification,
   ITenantDetailsForNotification,
-} from "../interfaces/common";
-
-const mailerSend = new MailerSend({
-  apiKey: config.mailer_send_key as string,
-});
+} from "../../interfaces/common";
+import { mailerSend } from "./mailerSendarKey";
 
 export const sendEmail = async () => {
   try {

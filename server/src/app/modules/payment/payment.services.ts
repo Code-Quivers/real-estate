@@ -11,7 +11,9 @@ import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchab
 import Stripe from "stripe";
 import config from "../../../config";
 import { errorLogger } from "../../../shared/logger";
-import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailSender";
+import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailSender";
+import { differenceInDays, differenceInMonths } from "../tenants/tenants.utils";
+import { sendDueRentEmailToTenant } from "../../../shared/emailNotification/emailForDueRent";
 const stripe = new Stripe(config.stripe_sk);
 
 /**
@@ -242,106 +244,6 @@ const createPaymnentReport = async (data: any): Promise<any | null> => {
   return paymentReport;
 };
 
-// ! ==============================================
-
-const checkAndUpdateBulkOrderStatus = async () => {
-  const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
-    try {
-      // Create a Promise for each payment intent retrieval
-
-      const statusPromises = orders?.map(async (order: OrderWithPaymentInfo) => {
-        const paymentIntent = await stripe.paymentIntents.retrieve(order?.paymentPlatformId);
-        return {
-          ...order,
-          paymentStatus: paymentIntent?.status,
-        };
-      });
-
-      // Wait for all Promises to resolve
-      const updatedOrders = await Promise.all(statusPromises);
-
-      return updatedOrders;
-    } catch (error) {
-      console.error("Error checking payment statuses:", error);
-      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
-    }
-  };
-
-  // ! getting from database
-
-  const getAllPendingOrders = async (): Promise<OrderWithPaymentInfo[]> => {
-    try {
-      const allOrdersData = await prisma.order.findMany({
-        where: {
-          orderStatus: "PENDING",
-          PaymentInformation: {
-            isNot: null,
-          },
-        },
-        select: {
-          orderId: true,
-          orderStatus: true,
-          PaymentInformation: {
-            select: {
-              paymentPlatformId: true,
-            },
-          },
-        },
-      });
-
-      // Transform the data to flatten the PaymentInformation object
-      const orders = allOrdersData?.map((order) => ({
-        orderId: order.orderId,
-        orderStatus: order.orderStatus,
-        paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
-      }));
-
-      return orders;
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
-    }
-  };
-
-  const otherData = await checkBulkPaymentStatus(await getAllPendingOrders());
-
-  const updatePromises: any[] = otherData?.map((single) => {
-    //
-    if (single.paymentStatus === "succeeded") {
-      return prisma.order.update({
-        where: {
-          orderId: single.orderId,
-        },
-        data: {
-          orderStatus: "CONFIRMED",
-          PaymentInformation: {
-            update: {
-              paymentStatus: single.paymentStatus,
-            },
-          },
-        },
-      });
-    } else if (single.paymentStatus === "canceled") {
-      return prisma.order.update({
-        where: {
-          orderId: single.orderId,
-        },
-        data: {
-          orderStatus: "FAILED",
-          PaymentInformation: {
-            update: {
-              paymentStatus: single.paymentStatus,
-            },
-          },
-        },
-      });
-    }
-  });
-
-  //
-  await prisma.$transaction(updatePromises);
-};
-
 // !==========
 
 const getAccountFromStripe = async (options: IPaginationOptions): Promise<any> => {
@@ -441,6 +343,190 @@ const deleteConnectedAccount = async (accountId: string): Promise<any> => {
 
   return;
 };
+// ! ==============================================
+const checkAndUpdateBulkOrderStatus = async () => {
+  // Fetch pending orders from the database
+  const getAllPendingOrders = async (): Promise<any> => {
+    try {
+      const allOrdersData = await prisma.order.findMany({
+        where: {
+          orderStatus: "PENDING",
+          PaymentInformation: {
+            isNot: null,
+          },
+        },
+        select: {
+          orderId: true,
+          PaymentInformation: {
+            select: {
+              paymentPlatformId: true,
+            },
+          },
+        },
+      });
+      console.log("all orders data", allOrdersData);
+
+      return allOrdersData?.map((order) => ({
+        orderId: order.orderId,
+        paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
+      }));
+    } catch (error) {
+      errorLogger.error("Error fetching orders:", error);
+      // throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
+    }
+  };
+
+  // Check payment status for all orders
+  const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
+    const statusPromises = orders?.map(async (order) => {
+      try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId);
+        console.log("payment intent", paymentIntent);
+        return { ...order, paymentStatus: paymentIntent?.status };
+      } catch (error) {
+        errorLogger.error(`Error retrieving payment intent for order ID: ${order.orderId}`, error);
+        return { ...order, paymentStatus: "payment_intent_not_found" };
+      }
+    });
+    return await Promise.all(statusPromises);
+  };
+
+  // Main logic to check payment status and update orders
+  const pendingOrders = await getAllPendingOrders();
+  console.log("pendingOrder", pendingOrders);
+  const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
+  console.log("updated", updatedOrders);
+  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
+    console.log("single data", single);
+    // if (single?.paymentStatus === "succeeded" || single?.paymentStatus === "canceled") {
+    acc.push(
+      prisma.order.update({
+        where: { orderId: single.orderId },
+        data: {
+          orderStatus: single?.paymentStatus === "succeeded" ? "CONFIRMED" : "FAILED",
+          PaymentInformation: {
+            update: { paymentStatus: single.paymentStatus },
+          },
+        },
+      }),
+    );
+    // }
+    return acc; // Return the accumulated array
+  }, []);
+
+  // Execute the transaction with valid promises only
+  if (updatePromises.length > 0) {
+    await prisma.$transaction(updatePromises);
+  }
+
+  return null;
+};
+
+// ! checking and send notification for due rent of tenant
+
+const checkAndSendNotificationForDueRent = async () => {
+  //
+  const result = await prisma.$transaction(async (transactionClient) => {
+    //
+    const getAllAssignedTenants = await transactionClient.tenant.findMany({
+      where: {
+        property: {
+          isRented: true,
+        },
+      },
+      select: {
+        tenantId: true,
+        property: {
+          select: {
+            propertyId: true,
+            tenantAssignedAt: true,
+            monthlyRent: true,
+            title: true,
+          },
+        },
+        firstName: true,
+        lastName: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
+        phoneNumber: true,
+      },
+    });
+
+    const tenantsWithPaymentInfo = await Promise.all(
+      getAllAssignedTenants?.map(async (singleTenant) => {
+        const { property, tenantId } = singleTenant || {};
+        //
+        const getOrderData = await transactionClient.order.findMany({
+          where: {
+            tenantId,
+            properties: {
+              some: { propertyId: property?.propertyId },
+            },
+            orderStatus: {
+              in: ["CONFIRMED", "PENDING"],
+            },
+          },
+          select: {
+            updatedAt: true,
+            properties: {
+              select: {
+                tenantAssignedAt: true,
+              },
+            },
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        }); // for due month calculation
+        const tenantAssignedDate = singleTenant?.property?.tenantAssignedAt;
+
+        let dueMonths = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+          } else {
+            dueMonths = differenceInMonths(getOrderData[0]?.updatedAt);
+          }
+        }
+        let dueDays = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueDays = differenceInDays(tenantAssignedDate?.toISOString());
+          } else {
+            dueDays = differenceInDays(getOrderData[0]?.updatedAt);
+          }
+        }
+
+        //
+        const dueRent = (singleTenant?.property?.monthlyRent || 0) * dueMonths;
+        const tenantUnitInfo = {
+          ...singleTenant,
+          dueRent: dueRent,
+          dueMonths: dueMonths,
+          dueDays,
+          rentPaid: dueRent === 0,
+        };
+
+        return tenantUnitInfo;
+      }),
+    );
+
+    // Filter tenants with more than 1 day of due rent
+    const tenantsWithOverdueRent = tenantsWithPaymentInfo?.filter((tenant) => tenant?.dueDays > 30 && 45);
+
+    if (tenantsWithOverdueRent?.length > 0) {
+      await Promise.all(tenantsWithOverdueRent?.map((singleTenant) => sendDueRentEmailToTenant(singleTenant)));
+    }
+
+    return tenantsWithOverdueRent;
+  });
+  return result;
+};
 
 // Exporting PaymentServices object with methods
 export const PaymentServices = {
@@ -448,7 +534,8 @@ export const PaymentServices = {
   getPaymentReport,
   getPaymentReportsWithOrderId,
   createPaymnentReport,
-  checkAndUpdateBulkOrderStatus,
   getAccountFromStripe,
   deleteConnectedAccount,
+  checkAndUpdateBulkOrderStatus,
+  checkAndSendNotificationForDueRent,
 };

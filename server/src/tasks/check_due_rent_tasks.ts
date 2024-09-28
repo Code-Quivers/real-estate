@@ -2,13 +2,13 @@
 
 import { PaymentServices } from "../app/modules/payment/payment.services";
 
-const check_payment_status_tasks = async () => {
+const check_due_rent_tasks = async () => {
   /**
-   * 
+   
 
    **/
   //
 
-  await PaymentServices.checkAndUpdateBulkOrderStatus();
+  await PaymentServices.checkAndSendNotificationForDueRent();
 };
-export default check_payment_status_tasks;
+export default check_due_rent_tasks;
