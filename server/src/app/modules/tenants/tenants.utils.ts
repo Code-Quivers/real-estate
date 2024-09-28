@@ -130,3 +130,15 @@ export function differenceInTime(date1: any, date2 = new Date()) {
 
   return diff;
 }
+export function differenceInDays(date1: any, date2 = new Date()) {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  // Calculate the difference in time (milliseconds)
+  const diffInTime = d2.getTime() - d1.getTime();
+
+  // Convert the time difference from milliseconds to days
+  const diffInDays = diffInTime / (1000 * 3600 * 24);
+
+  return Math.floor(diffInDays);
+}

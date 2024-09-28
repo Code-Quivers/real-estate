@@ -11,6 +11,7 @@ import { infoLogger } from "./shared/logger";
 import check_payment_status_tasks from "./tasks/check_payment_status_tasks";
 import cron from "node-cron";
 import delete_expired_reset_links from "./tasks/delete_expired_reset_links";
+import check_due_rent_tasks from "./tasks/check_due_rent_tasks";
 
 //
 const baseURL = "/backend/api/v1";
@@ -22,13 +23,18 @@ create_required_directories();
 // task
 // Schedule the status check to run every 12 hour
 
+// cron.schedule("*/30 * * * * *", () => {
 cron.schedule("0 */12 * * *", () => {
   infoLogger.info("Checking Delete status...");
   delete_expired_reset_links();
   //
 
   infoLogger.info("Checking payment status...");
-  check_payment_status_tasks();
+  // check_payment_status_tasks();
+
+  //
+  infoLogger.info("Checking Due rent and sending email notification to tenant....");
+  // check_due_rent_tasks();
 });
 
 //

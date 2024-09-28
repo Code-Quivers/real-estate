@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IGenericErrorMessage } from "./error";
 
 export type IGenericResponse<T> = {
@@ -53,4 +54,25 @@ export type IOwnerDetailsForNotification = {
   user: {
     email: string;
   };
+};
+export type IReceiverForNotification = {
+  email: string;
+  userId: string;
+};
+export type IDueRentForNotification = {
+  tenantId: string;
+  property: {
+    propertyId: string;
+    tenantAssignedAt: any;
+    monthlyRent: number;
+    title: string;
+  } | null;
+  firstName: string;
+  lastName: string;
+  user: { email: string } | any;
+  phoneNumber?: string | null;
+  dueRent: number;
+  dueMonths: number;
+  dueDays: number;
+  rentPaid: boolean;
 };

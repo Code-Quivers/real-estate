@@ -5,7 +5,10 @@ import prisma from "../../../shared/prisma";
 import { IAddRequestMaintenance, IUpdateRequestMaintenance } from "./maintenanceRequest.interfaces";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
-import { sendEmailToServiceProvider, sendEmailToTenantAfterStatusChanged } from "../../../shared/emailSender";
+import {
+  sendEmailToServiceProvider,
+  sendEmailToTenantAfterStatusChanged,
+} from "../../../shared/emailNotification/emailSender";
 
 // ! add request maintenance request to property owner from tenant user
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
