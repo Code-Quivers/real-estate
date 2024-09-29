@@ -673,8 +673,8 @@ const resetPassword = async (resetToken: string, payload: any): Promise<any> => 
 const deleteResetLink = async () => {
   const allForgetLinkData = await prisma.forgetPassword.findMany();
 
-  await Promise.all(
-    allForgetLinkData?.map(async (forgetLink) => {
+  for (const forgetLink of allForgetLinkData) {
+    try {
       const isExpiredLink = jwtHelpers.verifyResetToken(forgetLink.token, config.jwt.forget_password as Secret);
 
       if (isExpiredLink.isExpired) {
@@ -683,13 +683,16 @@ const deleteResetLink = async () => {
             email: forgetLink.email,
           },
         });
-        infoLogger.info(`Removing forget password token for: email :`, forgetLink?.email);
+        infoLogger.info(`Removing forget password token for email: ${forgetLink?.email}`);
+
         if (!deleteLink) {
-          errorLogger.error("Failed to delete expired reset link");
+          throw new Error("Failed to delete expired reset link");
         }
       }
-    }),
-  );
+    } catch (error) {
+      errorLogger.error(`Failed to process forget password link for ${forgetLink?.email}:`, error);
+    }
+  }
 
   return;
 };

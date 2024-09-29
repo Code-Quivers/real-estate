@@ -362,6 +362,24 @@ const checkAndUpdateBulkOrderStatus = async () => {
               paymentPlatformId: true,
             },
           },
+
+          tenant: {
+            select: {
+              property: {
+                select: {
+                  owner: {
+                    select: {
+                      FinancialAccount: {
+                        select: {
+                          finOrgAccountId: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
       console.log("all orders data", allOrdersData);
@@ -369,6 +387,7 @@ const checkAndUpdateBulkOrderStatus = async () => {
       return allOrdersData?.map((order) => ({
         orderId: order.orderId,
         paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
+        finOrgAccountId: order?.tenant?.property?.owner?.FinancialAccount?.finOrgAccountId,
       }));
     } catch (error) {
       errorLogger.error("Error fetching orders:", error);
@@ -380,7 +399,9 @@ const checkAndUpdateBulkOrderStatus = async () => {
   const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
     const statusPromises = orders?.map(async (order) => {
       try {
-        const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId);
+        const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId, {
+          stripeAccount: order?.finOrgAccountId,
+        });
         console.log("payment intent", paymentIntent);
         return { ...order, paymentStatus: paymentIntent?.status };
       } catch (error) {
@@ -393,11 +414,9 @@ const checkAndUpdateBulkOrderStatus = async () => {
 
   // Main logic to check payment status and update orders
   const pendingOrders = await getAllPendingOrders();
-  console.log("pendingOrder", pendingOrders);
   const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
-  console.log("updated", updatedOrders);
+
   const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
-    console.log("single data", single);
     // if (single?.paymentStatus === "succeeded" || single?.paymentStatus === "canceled") {
     acc.push(
       prisma.order.update({
@@ -519,8 +538,14 @@ const checkAndSendNotificationForDueRent = async () => {
     // Filter tenants with more than 1 day of due rent
     const tenantsWithOverdueRent = tenantsWithPaymentInfo?.filter((tenant) => tenant?.dueDays > 30 && 45);
 
-    if (tenantsWithOverdueRent?.length > 0) {
-      await Promise.all(tenantsWithOverdueRent?.map((singleTenant) => sendDueRentEmailToTenant(singleTenant)));
+    for (const singleTenant of tenantsWithOverdueRent) {
+      try {
+        await sendDueRentEmailToTenant(singleTenant);
+      } catch (error) {
+        console.log(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
+        errorLogger.error(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
+        // Continue with the next tenant
+      }
     }
 
     return tenantsWithOverdueRent;
