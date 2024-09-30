@@ -11,6 +11,7 @@ import { chatRelationalFields, chatRelationalFieldsMapper, chatSearchableFields 
 import { IGenericResponse } from "../../../interfaces/common";
 import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
+import { sendEmailToMessageReceiver } from "../../../shared/emailNotification/messagingEmailSender";
 
 // ! start new conversation
 const startNewConversation = async (userId: string, receiverId: string, payload: any): Promise<Conversation> => {
@@ -20,6 +21,10 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
     const isExistReceiver = await transactionClient.user.findUnique({
       where: {
         userId: receiverId,
+      },
+      select: {
+        email: true,
+        userId: true,
       },
     });
     if (!isExistReceiver) {
@@ -48,7 +53,8 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
         where: { conversationId: existingConversation.conversationId },
         data: { lastMessage: payload.text },
       });
-
+      // ! send email notification to message receiver
+      await sendEmailToMessageReceiver(isExistReceiver);
       return existingConversation;
     } else {
       // Create a new conversation with the specified sender and receiver
@@ -70,8 +76,12 @@ const startNewConversation = async (userId: string, receiverId: string, payload:
       if (!newConversation) {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to start conversation");
       }
+      // ! send email notification to message receiver
+      await sendEmailToMessageReceiver(isExistReceiver);
       return newConversation;
     }
+
+    //
   });
 };
 

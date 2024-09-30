@@ -9,7 +9,13 @@ import {
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { ActionIcon, Flex, Text, ThemeIcon, Tooltip } from "@mantine/core";
-import { IconEdit, IconRefresh, IconTrash } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconEdit,
+  IconExclamationCircleFilled,
+  IconRefresh,
+  IconTrash,
+} from "@tabler/icons-react";
 import PropertiesEditModal from "./propertiesComponents/PropertiesEditModal";
 import {
   useDeletePropertyMutation,
@@ -18,6 +24,7 @@ import {
 } from "@/redux/api/features/properties/propertiesApi";
 import ServiceProviderPopover from "./propertiesComponents/ServiceProviderPopover";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 
 const PropertiesTable = () => {
   const query: any = {};
@@ -76,8 +83,7 @@ const PropertiesTable = () => {
         size: 150,
       },
       {
-        accessorFn: (row) =>
-          row.Tenant ? row.Tenant.user.email : "No Tenant Assigned",
+        accessorFn: (row) => (row.Tenant ? row.Tenant.user.email : "N/A"),
         id: "tenantAssigned",
         // accessorKey: "Tenant.user.email",
         header: "Tenant Assigned",
@@ -193,6 +199,17 @@ const PropertiesTable = () => {
 
   // update
   const handleUpdateProperty = async ({ values, table, row }: any) => {
+    table.setEditingRow(null);
+    const id = notifications.show({
+      loading: true,
+      title: "Updating property",
+      message: "Please wait while we update the property",
+      position: "top-right",
+      color: "blue",
+      autoClose: false,
+      withBorder: true,
+      withCloseButton: false,
+    });
     const propertyId = row.original.propertyId;
     const newValidationErrors = validateAddress(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
@@ -201,30 +218,92 @@ const PropertiesTable = () => {
     }
     // update tenant
     try {
-      await updatePropertyDetails({ data: values, propertyId });
-      table.setEditingRow(null);
+      const response = await updatePropertyDetails({
+        data: values,
+        propertyId,
+      });
+      if ((response?.data as { success?: boolean })?.success) {
+        notifications.update({
+          id,
+          loading: false,
+          title: "Success",
+          message: "Property updated successfully",
+          position: "top-right",
+          color: "green",
+          withBorder: true,
+          autoClose: 3000,
+          icon: <IconCheck />,
+        });
+      } else {
+        notifications.update({
+          id,
+          loading: false,
+          title: "Error",
+          message: "Failed to update property",
+          position: "top-right",
+          color: "red",
+          withBorder: true,
+          autoClose: 4000,
+          icon: <IconExclamationCircleFilled />,
+        });
+      }
     } catch (error) {
-      console.log(error, "error");
+      // console.log(error, "error");
     }
-
-    // console.log(values, "values");
   };
 
   // delete properties
   const handleDeleteTenant = async (propertyId: string) => {
+    modals.closeAll();
+    const id = notifications.show({
+      loading: true,
+      title: "Deleting property",
+      message: "Please wait while delete the property",
+      autoClose: false,
+      withCloseButton: false,
+      position: "top-right",
+      color: "blue",
+      withBorder: true,
+    });
     try {
-      await deleteProperties({ propertyId });
-      modals.closeAll();
+      const response = await deleteProperties({ propertyId });
+      if ((response?.data as { success?: boolean })?.success) {
+        notifications.update({
+          id,
+          loading: false,
+          title: "Property deleted",
+          message: "Property deleted successfully",
+          color: "green",
+          autoClose: 3000,
+          withCloseButton: false,
+          position: "top-right",
+          withBorder: true,
+          icon: <IconCheck />,
+        });
+      } else {
+        notifications.update({
+          id,
+          loading: false,
+          title: "Failed",
+          message: "Failed to delete property",
+          color: "red",
+          autoClose: 3000,
+          withCloseButton: false,
+          position: "top-right",
+          withBorder: true,
+          icon: <IconExclamationCircleFilled />,
+        });
+      }
     } catch (error) {
       // console.log(error, "error");
     }
   };
   // delete properties model
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    console.log(row, "row");
+    // console.log(row, "row");
     const propertyId = row?.original?.propertyId;
     modals.openConfirmModal({
-      // title: "Are you sure you want to delete this user?",
+      title: "Delete property",
       children: (
         <Text>
           Are you sure you want to delete?
@@ -258,7 +337,8 @@ const PropertiesTable = () => {
     enableColumnActions: false,
     enableEditing: true,
     editDisplayMode: "modal",
-    rowCount: data?.meta?.total,
+    // @ts-ignore
+    rowCount: propertiesData?.meta?.total,
     manualPagination: true,
     paginationDisplayMode: "pages",
     onPaginationChange: setPagination, // hoist pagination state to your state when it changes internally

@@ -82,7 +82,9 @@ const PropertyOwnerUnitInformation = () => {
                           width={500}
                           height={200}
                           src={singleProperty?.images?.length ? `${fileUrlKey()}/${singleProperty?.images[0]}` : apartmentPhoto}
-                          className="!w-full rounded-xl !h-[300px] object-cover object-center"
+                          className={`!w-full rounded-xl !h-[300px] object-cover object-center ${
+                            singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30 && "blur-[3px]"
+                          }`}
                           alt=""
                         />
                       </div>
@@ -120,7 +122,11 @@ const PropertyOwnerUnitInformation = () => {
                                   setEditData(singleProperty);
                                 }}
                                 icon={<FaPencilAlt size={18} color="#030303" />}
-                                appearance="subtle"
+                                appearance={
+                                  singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                    ? "link"
+                                    : "subtle"
+                                }
                                 circle
                               />
                             </div>
@@ -193,7 +199,11 @@ const PropertyOwnerUnitInformation = () => {
                                 {!singleProperty?.isRented && (
                                   <div className="flex gap-2 justify-center  items-center">
                                     <Button
-                                      as={Link}
+                                      as={
+                                        singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                          ? "button"
+                                          : Link
+                                      }
                                       disabled={
                                         singleProperty?.planType === "ON_TRIAL"
                                           ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30
@@ -202,7 +212,12 @@ const PropertyOwnerUnitInformation = () => {
                                             : false
                                       }
                                       href="/property-owner/available-tenants"
-                                      className="!rounded-full !bg-primary !text-white !px-5 !py-2.5 !text-sm"
+                                      className={`!rounded-full  !text-white !px-5 !py-2.5 !text-sm
+                                         ${
+                                           singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                             ? "!bg-red-300"
+                                             : "!bg-primary"
+                                         } `}
                                     >
                                       Add Tenant
                                     </Button>
@@ -243,7 +258,11 @@ const PropertyOwnerUnitInformation = () => {
                         {/* action */}
                         <div className="flex max-md:mt-2 gap-2 items-center">
                           <Button
-                            as={Link}
+                            as={
+                              singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                ? "button"
+                                : Link
+                            }
                             disabled={
                               singleProperty?.planType === "ON_TRIAL"
                                 ? moment().diff(moment(singleProperty?.createdAt), "days") >= 30
@@ -252,7 +271,11 @@ const PropertyOwnerUnitInformation = () => {
                                   : false
                             }
                             href="/property-owner/service-providers"
-                            className="!rounded-full  !bg-primary !text-white !px-3 !py-2.5 !text-sm"
+                            className={`!rounded-full !bg-primary !text-white !px-3 !py-2.5 !text-sm ${
+                              singleProperty?.planType === "ON_TRIAL" && moment().diff(moment(singleProperty?.createdAt), "days") >= 30
+                                ? "!bg-red-300"
+                                : "!bg-primary"
+                            } `}
                           >
                             Add Service Provider
                           </Button>

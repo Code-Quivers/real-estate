@@ -17,7 +17,10 @@ export default {
     refresh_secret: process.env.JWT_REFRESH_SECRET,
     expires_in: process.env.JWT_EXPIRES_IN,
     refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
+    forget_password: process.env.JWT_FORGET_PASSWORD,
+    forget_password_expires_in: process.env.JWT_FORGET_PASSWORD_EXPIRES_IN,
   },
   client_url: process.env.CLIENT_URL,
   stripe_sk: process.env.STIPE_SK_LIVE || "",
+  mailer_send_key: process.env.MAILER_SEND_API_KEY,
 };

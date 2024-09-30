@@ -9,9 +9,12 @@ import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useAssignTenantToPropertyMutation, useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
 import SendMessagePopOverFromPropertyOwner from "./SendMessagePopOver";
 import Score from "@/components/Shared/Score/Score";
+import moment from "moment";
 
 const AvailableTenantsList = ({ singleReq, children }) => {
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
   const [saveItem, { isSuccess, isLoading, isError, error }] = useSaveItemMutation();
 
   const saveTenantData = async () => {
@@ -131,10 +134,14 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                     {!isLoadingUnits &&
                       unitRes?.data?.length > 0 &&
                       unitRes?.data?.map((singleUnit, index) => (
-                        <div key={index}>
+                        <div
+                          key={index}
+                          className={`${singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 ? "bg-red-50" : ""} rounded-lg`}
+                        >
                           <button
                             onClick={() => handleAddTenantToProperty(singleUnit?.propertyId)}
-                            className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm"
+                            className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm disabled:cursor-not-allowed"
+                            disabled={singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30}
                           >
                             <div className="col-span-1">
                               <Image
@@ -146,12 +153,20 @@ const AvailableTenantsList = ({ singleReq, children }) => {
                               />
                             </div>
                             <div className="col-span-2">
-                              <div className="flex w-full flex-col justify-between my-2 text-sm  px-2">
-                                <h3 className="font-semibold line-clamp-1">${singleUnit?.monthlyRent?.toLocaleString()}</h3>
+                              <div className="w-full space-y-1   my-2 text-sm  px-2">
+                                <h3 className=" flex  justify-between items-center  gap-2">
+                                  <span className="font-semibold ">${singleUnit?.monthlyRent?.toLocaleString()}</span>{" "}
+                                  <span className="text-[8px]"> {singleUnit?.title}</span>{" "}
+                                </h3>
                                 <h3 className="line-clamp-1">
                                   {singleUnit?.numOfBed} Beds | {singleUnit?.numOfBath} Bath
                                 </h3>
                                 <h3 className="line-clamp-2">{singleUnit?.address || "N/A"}</h3>
+                                {singleUnit?.planType === "ON_TRIAL" && moment().diff(moment(singleUnit?.createdAt), "days") >= 30 && (
+                                  <h3 className="bg-red-500 px-3 rounded-md  text-center">
+                                    <span className="text-xs font-semibold text-white ">Trial Period is over</span>
+                                  </h3>
+                                )}
                               </div>
                             </div>
                           </button>

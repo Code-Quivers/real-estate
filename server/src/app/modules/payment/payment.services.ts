@@ -10,6 +10,10 @@ import { IPaymentFilterRequest, OrderWithPaymentInfo } from "./payment.interface
 import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
 import Stripe from "stripe";
 import config from "../../../config";
+import { errorLogger } from "../../../shared/logger";
+import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailSender";
+import { differenceInDays, differenceInMonths } from "../tenants/tenants.utils";
+import { sendDueRentEmailToTenant } from "../../../shared/emailNotification/emailForDueRent";
 const stripe = new Stripe(config.stripe_sk);
 
 /**
@@ -182,12 +186,27 @@ const getPaymentReportsWithOrderId = async (userId: string, orderId: string): Pr
   return paymentReports;
 };
 
-// Store payment information in the database from the plaform like Paypal, venmo etc.
+// Store payment information in the database from the platform like Paypal, venmo etc.
 
-const createPaymnentReport = async (data: any): Promise<PaymentInformation | null> => {
+const createPaymnentReport = async (data: any): Promise<any | null> => {
   // Fetch a single payment report from the database based on the payment ID
   const paymentReport = await prisma.paymentInformation.create({
     data: data,
+    select: {
+      order: {
+        select: {
+          tenant: {
+            select: {
+              property: {
+                select: {
+                  ownerId: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   // If the payment report is not found, throw an error
@@ -195,37 +214,139 @@ const createPaymnentReport = async (data: any): Promise<PaymentInformation | nul
     throw new ApiError(httpStatus.BAD_REQUEST, "No payment information found!!!");
   }
 
+  // sending email notification to property owner
+
+  // ! send email notification to all service providers
+
+  const ownerOfProperty :any = await prisma.propertyOwner.findUnique({
+    where: {
+      propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId,
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  });
+
+  // send email to service provider
+  if (ownerOfProperty?.user?.email) {
+    console.log("sending email to property owner for rent received");
+
+    await sendEmailToOwnerAfterRentReceived(ownerOfProperty);
+  }
+
   return paymentReport;
 };
 
-// ! ==============================================
+// !==========
 
-const checkAndUpdateBulkOrderStatus = async () => {
-  const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
-    try {
-      // Create a Promise for each payment intent retrieval
+const getAccountFromStripe = async (options: IPaginationOptions): Promise<any> => {
+  const { limit, page } = paginationHelpers.calculatePagination(options);
 
-      const statusPromises = orders.map(async (order: OrderWithPaymentInfo) => {
-        const paymentIntent = await stripe.paymentIntents.retrieve(order?.paymentPlatformId);
-        return {
-          ...order,
-          paymentStatus: paymentIntent?.status,
-        };
-      });
+  // Fetch all accounts to get the total count (if this is necessary)
+  const totalResponse = await stripe.accounts.list({
+    limit: 100, // Set a high limit to get as many accounts as possible
+  });
+  const totalAccountsCount = totalResponse.data.length;
 
-      // Wait for all Promises to resolve
-      const updatedOrders = await Promise.all(statusPromises);
+  // Calculate total pages
+  const totalPages = Math.ceil(totalAccountsCount / limit);
 
-      return updatedOrders;
-    } catch (error) {
-      console.error("Error checking payment statuses:", error);
-      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
-    }
+  // Make sure the requested page is within the valid range
+  if (page > totalPages) {
+    throw new Error(`Page number exceeds the total number of available pages (${totalPages}).`);
+  }
+
+  // This will hold the last retrieved account for cursor pagination
+  let lastAccountId: string | undefined;
+
+  // We need to "skip" the accounts that belong to the previous pages
+  const accountsToSkip = (page - 1) * limit;
+
+  // Keep fetching pages until we've skipped enough accounts
+  let skippedAccounts = 0;
+
+  while (skippedAccounts < accountsToSkip) {
+    const response = await stripe.accounts.list({
+      limit,
+      ...(lastAccountId && { starting_after: lastAccountId }),
+    });
+
+    if (response.data.length === 0) break; // No more data
+
+    // Set the last account ID for the next batch
+    lastAccountId = response.data[response.data.length - 1].id;
+
+    skippedAccounts += response.data.length;
+  }
+
+  // Now, fetch the actual page of accounts
+  const pageResponse = await stripe.accounts.list({
+    limit,
+    ...(lastAccountId && { starting_after: lastAccountId }),
+  });
+
+  // Structure the returned result
+  return {
+    meta: {
+      page,
+      limit,
+      total: totalAccountsCount,
+      totalPage: totalPages,
+    },
+    data: pageResponse?.data, // Assuming `propertiesWithTenantInfo` is the data here
   };
+};
 
-  // ! getting from database
+// remove  an account from stripe and database
+const deleteConnectedAccount = async (accountId: string): Promise<any> => {
+  const isExistAccountOnDb = await prisma.financialAccount.findUnique({
+    where: {
+      finOrgAccountId: accountId,
+    },
+  });
 
-  const getAllPendingOrders = async (): Promise<OrderWithPaymentInfo[]> => {
+  if (isExistAccountOnDb) {
+    const deleteFinancialAccount = await prisma.financialAccount.delete({
+      where: {
+        finOrgAccountId: accountId,
+      },
+    });
+
+    if (!deleteFinancialAccount) {
+      errorLogger.error("Failed to remove financial account from database");
+    }
+  }
+
+  // delete a single account from the database based on the payment ID
+  try {
+    const isExistAcc = await stripe.accounts.retrieve(accountId);
+
+    if (isExistAcc?.id) {
+      try {
+        await stripe.accounts.del(accountId);
+      } catch (error: any) {
+        errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error?.statusCode || httpStatus.NOT_FOUND);
+        throw new ApiError(httpStatus.BAD_REQUEST, "Failed to delete account");
+      }
+    }
+  } catch (error: any) {
+    errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error?.statusCode || httpStatus.NOT_FOUND);
+    throw new ApiError(httpStatus.BAD_REQUEST, "Account not found");
+  }
+
+  return;
+};
+// ! ==============================================
+const checkAndUpdateBulkOrderStatus = async () => {
+  // Fetch pending orders from the database
+  const getAllPendingOrders = async (): Promise<any> => {
     try {
       const allOrdersData = await prisma.order.findMany({
         where: {
@@ -236,66 +357,200 @@ const checkAndUpdateBulkOrderStatus = async () => {
         },
         select: {
           orderId: true,
-          orderStatus: true,
           PaymentInformation: {
             select: {
               paymentPlatformId: true,
             },
           },
+
+          tenant: {
+            select: {
+              property: {
+                select: {
+                  owner: {
+                    select: {
+                      FinancialAccount: {
+                        select: {
+                          finOrgAccountId: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
+      console.log("all orders data", allOrdersData);
 
-      // Transform the data to flatten the PaymentInformation object
-      const orders = allOrdersData?.map((order) => ({
+      return allOrdersData?.map((order) => ({
         orderId: order.orderId,
-        orderStatus: order.orderStatus,
         paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
+        finOrgAccountId: order?.tenant?.property?.owner?.FinancialAccount?.finOrgAccountId,
       }));
-
-      return orders;
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
+      errorLogger.error("Error fetching orders:", error);
+      // throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
     }
   };
 
-  const otherData = await checkBulkPaymentStatus(await getAllPendingOrders());
+  // Check payment status for all orders
+  const checkBulkPaymentStatus = async (orders: OrderWithPaymentInfo[]) => {
+    const statusPromises = orders?.map(async (order) => {
+      try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId, {
+          stripeAccount: order?.finOrgAccountId,
+        });
+        console.log("payment intent", paymentIntent);
+        return { ...order, paymentStatus: paymentIntent?.status };
+      } catch (error) {
+        errorLogger.error(`Error retrieving payment intent for order ID: ${order.orderId}`, error);
+        return { ...order, paymentStatus: "payment_intent_not_found" };
+      }
+    });
+    return await Promise.all(statusPromises);
+  };
 
-  const updatePromises: any[] = otherData?.map((single) => {
-    //
-    if (single.paymentStatus === "succeeded") {
-      return prisma.order.update({
-        where: {
-          orderId: single.orderId,
-        },
+  // Main logic to check payment status and update orders
+  const pendingOrders = await getAllPendingOrders();
+  const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
+
+  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
+    // if (single?.paymentStatus === "succeeded" || single?.paymentStatus === "canceled") {
+    acc.push(
+      prisma.order.update({
+        where: { orderId: single.orderId },
         data: {
-          orderStatus: "CONFIRMED",
+          orderStatus: single?.paymentStatus === "succeeded" ? "CONFIRMED" : "FAILED",
           PaymentInformation: {
-            update: {
-              paymentStatus: single.paymentStatus,
-            },
+            update: { paymentStatus: single.paymentStatus },
           },
         },
-      });
-    } else if (single.paymentStatus === "canceled") {
-      return prisma.order.update({
-        where: {
-          orderId: single.orderId,
-        },
-        data: {
-          orderStatus: "FAILED",
-          PaymentInformation: {
-            update: {
-              paymentStatus: single.paymentStatus,
-            },
-          },
-        },
-      });
-    }
-  });
+      }),
+    );
+    // }
+    return acc; // Return the accumulated array
+  }, []);
 
+  // Execute the transaction with valid promises only
+  if (updatePromises.length > 0) {
+    await prisma.$transaction(updatePromises);
+  }
+
+  return null;
+};
+
+// ! checking and send notification for due rent of tenant
+
+const checkAndSendNotificationForDueRent = async () => {
   //
-  await prisma.$transaction(updatePromises);
+  const result = await prisma.$transaction(async (transactionClient) => {
+    //
+    const getAllAssignedTenants = await transactionClient.tenant.findMany({
+      where: {
+        property: {
+          isRented: true,
+        },
+      },
+      select: {
+        tenantId: true,
+        property: {
+          select: {
+            propertyId: true,
+            tenantAssignedAt: true,
+            monthlyRent: true,
+            title: true,
+          },
+        },
+        firstName: true,
+        lastName: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
+        phoneNumber: true,
+      },
+    });
+
+    const tenantsWithPaymentInfo = await Promise.all(
+      getAllAssignedTenants?.map(async (singleTenant) => {
+        const { property, tenantId } = singleTenant || {};
+        //
+        const getOrderData = await transactionClient.order.findMany({
+          where: {
+            tenantId,
+            properties: {
+              some: { propertyId: property?.propertyId },
+            },
+            orderStatus: {
+              in: ["CONFIRMED", "PENDING"],
+            },
+          },
+          select: {
+            updatedAt: true,
+            properties: {
+              select: {
+                tenantAssignedAt: true,
+              },
+            },
+          },
+          orderBy: {
+            updatedAt: "desc",
+          },
+        }); // for due month calculation
+        const tenantAssignedDate = singleTenant?.property?.tenantAssignedAt;
+
+        let dueMonths = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+          } else {
+            dueMonths = differenceInMonths(getOrderData[0]?.updatedAt);
+          }
+        }
+        let dueDays = 0;
+
+        if (getOrderData?.length > 0) {
+          if (getOrderData?.length === 0 || (tenantAssignedDate as Date) > getOrderData[0]?.updatedAt) {
+            dueDays = differenceInDays(tenantAssignedDate?.toISOString());
+          } else {
+            dueDays = differenceInDays(getOrderData[0]?.updatedAt);
+          }
+        }
+
+        //
+        const dueRent = (singleTenant?.property?.monthlyRent || 0) * dueMonths;
+        const tenantUnitInfo = {
+          ...singleTenant,
+          dueRent: dueRent,
+          dueMonths: dueMonths,
+          dueDays,
+          rentPaid: dueRent === 0,
+        };
+
+        return tenantUnitInfo;
+      }),
+    );
+
+    // Filter tenants with more than 1 day of due rent
+    const tenantsWithOverdueRent = tenantsWithPaymentInfo?.filter((tenant) => tenant?.dueDays > 30 && 45);
+
+    for (const singleTenant of tenantsWithOverdueRent) {
+      try {
+        await sendDueRentEmailToTenant(singleTenant);
+      } catch (error) {
+        console.log(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
+        errorLogger.error(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
+        // Continue with the next tenant
+      }
+    }
+
+    return tenantsWithOverdueRent;
+  });
+  return result;
 };
 
 // Exporting PaymentServices object with methods
@@ -304,5 +559,8 @@ export const PaymentServices = {
   getPaymentReport,
   getPaymentReportsWithOrderId,
   createPaymnentReport,
+  getAccountFromStripe,
+  deleteConnectedAccount,
   checkAndUpdateBulkOrderStatus,
+  checkAndSendNotificationForDueRent,
 };

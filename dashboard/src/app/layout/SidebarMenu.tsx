@@ -2,8 +2,10 @@
 import Link from "next/link";
 import { ActionIcon, Avatar, NavLink, Tooltip } from "@mantine/core";
 import {
+  IconBrandCashapp,
   IconBuildingEstate,
   IconBuildingFortress,
+  IconCashBanknote,
   IconLogout,
   IconUsers,
 } from "@tabler/icons-react";
@@ -28,10 +30,7 @@ const SidebarMenu = ({ toggleMobile }: any) => {
   };
   return (
     <>
-      <Link
-        href={"/"}
-        className="p-4 font-bold text-lg text-indigo-500"
-      >
+      <Link href={"/"} className="p-4 font-bold text-lg text-indigo-500">
         Manage Rental Unit
       </Link>
       <nav className="mt-12 flex flex-col h-full justify-between">
@@ -67,6 +66,17 @@ const SidebarMenu = ({ toggleMobile }: any) => {
             active={path === "/properties"}
             label="Properties"
             leftSection={<IconBuildingFortress size={18} />}
+            variant="filled"
+            color="indigo"
+          />
+          <NavLink
+            onClick={toggleMobile}
+            component={Link}
+            key="Tenant"
+            href="/connected-accounts"
+            active={path === "/connected-accounts"}
+            label="Connected accounts"
+            leftSection={<IconCashBanknote size={18} />}
             variant="filled"
             color="indigo"
           />

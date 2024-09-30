@@ -21,8 +21,8 @@ model PropertyOwner {
   templates           Json[]
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
-  userId              String               @unique
-  user                User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId              String?               @unique
+  user                User?                 @relation(fields: [userId], references: [userId], onDelete: SetNull)
   properties          Property[]
   maintenanceRequests MaintenanceRequest[]
   orders              Order[]
@@ -366,6 +366,18 @@ model Document {
   createdAt        DateTime      @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime      @updatedAt @db.Timestamptz(0)
 }
+
+
+model ForgetPassword {
+  id        String   @id @default(uuid())
+  email     String    @unique
+  token     String @unique
+  link      String  @unique  
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+}
+
+
 
 // ! Enums---------------
 enum PLATFORM {

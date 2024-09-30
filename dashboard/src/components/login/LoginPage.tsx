@@ -70,15 +70,16 @@ const LoginPage = () => {
   }, [isSuccess, isLoading, isError, error, data, router]);
 
   return (
-    <div className="px-8 py-24 mx-auto md:px-12 lg:px-32 md:max-w-[700px]">
-      <div className="p-5 border bg-gray-50 rounded-3xl">
-        <div className="p-10 bg-white border shadow-lg rounded-2xl">
+    <div className="px-2 sm:px-8 py-24 mx-auto md:px-12 lg:px-32 md:max-w-[700px]">
+      <div className="sm:p-5 sm:border sm:bg-gray-50 sm:rounded-3xl">
+        <div className="sm:p-10 px-4 py-10 bg-white border shadow-lg rounded-2xl">
           <form
             onSubmit={form.onSubmit((values) => handleDashboardLogin(values))}
           >
             <div className="space-y-3">
               <TextInput
-                // type="email"
+                styles={{ error: { fontSize: 14 } }}
+                type="email"
                 label="Email"
                 placeholder="Input placeholder"
                 size="lg"
@@ -87,6 +88,7 @@ const LoginPage = () => {
                 {...form.getInputProps("email")}
               />
               <TextInput
+                styles={{ error: { fontSize: 14 } }}
                 type="password"
                 label="Password"
                 placeholder="Input placeholder"

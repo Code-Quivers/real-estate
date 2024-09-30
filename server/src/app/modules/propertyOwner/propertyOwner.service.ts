@@ -223,7 +223,7 @@ const UpdatePropertyOwner = async (propertyOwnerId: string, req: Request) => {
       const hashedPassword = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
       await transactionClient.user.update({
         where: {
-          userId: res?.userId,
+          userId: res?.userId as string,
         },
         data: {
           password: hashedPassword,
@@ -444,6 +444,7 @@ const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | n
       },
     });
 
+    const userId = propertyOwner?.userId;
     if (!propertyOwner) {
       throw new ApiError(httpStatus.NOT_FOUND, "Property Owner Not Found!!!");
     }
@@ -538,14 +539,17 @@ const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | n
     }
 
     // ! removing all properties owned by property owner
-    const removingAllProperties = await transactionClient.property.deleteMany({
-      where: {
-        ownerId: propertyOwnerId,
-      },
-    });
-
-    if (!removingAllProperties) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Properties removing Failed");
+    const getCountOfProperty = await transactionClient.property.count();
+    if (getCountOfProperty > 0) {
+      const removingAllProperties = await transactionClient.property.deleteMany({
+        where: {
+          ownerId: propertyOwnerId,
+        },
+      });
+      console.log("count deleting", removingAllProperties);
+      if (!removingAllProperties?.count) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Properties removing Failed");
+      }
     }
     // ! removing property owner
     const removingPropertyOwner = await transactionClient.propertyOwner.delete({
@@ -557,18 +561,28 @@ const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | n
     if (!removingPropertyOwner) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner removing Failed");
     }
+
     // ! removing property owner user data
-    const removingPropertyOwnerUser = await transactionClient.user.delete({
+
+    const isExistUserData = await transactionClient.user.findUnique({
       where: {
-        userId: propertyOwner?.userId,
+        userId: userId as string,
       },
     });
 
-    if (!removingPropertyOwnerUser) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner User removing Failed");
+    if (isExistUserData?.userId) {
+      const removingPropertyOwnerUser = await transactionClient.user.delete({
+        where: {
+          userId: userId as string,
+        },
+      });
+      if (!removingPropertyOwnerUser) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Property Owner User removing Failed");
+      }
     }
 
     //
+    // return;
     return removingPropertyOwner;
   });
 

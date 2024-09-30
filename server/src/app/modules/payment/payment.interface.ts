@@ -5,4 +5,5 @@ export type OrderWithPaymentInfo = {
   orderId: string;
   orderStatus: string;
   paymentPlatformId: string;
+  finOrgAccountId: string;
 };
