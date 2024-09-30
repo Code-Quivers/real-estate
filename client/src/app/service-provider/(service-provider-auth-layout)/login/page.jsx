@@ -142,11 +142,16 @@ const LoginPage = () => {
 
             {/* password requirement */}
 
-            <div className="h-16 mt-4 text-xs font-medium text-white">
-              {errors?.password?.type === "pattern" && <p className="bg-red-300 p-2 rounded-md">{errors?.password?.message}</p>}
+            <div className="h-10 text-xs font-medium text-white">
+              {errors?.password?.type === "pattern" && <p className="text-red-600 p-2 rounded-md">{errors?.password?.message}</p>}
+            </div>
+            <div className="mb-4 text-right">
+              <Link href="/forgot-password" className="text-blue-800 hover:underline font-medium">
+                Forgot your password?
+              </Link>
             </div>
 
-            <div className=" flex justify-center">
+            <div className="mt-7 flex justify-center">
               <Button loading={isLoading} type="submit" size="lg" className="!rounded-full !px-8 !py-3.5 " appearance="default">
                 Sign In
               </Button>

@@ -1,6 +1,16 @@
-import { Button, Flex, PasswordInput, Stack, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Flex,
+  LoadingOverlay,
+  PasswordInput,
+  Stack,
+  Title,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconExclamationCircleFilled } from "@tabler/icons-react";
 
 const TenantsEditModal = ({
   table,
@@ -9,6 +19,7 @@ const TenantsEditModal = ({
   updateTenant,
 }: any) => {
   const [visible, { toggle }] = useDisclosure(false);
+  const [overlayVisible, { toggle: toggleOverlay }] = useDisclosure(false);
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -30,6 +41,18 @@ const TenantsEditModal = ({
     },
   });
   const handleUpdateTenant = async (values: any) => {
+    table.setEditingRow(null);
+    const id = notifications.show({
+      loading: true,
+      title: "Updating Tenant",
+      message: "Please wait while we update the Property Tenant",
+      position: "top-right",
+      color: "blue",
+      autoClose: false,
+      withBorder: true,
+      withCloseButton: false,
+    });
+
     const tenantId = row.original.tenantId;
     const formData = new FormData();
     const updatedProfileData = JSON.stringify({ password: values?.password });
@@ -40,10 +63,30 @@ const TenantsEditModal = ({
         tenantId,
       })) as any;
       if (response.data.success) {
-        table.setEditingRow(null);
+        notifications.update({
+          id,
+          loading: false,
+          title: "Success",
+          message: "Tenant updated successfully",
+          position: "top-right",
+          color: "green",
+          withBorder: true,
+          autoClose: 3000,
+          icon: <IconCheck />,
+        });
       }
     } catch (error) {
-      console.log(error, "error");
+      notifications.update({
+        id,
+        loading: false,
+        title: "Error",
+        message: "Failed to update tenant",
+        position: "top-right",
+        color: "red",
+        withBorder: true,
+        autoClose: 4000,
+        icon: <IconExclamationCircleFilled />,
+      });
     }
   };
 
@@ -53,14 +96,14 @@ const TenantsEditModal = ({
         <Stack>
           <Title order={3}>Edit</Title>
           <PasswordInput
-            label="Password"
+            label="New password"
             visible={visible}
             key={form.key("password")}
             {...form.getInputProps("password")}
             onVisibilityChange={toggle}
           />
           <PasswordInput
-            label="Confirm password"
+            label="Confirm new password"
             visible={visible}
             onVisibilityChange={toggle}
             {...form.getInputProps("confirmPassword")}

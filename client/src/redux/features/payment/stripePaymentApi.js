@@ -62,6 +62,12 @@ export const stripePaymentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.properties, tagTypes.propertyOwner],
     }),
+    retrieveConnectedAccounts: builder.query({
+      query: (data) => ({
+        url: `/payment/get-connected-accounts`,
+      }),
+      // invalidatesTags: [tagTypes.properties],
+    }),
   }),
 });
 
@@ -72,4 +78,5 @@ export const {
   useRetriveTenantPaymentInfoMutation,
   useCreateConnectedAccountMutation,
   useCreateAccountLinkMutation,
+  useRetrieveConnectedAccountsQuery,
 } = stripePaymentApi;

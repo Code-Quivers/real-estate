@@ -25,7 +25,9 @@ const AddReportFormModal = ({ isOpen, handleClose }) => {
     reset: resetForm,
   } = useForm();
 
-  const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
+  const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
 
   //  add new monthly or annual report
   const [

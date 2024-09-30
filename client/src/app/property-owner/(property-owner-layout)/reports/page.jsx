@@ -32,7 +32,9 @@ const PropertyOwnerReportPage = () => {
 
   // !
   const { data, isLoading } = useGetPropertyOwnerReportsQuery({ ...query });
-  const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery();
+  const { data: myUnitsData, isLoading: isLoadingMyUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
 
   //
 

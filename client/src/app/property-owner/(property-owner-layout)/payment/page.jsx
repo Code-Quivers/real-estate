@@ -11,7 +11,9 @@ import { useRouter } from "next/navigation";
 import moment from "moment";
 
 const Payment = () => {
-  const { data: unitRes, isLoading } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
   const [selectedProperties, setSelectedProperties] = useState([]);
   // api
   const [

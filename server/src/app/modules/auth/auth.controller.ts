@@ -163,6 +163,30 @@ const dashboardLogin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// ! forget password
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthService.forgetPassword(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Reset Link sent successfully!",
+    data: result,
+  });
+});
+// ! reset password
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const resetToken = req?.params?.resetToken;
+  const result = await AuthService.resetPassword(resetToken, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Reset Password Successfully!",
+    data: result,
+  });
+});
+
 export const AuthController = {
   createNewUserForTenant,
   createNewUserForPropertyOwner,
@@ -172,4 +196,6 @@ export const AuthController = {
   // for dashboard
   createSuperAdminUser,
   dashboardLogin,
+  forgetPassword,
+  resetPassword,
 };

@@ -9,11 +9,14 @@ import { useAssignServiceProviderToPropertyMutation, useGetMyAllUnitsQuery } fro
 import SendMessagePopOverFromPropertyOwner from "../available-tenants/SendMessagePopOver";
 import RemoveFromSavedServiceProviderModal from "../availableServiceProviders/RemoveFromSavedServiceProviderModal";
 import Score from "@/components/Shared/Score/Score";
+import moment from "moment";
 
 const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modalData }) => {
   const handleClose = () => setModalOpened(false);
   const [isMobile] = useMediaQuery("(max-width: 640px)");
-  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery();
+  const { data: unitRes, isLoading: isLoadingUnits } = useGetMyAllUnitsQuery({
+    limit: 100,
+  });
   const [open, setOpen] = useState(false);
   const handleCloseRemove = () => setOpen(false);
   // !
@@ -147,10 +150,14 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                           {!isLoadingUnits &&
                             unitRes?.data?.length > 0 &&
                             unitRes?.data?.map((singleDetail) => (
-                              <div key={Math.random()}>
+                              <div
+                                key={Math.random()}
+                                className={`${singleDetail?.planType === "ON_TRIAL" && moment().diff(moment(singleDetail?.createdAt), "days") >= 30 ? "bg-red-50" : ""} rounded-lg`}
+                              >
                                 <button
                                   onClick={() => handleAddServiceProviderToProperty(singleDetail?.serviceProviderId)}
-                                  className="grid grid-cols-3 border rounded-lg hover:border-primary  duration-300 transition-all text-start"
+                                  className="grid grid-cols-3 border rounded-lg hover:border-primary   duration-300 transition-all text-start shadow-sm disabled:cursor-not-allowed"
+                                  disabled={singleDetail?.planType === "ON_TRIAL" && moment().diff(moment(singleDetail?.createdAt), "days") >= 30}
                                 >
                                   <div className="col-span-1">
                                     <Image
@@ -161,12 +168,17 @@ const SavedServiceProviderModalDetails = ({ isModalOpened, setModalOpened, modal
                                       alt="photo"
                                     />
                                   </div>
-                                  <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 ml-3">
+                                  <div className="flex w-full flex-col justify-between my-2 text-sm col-span-2 px-2">
                                     <h3 className="font-semibold line-clamp-1">${singleDetail?.monthlyRent?.toLocaleString()}</h3>
                                     <h3 className="line-clamp-1">
                                       {singleDetail?.numOfBed} Beds {singleDetail?.numOfBath} Bath
                                     </h3>
-                                    <h3 className="line-clamp-2">{singleDetail?.address}</h3>
+                                    <h3 className="line-clamp-2">{singleDetail?.address}</h3>{" "}
+                                    {singleDetail?.planType === "ON_TRIAL" && moment().diff(moment(singleDetail?.createdAt), "days") >= 30 && (
+                                      <h3 className="bg-red-500 px-3 rounded-md  text-center">
+                                        <span className="text-xs font-semibold text-white ">Trial Period is over</span>
+                                      </h3>
+                                    )}
                                   </div>
                                 </button>
                               </div>
