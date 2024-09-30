@@ -21,8 +21,8 @@ model PropertyOwner {
   templates           Json[]
   createdAt           DateTime             @default(now()) @db.Timestamptz(0)
   updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
-  userId              String               @unique
-  user                User                 @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId              String?               @unique
+  user                User?                 @relation(fields: [userId], references: [userId], onDelete: SetNull)
   properties          Property[]
   maintenanceRequests MaintenanceRequest[]
   orders              Order[]
