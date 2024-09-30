@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
@@ -628,6 +629,7 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
 // ! verify forget password reset link -->
 const resetPassword = async (resetToken: string, payload: any): Promise<any> => {
   const isExistToken = await prisma.forgetPassword.findUnique({
+    //@ts-ignore
     where: {
       token: resetToken,
     },
@@ -661,6 +663,7 @@ const resetPassword = async (resetToken: string, payload: any): Promise<any> => 
 
   // removing reset token
   await prisma.forgetPassword.delete({
+    //@ts-ignore
     where: {
       token: resetToken,
     },
