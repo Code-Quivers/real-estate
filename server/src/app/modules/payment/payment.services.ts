@@ -218,7 +218,7 @@ const createPaymnentReport = async (data: any): Promise<any | null> => {
 
   // ! send email notification to all service providers
 
-  const ownerOfProperty = await prisma.propertyOwner.findUnique({
+  const ownerOfProperty :any = await prisma.propertyOwner.findUnique({
     where: {
       propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId,
     },
