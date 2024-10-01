@@ -6,21 +6,48 @@ import { Input, InputGroup } from "rsuite";
 import EyeIcon from "@rsuite/icons/legacy/Eye";
 import EyeSlashIcon from "@rsuite/icons/legacy/EyeSlash";
 import Link from "next/link";
+import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 
-const PasswordReset = () => {
+const PasswordReset = (params) => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, watch, formState: { errors } } = useForm();
+  
+  console.log("params", params);
+
+  const token = params.token;
+
+  const [resetPassword, { isLoading, isSuccess, isError, data, error }] = useResetPasswordMutation();
 
   const handleChange = () => {
     setVisible(!visible);
   };
+
   const handleChange2 = () => {
     setVisible2(!visible2);
   };
 
   const handlePasswordReset = async (data) => {
-    console.log(data);
+
+    const passObj ={
+      password: data.password,
+    };
+
+
+    console.log({
+      token: token,
+      data: passObj,
+    });
+
+
+    // await resetPassword({
+    //   token: token,
+    //   data: passObj,
+    // });
+
+    // console.log("salim-data", passObj);
+
+    // You can add your logic here to handle the password reset, e.g., API call
   };
 
   return (
@@ -31,7 +58,7 @@ const PasswordReset = () => {
           "linear-gradient(to right top, #6767fd, #6e6bfc, #756ffc, #7b73fb, #8177fa, #8b80fa, #9489fb, #9d92fb, #aca2fc, #bbb1fe, #c9c1fe, #d7d1ff);",
       }}
     >
-      <section className="flex justify-center items-center h-screen  bg-white">
+      <section className="flex justify-center items-center h-screen bg-white">
         <form onSubmit={handleSubmit(handlePasswordReset)} className="max-w-[700px] w-full">
           <h1 className="font-medium text-4xl font-serif mb-10">Change Your Password</h1>
           {/* password */}
@@ -56,9 +83,7 @@ const PasswordReset = () => {
                     <Input {...field} type={visible ? "text" : "password"} />
                     <InputGroup.Button onClick={handleChange}>{visible ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
                   </InputGroup>
-                  {/* <Form.ErrorMessage show={(!!errors?.password && errors?.password?.type === "required") || false} placement="topEnd">
-                    {errors?.password?.message}
-                  </Form.ErrorMessage> */}
+                  {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>
               )}
             />
@@ -69,21 +94,19 @@ const PasswordReset = () => {
               name="confirmPassword"
               control={control}
               rules={{
-                required: "Confirm password must be matched",
-                // validate: (value) => value === password || "Confirm Password did not match",
+                required: "Confirm password is required",
+                validate: (value) => value === watch('password') || "Confirm Password must match",
               }}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper mt-4">
-                  <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-gray-700">
                     Confirm your new password
                   </label>
                   <InputGroup size="lg" inside>
                     <Input {...field} type={visible2 ? "text" : "password"} />
                     <InputGroup.Button onClick={handleChange2}>{visible2 ? <EyeIcon /> : <EyeSlashIcon />}</InputGroup.Button>
                   </InputGroup>
-                  {/* <Form.ErrorMessage show={(!!errors?.confirmPassword && !!errors?.confirmPassword?.message) || false} placement="topEnd">
-                    {errors?.confirmPassword?.message}
-                  </Form.ErrorMessage> */}
+                  {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                 </div>
               )}
             />

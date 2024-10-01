@@ -23,10 +23,8 @@ const PasswordForgot = () => {
   const handleForgotPassword = async (data) => {
     console.log("salim-data", data);
 
-    await forgetPassword(data)
+    await forgetPassword(data);
   };
-
-
 
 
   return (
