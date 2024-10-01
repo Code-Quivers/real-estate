@@ -48,9 +48,19 @@ export const AuthenticationApi = baseApi.injectEndpoints({
         data: data,
       }),
       invalidatesTags: [tagTypes.user, tagTypes.tenant],
+    }),
+
+    // reset-password
+    resetPassword: builder.mutation({
+      query: ({token, data}) => ({
+        url: `/auth/reset-password/${token}`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: [tagTypes.user, tagTypes.tenant],
     })
 
   }),
 });
 
-export const { useTenantSignUpMutation, useLoginUserMutation, useServiceProviderSignUpMutation, usePropertyOwnerSignUpMutation, useForgetPasswordMutation } = AuthenticationApi;
+export const { useTenantSignUpMutation, useLoginUserMutation, useServiceProviderSignUpMutation, usePropertyOwnerSignUpMutation, useForgetPasswordMutation, useResetPasswordMutation } = AuthenticationApi;
