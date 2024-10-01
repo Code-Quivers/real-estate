@@ -570,7 +570,7 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
   });
 
   if (!isUserExist) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect credentials !");
+    throw new ApiError(httpStatus.BAD_REQUEST, "email not found !");
   }
 
   const findLink = await prisma.forgetPassword.findUnique({

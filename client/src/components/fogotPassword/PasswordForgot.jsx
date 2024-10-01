@@ -1,22 +1,33 @@
 "use client";
+import { useForgetPasswordMutation } from "@/redux/features/auth/authApi";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiArrowLeftLine } from "react-icons/ri";
 import { TbMailDown } from "react-icons/tb";
+import { toaster } from "rsuite";
+import { SignUpSuccessMessage } from "../toasts/auth/authToastMessages";
 
 const PasswordForgot = () => {
+
+  const [forgetPassword, {isLoading, isSuccess,isError, data, error} ] = useForgetPasswordMutation();
+
   const [toggleContent, setToggleContent] = useState(true);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  console.log(errors);
+  // console.log(errors);
 
   const handleForgotPassword = async (data) => {
-    console.log(data);
+    console.log("salim-data", data);
+
+    await forgetPassword(data)
   };
+
+
+
 
   return (
     <div
