@@ -3,10 +3,10 @@ export const metadata = {
   title: "Resetting Password",
 };
 
-const ResetPassword = () => {
+const ResetPassword = ({ params }) => {
   return (
     <>
-      <PasswordReset />
+      <PasswordReset params={params?.token} />
     </>
   );
 };

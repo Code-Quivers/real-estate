@@ -563,6 +563,9 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
   const isUserExist = await prisma.user.findUnique({
     where: {
       email,
+      role: {
+        in: ["PROPERTY_OWNER", "SERVICE_PROVIDER", "TENANT"],
+      },
     },
     select: {
       email: true,
@@ -588,7 +591,10 @@ const forgetPassword = async (loginData: IDashboardLogin): Promise<any> => {
         },
       });
     } else if (!isExpiredLink.isExpired) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Reset Link already sent to your email, try again 5 minutes later");
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        `Reset Link already sent to your email, try again ${config.jwt.forget_password_expires_in?.replace("m", "")} minutes later`,
+      );
     }
   }
 
@@ -636,12 +642,12 @@ const resetPassword = async (resetToken: string, payload: any): Promise<any> => 
   });
 
   if (!isExistToken) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Link Invalid");
+    throw new ApiError(httpStatus.NOT_FOUND, "Reset Link Invalid");
   }
 
   const isExpiredLink = jwtHelpers.verifyResetToken(resetToken, config.jwt.forget_password as Secret);
   if (isExpiredLink.isExpired) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Link Expired, Try Again");
+    throw new ApiError(httpStatus.BAD_REQUEST, "Reset Link Expired, Try Again");
   }
 
   // changing password
@@ -669,7 +675,9 @@ const resetPassword = async (resetToken: string, payload: any): Promise<any> => 
     },
   });
 
-  return;
+  return {
+    userRole: generateNewPassword?.role,
+  };
 };
 
 // ! forget password to send reset link -->
