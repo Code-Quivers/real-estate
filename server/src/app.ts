@@ -23,8 +23,12 @@ create_required_directories();
 // task
 // Schedule the status check to run every 12 hour
 
-cron.schedule("*/30 * * * * *", () => {
-  // stripecron.schedule("0 */12 * * *", () => {
+// Schedule the status check to run every 30 sec for test
+// cron.schedule("*/30 * * * * *", () => {
+
+// Schedule the status check to run every 12 hour
+
+cron.schedule("0 */12 * * *", () => {
   infoLogger.info("Checking Delete status...");
   delete_expired_reset_links();
   //
@@ -34,7 +38,7 @@ cron.schedule("*/30 * * * * *", () => {
 
   //
   infoLogger.info("Checking Due rent and sending email notification to tenant....");
-  // check_due_rent_tasks();
+  check_due_rent_tasks();
 });
 
 //

@@ -11,8 +11,13 @@ import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 const PasswordReset = (params) => {
   const [visible, setVisible] = useState(false);
   const [visible2, setVisible2] = useState(false);
-  const { control, handleSubmit, watch, formState: { errors } } = useForm();
-  
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
   console.log("params", params);
 
   const token = params.token;
@@ -28,17 +33,14 @@ const PasswordReset = (params) => {
   };
 
   const handlePasswordReset = async (data) => {
-
-    const passObj ={
+    const passObj = {
       password: data.password,
     };
-
 
     console.log({
       token: token,
       data: passObj,
     });
-
 
     // await resetPassword({
     //   token: token,
@@ -95,7 +97,7 @@ const PasswordReset = (params) => {
               control={control}
               rules={{
                 required: "Confirm password is required",
-                validate: (value) => value === watch('password') || "Confirm Password must match",
+                validate: (value) => value === watch("password") || "Confirm Password must match",
               }}
               render={({ field }) => (
                 <div className="rs-form-control-wrapper mt-4">
