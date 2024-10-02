@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiArrowLeftLine } from "react-icons/ri";
 import { TbMailDown } from "react-icons/tb";
-import { toaster } from "rsuite";
-import { SignUpSuccessMessage } from "../toasts/auth/authToastMessages";
+import { Notification, toaster } from "rsuite";
 
 const PasswordForgot = () => {
-
-  const [forgetPassword, {isLoading, isSuccess,isError, data, error} ] = useForgetPasswordMutation();
+  const [forgetPassword, { isLoading, isSuccess, isError, data, error }] = useForgetPasswordMutation();
 
   const [toggleContent, setToggleContent] = useState(true);
   const {
@@ -26,6 +24,33 @@ const PasswordForgot = () => {
     await forgetPassword(data);
   };
 
+  // side effect and notification
+
+  useEffect(() => {
+    if (!isLoading && !isError && isSuccess && !error) {
+      toaster.push(
+        <Notification type="success" header="Success" closable>
+          Reset link sent Successfully{" "}
+        </Notification>,
+        {
+          placement: "bottomStart",
+          duration: 2000,
+        },
+      );
+    }
+
+    if (!isLoading && isError && !isSuccess && error) {
+      toaster.push(
+        <Notification type="error" header="Error" closable>
+          {error?.message || "Failed to sent reset link"}
+        </Notification>,
+        {
+          placement: "bottomStart",
+          duration: 2000,
+        },
+      );
+    }
+  }, [isLoading, isError, isSuccess, error]);
 
   return (
     <div

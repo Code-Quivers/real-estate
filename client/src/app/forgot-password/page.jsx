@@ -1,5 +1,9 @@
 import PasswordForgot from "@/components/fogotPassword/PasswordForgot";
 
+export const metadata = {
+  title: "Password Reset",
+};
+
 const ForgetPassword = () => {
   return (
     <div>
