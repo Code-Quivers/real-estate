@@ -3,7 +3,7 @@ import { getAuthKey } from "@/helpers/config/envConfig";
 import { removeUserInfo } from "@/hooks/services/auth.service";
 import { baseApi } from "@/redux/api/baseApi";
 import { Avatar, Menu, UnstyledButton } from "@mantine/core";
-import { IconLogout, IconUserCircle } from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
@@ -33,9 +33,7 @@ const NavHeader = () => {
           >
             <Menu.Target>
               <UnstyledButton>
-                <Avatar color="cyan" radius="xl">
-                  MK
-                </Avatar>
+                <Avatar color="cyan" radius="xl" />
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>

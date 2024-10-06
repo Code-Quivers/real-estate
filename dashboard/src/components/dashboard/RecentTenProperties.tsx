@@ -2,7 +2,7 @@ import { fileUrlKey } from "@/helpers/config/envConfig";
 import { Avatar, Table } from "@mantine/core";
 import { IconBath, IconBed } from "@tabler/icons-react";
 
-const RecentTenProperties = ({ recentProperties }: any) => {
+const RecentTenProperties = ({ isLoading, recentProperties }: any) => {
   return (
     <div className="bg-white rounded-md shadow-md mb-10">
       <h1 className="font-medium text-lg p-5">Recent ten properties</h1>
@@ -26,6 +26,11 @@ const RecentTenProperties = ({ recentProperties }: any) => {
               <Table.Th>Property owner</Table.Th>
             </Table.Tr>
           </Table.Thead>
+          {!isLoading && !recentProperties?.length && (
+            <div className="flex justify-center items-center min-h-[30vh]">
+              <h2>No properties found</h2>
+            </div>
+          )}
           <Table.Tbody>
             {recentProperties?.length > 0 &&
               recentProperties?.map((property: any, index: number) => (

@@ -136,7 +136,7 @@ const generateTenantInfoReport = async (propertyOwnerId: string): Promise<Partia
     });
 
     if (!isExistProperty?.length) {
-      throw new ApiError(httpStatus.NOT_FOUND, "No Unit Found !!");
+      throw new ApiError(httpStatus.NOT_FOUND, "No assigned Tenant found !!");
     }
 
     // making information

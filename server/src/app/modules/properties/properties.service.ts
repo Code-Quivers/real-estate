@@ -454,9 +454,13 @@ const getPropertyOwnerAllProperty = async (
             userId: true,
           },
         },
+        orders: {
+          select: {
+            PaymentInformation: true,
+          },
+        },
         Tenant: true,
         _count: true,
-        // maintenanceRequests: true,
         serviceProviders: {
           include: {
             Service: true,
@@ -475,8 +479,8 @@ const getPropertyOwnerAllProperty = async (
           in: ["ON_TRIAL", "PREMIUM"],
         },
       },
-
       skip,
+
       take: limit,
       orderBy:
         options.sortBy && options.sortOrder

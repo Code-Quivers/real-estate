@@ -6,4 +6,10 @@ export type OrderWithPaymentInfo = {
   orderStatus: string;
   paymentPlatformId: string;
   finOrgAccountId: string;
+  properties: IPropertyDataForUpdate[];
+};
+
+type IPropertyDataForUpdate = {
+  propertyId: string;
+  pendingPaidTo: string;
 };
