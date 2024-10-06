@@ -49,7 +49,7 @@ const Payment = () => {
 
   return (
     <>
-      <section className="mx-auto max-w-4xl px-3 pb-20">
+      <section className="mx-auto max-w-5xl px-3 pb-20">
         <h1 className="text-center mt-10 text-2xl">Payment</h1>
         <div className="max-w-5xl mx-auto">
           <h3 className="mb-2">Select property that you want to payment</h3>
@@ -69,84 +69,83 @@ const Payment = () => {
                         key={idx}
                         className={` ${selectedProperties?.includes(singleUnit?.propertyId) && "border-primary"}  duration-300 transition-all border bg-white rounded-md shadow`}
                       >
-                        <Checkbox color="green" value={singleUnit?.propertyId} className="!w-full">
-                          <div className="grid grid-cols-2 md:grid-cols-11 gap-1.5 w-full select-none max-md:pr-4">
-                            {/* unit image */}
+                        <Checkbox disabled={singleUnit?.pendingPaidTo} color="green" value={singleUnit?.propertyId} className="!w-full">
+                          <div className="grid grid-cols-2 md:grid-cols-11  w-full select-none ">
+                            {/* Unit Image */}
                             <div className="col-span-2 md:col-span-3 w-full">
                               <Image
                                 width={1000}
                                 height={1000}
                                 src={singleUnit?.images?.length ? `${fileUrlKey()}/${singleUnit?.images[0]}` : apartmentPhoto}
-                                className=" rounded-lg !w-full !h-[120px] md:!h-[100px] object-cover object-center"
+                                className="rounded-lg w-full h-[120px] md:h-[150px] object-cover object-center shadow-lg border border-gray-200"
                                 alt=""
                               />
                             </div>
-                            {/* unit information */}
-                            <div className="md:col-span-5 flex  flex-col justify-around  w-full">
-                              <h3 className="text-xs line-clamp-1">{singleUnit?.title || "N/A"}</h3>
-                              <h3 className="text-xs font-medium">
+
+                            {/* Unit Information */}
+                            <div className="md:col-span-5 flex space-y-2 flex-col justify-between w-full bg-white p-2 rounded-lg  transition-shadow duration-200">
+                              <h3 className="text-sm font-semibold text-gray-800 line-clamp-1">{singleUnit?.title || "N/A"}</h3>
+                              <h3 className="text-base font-semibold text-green-600">
                                 ${singleUnit?.monthlyRent ? singleUnit?.monthlyRent?.toLocaleString() : "N/A"}/month
                               </h3>
-                              <h3 className="text-xs ">
-                                {singleUnit?.numOfBed} Beds {singleUnit?.numOfBath} Baths
+                              <h3 className="text-sm text-gray-600">
+                                {singleUnit?.numOfBed} Beds • {singleUnit?.numOfBath} Baths
                               </h3>
-                              <h3 className="text-xs line-clamp-1">{singleUnit?.address || "N/A"}</h3>
+                              <h3 className="text-sm text-gray-600 line-clamp-1">{singleUnit?.address || "N/A"}</h3>
                             </div>
 
-                            {/* payment information */}
-                            <div className="md:col-span-3 flex flex-col justify-around  w-full">
+                            {/* Payment Information */}
+                            <div className="md:col-span-3 flex flex-col justify-between w-full bg-white p-2 rounded-l-none rounded-lg  border-l border-gray-300  transition-shadow duration-200">
                               {singleUnit?.planType === "PREMIUM" ? (
-                                <div className="flex flex-col justify-between  w-full h-full ">
-                                  <div>
-                                    <h3 className="text-xs font-medium">Payment Information </h3>
-                                  </div>
-                                  <div className="">
-                                    <h3 className="text-xs">From : {singleUnit?.paidFrom ? moment(singleUnit?.paidFrom).format("ll") : "N/A"}</h3>
-
-                                    <h3 className="text-xs">To : {singleUnit?.paidTo ? moment(singleUnit?.paidTo).format("ll") : "N/A"}</h3>
-                                  </div>
-                                  <div>
-                                    <h3 className="text-xs">Package Type : {singleUnit?.packageType || "N/A"}</h3>
-                                    <h3 className="text-xs">
-                                      Package Price : {singleUnit?.packageType ? `$ ${getUnitPackagePrices()[singleUnit?.packageType]}` : "N/A"}
-                                    </h3>
-                                  </div>
+                                <div className="space-y-2">
+                                  <h3 className="text-sm font-semibold text-gray-800 mb-2">Payment Information</h3>
+                                  <p className="text-sm text-gray-600">
+                                    From: {singleUnit?.paidFrom ? moment(singleUnit?.paidFrom).format("ll") : "N/A"}
+                                  </p>
+                                  {singleUnit?.pendingPaidTo ? (
+                                    <p className="text-sm text-yellow-600 font-semibold ">
+                                      Pending Paid To: {singleUnit?.pendingPaidTo ? moment(singleUnit?.pendingPaidTo).format("ll") : "N/A"}
+                                    </p>
+                                  ) : (
+                                    <p className="text-sm text-gray-600">
+                                      To: {singleUnit?.paidTo ? moment(singleUnit?.paidTo).format("ll") : "N/A"}
+                                    </p>
+                                  )}
+                                  <p className="text-sm text-gray-600">Package Type: {singleUnit?.packageType || "N/A"}</p>
+                                  <p className="text-sm text-gray-600">
+                                    Package Price:{" "}
+                                    <span className="text-green-600 font-semibold">
+                                      {singleUnit?.packageType ? `$${getUnitPackagePrices()[singleUnit?.packageType]}` : "N/A"}
+                                    </span>
+                                  </p>
                                 </div>
                               ) : (
-                                <div className="text-center ">
-                                  <p className="text-xs">
-                                    No Payment
-                                    <br />
-                                    Details Available
-                                  </p>
+                                <div className="text-center">
+                                  <p className="text-sm font-medium text-red-500">No Payment Details Available</p>
                                 </div>
                               )}
                             </div>
 
-                            {/* tenant details */}
-                            <div className="max-md:col-span-2 col-span-11 mr-3 flex flex-col justify-around border-t">
+                            {/* Tenant Details */}
+                            <div className="max-md:col-span-2 col-span-11 flex flex-col justify-around border-t pt-2 mt-2 bg-white p-3 rounded-lg shadow-sm">
                               {singleUnit?.isRented ? (
-                                <div className="flex items-center gap-4 mt-2">
+                                <div className="flex items-center gap-4">
+                                  <Avatar
+                                    circle
+                                    size="md"
+                                    src={singleUnit?.Tenant?.profileImage ? `${fileUrlKey()}/${singleUnit?.Tenant?.profileImage}` : profileLogo}
+                                    className="rounded-xl border border-gray-300 object-cover object-center"
+                                    alt=""
+                                  />
                                   <div>
-                                    <Avatar
-                                      circle
-                                      size="md"
-                                      src={singleUnit?.Tenant?.profileImage ? `${fileUrlKey()}/${singleUnit?.Tenant?.profileImage}` : profileLogo}
-                                      className=" rounded-xl border  object-cover object-center"
-                                      alt=""
-                                    />
-                                  </div>
-                                  <div>
-                                    <h2 className="text-xs">Tenant</h2>
-                                    <h2 className="text-xs">
+                                    <h2 className="text-xs font-medium text-gray-800">Tenant</h2>
+                                    <h2 className="text-sm font-semibold text-gray-800">
                                       {singleUnit?.Tenant?.firstName} {singleUnit?.Tenant?.lastName}
                                     </h2>
                                   </div>
                                 </div>
                               ) : (
-                                <div>
-                                  <h2 className="text-xs mt-2">No Tenant Available</h2>
-                                </div>
+                                <h2 className="text-xs mt-2 font-medium text-gray-600">No Tenant Available</h2>
                               )}
                             </div>
                           </div>
@@ -167,7 +166,6 @@ const Payment = () => {
               <h2>No Properties found for Payment</h2>
             </div>
           )}
-          <div></div>
 
           <div className="mt-10 flex justify-end">
             <button

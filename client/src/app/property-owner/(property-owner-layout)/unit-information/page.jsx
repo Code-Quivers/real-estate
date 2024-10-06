@@ -56,11 +56,6 @@ const PropertyOwnerUnitInformation = () => {
                     <h2 className="text-base mb-2">
                       <span className="max-md:hidden">Property</span> Title: <span className="font-medium md:font-bold">{singleProperty.title}</span>
                     </h2>
-
-                    {/* <div>
-                      <UnitPackageDate singleProperty={singleProperty} />
-                    </div> */}
-                    {/*  */}
                   </div>
                   {/*  */}
                   <div className="w-full lg:border p-2  md:p-3 lg:p-6 shadow-2xl shadow-[#70707023] bg-white rounded-xl space-y-8 ">
@@ -193,7 +188,7 @@ const PropertyOwnerUnitInformation = () => {
                           ) : (
                             <div className="flex mt-5    items-center justify-between">
                               <div>
-                                <h3 className="text-sm text-black/80 text-center ">No Tenant Added</h3>
+                                <h3 className="text-sm text-black/80 text-center">No Tenant Added</h3>
                               </div>
                               <div>
                                 {!singleProperty?.isRented && (
@@ -240,7 +235,18 @@ const PropertyOwnerUnitInformation = () => {
                         <div className="flex items-center gap-5">
                           <h3>Payment From : {singleProperty?.paidFrom ? moment(singleProperty?.paidFrom).format("ll") : "N/A"}</h3>
                           <span>-</span>
-                          <h3>To : {singleProperty?.paidTo ? moment(singleProperty?.paidTo).format("ll") : "N/A"}</h3>
+                          <h3>
+                            To :{" "}
+                            {singleProperty?.pendingPaidTo ? (
+                              <span className="bg-yellow-300 px-3 py-1 rounded-full">
+                                Pending paid date : {moment(singleProperty?.pendingPaidTo).format("ll")}
+                              </span>
+                            ) : singleProperty?.paidTo ? (
+                              moment(singleProperty?.paidTo).format("ll")
+                            ) : (
+                              "N/A"
+                            )}
+                          </h3>
                         </div>
                         <div>
                           <h2>Package Type : {singleProperty?.packageType || "N/A"}</h2>

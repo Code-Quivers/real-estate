@@ -100,7 +100,7 @@ class TenantPaymentProcessor {
     // throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get secret for client!")
   };
 
-  static retrivePaymentInfo = async (paymentIntentId: string, connectedAccountId: string) => {
+  static retrievePaymentInfo = async (paymentIntentId: string, connectedAccountId: string) => {
     const paymentIntentInfo = await stripe.paymentIntents.retrieve(paymentIntentId, {
       stripeAccount: connectedAccountId,
     });

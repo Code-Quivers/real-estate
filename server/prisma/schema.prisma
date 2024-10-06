@@ -90,50 +90,6 @@ model Tenant {
   @@map("tenants")
 }
 
-model Property {
-  propertyId               String               @id @default(uuid())
-  title                    String               @default("Property Title")
-  numOfBed                 Int                  @default(1)
-  numOfBath                Int                  @default(1)
-  monthlyRent              Int                  @default(1)
-  address                  String
-  maintenanceCoveredTenant String
-  maintenanceCoveredOwner  String
-  description              String?
-  schools                  String?
-  universities             String?
-  allowedPets              String?
-  images                   String[]
-  isRented                 Boolean              @default(false)
-  planType                 PlanType             @default(PENDING)
-  packageType              PackageType          @default(NONE)
-  paidFrom                 DateTime?
-  paidTo                   DateTime?
-  isActive                 Boolean              @default(true)
-  createdAt                DateTime             @default(now())
-  updatedAt                DateTime             @updatedAt
-  tenantAssignedAt          DateTime?
-  
-  // 
-  ownerId                  String
-  owner                    PropertyOwner        @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetDefault)
-  // 
-  SavedItem                SavedItem[]
-  Tenant                   Tenant?
-  // 
-  maintenanceRequests      MaintenanceRequest[]
-  serviceProviders         ServiceProvider[]
-  // 
-  score                    Float                @default(60)
-  scoreRatio               Json?
-
-  // Many to many relation with Order
-  orders   Order[]
-  Document Document[]
-
-  @@map("properties")
-}
-
 model Report {
   reportId        String        @id @default(uuid())
   reportTitle     String
@@ -153,11 +109,56 @@ model Report {
   // 
   propertyId      String?
   // 
-  propertyOwnerId String
-  propertyOwner   PropertyOwner @relation(fields: [propertyOwnerId], references: [propertyOwnerId], onDelete: Cascade)
+  propertyOwnerId String?
+  propertyOwner   PropertyOwner? @relation(fields: [propertyOwnerId], references: [propertyOwnerId], onDelete: SetNull)
   // 
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+model Property {
+  propertyId               String               @id @default(uuid())
+  title                    String               @default("Property Title")
+  numOfBed                 Int                  @default(1)
+  numOfBath                Int                  @default(1)
+  monthlyRent              Int                  @default(1)
+  address                  String
+  maintenanceCoveredTenant String
+  maintenanceCoveredOwner  String
+  description              String?
+  schools                  String?
+  universities             String?
+  allowedPets              String?
+  images                   String[]
+  isRented                 Boolean              @default(false)
+  planType                 PlanType             @default(PENDING)
+  packageType              PackageType          @default(NONE)
+  paidFrom                 DateTime?
+  paidTo                   DateTime?
+  pendingPaidTo            DateTime?
+  isActive                 Boolean              @default(true)
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  tenantAssignedAt         DateTime?
+  
+  // 
+  ownerId                  String?
+  owner                    PropertyOwner?        @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  // 
+  SavedItem                SavedItem[]
+  Tenant                   Tenant?
+  // 
+  maintenanceRequests      MaintenanceRequest[]
+  serviceProviders         ServiceProvider[]
+  // 
+  score                    Float                @default(60)
+  scoreRatio               Json?
+
+  // Many to many relation with Order
+  orders   Order[]
+  Document Document[]
+
+  @@map("properties")
 }
 
 model Order {
@@ -176,6 +177,25 @@ model Order {
   updatedAt          DateTime            @updatedAt
   PaymentInformation PaymentInformation?
 }
+model PaymentInformation {
+  id                     String   @id @default(uuid())
+  paymentPlatformId      String   @unique
+  platform               PLATFORM
+  paymentStatus          String
+  amountToPay            Float
+  amountPaid             Float
+  currency               String
+  platformFee            Float
+  netAmount              Float
+  transactionCreatedTime DateTime
+  orderId                String?   @unique
+  order                  Order?    @relation(fields: [orderId], references: [orderId], onDelete: SetNull)
+  userId                 String?
+  user                   User?     @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  createdAt              DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt              DateTime @updatedAt @db.Timestamptz(0)
+}
+
 
 model ServiceProvider {
   serviceProviderId   String               @id @default(uuid())
@@ -213,7 +233,7 @@ model Service {
   serviceAvailability       ServiceAvailabilityEnum?
   serviceType               ServiceType?
   ownerId                   String?                  @unique
-  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId], onDelete: Cascade)
+  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId], onDelete: SetDefault)
   createdAt                 DateTime                 @default(now())
   updatedAt                 DateTime                 @updatedAt
 
@@ -256,33 +276,14 @@ model SavedItem {
   tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
   propertyId        String?
   property          Property?        @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
-  userId            String
-  user              User             @relation(fields: [userId], references: [userId], onDelete: SetDefault)
+  userId            String?
+  user              User?             @relation(fields: [userId], references: [userId], onDelete: SetNull)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
   @@unique([userId, serviceProviderId])
   @@unique([userId, tenantId])
   @@unique([userId, propertyId])
-}
-
-model PaymentInformation {
-  id                     String   @id @default(uuid())
-  platform               PLATFORM
-  paymentStatus          String
-  amountToPay            Float
-  amountPaid             Float
-  currency               String
-  platformFee            Float
-  netAmount              Float
-  paymentPlatformId      String
-  transactionCreatedTime DateTime
-  orderId                String   @unique
-  order                  Order    @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
-  userId                 String
-  user                   User     @relation(fields: [userId], references: [userId], onDelete: SetDefault)
-  createdAt              DateTime @default(now()) @db.Timestamptz(0)
-  updatedAt              DateTime @updatedAt @db.Timestamptz(0)
 }
 
 model FinancialAccount {
@@ -294,11 +295,9 @@ model FinancialAccount {
   chargesEnabled   Boolean       @default(false)
   transfers        Boolean       @default(false)
   isCustomAccount  Boolean       @default(true)
-  detailsSubmitted Boolean       @default(false)
-  // userId           String  @unique
-  // user             User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  ownerId          String        @unique
-  propertyOwner    PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
+  detailsSubmitted Boolean       @default(false) 
+  ownerId          String?        @unique
+  propertyOwner    PropertyOwner? @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
 
   createdAt DateTime @default(now()) @db.Timestamptz(0)
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
@@ -359,8 +358,8 @@ model Document {
   isSignedByTenant Boolean       @default(false)
   ownerId          String
   owner            PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
-  tenantId         String
-  tenant           Tenant        @relation(fields: [tenantId], references: [tenantId], onDelete: SetDefault)
+  tenantId         String?
+  tenant           Tenant?        @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
   propertyId       String
   property         Property      @relation(fields: [propertyId], references: [propertyId], onDelete: Cascade)
   createdAt        DateTime      @default(now()) @db.Timestamptz(0)

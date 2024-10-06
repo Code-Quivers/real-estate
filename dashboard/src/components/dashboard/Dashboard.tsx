@@ -5,15 +5,14 @@ import {
   IconAdjustmentsFilled,
   IconBuildingEstate,
   IconHomeFilled,
-  IconPhoto,
   IconUserFilled,
 } from "@tabler/icons-react";
 import RecentTenProperties from "./RecentTenProperties";
 
 const Dashboard = () => {
-  const { data: dashboardData } = useGetDashboardDataQuery({});
+  const { data: dashboardData, isLoading } = useGetDashboardDataQuery({});
   const { data } = (dashboardData as any) || {};
-  // console.log(data);
+
   return (
     <div>
       <section className="grid lg:grid-cols-4 sm:grid-cols-2 sm:gap-8 gap-5">
@@ -75,7 +74,10 @@ const Dashboard = () => {
         </div>
       </section>
       <section className="mt-10">
-        <RecentTenProperties recentProperties={data?.recentProperties} />
+        <RecentTenProperties
+          recentProperties={data?.recentProperties}
+          isLoading={isLoading}
+        />
       </section>
     </div>
   );

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import httpStatus from "http-status";
 import catchAsync from "../../../../shared/catchAsync";
 import PropertyOwnerPaymentProcessor from "./payer.propertyOwner.services";
 import sendResponse from "../../../../shared/sendResponse";
@@ -20,20 +19,9 @@ class StripeController {
    * Handles payment for an order.
    */
   static createPaymentIntent = catchAsync(async (req: Request, res: Response) => {
-    //
-    //   amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
-    // orderData={orderDetails?.data}
-    // propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
-    // packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
-    // totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
-    // orderId={orderDetails?.data?.orderId}
-    // packageType={activePackagePrice}
-
-    // charge={dueRent * 0.04}
-    //           netAmount={dueRent}
-    const { amountToPaid, orderId, packageType, charge, netAmount } = req.body;
+    const { amountToPaid, orderId, packageType } = req.body;
     const { jsonResponse, httpStatusCode } = await PropertyOwnerPaymentProcessor.createPaymentIntent(amountToPaid);
-    const resp = await OrderServices.updateOrderInfo(orderId, { packageType });
+    await OrderServices.updateOrderInfo(orderId, { packageType });
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 201 ? true : false,
@@ -45,60 +33,32 @@ class StripeController {
     });
   });
 
-  static retriveStripePaymentInformation = catchAsync(async (req: Request, res: Response) => {
+  static retrieveStripePaymentInformation = catchAsync(async (req: Request, res: Response) => {
     const { orderId, paymentIntentId } = req.body;
     const userId = (req.user as IRequestUser).userId;
-    const profileId = (req.user as IRequestUser).profileId;
-    const tenantId: string = req.body?.tenantId || "";
-    const propertyId: string = req.body?.propertyId || "";
 
     const { jsonResponse, httpStatusCode } =
-      await PropertyOwnerPaymentProcessor.retriveStripePaymentInfo(paymentIntentId);
+      await PropertyOwnerPaymentProcessor.retrieveStripePaymentInfo(paymentIntentId);
     const paymentReport = StripeController.generatePaymentReport(jsonResponse, orderId, userId);
-    // console.log("testing --------------------------- ", jsonResponse);
 
     // Create payment report in the database
-    const result = await PaymentServices.createPaymnentReport(paymentReport);
+    await PaymentServices.createPaymentReport(paymentReport);
 
+    // update property plan
     const dataToUpdate = {
       orderId,
-      //  orderStatus: "CONFIRMED",
+      packageType: paymentReport?.packageType,
       planType: "PREMIUM",
     };
-
-    const updatedOrderData = OrderServices.updateOrderStatusAndPropertyPlanType(dataToUpdate);
+    await OrderServices.updateOrderStatusAndPropertyPlanType(dataToUpdate);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 200 ? true : false,
-      message: "Payment information successfully retrived!!!",
+      message: "Payment information successfully retrieved!!!",
       data: jsonResponse,
     });
   });
-
-  /**
-   * Retrieves or creates an order ID for a new order.
-   */
-  private static getOrderIdByCreateNewOrder = async (
-    orderId: string,
-    profileId: string,
-    tenantId: string,
-    propertyId: string,
-  ): Promise<string> => {
-    if (orderId) return orderId;
-
-    const orderInfo: any = {
-      properties: [propertyId],
-    };
-    if (tenantId) {
-      orderInfo["tenantId"] = tenantId;
-    } else {
-      orderInfo["ownerId"] = profileId;
-    }
-    const newOrderData = await OrderServices.createOrder(orderInfo);
-
-    return newOrderData.orderId;
-  };
 
   /**
    * Generates a payment report based on PayPal API response data.
@@ -143,10 +103,6 @@ class StripeController {
   });
 
   static createAccountLink = catchAsync(async (req: Request, res: Response) => {
-    // console.log("createAccountLink API hit..............");
-    const userId = (req.user as IRequestUser).userId;
-    const profileId = (req.user as IRequestUser).profileId;
-
     const { sConnectedAccountId } = req.body;
     const { jsonResponse, httpStatusCode } = await StripeAccountManager.createAccountLink(sConnectedAccountId);
 
