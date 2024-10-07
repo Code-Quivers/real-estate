@@ -72,7 +72,7 @@ const UnitPackageDate = ({ singleProperty }) => {
           )}
 
           {/*  */}
-          {getPackageExpiredDates(singleProperty?.paidTo).hasExpired && (
+          {!singleProperty?.pendingPaidTo && getPackageExpiredDates(singleProperty?.paidTo).hasExpired && (
             <div className="space-y-4 bg-red-50 border border-red-300 rounded-lg p-3 shadow-md">
               <h2 className="text-lg font-semibold text-red-800">
                 {!getPackageExpiredDates(singleProperty?.paidTo).moreThanOneMonthExpired

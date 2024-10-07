@@ -480,7 +480,6 @@ const getPropertyOwnerAllProperty = async (
         },
       },
       skip,
-
       take: limit,
       orderBy:
         options.sortBy && options.sortOrder

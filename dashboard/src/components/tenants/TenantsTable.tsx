@@ -107,8 +107,8 @@ const TenantsTable = ({}: any) => {
         notifications.update({
           id,
           loading: false,
-          message: "Property owner deleted successfully",
-          title: "Property owner deleted",
+          message: "Tenant deleted successfully",
+          title: "Tenant data deleted",
           autoClose: 3000,
           withCloseButton: true,
           position: "top-right",
@@ -120,8 +120,8 @@ const TenantsTable = ({}: any) => {
         notifications.update({
           id,
           loading: false,
-          message: "Failed to delete property owner",
-          title: "Failed",
+          message: "Failed to delete Tenant",
+          title: "Failed to delete",
           withCloseButton: true,
           position: "top-right",
           color: "red",
