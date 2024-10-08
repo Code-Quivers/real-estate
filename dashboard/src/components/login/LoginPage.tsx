@@ -81,7 +81,7 @@ const LoginPage = () => {
                 styles={{ error: { fontSize: 14 } }}
                 type="email"
                 label="Email"
-                placeholder="Input placeholder"
+                placeholder="Email"
                 size="lg"
                 radius="md"
                 key={form.key("email")}
@@ -91,7 +91,7 @@ const LoginPage = () => {
                 styles={{ error: { fontSize: 14 } }}
                 type="password"
                 label="Password"
-                placeholder="Input placeholder"
+                placeholder="Password"
                 size="lg"
                 radius="md"
                 key={form.key("password")}
