@@ -5,29 +5,12 @@ import { Elements } from "@stripe/react-stripe-js";
 import StripeCheckoutForm from "./StripeCheckoutForm";
 import { useGetClientSecretMutation } from "@/redux/features/payment/stripePaymentApi";
 import { getStripePKLive } from "@/configs/envConfig";
-
-// import StripeCheckoutForm from "./CheckoutForm";
-
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-// This is a public sample test API key.
-// Don’t submit any personally identifiable information in requests made with this key.
-// Sign in to see your own test API key embedded in code samples.
-// const stripePromise = loadStripe("pk_test_51P3kzDBMbxBFdGaf2ImAX1HZlT3qNa2iQMfFrCjCwHEQllcgo92Nr5aFGdpJArxffsEjmUVgn8yCZawyFQbEW0op00XKGrzUfN");
 const stripePromise = loadStripe(getStripePKLive());
-
-
-//  amountToPaid={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
-//                 orderData={orderDetails?.data}
-//                 propertyIds={orderDetails?.data?.properties.map((property) => property?.propertyId)}
-//                 packagePrice={parseInt(getUnitPackagePrices()[activePackagePrice])}
-//                 totalAmountToPay={parseInt(getUnitPackagePrices()[activePackagePrice]) * orderDetails?.data?._count?.properties}
-//                 orderId={orderDetails?.data?.orderId}
-//                 packageType={activePackagePrice}
 
 const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
+  console.log("srvsrvsrv", orderData, others);
 
   const fetchClientSecret = async () => {
     const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData, ...others });

@@ -18,15 +18,15 @@ router.post(
 router.post("/create-tenant-payment-intent", auth(UserRoles.TENANT), PayerTenantController.createTenantPaymentIntent);
 
 router.post(
-  "/retrive-payment-info",
-  auth(UserRoles.TENANT, UserRoles.PROPERTY_OWNER),
-  StripeController.retriveStripePaymentInformation,
+  "/retrieve-payment-info",
+  auth(UserRoles.PROPERTY_OWNER),
+  StripeController.retrieveStripePaymentInformation,
 );
 
 router.post(
   "/retrive-tenant-payment-info",
   auth(UserRoles.TENANT),
-  PayerTenantController.retriveTenantPaymentInformation,
+  PayerTenantController.retrieveTenantPaymentInformation,
 );
 
 router.post(

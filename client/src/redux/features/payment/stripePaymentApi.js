@@ -25,7 +25,7 @@ export const stripePaymentApi = baseApi.injectEndpoints({
 
     retrivePaymentInfo: builder.mutation({
       query: (data) => ({
-        url: `/payment-stripe/retrive-payment-info`,
+        url: `/payment-stripe/retrieve-payment-info`,
         method: "POST",
         data: JSON.stringify(data),
         contentType: "application/json",

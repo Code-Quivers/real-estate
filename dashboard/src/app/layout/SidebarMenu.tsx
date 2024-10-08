@@ -11,7 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useDispatch } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
-import { removeUserInfo } from "@/hooks/services/auth.service";
+import { getUserInfo, removeUserInfo } from "@/hooks/services/auth.service";
 import { getAuthKey } from "@/helpers/config/envConfig";
 import { baseApi } from "@/redux/api/baseApi";
 
@@ -19,7 +19,8 @@ const SidebarMenu = ({ toggleMobile }: any) => {
   const router = useRouter();
   const path = usePathname();
   // console.log(path, "path");
-
+  const userInfo: any = getUserInfo();
+  console.log(userInfo);
   // Clear all caches
   const dispatch = useDispatch();
 
@@ -80,42 +81,23 @@ const SidebarMenu = ({ toggleMobile }: any) => {
             variant="filled"
             color="indigo"
           />
-
-          {/* <Link
-            href="/tenants"
-            className="py-3 hover:bg-[#E6F4FF] px-5 cursor-pointer flex items-start gap-2"
-          >
-            <Tenants />
-            Tenant
-          </Link> */}
-          {/* <Link
-            href="/property-owner"
-            className="py-3 hover:bg-[#E6F4FF] px-5 cursor-pointer flex items-start gap-2"
-          >
-            <Tenants />
-            Property Owner
-          </Link> */}
-          {/* <Link
-            href="/properties"
-            className="py-3 hover:bg-[#E6F4FF] px-5 cursor-pointer flex items-start gap-2"
-          >
-            <Tenants />
-            Properties
-          </Link> */}
         </div>
-        <div className="flex items-center justify-around mb-10 px-3 gap-2 border-t pt-2">
-          <Avatar color="cyan" radius="xl">
-            MK
-          </Avatar>
-          <div className="text-sm">
-            {/* <p className="line-clamp-1">Muhammad Kudrat</p> */}
-            <p className="line-clamp-1 text-xs">@superadmin</p>
+        <div className="grid grid-cols-5 items-center justify-around mb-10  gap-2  bg-[#adadad15] mx-1 pb-3 pt-2 rounded-lg">
+          <div className="col-span-4 pl-1 ">
+            <p className="text-[13px] font-medium overflow-hidden  text-ellipsis whitespace-nowrap">
+              @{userInfo?.userName}
+            </p>
+            <p className="text-xs overflow-hidden text-ellipsis whitespace-nowrap">
+              {userInfo?.email as any}
+            </p>
           </div>
-          <Tooltip label="Logout" position="top">
-            <ActionIcon variant="subtle" size="lg">
-              <IconLogout onClick={logOut} size={24} />
-            </ActionIcon>
-          </Tooltip>
+          <div className="col-span-1">
+            <Tooltip label="Logout" position="top">
+              <ActionIcon variant="subtle" size="lg">
+                <IconLogout onClick={logOut} size={24} />
+              </ActionIcon>
+            </Tooltip>
+          </div>
         </div>
       </nav>
     </>

@@ -1,4 +1,8 @@
-import PasswordForgot from "@/components/fogotPassword/PasswordForgot";
+import PasswordForgot from "@/components/forgotPassword/PasswordForgot";
+
+export const metadata = {
+  title: "Password Reset",
+};
 
 const ForgetPassword = () => {
   return (

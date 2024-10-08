@@ -43,7 +43,7 @@ class PropertyOwnerPaymentProcessor {
     }
   };
 
-  static retriveStripePaymentInfo = async (paymentIntentId: string) => {
+  static retrieveStripePaymentInfo = async (paymentIntentId: string) => {
     const paymentIntentInfo = await stripe.paymentIntents.retrieve(paymentIntentId);
     if (!paymentIntentInfo) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Payment information retrivation failed!!!");

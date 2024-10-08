@@ -1,11 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
-import httpStatus from "http-status";
-
-// import { PaymentServices } from "../payment/payment.services";
-
 import { PaymentServices } from "../../payment/payment.services";
 import TenantPaymentProcessor from "./payer.tenant.services";
-import { OrderServices } from "../../orders/orders.service";
 import catchAsync from "../../../../shared/catchAsync";
 import sendResponse from "../../../../shared/sendResponse";
 import { IRequestUser } from "../../../interfaces/global.interfaces";
@@ -30,14 +26,11 @@ class PayerTenantController {
     });
   });
 
-  static retriveTenantPaymentInformation = catchAsync(async (req: Request, res: Response) => {
+  static retrieveTenantPaymentInformation = catchAsync(async (req: Request, res: Response) => {
     const { orderId, paymentIntentId, connectedAccountId } = req.body;
     const userId = (req.user as IRequestUser).userId;
-    // const profileId = (req.user as IRequestUser).profileId;
-    // const tenantId: string = req.body?.tenantId || "";
-    // const propertyId: string = req.body?.propertyId || "";
 
-    const { jsonResponse, httpStatusCode } = await TenantPaymentProcessor.retrivePaymentInfo(
+    const { jsonResponse, httpStatusCode } = await TenantPaymentProcessor.retrievePaymentInfo(
       paymentIntentId,
       connectedAccountId,
     );
@@ -46,19 +39,19 @@ class PayerTenantController {
     const paymentReport = this.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
-    await PaymentServices.createPaymnentReport(paymentReport);
+    await PaymentServices.createPaymentReport(paymentReport);
 
-    const dataToUpdate = {
-      orderId,
-      // orderStatus: "CONFIRMED"
-    };
+    // const dataToUpdate = {
+    //   orderId,
+    //   // orderStatus: "CONFIRMED"
+    // };
 
-    const updatedOrderData = OrderServices.updateOrderInfo(orderId, dataToUpdate);
+    // const updatedOrderData = OrderServices.updateOrderInfo(orderId, dataToUpdate);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 200 ? true : false,
-      message: "Payment information successfully retrived!!!",
+      message: "Payment information successfully retrieved!!!",
       data: jsonResponse,
     });
   });
@@ -67,14 +60,13 @@ class PayerTenantController {
    * Generates a payment report based on PayPal API response data.
    */
   private static generatePaymentReport(retrievedPaymentInfo: any, orderId: string, userId: string): any {
-    // Amount devided by 100 cause stripe calculate amount in the cent.
+    // Amount divided by 100 cause stripe calculate amount in the cent.
     return {
       platform: "STRIPE",
       paymentStatus: retrievedPaymentInfo.status,
       amountToPay: parseFloat(retrievedPaymentInfo.amount) / 100.0,
       amountPaid: parseFloat(retrievedPaymentInfo.amount_received) / 100.0,
       currency: retrievedPaymentInfo.currency,
-      // platformFee: parseFloat(retrievedPaymentInfo.metadata.charge),
       platformFee: Math.round(parseFloat(retrievedPaymentInfo.metadata.charge) * 100) / 100,
       netAmount: parseFloat(retrievedPaymentInfo.metadata.netAmount),
       paymentPlatformId: retrievedPaymentInfo.id,

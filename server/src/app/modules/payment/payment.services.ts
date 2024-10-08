@@ -10,27 +10,11 @@ import { IPaymentFilterRequest, OrderWithPaymentInfo } from "./payment.interface
 import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchableFields } from "./payment.constant";
 import Stripe from "stripe";
 import config from "../../../config";
-import { errorLogger } from "../../../shared/logger";
+import { errorLogger, infoLogger } from "../../../shared/logger";
 import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailSender";
 import { differenceInDays, differenceInMonths } from "../tenants/tenants.utils";
 import { sendDueRentEmailToTenant } from "../../../shared/emailNotification/emailForDueRent";
 const stripe = new Stripe(config.stripe_sk);
-
-/**
- * Retrieves all payment report.
- * @returns A Promise resolving to an array of PaymentInformation objects or null.
- */
-// const getPaymentReports = async (): Promise<PaymentInformation[] | null> => {
-//   // Fetch payment reports from the database for the given user ID
-//   const paymentReports = await prisma.paymentInformation.findMany({});
-
-//   // If no payment reports are found, throw an error
-//   if (!paymentReports) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'No payment information found!!!');
-//   }
-
-//   return paymentReports;
-// };
 
 const getPaymentReports = async (
   filters: IPaymentFilterRequest,
@@ -45,19 +29,6 @@ const getPaymentReports = async (
   // Define an array to hold filter conditions
   const andConditions: Prisma.PaymentInformationWhereInput[] = [];
 
-  // Add search term condition if provided
-
-  //   if (searchTerm) {
-  //     andConditions.push({
-  //       OR: PaymentSearchableFields.map((field: any) => ({
-  //         [field]: {
-  //           contains: searchTerm,
-  //           mode: 'insensitive',
-  //         },
-  //       })),
-  //     });
-  //   }
-
   if (searchTerm) {
     andConditions.push({
       OR: [
@@ -67,23 +38,6 @@ const getPaymentReports = async (
             mode: "insensitive",
           },
         })),
-        // Include search in nested field 'partyOrderId'
-        // {
-        //   order: {
-        //     partyOrderId: {
-        //       contains: searchTerm,
-        //       mode: 'insensitive',
-        //     },
-        //   },
-        // },
-        // {
-        //   user: {
-        //     email: {
-        //       contains: searchTerm,
-        //       mode: 'insensitive',
-        //     },
-        //   },
-        // },
       ],
     });
   }
@@ -188,8 +142,20 @@ const getPaymentReportsWithOrderId = async (userId: string, orderId: string): Pr
 
 // Store payment information in the database from the platform like Paypal, venmo etc.
 
-const createPaymnentReport = async (data: any): Promise<any | null> => {
+const createPaymentReport = async (data: any): Promise<any | null> => {
   // Fetch a single payment report from the database based on the payment ID
+  const isExistPaymentReport = await prisma.paymentInformation.findUnique({
+    where: {
+      paymentPlatformId: data?.paymentPlatformId,
+    },
+  });
+
+  if (isExistPaymentReport) {
+    return {
+      message: "Payment report already exist",
+    };
+  }
+
   const paymentReport = await prisma.paymentInformation.create({
     data: data,
     select: {
@@ -216,29 +182,30 @@ const createPaymnentReport = async (data: any): Promise<any | null> => {
 
   // sending email notification to property owner
 
-  // ! send email notification to all service providers
-
-  const ownerOfProperty :any = await prisma.propertyOwner.findUnique({
-    where: {
-      propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId,
-    },
-    select: {
-      firstName: true,
-      lastName: true,
-      phoneNumber: true,
-      user: {
-        select: {
-          email: true,
+  // ! send email notification to property owner
+  if (paymentReport?.order?.tenant) {
+    const ownerOfProperty: any = await prisma.propertyOwner.findUnique({
+      where: {
+        propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId as string,
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        user: {
+          select: {
+            email: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  // send email to service provider
-  if (ownerOfProperty?.user?.email) {
-    console.log("sending email to property owner for rent received");
+    // send email to service provider
+    if (ownerOfProperty?.user?.email) {
+      infoLogger.info(`sending Email : ${ownerOfProperty?.user?.email}  to property owner for rent received`);
 
-    await sendEmailToOwnerAfterRentReceived(ownerOfProperty);
+      await sendEmailToOwnerAfterRentReceived(ownerOfProperty);
+    }
   }
 
   return paymentReport;
@@ -362,7 +329,12 @@ const checkAndUpdateBulkOrderStatus = async () => {
               paymentPlatformId: true,
             },
           },
-
+          properties: {
+            select: {
+              propertyId: true,
+              pendingPaidTo: true,
+            },
+          },
           tenant: {
             select: {
               property: {
@@ -382,15 +354,17 @@ const checkAndUpdateBulkOrderStatus = async () => {
           },
         },
       });
-      console.log("all orders data", allOrdersData);
+      // console.log("all orders data", allOrdersData);
 
       return allOrdersData?.map((order) => ({
         orderId: order.orderId,
         paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
         finOrgAccountId: order?.tenant?.property?.owner?.FinancialAccount?.finOrgAccountId,
+        properties: order?.properties || [], // Make sure to get properties
       }));
     } catch (error) {
       errorLogger.error("Error fetching orders:", error);
+      return [];
       // throw new ApiError(httpStatus.BAD_REQUEST, "Could not fetch orders");
     }
   };
@@ -402,7 +376,6 @@ const checkAndUpdateBulkOrderStatus = async () => {
         const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId, {
           stripeAccount: order?.finOrgAccountId,
         });
-        console.log("payment intent", paymentIntent);
         return { ...order, paymentStatus: paymentIntent?.status };
       } catch (error) {
         errorLogger.error(`Error retrieving payment intent for order ID: ${order.orderId}`, error);
@@ -417,19 +390,49 @@ const checkAndUpdateBulkOrderStatus = async () => {
   const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
 
   const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
-    // if (single?.paymentStatus === "succeeded" || single?.paymentStatus === "canceled") {
-    acc.push(
-      prisma.order.update({
-        where: { orderId: single.orderId },
-        data: {
-          orderStatus: single?.paymentStatus === "succeeded" ? "CONFIRMED" : "FAILED",
-          PaymentInformation: {
-            update: { paymentStatus: single.paymentStatus },
+    if (
+      single?.paymentStatus === "succeeded" ||
+      single?.paymentStatus === "processing" ||
+      single?.paymentStatus === "failed"
+    ) {
+      acc.push(
+        prisma.order.update({
+          where: { orderId: single.orderId },
+          data: {
+            orderStatus:
+              single?.paymentStatus === "succeeded"
+                ? "CONFIRMED"
+                : single?.paymentStatus === "processing"
+                  ? "PENDING"
+                  : "FAILED",
+            PaymentInformation: {
+              update: { paymentStatus: single.paymentStatus },
+            },
+            properties: {
+              updateMany: {
+                where: {
+                  propertyId: {
+                    in: single?.properties?.map((property) => property?.propertyId), // Extract propertyIds correctly
+                  },
+                },
+                data: {
+                  // Only update paidTo if paymentStatus is "succeeded" or "processing"
+                  paidTo:
+                    single?.paymentStatus === "succeeded" || single?.paymentStatus === "processing"
+                      ? { set: single?.properties?.map((property) => property?.pendingPaidTo)[0] } // Use set to assign pendingPaidTo value
+                      : undefined, // Keep the old value if status is "failed"
+                  // Handle pendingPaidTo based on paymentStatus
+                  pendingPaidTo:
+                    single?.paymentStatus === "succeeded" || single?.paymentStatus === "failed"
+                      ? null // Clear pendingPaidTo when payment succeeds or fails
+                      : undefined, // Don't change pendingPaidTo if status is "processing"
+                },
+              },
+            },
           },
-        },
-      }),
-    );
-    // }
+        }),
+      );
+    }
     return acc; // Return the accumulated array
   }, []);
 
@@ -558,7 +561,7 @@ export const PaymentServices = {
   getPaymentReports,
   getPaymentReport,
   getPaymentReportsWithOrderId,
-  createPaymnentReport,
+  createPaymentReport,
   getAccountFromStripe,
   deleteConnectedAccount,
   checkAndUpdateBulkOrderStatus,
