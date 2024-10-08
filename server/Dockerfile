@@ -4,7 +4,7 @@ FROM node:20.11.1-alpine3.19
 WORKDIR /app
 
 # copy dependencies file
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # COPY prisma directory
 COPY prisma ./prisma/
@@ -28,5 +28,5 @@ EXPOSE 7000 4000
 
 RUN yarn build
 # run the project
-# CMD yarn startmigrate
-CMD yarn start
+CMD yarn startmigrate
+# CMD yarn start
