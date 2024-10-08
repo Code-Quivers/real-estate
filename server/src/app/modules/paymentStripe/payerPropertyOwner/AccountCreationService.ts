@@ -116,7 +116,7 @@ class StripeAccountManager {
     if (updatedFinAcctData) {
       const prop = await prisma.propertyOwner.findUnique({
         where: {
-          propertyOwnerId: updatedFinAcctData.ownerId,
+          propertyOwnerId: updatedFinAcctData.ownerId as string,
         },
         include: {
           FinancialAccount: true,
@@ -127,7 +127,7 @@ class StripeAccountManager {
       const profileScore = calculatePropertyOwnerProfileScore(prop);
       await prisma.propertyOwner.update({
         where: {
-          propertyOwnerId: updatedFinAcctData.ownerId,
+          propertyOwnerId: updatedFinAcctData.ownerId as string,
         },
         data: {
           score: profileScore.profileScore,
