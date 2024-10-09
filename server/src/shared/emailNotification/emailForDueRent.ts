@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { EmailParams, Recipient, Sender } from "mailersend";
-import { mailerSend } from "./mailerSendarKey";
+import { mailerSend, senderEmail } from "./mailerSendarKey";
 import { errorLogger, infoLogger } from "../logger";
 import { IDueRentForNotification } from "../../interfaces/common";
 
 export const sendDueRentEmailToTenant = async (details: IDueRentForNotification) => {
   try {
-    const sentFrom = new Sender("support@codequivers.com", "Support Team");
+    const sentFrom = new Sender(senderEmail, "Support Team");
     const recipients = [new Recipient(details?.user?.email, `${details?.firstName} ${details?.lastName}`)];
 
     const emailParams = new EmailParams()
