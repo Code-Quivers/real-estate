@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { EmailParams, Recipient, Sender } from "mailersend";
-import { mailerSend } from "./mailerSendarKey";
+import { mailerSend, senderEmail } from "./mailerSendarKey";
 import { IReceiverForNotification } from "../../interfaces/common";
 import { errorLogger, infoLogger } from "../logger";
 
 export const sendEmailToMessageReceiver = async (details: IReceiverForNotification) => {
   try {
-    const sentFrom = new Sender("support@codequivers.com", "Support Team");
+    const sentFrom = new Sender(senderEmail, "Support Team");
     const recipients = [new Recipient(details?.email)];
 
     const emailParams = new EmailParams()
