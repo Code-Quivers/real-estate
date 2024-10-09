@@ -7,11 +7,11 @@ import {
   IServiceProviderDetailsForNotification,
   ITenantDetailsForNotification,
 } from "../../interfaces/common";
-import { mailerSend } from "./mailerSendarKey";
+import { mailerSend, senderEmail } from "./mailerSendarKey";
 
 export const sendEmail = async () => {
   try {
-    const sentFrom = new Sender("support@codequivers.com", "Support Team");
+    const sentFrom = new Sender(senderEmail, "Support Team");
     const recipients = [new Recipient("shafinur512@gmail.com")];
 
     const emailParams = new EmailParams()

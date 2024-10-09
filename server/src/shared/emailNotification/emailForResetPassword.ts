@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { EmailParams, Recipient, Sender } from "mailersend";
-import { mailerSend } from "./mailerSendarKey";
+import { mailerSend, senderEmail } from "./mailerSendarKey";
 import { errorLogger, infoLogger } from "../logger";
 import { IResetPassword } from "../../interfaces/common";
 
 export const sendResetPasswordLink = async (details: IResetPassword) => {
+  console.log("details", details);
+
   try {
-    const sentFrom = new Sender("support@codequivers.com", "Support Team");
+    const sentFrom = new Sender(senderEmail, "Support Team");
     const recipients = [new Recipient(details?.email)];
 
     const emailParams = new EmailParams()
@@ -166,6 +168,7 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
     await mailerSend.email.send(emailParams);
     infoLogger.info(`Email notification sent to  ${details?.email}`);
   } catch (error) {
+    console.log("error", error);
     //@ts-ignore
     errorLogger.error(`Failed to send login email to  : ${error.message}`);
   }
