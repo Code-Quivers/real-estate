@@ -23,7 +23,7 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Password</title>
   <style>
-    body {
+   body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
@@ -70,26 +70,14 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
       text-decoration: none;
       border-radius: 5px;
     }
-
-    .email-footer {
-      background-color: #f1f1f1;
-      padding: 15px;
-      text-align: center;
-      font-size: 14px;
-      color: #555555;
+    
+    .reset-container{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
     }
 
-    .email-signature {
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 1px solid #e5e5e5;
-    }
-
-    .signature-info {
-      text-align: left;
-      margin-top: 10px;
-      color: #555555;
-    }
 
     .signature-info h4 {
       margin: 0;
@@ -125,38 +113,31 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
   <div class="email-container">
     <!-- Email Header -->
     <div class="email-header">
-      <h1>Reset Your Password</h1>
+      <h1>Please reset your password</h1>
     </div>
 
     <!-- Email Body -->
     <div class="email-body">
       <p>Dear ${details?.email}</p>
 
-      <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
+      <p>We received a request to reset your password. To reset your password, please follow the link below.</p>
 
-      <a href="${details?.link}" class="reset-link">Reset Password</a>
-
-      <p>If you did not request a password reset, please ignore this email.</p>
-
-      <p>If you have any questions or need assistance, please feel free to contact us.</p>
-
-      <p>Thank you for your prompt attention to this matter.</p>
-
-      <p>Kind regards,</p>
-
-      <div class="email-signature">
-        <!-- Signature -->
-        <div class="signature-info">
-          <h4>Property Management Team</h4>
-          <p>Company Name</p>
-          <p>Phone: [Your Phone Number]</p>
-          <p>Email: [Your Email Address]</p>
-        </div>
+      <div class="reset-container">
+        <a href="${details?.link}" class="reset-link">Reset My Password</a>
       </div>
-    </div>
 
-    <div class="email-footer">
-      © 2024 CodeQuivers. All rights reserved.
+      <i>This link will expire in 15 minutes. If you did not request a password reset, please ignore this message.</p>
+      <!--<p>Kind regards,</p>-->
+
+      <!--<div class="email-signature">-->
+        <!-- Signature -->
+      <!--  <div class="signature-info">-->
+      <!--    <h4>Property Management Team</h4>-->
+      <!--    <p>Company Name</p>-->
+      <!--    <p>Phone: [Your Phone Number]</p>-->
+      <!--    <p>Email: [Your Email Address]</p>-->
+      <!--  </div>-->
+      <!--</div>-->
     </div>
   </div>
 

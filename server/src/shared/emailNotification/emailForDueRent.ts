@@ -21,7 +21,7 @@ export const sendDueRentEmailToTenant = async (details: IDueRentForNotification)
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rent Payment Due</title>
   <style>
-    body {
+     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
@@ -59,34 +59,6 @@ export const sendDueRentEmailToTenant = async (details: IDueRentForNotification)
       margin: 0 0 10px;
     }
 
-    .email-footer {
-      background-color: #f1f1f1;
-      padding: 15px;
-      text-align: center;
-      font-size: 14px;
-      color: #555555;
-    }
-
-    .email-signature {
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 1px solid #e5e5e5;
-    }
-
-    .signature-info {
-      text-align: left;
-      margin-top: 10px;
-      color: #555555;
-    }
-
-    .signature-info h4 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .signature-info p {
-      margin: 2px 0;
-    }
 
     @media only screen and (max-width: 600px) {
       .email-container {
@@ -99,10 +71,6 @@ export const sendDueRentEmailToTenant = async (details: IDueRentForNotification)
 
       .email-body {
         padding: 10px;
-      }
-
-      .signature-info h4 {
-        font-size: 14px;
       }
     }
   </style>
@@ -119,38 +87,16 @@ export const sendDueRentEmailToTenant = async (details: IDueRentForNotification)
     <!-- Email Body -->
     <div class="email-body">
       <p>Dear ${details?.firstName} ${details?.lastName},</p>
+      
+      <P>Rent is due soon. Don't forget to pay.</P>
+      <!--<p>This is a reminder that your rent payment for the property named: ${details?.property?.title} is due.</p>-->
 
-      <p>This is a reminder that your rent payment for the property named: ${details?.property?.title} is due.</p>
+      <!--<p><strong>Due Rent Amount:</strong> $ ${details?.dueRent}</p>-->
+      <!--<p><strong>Due for:</strong> ${details?.dueMonths} Months</p>-->
+      <!--<p><strong>Due for:</strong> ${details?.dueDays} Total Days</p>-->
+      <!--<p><strong>Monthly Rent:</strong> $ ${details?.property?.monthlyRent}</p>-->
+      <!--<p><strong>Assigned Date:</strong> ${new Date(details?.property?.tenantAssignedAt).toLocaleDateString()}</p>-->
 
-      <p><strong>Due Rent Amount:</strong> $ ${details?.dueRent}</p>
-      <p><strong>Due for:</strong> ${details?.dueMonths} Months</p>
-      <p><strong>Due for:</strong> ${details?.dueDays} Total Days</p>
-      <p><strong>Monthly Rent:</strong> $ ${details?.property?.monthlyRent}</p>
-      <p><strong>Assigned Date:</strong> ${new Date(details?.property?.tenantAssignedAt).toLocaleDateString()}</p>
-
-      <p>Please make the payment as soon as possible to avoid any late fees. If you have already made the payment, kindly disregard this notice.</p>
-
-      <p>If you have any questions or need assistance, please feel free to contact us.</p>
-
-      <p>Thank you for your prompt attention to this matter.</p>
-
-      <p>Kind regards,</p>
-
-      <div class="email-signature">
-        <!-- Signature -->
-        <div class="signature-info">
-          <h4>Property Management Team</h4>
-          <p>Company Name</p>
-          <p>Phone: [Your Phone Number]</p>
-          <p>Email: [Your Email Address]</p>
-        </div>
-      </div>
-    </div>
-
-    
-    <div class="email-footer">
-      © 2024 CodeQuivers. All rights reserved.
-    </div>
   </div>
 
 </body>
