@@ -11,7 +11,7 @@ import { chatRelationalFields, chatRelationalFieldsMapper, chatSearchableFields 
 import { IGenericResponse } from "../../../interfaces/common";
 import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
-import { sendEmailToMessageReceiver } from "../../../shared/emailNotification/messagingEmailSender";
+import { sendEmailToMessageReceiver } from "../../../shared/emailNotification/emailForMessaging";
 
 // ! start new conversation
 const startNewConversation = async (userId: string, receiverId: string, payload: any): Promise<Conversation> => {
@@ -97,6 +97,7 @@ const sendMessage = async (userId: string, conversationId: string, req: Request)
   // Start Prisma transaction
   return prisma.$transaction(async (transactionClient) => {
     // Check if the conversation exists and the user is a participant
+
     const existingConversation = await transactionClient.conversation.findFirst({
       where: {
         AND: [{ conversationId }, { perticipants: { some: { userId } } }],
