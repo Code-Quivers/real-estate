@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { EmailParams, Recipient, Sender } from "mailersend";
-import { mailerSend, senderEmail } from "./mailerSendarKey";
+import { EmailParams, Recipient } from "mailersend";
+import { mailerSend, supportEmailSender } from "./mailerSenderKey";
 import { errorLogger, infoLogger } from "../logger";
-import { IDueRentForNotification } from "../../interfaces/common";
+import { IDueRentForNotification } from "./types/emailNotificationTypes";
 
 export const sendDueRentEmailToTenant = async (details: IDueRentForNotification) => {
   try {
-    const sentFrom = new Sender(senderEmail, "Support Team");
     const recipients = [new Recipient(details?.user?.email, `${details?.firstName} ${details?.lastName}`)];
 
     const emailParams = new EmailParams()
-      .setFrom(sentFrom)
+      .setFrom(supportEmailSender)
       .setTo(recipients)
-      .setReplyTo(sentFrom)
+      .setReplyTo(supportEmailSender)
       .setSubject("Rent Payment Reminder").setHtml(`
 <html lang="en">
 
@@ -107,6 +106,6 @@ export const sendDueRentEmailToTenant = async (details: IDueRentForNotification)
     infoLogger.info(`Email notification sent to  ${details?.user?.email}`);
   } catch (error) {
     //@ts-ignore
-    errorLogger.error(`Failed to send login email to  : ${error.message}`);
+    errorLogger.error(`Failed to send email to  : ${error.message}`);
   }
 };

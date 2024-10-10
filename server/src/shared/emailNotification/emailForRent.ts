@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { EmailParams, Recipient, Sender } from "mailersend";
-import { mailerSend, senderEmail } from "./mailerSendarKey";
-import { IReceiverForNotification } from "../../interfaces/common";
-import { errorLogger, infoLogger } from "../logger";
+import { EmailParams, Recipient } from "mailersend";
 
-export const sendEmailToMessageReceiver = async (details: IReceiverForNotification) => {
+import { errorLogger, infoLogger } from "../logger";
+import { mailerSend, supportEmailSender } from "./mailerSenderKey";
+import { IOwnerDetailsForNotification } from "./types/emailNotificationTypes";
+
+// sent to property owner after received rent from tenant
+export const sendEmailToOwnerAfterRentReceived = async (details: IOwnerDetailsForNotification) => {
   try {
-    const sentFrom = new Sender(senderEmail, "Support Team");
-    const recipients = [new Recipient(details?.email)];
+    const recipients = [new Recipient(details?.user?.email, `${details.firstName} ${details.lastName}`)];
 
     const emailParams = new EmailParams()
-      .setFrom(sentFrom)
+      .setFrom(supportEmailSender)
       .setTo(recipients)
-      .setReplyTo(sentFrom)
+      .setReplyTo(supportEmailSender)
       .setSubject("You have received a rent from tenant").setHtml(`<html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -127,22 +128,13 @@ export const sendEmailToMessageReceiver = async (details: IReceiverForNotificati
       <p>Please confirm the service appointment at your earliest convenience. We appreciate your prompt attention to this
         matter.</p>
 
-      <p>Kind regards,</p>
-
-      <div class="email-signature">
-        <!-- Signature -->
-        <div class="signature-info">
-          <h4>[Your Name]</h4>
-          <p>[Company Name]</p>
-          <p>[Phone Number]</p>
-          <p>[Email Address]</p>
-        </div>
-      </div>
+  
+      
     </div>
 
     
     <div class="email-footer">
-      © 2024 CodeQuivers. All rights reserved.
+      © 2024 ****. All rights reserved.
     </div>
   </div>
 
@@ -151,9 +143,9 @@ export const sendEmailToMessageReceiver = async (details: IReceiverForNotificati
 </html>`);
 
     await mailerSend.email.send(emailParams);
-    infoLogger.info(`Email notification sent to  ${details.email}`);
+    infoLogger.info(`Email notification sent to  ${details.user.email}`);
   } catch (error) {
     //@ts-ignore
-    errorLogger.error(`Failed to send login email to  : ${error.message}`);
+    errorLogger.error(`Failed to send email to  : ${error.message}`);
   }
 };

@@ -2,12 +2,9 @@
 import { EmailParams, Recipient } from "mailersend";
 import { mailerSend, supportEmailSender } from "./mailerSenderKey";
 import { errorLogger, infoLogger } from "../logger";
-import config from "../../config";
-import { IResetPassword } from "./types/emailNotificationTypes";
+import { IReceiverForNotification } from "./types/emailNotificationTypes";
 
-export const sendResetPasswordLink = async (details: IResetPassword) => {
-  console.log("details", details);
-
+export const sendEmailToMessageReceiver = async (details: IReceiverForNotification) => {
   try {
     const recipients = [new Recipient(details?.email)];
 
@@ -15,15 +12,13 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
       .setFrom(supportEmailSender)
       .setTo(recipients)
       .setReplyTo(supportEmailSender)
-      .setSubject("Email with instructions on how to Reset Password").setHtml(`
-<html lang="en">
-
+      .setSubject("You have a message in your inbox").setHtml(`<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset Password</title>
+  <title>Message Notification</title>
   <style>
-   body {
+    body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
@@ -61,23 +56,25 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
       margin: 0 0 10px;
     }
 
-    .reset-link {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 15px;
-      background-color: #2b3e50;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    
-    .reset-container{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
+    .email-footer {
+      background-color: #f1f1f1;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #555555;
     }
 
+    .email-signature {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .signature-info {
+      text-align: left;
+      margin-top: 10px;
+      color: #555555;
+    }
 
     .signature-info h4 {
       margin: 0;
@@ -113,35 +110,33 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
   <div class="email-container">
     <!-- Email Header -->
     <div class="email-header">
-      <h1>Please reset your password</h1>
+      <h1>You've Received a Message</h1>
     </div>
 
     <!-- Email Body -->
     <div class="email-body">
-      <p>Dear ${details?.email}</p>
+    
+      <p>You have a message in your inbox, please check. Please log in to the website to check the details and respond accordingly.</p>
 
-      <p>We received a request to reset your password. To reset your password, please follow the link below.</p>
+      <p>Thank you for your attention.</p>
 
-      <div class="reset-container">
-        <a href="${details?.link}" class="reset-link">Reset My Password</a>
-      </div>
-
-      <i>This link will expire in ${config.jwt.forget_password_expires_in?.replace("m", "")} minutes. If you did not request a password reset, please ignore this message.</p>
- 
        
+    </div>
+
+    <!-- Footer -->
+    <div class="email-footer">
+      © 2024 ****. All rights reserved.
     </div>
   </div>
 
 </body>
-
 </html>
 `);
 
     await mailerSend.email.send(emailParams);
-    infoLogger.info(`Email notification sent to  ${details?.email}`);
+    infoLogger.info(`Email notification sent to ${details.email} for conversation message received.`);
   } catch (error) {
-    console.log("error", error);
     //@ts-ignore
-    errorLogger.error(`Failed to send login email to  : ${error.message}`);
+    errorLogger.error(`Failed to send email to  : ${error.message}`);
   }
 };

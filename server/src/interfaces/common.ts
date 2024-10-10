@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { IGenericErrorMessage } from "./error";
 
 export type IGenericResponse<T> = {
@@ -29,56 +30,4 @@ export type NewMessage = {
     };
     senderId: string;
   };
-};
-
-export type IServiceProviderDetailsForNotification = {
-  firstName: string;
-  lastName: string;
-  companyEmailAddress: string;
-  user: {
-    email: string;
-  };
-  companyName: string;
-};
-export type ITenantDetailsForNotification = {
-  firstName: string;
-  lastName: string;
-  user: {
-    email: string;
-  };
-};
-export type IOwnerDetailsForNotification = {
-  firstName: string;
-  lastName: string;
-  phoneNumber?: string | null;
-  user: {
-    email: string;
-  };
-};
-export type IReceiverForNotification = {
-  email: string;
-  userId: string;
-};
-export type IDueRentForNotification = {
-  tenantId: string;
-  property: {
-    propertyId: string;
-    tenantAssignedAt: any;
-    monthlyRent: number;
-    title: string;
-  } | null;
-  firstName: string;
-  lastName: string;
-  user: { email: string } | any;
-  phoneNumber?: string | null;
-  dueRent: number;
-  dueMonths: number;
-  dueDays: number;
-  rentPaid: boolean;
-};
-
-export type IResetPassword = {
-  email: string;
-  token: string;
-  link: string;
 };

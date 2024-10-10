@@ -6,9 +6,15 @@ import { IAddRequestMaintenance, IUpdateRequestMaintenance } from "./maintenance
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
 import {
-  sendEmailToServiceProvider,
+  sendEmailForMaintenanceRequestForAcceptToTenant,
+  sendEmailForMaintenanceRequestToPropertyOwner,
+  sendEmailForMaintenanceRequestToServiceProvider,
   sendEmailToTenantAfterStatusChanged,
-} from "../../../shared/emailNotification/emailSender";
+} from "../../../shared/emailNotification/emailForMaintenance";
+import {
+  IDetailsForMaintenanceNotification,
+  IDetailsForMaintenanceNotificationForTenant,
+} from "../../../shared/emailNotification/types/emailNotificationTypes";
 
 // ! add request maintenance request to property owner from tenant user
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
@@ -31,10 +37,23 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
         },
       },
       select: {
+        firstName: true,
+        lastName: true,
         propertyId: true,
         property: {
           select: {
             ownerId: true,
+            owner: {
+              select: {
+                firstName: true,
+                lastName: true,
+                user: {
+                  select: {
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -83,9 +102,20 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
       // send email to service provider
       if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
         allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
-          await sendEmailToServiceProvider(serviceProvider);
+          await sendEmailForMaintenanceRequestToServiceProvider(serviceProvider);
         });
       }
+    } else {
+      const details: IDetailsForMaintenanceNotification = {
+        firstName: isAssigned?.property?.owner?.firstName,
+        lastName: isAssigned?.property?.owner?.lastName,
+        user: isAssigned?.property?.owner?.user,
+        issueDescription: res?.description,
+        location: res?.issueLocation,
+        issueType: res?.issueType,
+        tenantName: `${isAssigned?.firstName} ${isAssigned?.lastName}`,
+      };
+      await sendEmailForMaintenanceRequestToPropertyOwner(details as IDetailsForMaintenanceNotification);
     }
 
     return res;
@@ -277,6 +307,36 @@ const acceptRequestMaintenanceForOwner = async (maintenanceRequestId: string, ow
     });
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+    // ! send email notification to all service providers
+
+    const allServiceProviders = await transactionClient.property.findUnique({
+      where: {
+        propertyId: res?.propertyId as string,
+      },
+      include: {
+        serviceProviders: {
+          select: {
+            companyEmailAddress: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+            firstName: true,
+            lastName: true,
+            companyName: true,
+          },
+        },
+      },
+    });
+
+    // send email to service provider
+    if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
+      allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
+        await sendEmailForMaintenanceRequestToServiceProvider(serviceProvider);
+      });
+    }
+
     return res;
 
     //
@@ -354,42 +414,47 @@ const acceptRequestMaintenanceForServiceProvider = async (maintenanceRequestId: 
         },
       },
       include: {
-        serviceProvider: true,
-      },
-    });
-
-    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
-
-    // ! send email notification to all service providers
-
-    const allServiceProviders = await transactionClient.property.findUnique({
-      where: {
-        propertyId: res?.propertyId as string,
-      },
-      include: {
-        serviceProviders: {
+        tenant: {
           select: {
-            companyEmailAddress: true,
+            firstName: true,
+            lastName: true,
             user: {
               select: {
                 email: true,
               },
             },
+          },
+        },
+        serviceProvider: {
+          select: {
             firstName: true,
             lastName: true,
             companyName: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
           },
         },
       },
     });
 
-    // send email to service provider
-    if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders.length > 0) {
-      console.log("sending email from property owner accept");
-      allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
-        await sendEmailToServiceProvider(serviceProvider);
-      });
-    }
+    if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to Accept, try again");
+
+    // ! send email notification to tenant
+
+    const details = {
+      tenantName: `${res?.tenant?.firstName} ${res?.tenant?.lastName}`,
+      serviceProviderName: `${res?.serviceProvider?.firstName} ${res?.serviceProvider?.lastName}`,
+      user: res?.tenant?.user,
+      companyName: res?.serviceProvider?.companyName,
+      issueDescription: res?.description,
+      location: res?.issueLocation,
+      issuePriority: res?.priority,
+    };
+
+    await sendEmailForMaintenanceRequestForAcceptToTenant(details as IDetailsForMaintenanceNotificationForTenant);
 
     //
 
@@ -409,7 +474,7 @@ const updateRequestMaintenanceForServiceProvider = async (
       where: {
         maintenanceRequestId,
         status: {
-          notIn: ["PENDING", "CANCEL", "APPROVED"],
+          notIn: ["PENDING", "CANCEL"],
         },
       },
     });
@@ -442,9 +507,14 @@ const updateRequestMaintenanceForServiceProvider = async (
 
     // sending email notification to tenant
 
+    const maintenanceDetails = {
+      previousStatus: isExistReq?.status,
+      updatedStatus: res?.status,
+    };
+
     // send email to service provider
     if (res?.tenant) {
-      await sendEmailToTenantAfterStatusChanged(res?.tenant as any);
+      await sendEmailToTenantAfterStatusChanged(maintenanceDetails, res?.tenant as any);
     }
 
     return res;
