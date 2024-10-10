@@ -11,7 +11,7 @@ import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchab
 import Stripe from "stripe";
 import config from "../../../config";
 import { errorLogger, infoLogger } from "../../../shared/logger";
-import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailSender";
+import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailForRent";
 import { differenceInDays, differenceInMonths } from "../tenants/tenants.utils";
 import { sendDueRentEmailToTenant } from "../../../shared/emailNotification/emailForDueRent";
 const stripe = new Stripe(config.stripe_sk);

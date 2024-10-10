@@ -260,6 +260,7 @@ model MaintenanceRequest {
   description          String
   images               String[]
   status               MaintenanceRequestStatus       @default(PENDING)
+  maintenanceDetails   Json?
   // 
   serviceProviderId    String?
   serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId], onDelete: SetNull)
