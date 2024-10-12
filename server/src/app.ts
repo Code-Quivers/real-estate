@@ -30,8 +30,8 @@ create_required_directories();
 // });
 
 // Schedule the status check to run every 1 minute sec for test
-cron.schedule("* * * * *", () => {
-  infoLogger.info("Checking payment status...");
+cron.schedule("0 */6 * * *", () => {
+  infoLogger.info("Checking Payment status...");
   check_payment_status_tasks();
 });
 // Schedule the status check to run every 12 hour

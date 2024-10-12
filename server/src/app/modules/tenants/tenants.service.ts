@@ -6,7 +6,12 @@ import { IUploadFile } from "../../../interfaces/file";
 import { Request } from "express";
 import { ITenantUpdateRequest, ITenantsFilterRequest } from "./tenants.interfaces";
 import { deleteOldImage } from "../../../helpers/deleteOldImage";
-import { calculateTenantProfileScore, calculateTenantScoreRatio, differenceInMonths } from "./tenants.utils";
+import {
+  calculateTenantProfileScore,
+  calculateTenantScoreRatio,
+  differenceInMonths,
+  differenceInTime,
+} from "./tenants.utils";
 import { Prisma, Tenant } from "@prisma/client";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
 import { IPaginationOptions } from "../../../interfaces/pagination";
@@ -426,10 +431,33 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
 
     let dueMonths;
 
-    if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
-      dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
-    } else {
-      dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+    // if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+    //   dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+    // } else {
+    //   dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+    // }
+
+    // for testing (10 Minutes)
+    if (orderData?.length === 0) {
+      //
+      if (differenceInTime(tenantAssignedDate?.toISOString()) > 2) {
+        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+        if (dueMonths === 0) {
+          dueMonths = 1;
+        }
+      } else {
+        dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
+      }
+    }
+    //  else if ((tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
+    //   dueMonths = 0;
+    // }
+    else {
+      if (differenceInTime(orderData[0]?.updatedAt) > 2) {
+        dueMonths = 1;
+      } else {
+        dueMonths = differenceInMonths(orderData[0]?.updatedAt);
+      }
     }
 
     const tenantUnitInfo = {

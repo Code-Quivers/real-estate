@@ -1,0 +1,136 @@
+model Property {
+  propertyId               String      @id @default(uuid())
+  title                    String      @default("Property Title")
+  numOfBed                 Int         @default(1)
+  numOfBath                Int         @default(1)
+  monthlyRent              Int         @default(1)
+  address                  String
+  maintenanceCoveredTenant String
+  maintenanceCoveredOwner  String
+  description              String?
+  schools                  String?
+  universities             String?
+  allowedPets              String?
+  images                   String[]
+  isRented                 Boolean     @default(false)
+  planType                 PlanType    @default(PENDING)
+  packageType              PackageType @default(NONE)
+  paidFrom                 DateTime?
+  paidTo                   DateTime?
+  pendingPaidTo            DateTime?
+  isActive                 Boolean     @default(true)
+  createdAt                DateTime    @default(now())
+  updatedAt                DateTime    @updatedAt
+  tenantAssignedAt         DateTime?
+
+  // 
+  ownerId             String?
+  owner               PropertyOwner?       @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  // 
+  SavedItem           SavedItem[]
+  Tenant              Tenant?
+  // 
+  maintenanceRequests MaintenanceRequest[]
+  serviceProviders    ServiceProvider[]
+  // 
+  score               Float                @default(60)
+  scoreRatio          Json?
+
+  // Many to many relation with Order
+  orders   Order[]
+  Document Document[]
+
+  @@map("properties")
+}
+
+model Report {
+  reportId        String         @id @default(uuid())
+  reportTitle     String
+  reportType      ReportType
+  information     Json[]
+  // monthly rent or anual rent (manual)
+  rentAmount      Float?
+  // input 
+  collectedRent   Float?
+  //  input
+  expenses        Float?
+  // rent collected - expenses 
+  // annual --> same
+  grossProfit     Float?
+  // pdf 
+  documentFile    String?
+  // 
+  propertyId      String?
+  // 
+  propertyOwnerId String?
+  propertyOwner   PropertyOwner? @relation(fields: [propertyOwnerId], references: [propertyOwnerId], onDelete: SetNull)
+  // 
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("reports")
+}
+
+model Service {
+  serviceId                 String                   @id @default(uuid())
+  minPrice                  Float?
+  maxPrice                  Float?
+  serviceDescription        String?
+  serviceLocation           String?
+  serviceCancellationPolicy String?
+  serviceAvailability       ServiceAvailabilityEnum?
+  serviceType               ServiceType?
+  ownerId                   String?                  @unique
+  owner                     ServiceProvider?         @relation(fields: [ownerId], references: [serviceProviderId], onDelete: SetDefault)
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
+
+  @@map("Services")
+}
+
+model MaintenanceRequest {
+  maintenanceRequestId String                         @id @default(uuid())
+  propertyId           String?
+  property             Property?                      @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
+  tenantId             String?
+  tenant               Tenant?                        @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  ownerId              String?
+  owner                PropertyOwner?                 @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  createdAt            DateTime                       @default(now())
+  updatedAt            DateTime                       @updatedAt
+  // 
+  isAnimal             Boolean?
+  animalDetails        String?
+  // 
+  issueLocation        String
+  priority             RequestMaintenancePriorityEnum
+  issueType            String
+  description          String
+  images               String[]
+  status               MaintenanceRequestStatus       @default(PENDING)
+  maintenanceDetails   Json?
+  // 
+  serviceProviderId    String?
+  serviceProvider      ServiceProvider?               @relation(fields: [serviceProviderId], references: [serviceProviderId], onDelete: SetNull)
+
+  @@map("maintenance_requests")
+}
+
+model SavedItem {
+  itemId            String           @id @default(uuid())
+  itemType          ItemType
+  serviceProviderId String?
+  serviceProvider   ServiceProvider? @relation(fields: [serviceProviderId], references: [serviceProviderId], onDelete: SetNull)
+  tenantId          String?
+  tenant            Tenant?          @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  propertyId        String?
+  property          Property?        @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
+  userId            String?
+  user              User?            @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@unique([userId, serviceProviderId])
+  @@unique([userId, tenantId])
+  @@unique([userId, propertyId])
+}

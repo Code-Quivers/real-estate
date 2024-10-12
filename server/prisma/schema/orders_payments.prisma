@@ -1,0 +1,56 @@
+model Order {
+  // 
+  orderId            String              @id @default(uuid())
+  properties         Property[]
+  orderStatus        OrderStatus         @default(PENDING)
+  packageType        PackageType         @default(NONE)
+  // 
+  ownerId            String?
+  owner              PropertyOwner?      @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+  // 
+  tenantId           String?
+  tenant             Tenant?             @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  PaymentInformation PaymentInformation?
+
+  @@map("orders")
+}
+
+model PaymentInformation {
+  id                     String   @id @default(uuid())
+  paymentPlatformId      String   @unique
+  platform               PLATFORM
+  paymentStatus          String
+  amountToPay            Float
+  amountPaid             Float
+  currency               String
+  platformFee            Float
+  netAmount              Float
+  transactionCreatedTime DateTime
+  orderId                String?  @unique
+  order                  Order?   @relation(fields: [orderId], references: [orderId], onDelete: SetNull)
+  userId                 String?
+  user                   User?    @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  createdAt              DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt              DateTime @updatedAt @db.Timestamptz(0)
+
+  @@map("payment_informations")
+}
+
+model FinancialAccount {
+  id               String         @id @default(uuid())
+  finOrgAccountId  String         @unique
+  email            String?        @unique
+  externalAccount  Json?
+  payoutsEnable    Boolean        @default(false)
+  chargesEnabled   Boolean        @default(false)
+  transfers        Boolean        @default(false)
+  isCustomAccount  Boolean        @default(true)
+  detailsSubmitted Boolean        @default(false)
+  ownerId          String?        @unique
+  propertyOwner    PropertyOwner? @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+}

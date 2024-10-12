@@ -1,0 +1,101 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Prisma schema
+
+// ! Enums---------------
+enum PLATFORM {
+  PAYPAL
+  STRIPE
+}
+
+// enums
+enum UserStatus {
+  ACTIVE
+  PAUSED
+  SUSPENDED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum PlanType {
+  PENDING
+  ON_TRIAL
+  PREMIUM
+}
+
+enum MaintenanceRequestStatus {
+  PENDING
+  APPROVED
+  ACTIVE
+  PAUSED
+  CANCEL
+  COMPLETED
+}
+
+enum ServiceType {
+  TENANT_SCREENING
+  MAINTENANCE_AND_REPAIR
+  CLEANING
+  PEST_CONTROL
+  LAWN_CARE
+  SECURITY_AND_SAFETY
+  INSURANCE
+  INSPECTION
+  MARKETING
+  TECHNOLOGY
+  OTHERS
+}
+
+enum ServiceAvailabilityEnum {
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
+  ALL_PRIORITIES
+}
+
+enum UserRoles {
+  SUPERADMIN
+  TENANT
+  PROPERTY_OWNER
+  SERVICE_PROVIDER
+}
+
+enum ItemType {
+  PROPERTY
+  PROPERTY_OWNER
+  SERVICE
+  TENANT
+}
+
+enum RequestMaintenancePriorityEnum {
+  LOW_PRIORITY
+  MEDIUM_PRIORITY
+  HIGH_PRIORITY
+}
+
+enum ReportType {
+  MONTHLY
+  ANNUALLY
+  TAX
+  TENANT_INFO
+}
+
+enum PackageType {
+  NONE
+  MONTHLY
+  QUATERLY
+  BIANNUALLY
+  ANNUALLY
+}

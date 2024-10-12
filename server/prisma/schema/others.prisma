@@ -1,0 +1,55 @@
+// conversations of messaging
+model Conversation {
+  conversationId String    @id @default(uuid())
+  lastMessage    String    @default("Lets Say Hello")
+  perticipants   User[]
+  updatedAt      DateTime  @updatedAt @db.Timestamptz(0)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(0)
+  messages       Message[]
+
+  @@map("Conversations")
+}
+
+model Message {
+  messageId      String        @id @default(uuid())
+  text           String?
+  images         String[]
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [conversationId], onDelete: Cascade)
+  senderId       String?
+  sender         User?         @relation("sender", fields: [senderId], references: [userId], onDelete: Cascade)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(0)
+
+  @@map("Messages")
+}
+
+model Document {
+  documentId       String        @id @default(uuid())
+  documentTitle    String
+  filePath         String
+  isValid          Boolean       @default(true)
+  isSignedByOwner  Boolean       @default(true)
+  isSignedByTenant Boolean       @default(false)
+  ownerId          String
+  owner            PropertyOwner @relation(fields: [ownerId], references: [propertyOwnerId], onDelete: Cascade)
+  tenantId         String?
+  tenant           Tenant?       @relation(fields: [tenantId], references: [tenantId], onDelete: SetNull)
+  propertyId       String
+  property         Property      @relation(fields: [propertyId], references: [propertyId], onDelete: Cascade)
+  createdAt        DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime      @updatedAt @db.Timestamptz(0)
+
+  @@map("documents")
+}
+
+model ForgetPassword {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  token     String   @unique
+  link      String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+
+  @@map("forget_passwords")
+}
