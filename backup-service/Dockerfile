@@ -12,12 +12,11 @@ COPY backup_postgres.sh /usr/local/bin/backup_postgres.sh
 # Give execution rights to the script
 RUN chmod +x /usr/local/bin/backup_postgres.sh
 
-# Schedule cron job for every minute (for testing purposes)
-# RUN echo "* * * * * /usr/local/bin/backup_postgres.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/backup_cron
-# For 5 mints 
-RUN echo "*/5 * * * * /usr/local/bin/backup_postgres.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/backup_cr
-# RUN echo "0 */12 * * * /usr/local/bin/backup_postgres.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/backup_cron
+# Schedule cron job for every 5 minutes
+RUN echo "*/5 * * * * /usr/local/bin/backup_postgres.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/backup_cron
 
+# Give execution rights on the cron job file
+RUN chmod 0644 /etc/cron.d/backup_cron
 
 # Apply cron job
 RUN crontab /etc/cron.d/backup_cron
