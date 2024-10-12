@@ -1,0 +1,126 @@
+model User {
+  userId             String               @id @default(uuid())
+  email              String               @unique
+  userName           String               @unique
+  password           String
+  userStatus         UserStatus           @default(ACTIVE)
+  createdAt          DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt          DateTime             @updatedAt @db.Timestamptz(0)
+  role               UserRoles
+  tenant             Tenant?
+  propertyOwner      PropertyOwner?
+  serviceProvider    ServiceProvider?
+  SavedItem          SavedItem[]
+  PaymentInformation PaymentInformation[]
+  messages           Message[]            @relation("sender")
+  conversations      Conversation[]
+
+  @@map("users")
+}
+
+model PropertyOwner {
+  propertyOwnerId     String               @id @default(uuid())
+  firstName           String
+  lastName            String
+  phoneNumber         String?
+  profileImage        String?
+  extraCosts          Json[]
+  score               Float                @default(10)
+  scoreRatio          Json?
+  templates           Json[]
+  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
+  userId              String?              @unique
+  user                User?                @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  properties          Property[]
+  maintenanceRequests MaintenanceRequest[]
+  orders              Order[]
+  reports             Report[]
+  FinancialAccount    FinancialAccount?
+  Document            Document[]
+
+  @@map("propertyOwners")
+}
+
+model Tenant {
+  tenantId                             String               @id @default(uuid())
+  userId                               String?              @unique
+  // personal information
+  firstName                            String
+  lastName                             String
+  profileImage                         String?
+  dateOfBirth                          DateTime?
+  socialSecurityNumber                 String?
+  presentAddress                       String?
+  phoneNumber                          String?
+  placeToRent                          String?
+  isCriminalRecord                     Boolean?
+  criminalRecordDescription            String?
+  // rental history
+  prevLandlordName                     String?
+  prevLandlordContactInfo              String?
+  lengthOfPrevTenancy                  String?
+  affordableRentAmount                 Int?                 @default(0)
+  leavingReason                        String?
+  isAnyLatePaymentReason               String?
+  // income information
+  CurrentEmployerOrBusinessName        String?
+  CurrentEmployerOrBusinessContactInfo String?
+  JobTitle                             String?
+  AnnualSalary                         Int?
+  OtherIncomeSource                    String?
+  CurrentCreditScore                   Int?
+  // pets
+  isPets                               Boolean?
+  typeOfPets                           String?
+  isPetVaccinated                      Boolean?
+  // other information
+  isSmoker                             Boolean?
+  allergies                            String?
+  isHaveOtherMember                    Boolean?
+  numberOfMember                       Int?
+  isWillingToSignLeasingAgreement      Boolean?
+  isAnyExtraToMention                  String?
+  // 
+  createdAt                            DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt                            DateTime             @updatedAt @db.Timestamptz(0)
+  user                                 User?                @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  SavedItem                            SavedItem[]
+  // assigned in property
+  propertyId                           String?              @unique
+  property                             Property?            @relation(fields: [propertyId], references: [propertyId], onDelete: SetNull)
+  maintenanceRequests                  MaintenanceRequest[]
+  orders                               Order[]
+  // 
+  score                                Float                @default(10)
+  scoreRatio                           Json?
+  Document                             Document[]
+
+  @@map("tenants")
+}
+
+model ServiceProvider {
+  serviceProviderId   String               @id @default(uuid())
+  firstName           String
+  lastName            String
+  profileImage        String?
+  phoneNumber         String?
+  companyName         String?
+  companyAddress      String?
+  companyPhoneNumber  String?
+  companyEmailAddress String?
+  // 
+  userId              String?              @unique
+  user                User?                @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  createdAt           DateTime             @default(now()) @db.Timestamptz(0)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(0)
+  Service             Service?
+  SavedItem           SavedItem[]
+  properties          Property[]
+  maintenanceRequest  MaintenanceRequest[]
+  // 
+  score               Float                @default(0)
+  scoreRatio          Json?
+
+  @@map("serviceProviders")
+}

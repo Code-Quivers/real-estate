@@ -1,7 +1,7 @@
 {
   "author": "Code Quivers",
   "dependencies": {
-    "@prisma/client": "^5.4.1",
+    "@prisma/client": "^5.20.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/jsonwebtoken": "^9.0.2",
@@ -18,7 +18,7 @@
     "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
-    "prisma": "^5.4.1",
+    "prisma": "^5.20.0",
     "socket.io": "^4.7.5",
     "stripe": "^14.25.0",
     "winston": "^3.11.0",
