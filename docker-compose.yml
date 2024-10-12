@@ -7,8 +7,8 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: masrealestate
-      POSTGRES_DB: real-estate
+      POSTGRES_PASSWORD: managerrealestate
+      POSTGRES_DB: real_estate
     volumes:
       - type: bind
         source: /root/volumes/real-estate/db
@@ -52,3 +52,16 @@ services:
       - server
     ports:
       - 3200:3200
+
+  backup-service:
+    build:
+      context: ./backup-service
+    container_name: backup-service
+    volumes:
+      - type: bind
+        # source: C:/data/backup
+        source: /var/backups
+        target: /backup
+    depends_on:
+      - postgres
+    restart: unless-stopped
