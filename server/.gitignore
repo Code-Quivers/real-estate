@@ -3,9 +3,9 @@ node_modules
 .vercel
 
 dist
-logs
-data
-uploads
+#logs
+#data
+#uploads
 
 # /prisma/migrations
 yarn.lock
