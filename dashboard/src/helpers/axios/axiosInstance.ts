@@ -1,8 +1,14 @@
 import axios from "axios";
-import { getNewAccessToken } from "../../hooks/services/auth.service";
+import {
+  getNewAccessToken,
+  removeUserInfo,
+} from "../../hooks/services/auth.service";
 import { setToLocalStorage } from "../../utils/local-storage";
 import { getAuthKey } from "../config/envConfig";
-import { IGenericErrorResponse, ResponseSuccessType } from "@/constant/commonTypes";
+import {
+  IGenericErrorResponse,
+  ResponseSuccessType,
+} from "@/constant/commonTypes";
 
 export const axiosInstance = axios.create();
 axiosInstance.defaults.headers.post["Content-Type"] = "application/json";
@@ -40,12 +46,25 @@ axiosInstance.interceptors.response.use(
     if (error?.response?.status === 403 && !config?.sent) {
       config.sent = true;
       const response = await getNewAccessToken();
+
       const accessToken = response?.data?.accessToken;
       config.headers["Authorization"] = accessToken;
       setToLocalStorage(getAuthKey(), accessToken);
       return axiosInstance(config);
+    } else if (error?.response?.status === 401 && !config?.sent) {
+      //31
+      config.sent = true;
+
+      removeUserInfo(getAuthKey());
+      const responseObject = {
+        statusCode: error?.response?.status || 500,
+        message: error?.response?.data?.message || "Something went wrong!!",
+        errorMessages: error?.response?.data?.errorMessages,
+      };
+
+      return Promise.reject(responseObject);
     } else {
-      const responseObject: IGenericErrorResponse = {
+      const responseObject = {
         statusCode: error?.response?.status || 500,
         message: error?.response?.data?.message || "Something went wrong!!",
         errorMessages: error?.response?.data?.errorMessages,

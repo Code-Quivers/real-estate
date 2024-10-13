@@ -106,6 +106,7 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
         });
       }
     } else {
+      // ! sending email to property owner
       const details: IDetailsForMaintenanceNotification = {
         firstName: isAssigned?.property?.owner?.firstName,
         lastName: isAssigned?.property?.owner?.lastName,
@@ -115,6 +116,7 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
         issueType: res?.issueType,
         tenantName: `${isAssigned?.firstName} ${isAssigned?.lastName}`,
       };
+      console.log("details", details);
       await sendEmailForMaintenanceRequestToPropertyOwner(details as IDetailsForMaintenanceNotification);
     }
 
