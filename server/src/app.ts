@@ -29,14 +29,14 @@ create_required_directories();
 //   check_payment_status_tasks();
 // });
 
-// Schedule the status check to run every 1 minute sec for test
+// Schedule the status check to run every 6 hours sec for test
 cron.schedule("0 */6 * * *", () => {
   infoLogger.info("Checking Payment status...");
   check_payment_status_tasks();
 });
-// Schedule the status check to run every 12 hour
+// Schedule the status check to run every 6 hour
 
-cron.schedule("0 */12 * * *", () => {
+cron.schedule("0 */6 * * *", () => {
   infoLogger.info("Checking Delete status...");
   delete_expired_reset_links();
   //
