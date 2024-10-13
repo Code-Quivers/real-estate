@@ -137,6 +137,7 @@ export const sendEmailToMessageReceiver = async (details: IReceiverForNotificati
     infoLogger.info(`Email notification sent to ${details.email} for conversation message received.`);
   } catch (error) {
     //@ts-ignore
-    errorLogger.error(`Failed to send email to  : ${error.message}`);
+    console.log(error);
+    errorLogger.error(`Failed to send email to  :  ${details.email}`, error);
   }
 };
