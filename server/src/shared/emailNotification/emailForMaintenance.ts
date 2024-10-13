@@ -241,8 +241,10 @@ export const sendEmailForMaintenanceRequestToServiceProvider = async (details: I
 </html>`);
 
     await mailerSend.email.send(emailParams);
+
     infoLogger.info(`Email notification sent to  ${details?.companyEmailAddress || details?.user?.email}`);
   } catch (error) {
+    console.log(error);
     errorLogger.error(`Failed to send email : ${details?.companyEmailAddress || details?.user?.email}`, error);
   }
 };

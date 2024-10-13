@@ -26,40 +26,39 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
   // Process images
   const imagesPath: string[] = images?.map((image) => `maintenance-requests/${image.filename}`) ?? [];
   const newData = { isAnimal, description, issueLocation, issueType, priority, animalDetails, images: imagesPath };
-
-  const result = await prisma.$transaction(async (transactionClient) => {
-    // checking if the tenant is assigned to any property or not
-    const isAssigned = await transactionClient.tenant.findUnique({
-      where: {
-        tenantId,
-        property: {
-          isNot: null,
-        },
+  // checking if the tenant is assigned to any property or not
+  const isAssigned = await prisma.tenant.findUnique({
+    where: {
+      tenantId,
+      property: {
+        isNot: null,
       },
-      select: {
-        firstName: true,
-        lastName: true,
-        propertyId: true,
-        property: {
-          select: {
-            ownerId: true,
-            owner: {
-              select: {
-                firstName: true,
-                lastName: true,
-                user: {
-                  select: {
-                    email: true,
-                  },
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      propertyId: true,
+      property: {
+        select: {
+          ownerId: true,
+          owner: {
+            select: {
+              firstName: true,
+              lastName: true,
+              user: {
+                select: {
+                  email: true,
                 },
               },
             },
           },
         },
       },
-    });
+    },
+  });
 
-    if (!isAssigned) throw new ApiError(httpStatus.BAD_REQUEST, "You have not assigned to any unit");
+  if (!isAssigned) throw new ApiError(httpStatus.BAD_REQUEST, "You have not assigned to any unit");
+  const result = await prisma.$transaction(async (transactionClient) => {
     //
 
     // check if
@@ -75,53 +74,54 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
 
     if (!res) throw new ApiError(httpStatus.BAD_REQUEST, "Failed to add Maintenance Request");
 
-    if (newData.priority === "HIGH_PRIORITY") {
-      // ! send email notification to all service providers
-
-      const allServiceProviders = await transactionClient.property.findUnique({
-        where: {
-          propertyId: res?.propertyId as string,
-        },
-        include: {
-          serviceProviders: {
-            select: {
-              companyEmailAddress: true,
-              user: {
-                select: {
-                  email: true,
-                },
-              },
-              firstName: true,
-              lastName: true,
-              companyName: true,
-            },
-          },
-        },
-      });
-
-      // send email to service provider
-      if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
-        allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
-          await sendEmailForMaintenanceRequestToServiceProvider(serviceProvider);
-        });
-      }
-    } else {
-      // ! sending email to property owner
-      const details: IDetailsForMaintenanceNotification = {
-        firstName: isAssigned?.property?.owner?.firstName,
-        lastName: isAssigned?.property?.owner?.lastName,
-        user: isAssigned?.property?.owner?.user,
-        issueDescription: res?.description,
-        location: res?.issueLocation,
-        issueType: res?.issueType,
-        tenantName: `${isAssigned?.firstName} ${isAssigned?.lastName}`,
-      };
-      console.log("details", details);
-      await sendEmailForMaintenanceRequestToPropertyOwner(details as IDetailsForMaintenanceNotification);
-    }
-
     return res;
   });
+
+  if (newData.priority === "HIGH_PRIORITY") {
+    // ! send email notification to all service providers
+
+    const allServiceProviders = await prisma.property.findUnique({
+      where: {
+        propertyId: result?.propertyId as string,
+      },
+      include: {
+        serviceProviders: {
+          select: {
+            companyEmailAddress: true,
+            user: {
+              select: {
+                email: true,
+              },
+            },
+            firstName: true,
+            lastName: true,
+            companyName: true,
+          },
+        },
+      },
+    });
+
+    // send email to service provider
+    if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
+      allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
+        await sendEmailForMaintenanceRequestToServiceProvider(serviceProvider);
+      });
+    }
+  } else {
+    // ! sending email to property owner
+    const details: IDetailsForMaintenanceNotification = {
+      firstName: isAssigned?.property?.owner?.firstName,
+      lastName: isAssigned?.property?.owner?.lastName,
+      user: isAssigned?.property?.owner?.user,
+      issueDescription: result?.description,
+      location: result?.issueLocation,
+      issueType: result?.issueType,
+      tenantName: `${isAssigned?.firstName} ${isAssigned?.lastName}`,
+    };
+    console.log("details", details);
+    await sendEmailForMaintenanceRequestToPropertyOwner(details as IDetailsForMaintenanceNotification);
+  }
+
   return result;
 };
 
