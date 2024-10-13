@@ -47,7 +47,7 @@ const auth = (...requiredRoles: string[]) => {
 
         // If the user doesn't exist, they are not a valid user.
         if (!isUserExist) {
-          throw new ApiError(httpStatus.FORBIDDEN, "You are not a valid user");
+          throw new ApiError(httpStatus.UNAUTHORIZED, "You are not a valid user");
         }
 
         const loggedInUserDetails = {
