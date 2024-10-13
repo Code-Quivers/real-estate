@@ -6,8 +6,6 @@ import config from "../../config";
 import { IResetPassword } from "./types/emailNotificationTypes";
 
 export const sendResetPasswordLink = async (details: IResetPassword) => {
-  console.log("details", details);
-
   try {
     const recipients = [new Recipient(details?.email)];
 
@@ -142,6 +140,6 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
   } catch (error) {
     console.log("error", error);
     //@ts-ignore
-    errorLogger.error(`Failed to send login email to  : ${error.message}`);
+    errorLogger.error(`Failed to send login email to  : ${details?.email}`, error);
   }
 };
