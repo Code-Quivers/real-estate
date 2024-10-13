@@ -1,5 +1,4 @@
 import { EmailParams, Recipient } from "mailersend";
-
 import { mailerSend, supportEmailSender } from "./mailerSenderKey";
 import { errorLogger, infoLogger } from "../logger";
 import {
@@ -78,12 +77,10 @@ export const sendEmailForMaintenanceRequestToPropertyOwner = async (details: IDe
               </div>
               <div class="email-body">
                 <p>Dear ${details?.firstName} ${details?.lastName},</p>
-                <p>Your tenant has submitted a maintenance request. Here are the details:</p>
+                <p>Your tenant : ${details?.tenantName},  has submitted a maintenance request. Here are the details:</p>
                 <p><strong>Issue Description:</strong> ${details?.issueDescription}</p>
                 <p><strong>Location:</strong> ${details?.location}</p>
-                <p>Please review the request and confirm a suitable service date as soon as possible.</p>
-                <p>Kind regards,</p>
-                <p>${details?.tenantName}</p>
+                <p>Please review the request and confirm it for service providers as soon as possible.</p>
               </div>
               <div class="email-footer">
                 © 2024 *****. All rights reserved.
@@ -95,6 +92,7 @@ export const sendEmailForMaintenanceRequestToPropertyOwner = async (details: IDe
     await mailerSend.email.send(emailParams);
     infoLogger.info(`Email notification sent to ${details?.user?.email}`);
   } catch (error) {
+    console.log(error);
     errorLogger.error(`Failed to send email: ${details?.user?.email}`, error);
   }
 };
