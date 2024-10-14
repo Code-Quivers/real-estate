@@ -224,12 +224,12 @@ const UnitPaymentPage = ({ params }) => {
 
       <>
         <Modal
-          dialogAs="div"
+          // dialogAs="div"
           overflow={false}
-          className="bg-white mx-auto my-auto mt-10 rounded-lg"
+          className="bg-white mx-auto  rounded-lg"
           open={isOpenFreeTrial}
           backdrop={true}
-          size={800}
+          size={"md"}
         >
           <Modal.Body>
             <div>
