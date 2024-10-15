@@ -4,7 +4,6 @@ import DigitalSignatureDocumentDrawer from "@/components/property-owner/document
 import { fileUrlKey } from "@/configs/envConfig";
 import { useGetSingleDocumentTemplateQuery } from "@/redux/features/documents/documentsApi";
 import { useGetMyTenantsQuery } from "@/redux/features/propertyOwner/propertyOwnerApi";
-import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import { Avatar, Button, Form, Input, Loader, SelectPicker } from "rsuite";
 

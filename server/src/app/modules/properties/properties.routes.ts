@@ -36,6 +36,12 @@ router.get(
 );
 // ! -get property owner my all properties
 router.get("/get-my-properties", auth(UserRoles.PROPERTY_OWNER), PropertiesController.getPropertyOwnerAllProperty);
+// ! -get property owner my all properties for payment
+router.get(
+  "/get-my-properties-for-payment",
+  auth(UserRoles.PROPERTY_OWNER),
+  PropertiesController.getPropertyOwnerAllPropertyForPayment,
+);
 
 // ! update property info
 router.patch(

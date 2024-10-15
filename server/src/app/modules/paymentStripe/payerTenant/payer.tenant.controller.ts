@@ -39,20 +39,18 @@ class PayerTenantController {
     const paymentReport = this.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
-    await PaymentServices.createPaymentReport(paymentReport);
+    const paymentRes = await PaymentServices.createPaymentReport(paymentReport);
 
     // const dataToUpdate = {
     //   orderId,
     //   // orderStatus: "CONFIRMED"
     // };
 
-    // const updatedOrderData = OrderServices.updateOrderInfo(orderId, dataToUpdate);
-
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 200 ? true : false,
       message: "Payment information successfully retrieved!!!",
-      data: jsonResponse,
+      data: paymentRes,
     });
   });
 
@@ -61,6 +59,7 @@ class PayerTenantController {
    */
   private static generatePaymentReport(retrievedPaymentInfo: any, orderId: string, userId: string): any {
     // Amount divided by 100 cause stripe calculate amount in the cent.
+
     return {
       platform: "STRIPE",
       paymentStatus: retrievedPaymentInfo.status,

@@ -12,10 +12,7 @@ const PropertyPaymentDone = ({ params }) => {
   const searchParams = useSearchParams();
   const payment_intent = searchParams.get("payment_intent");
   // const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
-  const [
-    retrievePaymentInfo,
-    // { data, isLoading, isError }
-  ] = useRetrivePaymentInfoMutation();
+  const [retrievePaymentInfo, { isLoading, isSuccess }] = useRetrivePaymentInfoMutation();
   useEffect(() => {
     retrievePaymentInfo({ orderId, paymentIntentId: payment_intent });
   }, []);
@@ -34,10 +31,13 @@ const PropertyPaymentDone = ({ params }) => {
             <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">Payment Done!</h3>
             <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
             <p> Have a great day! </p>
+            {}
             <div className="py-10 text-center">
-              <Link href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">
-                GO BACK
-              </Link>
+              {!isLoading && isSuccess && (
+                <Link href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">
+                  GO BACK
+                </Link>
+              )}
             </div>
           </div>
         </div>

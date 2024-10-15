@@ -13,10 +13,7 @@ const TenantPaymentDone = ({ params }) => {
   const payment_intent = searchParams.get("payment_intent");
   // const payment_intent_client_secret = searchParams.get("payment_intent_client_secret");
   const connectedAccountId = searchParams.get("connectedAccountId");
-  const [
-    retrieveTenantPaymentInfo,
-    //  { data, isLoading, isError }
-  ] = useRetriveTenantPaymentInfoMutation();
+  const [retrieveTenantPaymentInfo, { isLoading }] = useRetriveTenantPaymentInfoMutation();
   useEffect(() => {
     retrieveTenantPaymentInfo({ orderId, connectedAccountId, paymentIntentId: payment_intent });
   }, []);
@@ -36,9 +33,11 @@ const TenantPaymentDone = ({ params }) => {
             <p className="text-gray-600 my-2">Thank you for completing your Secure Online payment.</p>
             <p>Have a great day! </p>
             <div className="py-10 text-center">
-              <Link href="/tenant/unit-information" className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
-                GO BACK
-              </Link>
+              {!isLoading && (
+                <Link href="/tenant/unit-information" className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
+                  GO BACK
+                </Link>
+              )}
             </div>
           </div>
         </div>

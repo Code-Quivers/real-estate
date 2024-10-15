@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
 import { incrementMonth } from "../../../helpers/utils";
+import { OrderStatus } from "@prisma/client";
 
 /**
  * Creates a new order in the database.
@@ -66,7 +67,7 @@ const getSingleOrder = async (orderId: string) => {
   return result;
 };
 
-// ! property in trial period
+// ! update property to trial period
 const updatePropertyTrialPeriod = async (orderId: string) => {
   if (!orderId) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Order id is Required");
@@ -122,7 +123,7 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
       },
     });
 
-    if (updateResult.count > 0) {
+    if (updateResult?.count > 0) {
       return updateResult;
     } else {
       // If no properties were updated, throwing an error
@@ -135,7 +136,6 @@ const updatePropertyTrialPeriod = async (orderId: string) => {
 
 // Update a specific order info
 const updateOrderInfo = async (orderId: string, orderInfo: any) => {
-  console.log("srv", orderInfo);
   const updatedInfo = await prisma.order.update({
     where: { orderId },
     data: orderInfo,
@@ -149,13 +149,13 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
 };
 // update order status and property plan type
 const updateOrderStatusAndPropertyPlanType = async (data: any) => {
-  const { orderId, orderStatus, planType, isRentPayment } = data;
+  const { orderId } = data;
 
   const result = await prisma.$transaction(async (transactionClient) => {
     // Update the order status
     const updatedInfo = await transactionClient.order.update({
       where: { orderId },
-      data: { orderStatus },
+      data: { orderStatus: OrderStatus.PROCESSING },
       select: {
         packageType: true,
         updatedAt: true,
@@ -164,13 +164,13 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
             propertyId: true,
             paidFrom: true,
             paidTo: true,
+            planType: true,
           },
         },
       },
     });
 
     // If it's a rent payment, return the updated order info
-    if (isRentPayment) return updatedInfo;
 
     const { packageType, updatedAt, properties } = updatedInfo;
 
@@ -198,10 +198,9 @@ const updateOrderStatusAndPropertyPlanType = async (data: any) => {
       return {
         where: { propertyId: property.propertyId },
         data: {
-          planType,
+          planType: property.planType,
           packageType,
           paidFrom,
-          // paidTo, // Update `paidTo` to the new `pendingPaidTo`
           pendingPaidTo,
         },
       };

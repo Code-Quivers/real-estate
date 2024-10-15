@@ -380,7 +380,14 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       },
       select: {
         property: {
-          include: {
+          select: {
+            propertyId: true,
+            title: true,
+            monthlyRent: true,
+            address: true,
+            scoreRatio: true,
+            score: true,
+            tenantAssignedAt: true,
             owner: {
               select: {
                 firstName: true,
@@ -411,10 +418,22 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
         properties: {
           some: { propertyId: propertyId },
         },
-        orderStatus: "CONFIRMED",
+        orderStatus: {
+          in: ["CONFIRMED", "PROCESSING"],
+        },
       },
-      select: {
-        updatedAt: true,
+      include: {
+        // updatedAt: true,
+        PaymentInformation: {
+          select: {
+            paymentStatus: true,
+            amountToPay: true,
+            createdAt: true,
+            currency: true,
+            netAmount: true,
+            platform: true,
+          },
+        },
         properties: {
           select: {
             tenantAssignedAt: true,
@@ -430,7 +449,7 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
     const tenantAssignedDate = tenants?.property?.tenantAssignedAt;
 
     let dueMonths;
-
+    // for monthly
     // if (orderData?.length === 0 || (tenantAssignedDate as Date) > orderData[0]?.updatedAt) {
     //   dueMonths = differenceInMonths(tenantAssignedDate?.toISOString());
     // } else {
@@ -464,6 +483,7 @@ const getMyUnitInformation = async (tenantId: string): Promise<Partial<Tenant> |
       ...tenants,
       dueRent: (tenants?.property?.monthlyRent || 0) * dueMonths,
       dueMonths: dueMonths,
+      lastOrderInfo: orderData?.length > 0 ? orderData[0] : null,
     };
 
     return tenantUnitInfo;

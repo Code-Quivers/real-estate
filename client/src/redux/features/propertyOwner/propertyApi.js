@@ -36,7 +36,15 @@ export const propertyApi = baseApi.injectEndpoints({
         method: "GET",
         params: arg,
       }),
-      providesTags: [tagTypes.properties, tagTypes.tenant],
+      providesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.order],
+    }),
+    getMyAllUnitsForPayment: builder.query({
+      query: (arg) => ({
+        url: `/properties/get-my-properties-for-payment`,
+        method: "GET",
+        params: arg,
+      }),
+      providesTags: [tagTypes.properties, tagTypes.tenant, tagTypes.order],
     }),
     // ! assign
     assignServiceProviderToProperty: builder.mutation({
@@ -72,6 +80,7 @@ export const {
   useUpdatePropertyMutation,
   useGetAllAvailableUnitsQuery,
   useGetMyAllUnitsQuery,
+  useGetMyAllUnitsForPaymentQuery,
   useAssignTenantToPropertyMutation,
   useAssignServiceProviderToPropertyMutation,
   useRemoveTenantFromPropertyMutation,

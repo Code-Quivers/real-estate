@@ -30,6 +30,7 @@ create_required_directories();
 // });
 
 // Schedule the status check to run every 6 hours sec for test
+// cron.schedule("0 */6 * * *", () => {
 cron.schedule("0 */6 * * *", () => {
   infoLogger.info("Checking Payment status...");
   check_payment_status_tasks();
