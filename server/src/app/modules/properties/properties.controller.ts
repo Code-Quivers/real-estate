@@ -64,6 +64,22 @@ const getPropertyOwnerAllProperty = catchAsync(async (req: Request, res: Respons
     data: result.data,
   });
 });
+// ! -get property owner my all properties (for payment)
+const getPropertyOwnerAllPropertyForPayment = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, propertiesFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const profileId = (req.user as IRequestUser).profileId;
+
+  const result = await PropertiesService.getPropertyOwnerAllPropertyForPayment(profileId, filters, options);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Properties Successfully fetched!!!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
 
 //! get single property info
 const getSinglePropertyInfo = catchAsync(async (req: Request, res: Response) => {
@@ -170,6 +186,7 @@ export const PropertiesController = {
   assignTenantToProperty,
   assignServiceProviderToProperty,
   removeTenantFromProperty,
+  getPropertyOwnerAllPropertyForPayment,
   // dashboard
   getAllProperties,
   updatePropertyDetailsFromAdmin,

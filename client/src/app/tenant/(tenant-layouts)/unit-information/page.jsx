@@ -24,7 +24,7 @@ const TenantUnitInformation = () => {
 
       {!isLoading && !isError && unitRes && (
         <div>
-          <div className="grid lg:grid-cols-6 max-lg:gap-5 grid-cols-1 lg:border lg:rounded-md">
+          <div className="grid lg:grid-cols-6 max-lg:gap-5 bg-white grid-cols-1 lg:border lg:rounded-md">
             <div
               key={Math.random()}
               className="lg:col-span-2 lg:m-2 border bg-white rounded-md transition-all duration-500 ease-in-out  max-lg:border shadow"
@@ -73,23 +73,24 @@ const TenantUnitInformation = () => {
                 <h2 className="text-2xl text-center font-semibold">Balance Due</h2>
                 <p className="py-3 text-center text-lg font-semibold">
                   <span>$ </span>
-                  <span>{unitRes?.dueRent}</span>
+                  <span>{unitRes?.lastOrderInfo?.orderStatus === "PROCESSING" ? 0 : unitRes?.dueRent}</span>
                   {/* <span>Month : {unitRes?.dueMonths}</span> */}
                 </p>
                 <Button
-                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-50"
+                  className="!bg-[#29429F] !text-white !text-lg !px-5 py-1.5 !rounded-full disabled:opacity-60"
                   onClick={() => setIsOpenMakePayment(true)}
                   disabled={
-                    unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired
-                      ? true
-                      : false || unitRes?.dueRent == 0
-                        ? true
-                        : false || !unitRes?.property?.owner?.FinancialAccount?.detailsSubmitted
-                          ? true
-                          : false
+                    (unitRes?.property?.planType === "PREMIUM" && getPackageExpiredDates(unitRes?.property?.paidTo).moreThanOneMonthExpired) ||
+                    unitRes?.dueRent === 0 ||
+                    !unitRes?.property?.owner?.FinancialAccount?.detailsSubmitted ||
+                    unitRes?.lastOrderInfo?.orderStatus === "PROCESSING"
                   }
                 >
-                  {unitRes?.dueRent == 0 ? "No Payment Due" : "Make Payment"}
+                  {unitRes?.dueRent === 0
+                    ? "No Payment Due"
+                    : unitRes?.lastOrderInfo?.orderStatus === "PROCESSING"
+                      ? "Payment is Pending..."
+                      : "Make Payment"}
                 </Button>
               </div>
             </div>
@@ -113,6 +114,35 @@ const TenantUnitInformation = () => {
                   My Requests
                 </button>
               </div>
+            </div>
+          </div>
+
+          {/* additional info about pending payment */}
+          <div className="p-4 mt-5 shadow rounded-md bg-white">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Payment Information</h2>
+              {unitRes?.lastOrderInfo?.orderStatus === "PROCESSING" && <span className="text-sm text-gray-500">Processing (3-5 working days)</span>}
+            </div>
+
+            <div className="mt-4">
+              <p className="text-lg">{unitRes?.dueRent === 0 ? "No Payment Due" : `Amount Due: $${unitRes?.dueRent}`}</p>
+
+              {/* Additional info when processing */}
+              {unitRes?.lastOrderInfo?.orderStatus === "PROCESSING" && (
+                <div className="mt-2 bg-yellow-100 text-yellow-800 p-2 rounded">
+                  <p className="text-sm">Your payment is currently being processed. This can take upto 3-5 working days.</p>
+                  <p className="mt-2">
+                    <strong>Payment Status:</strong> {unitRes?.lastOrderInfo?.PaymentInformation?.paymentStatus}
+                  </p>
+                  <p>
+                    <strong>Amount to Pay:</strong> ${unitRes?.lastOrderInfo?.PaymentInformation?.amountToPay}{" "}
+                    {unitRes?.lastOrderInfo?.PaymentInformation?.currency.toUpperCase()}
+                  </p>
+                  <p>
+                    <strong>Payment Platform:</strong> {unitRes?.lastOrderInfo?.PaymentInformation?.platform}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

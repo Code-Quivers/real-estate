@@ -106,7 +106,7 @@ class TenantPaymentProcessor {
     });
 
     if (!paymentIntentInfo) {
-      throw new ApiError(httpStatus.BAD_REQUEST, "Payment information retrivation failed!!!");
+      throw new ApiError(httpStatus.BAD_REQUEST, "Payment information retrieve failed!!!");
     }
     return {
       jsonResponse: paymentIntentInfo,

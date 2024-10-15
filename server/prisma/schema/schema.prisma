@@ -25,6 +25,7 @@ enum UserStatus {
 
 enum OrderStatus {
   PENDING
+  PROCESSING
   CONFIRMED
   FAILED
 }

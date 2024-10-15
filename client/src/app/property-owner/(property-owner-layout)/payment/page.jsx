@@ -1,17 +1,37 @@
+/* eslint-disable no-extra-boolean-cast */
 "use client";
 import { fileUrlKey, getUnitPackagePrices } from "@/configs/envConfig";
-import { useGetMyAllUnitsQuery } from "@/redux/features/propertyOwner/propertyApi";
+import { useGetMyAllUnitsForPaymentQuery } from "@/redux/features/propertyOwner/propertyApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Avatar, Checkbox, CheckboxGroup, Loader, Notification, useToaster } from "rsuite";
+import { Avatar, Checkbox, CheckboxGroup, Loader, Notification, Pagination, useToaster } from "rsuite";
 import apartmentPhoto from "@/assets/house/house-logo.jpg";
 import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { useCreateOrderMutation } from "@/redux/features/orders/orderApi";
 import { useRouter } from "next/navigation";
 import moment from "moment";
+import { useDebounced } from "@/redux/hook";
 
 const Payment = () => {
-  const { data: unitRes, isLoading } = useGetMyAllUnitsQuery({
+  const query = {};
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("desc");
+  // filter
+  query["limit"] = size;
+  query["page"] = page;
+  query["sortOrder"] = sortOrder;
+  query["sortBy"] = sortBy;
+  // ! debounce for slow search
+  const debouncedTerm = useDebounced({
+    searchQuery: searchTerm,
+    delay: 300,
+  });
+  if (!!debouncedTerm) query["searchTerm"] = debouncedTerm;
+
+  const { data: unitRes, isLoading } = useGetMyAllUnitsForPaymentQuery({
     limit: 100,
   });
   const [selectedProperties, setSelectedProperties] = useState([]);
@@ -50,9 +70,11 @@ const Payment = () => {
   return (
     <>
       <section className="mx-auto max-w-5xl px-3 pb-20">
-        <h1 className="text-center mt-10 text-2xl">Payment</h1>
+        <h1 className="text-center my-5 lg:mt-10 text-2xl">Payment</h1>
         <div className="max-w-5xl mx-auto">
-          <h3 className="mb-2">Select property that you want to payment</h3>
+          <div className="mb-10">
+            <h3 className="mb-2">Select property that you want to Payment</h3>
+          </div>
           {!isLoading && unitRes?.data?.length > 0 && (
             <div>
               <CheckboxGroup
@@ -127,7 +149,7 @@ const Payment = () => {
                             </div>
 
                             {/* Tenant Details */}
-                            <div className="max-md:col-span-2 col-span-11 flex flex-col justify-around border-t pt-2 mt-2 bg-white p-3 rounded-lg shadow-sm">
+                            <div className="max-md:col-span-2 col-span-11 flex flex-col justify-around border-t pt-2 mt-2 bg-white p-3">
                               {singleUnit?.isRented ? (
                                 <div className="flex items-center gap-4">
                                   <Avatar
@@ -167,16 +189,47 @@ const Payment = () => {
             </div>
           )}
 
-          <div className="mt-10 flex justify-end">
+          <div className="mt-10 flex justify-end items-center space-x-4">
+            {selectedProperties?.length > 0 && (
+              <span className="px-3 py-1 text-lg font-semibold text-white bg-blue-400 rounded-full shadow-md">
+                {selectedProperties.length} Selected
+              </span>
+            )}
             <button
-              disabled={!selectedProperties?.length}
+              disabled={!selectedProperties?.length || isLoadingCreateOrder}
               type="button"
               onClick={handleCreateNewOrder}
-              className="bg-primary disabled:cursor-not-allowed disabled:bg-opacity-70 px-5 py-2 rounded-3xl text-white duration-300 transition-all"
+              className={`relative px-6 py-3 rounded-full text-white font-bold transition-all duration-300
+      ${
+        !selectedProperties?.length
+          ? "cursor-not-allowed bg-gray-400"
+          : "bg-gradient-to-r from-primary to-purple-600 hover:from-purple-500 hover:to-blue-500 shadow-lg hover:scale-105"
+      }`}
             >
               Pay Now
+              {selectedProperties?.length > 0 && (
+                <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold bg-red-600 text-white rounded-full">
+                  {selectedProperties.length}
+                </span>
+              )}
             </button>
           </div>
+        </div>
+        {/* pagination */}
+        <div className="my-20 px-2">
+          <Pagination
+            total={unitRes?.meta?.total}
+            prev
+            next
+            ellipsis
+            size="sm"
+            layout={["total", "-", "limit", "|", "pager"]}
+            limitOptions={[10, 20, 30, 50]}
+            limit={size}
+            onChangeLimit={(limitChange) => setSize(limitChange)}
+            activePage={page}
+            onChangePage={setPage}
+          />
         </div>
       </section>
     </>

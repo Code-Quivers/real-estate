@@ -47,9 +47,8 @@ class StripeController {
     // update property plan
     const dataToUpdate = {
       orderId,
-      packageType: paymentReport?.packageType,
-      planType: "PREMIUM",
     };
+    console.log("is rent payment", req.body);
     await OrderServices.updateOrderStatusAndPropertyPlanType(dataToUpdate);
 
     sendResponse(res, {

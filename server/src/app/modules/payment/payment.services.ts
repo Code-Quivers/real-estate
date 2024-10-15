@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
-import { PaymentInformation, Prisma } from "@prisma/client";
+import { OrderStatus, PaymentInformation, Prisma } from "@prisma/client";
 import ApiError from "../../../errors/ApiError";
 import prisma from "../../../shared/prisma";
 import { paginationHelpers } from "../../../helpers/paginationHelper";
@@ -161,6 +161,7 @@ const createPaymentReport = async (data: any): Promise<any | null> => {
     select: {
       order: {
         select: {
+          orderId: true,
           tenant: {
             select: {
               property: {
@@ -179,6 +180,14 @@ const createPaymentReport = async (data: any): Promise<any | null> => {
   if (!paymentReport) {
     throw new ApiError(httpStatus.BAD_REQUEST, "No payment information found!!!");
   }
+  await prisma.order.update({
+    where: {
+      orderId: paymentReport?.order?.orderId,
+    },
+    data: {
+      orderStatus: OrderStatus.PROCESSING,
+    },
+  });
 
   // sending email notification to property owner
 
@@ -317,7 +326,7 @@ const checkAndUpdateBulkOrderStatus = async () => {
     try {
       const allOrdersData = await prisma.order.findMany({
         where: {
-          orderStatus: "PENDING",
+          orderStatus: "PROCESSING",
           PaymentInformation: {
             isNot: null,
           },
@@ -354,7 +363,6 @@ const checkAndUpdateBulkOrderStatus = async () => {
           },
         },
       });
-      // console.log("all orders data", allOrdersData);
 
       return allOrdersData?.map((order) => ({
         orderId: order.orderId,
@@ -376,7 +384,12 @@ const checkAndUpdateBulkOrderStatus = async () => {
         const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentPlatformId, {
           stripeAccount: order?.finOrgAccountId,
         });
-        return { ...order, paymentStatus: paymentIntent?.status };
+
+        return {
+          ...order,
+          paymentStatus: paymentIntent?.status,
+          amount_received: paymentIntent?.amount_received ? paymentIntent?.amount_received / 100.0 : 0,
+        };
       } catch (error) {
         errorLogger.error(`Error retrieving payment intent for order ID: ${order.orderId}`, error);
         return { ...order, paymentStatus: "payment_intent_not_found" };
@@ -389,7 +402,7 @@ const checkAndUpdateBulkOrderStatus = async () => {
   const pendingOrders = await getAllPendingOrders();
   const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
 
-  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
+  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single: any) => {
     if (
       single?.paymentStatus === "succeeded" ||
       single?.paymentStatus === "processing" ||
@@ -403,23 +416,23 @@ const checkAndUpdateBulkOrderStatus = async () => {
               single?.paymentStatus === "succeeded"
                 ? "CONFIRMED"
                 : single?.paymentStatus === "processing"
-                  ? "PENDING"
+                  ? "PROCESSING"
                   : "FAILED",
             PaymentInformation: {
-              update: { paymentStatus: single.paymentStatus },
+              update: { paymentStatus: single.paymentStatus, amountPaid: single?.amount_received },
             },
             properties: {
               updateMany: {
                 where: {
                   propertyId: {
-                    in: single?.properties?.map((property) => property?.propertyId), // Extract propertyIds correctly
+                    in: single?.properties?.map((property: any) => property?.propertyId), // Extract propertyIds correctly
                   },
                 },
                 data: {
                   // Only update paidTo if paymentStatus is "succeeded" or "processing"
                   paidTo:
                     single?.paymentStatus === "succeeded" || single?.paymentStatus === "processing"
-                      ? { set: single?.properties?.map((property) => property?.pendingPaidTo)[0] } // Use set to assign pendingPaidTo value
+                      ? { set: single?.properties?.map((property: any) => property?.pendingPaidTo)[0] } // Use set to assign pendingPaidTo value
                       : undefined, // Keep the old value if status is "failed"
                   // Handle pendingPaidTo based on paymentStatus
                   pendingPaidTo:
@@ -488,7 +501,7 @@ const checkAndSendNotificationForDueRent = async () => {
               some: { propertyId: property?.propertyId },
             },
             orderStatus: {
-              in: ["CONFIRMED", "PENDING"],
+              in: ["CONFIRMED", "PROCESSING"],
             },
           },
           select: {
