@@ -286,10 +286,14 @@ const getSavedUnits = async (userId: string, filters: any, options: IPaginationO
   //
   const result = await prisma.$transaction(async (transactionClient) => {
     const savedItems = await transactionClient.savedItem.findMany({
-      where: whereConditions,
+      where: {
+        ...whereConditions,
+        property: {
+          isNot: null,
+        },
+      },
       skip,
       take: limit,
-
       orderBy:
         options.sortBy && options.sortOrder
           ? { [options.sortBy]: options.sortOrder }
