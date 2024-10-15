@@ -42,20 +42,15 @@ class StripeController {
     const paymentReport = StripeController.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
-    await PaymentServices.createPaymentReport(paymentReport);
+    const paymentRes = await PaymentServices.createPaymentReport(paymentReport);
 
-    // update property plan
-    const dataToUpdate = {
-      orderId,
-    };
-    console.log("is rent payment", req.body);
-    await OrderServices.updateOrderStatusAndPropertyPlanType(dataToUpdate);
+    await OrderServices.updateOrderStatusAndPropertyPlanType(orderId);
 
     sendResponse(res, {
       statusCode: httpStatusCode,
       success: httpStatusCode === 200 ? true : false,
       message: "Payment information successfully retrieved!!!",
-      data: jsonResponse,
+      data: paymentRes,
     });
   });
 
@@ -69,17 +64,18 @@ class StripeController {
       amountToPay: parseFloat(retrievedPaymentInfo.amount) / 100.0,
       amountPaid: parseFloat(retrievedPaymentInfo.amount_received) / 100.0,
       currency: retrievedPaymentInfo.currency,
-      platformFee: parseFloat("0.0"),
-      netAmount: parseFloat("0.0"),
+      platformFee: retrievedPaymentInfo.metadata?.charge
+        ? Math.round(parseFloat(retrievedPaymentInfo.metadata.charge) * 100) / 100
+        : 0.0,
+      netAmount: retrievedPaymentInfo.metadata?.netAmount ? parseFloat(retrievedPaymentInfo.metadata.netAmount) : 0.0,
       paymentPlatformId: retrievedPaymentInfo.id,
-      transactionCreatedTime: new Date(retrievedPaymentInfo.created).toISOString(),
+      transactionCreatedTime: new Date(retrievedPaymentInfo.created * 1000).toISOString(),
       orderId,
       userId,
     };
   }
 
   static createConnectedAccount = catchAsync(async (req: Request, res: Response) => {
-    // console.log("createConnectedAccount API hit..............");
     const userId: string = (req.user as IRequestUser).userId || "";
     const ownerId: string = (req.user as IRequestUser).profileId || "";
 

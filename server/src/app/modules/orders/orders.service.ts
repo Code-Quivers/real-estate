@@ -148,9 +148,7 @@ const updateOrderInfo = async (orderId: string, orderInfo: any) => {
   return updatedInfo;
 };
 // update order status and property plan type
-const updateOrderStatusAndPropertyPlanType = async (data: any) => {
-  const { orderId } = data;
-
+const updateOrderStatusAndPropertyPlanType = async (orderId: string) => {
   const result = await prisma.$transaction(async (transactionClient) => {
     // Update the order status
     const updatedInfo = await transactionClient.order.update({

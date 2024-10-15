@@ -457,7 +457,7 @@ const getPropertyOwnerAllProperty = async (
         orders: {
           where: {
             orderStatus: {
-              in: ["CONFIRMED", "PROCESSING"],
+              in: ["PROCESSING"],
             },
             PaymentInformation: {
               isNot: null,
@@ -490,12 +490,12 @@ const getPropertyOwnerAllProperty = async (
       },
       skip,
       take: limit,
-      orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : {
-              createdAt: "desc",
-            },
+      // orderBy:
+      //   options.sortBy && options.sortOrder
+      //     ? { [options.sortBy]: options.sortOrder }
+      //     : {
+      //         createdAt: "desc",
+      //       },
     });
     const total = await prisma.property.count({
       where: {

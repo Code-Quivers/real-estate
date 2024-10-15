@@ -38,13 +38,22 @@ export type ITenantDetailsForNotification = {
     email: string;
   };
 };
+export type ITenantDetailsForNotificationForPayment = {
+  firstName: string | undefined;
+  lastName: string | undefined;
+  email: string | undefined;
+  amount: number;
+};
 export type IOwnerDetailsForNotification = {
-  firstName: string;
-  lastName: string;
+  tenantName: string;
+  createdAt: Date;
+  firstName: string | undefined;
+  lastName: string | undefined;
   phoneNumber?: string | null;
-  user: {
-    email: string;
-  };
+  email: string | undefined;
+  amountToPay: number;
+  paymentStatus: string;
+  paymentPlatformId: string;
 };
 export type IReceiverForNotification = {
   email: string;
