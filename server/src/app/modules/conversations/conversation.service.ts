@@ -196,11 +196,9 @@ const getMyAllConversation = async (
         ...whereConditions,
         perticipants: {
           some: {
-            OR: [
-              {
-                userId,
-              },
-            ],
+            userId: {
+              not: userId, // This ensures the conversation has at least one participant that is NOT the current user
+            },
           },
         },
       },
