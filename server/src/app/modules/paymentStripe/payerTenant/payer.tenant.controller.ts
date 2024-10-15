@@ -34,17 +34,11 @@ class PayerTenantController {
       paymentIntentId,
       connectedAccountId,
     );
-    // console.log("testing --------------------------- ", jsonResponse);
 
     const paymentReport = this.generatePaymentReport(jsonResponse, orderId, userId);
 
     // Create payment report in the database
     const paymentRes = await PaymentServices.createPaymentReport(paymentReport);
-
-    // const dataToUpdate = {
-    //   orderId,
-    //   // orderStatus: "CONFIRMED"
-    // };
 
     sendResponse(res, {
       statusCode: httpStatusCode,
@@ -69,7 +63,7 @@ class PayerTenantController {
       platformFee: Math.round(parseFloat(retrievedPaymentInfo.metadata.charge) * 100) / 100,
       netAmount: parseFloat(retrievedPaymentInfo.metadata.netAmount),
       paymentPlatformId: retrievedPaymentInfo.id,
-      transactionCreatedTime: new Date(retrievedPaymentInfo.created).toISOString(),
+      transactionCreatedTime: new Date(retrievedPaymentInfo.created * 1000).toISOString(),
       orderId,
       userId,
     };

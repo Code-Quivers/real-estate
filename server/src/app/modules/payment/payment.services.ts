@@ -11,10 +11,16 @@ import { PaymentRelationalFields, PaymentRelationalFieldsMapper, PaymentSearchab
 import Stripe from "stripe";
 import config from "../../../config";
 import { errorLogger, infoLogger } from "../../../shared/logger";
-import { sendEmailToOwnerAfterRentReceived } from "../../../shared/emailNotification/emailForRent";
+import {
+  sendEmailToOwnerAfterRentReceived,
+  sendEmailToTenantAfterPaymentApproved,
+  sendEmailToTenantAfterPaymentFailed,
+} from "../../../shared/emailNotification/emailForRent";
 import { differenceInDays, differenceInMonths } from "../tenants/tenants.utils";
 import { sendDueRentEmailToTenant } from "../../../shared/emailNotification/emailForDueRent";
 const stripe = new Stripe(config.stripe_sk);
+
+//! get payment reports
 
 const getPaymentReports = async (
   filters: IPaymentFilterRequest,
@@ -123,6 +129,7 @@ const getPaymentReport = async (paymentId: string): Promise<PaymentInformation |
   return paymentReport;
 };
 
+//
 const getPaymentReportsWithOrderId = async (userId: string, orderId: string): Promise<PaymentInformation[] | null> => {
   // Fetch a single payment report from the database based on the payment ID
   const paymentReports = await prisma.paymentInformation.findMany({
@@ -159,11 +166,17 @@ const createPaymentReport = async (data: any): Promise<any | null> => {
   const paymentReport = await prisma.paymentInformation.create({
     data: data,
     select: {
+      amountToPay: true,
+      paymentStatus: true,
+      paymentPlatformId: true,
+      createdAt: true,
       order: {
         select: {
           orderId: true,
           tenant: {
             select: {
+              firstName: true,
+              lastName: true,
               property: {
                 select: {
                   ownerId: true,
@@ -193,7 +206,7 @@ const createPaymentReport = async (data: any): Promise<any | null> => {
 
   // ! send email notification to property owner
   if (paymentReport?.order?.tenant) {
-    const ownerOfProperty: any = await prisma.propertyOwner.findUnique({
+    const ownerOfProperty = await prisma.propertyOwner.findUnique({
       where: {
         propertyOwnerId: paymentReport?.order?.tenant?.property?.ownerId as string,
       },
@@ -209,11 +222,22 @@ const createPaymentReport = async (data: any): Promise<any | null> => {
       },
     });
 
-    // send email to service provider
+    const details = {
+      tenantName: `${paymentReport?.order?.tenant?.firstName} ${paymentReport?.order?.tenant?.lastName}`,
+      firstName: ownerOfProperty?.firstName,
+      lastName: ownerOfProperty?.lastName,
+      email: ownerOfProperty?.user?.email,
+      amountToPay: paymentReport?.amountToPay,
+      paymentStatus: paymentReport?.paymentStatus,
+      paymentPlatformId: paymentReport?.paymentPlatformId,
+      createdAt: paymentReport?.createdAt,
+    };
+
+    // send email to property owner for rent received
     if (ownerOfProperty?.user?.email) {
       infoLogger.info(`sending Email : ${ownerOfProperty?.user?.email}  to property owner for rent received`);
 
-      await sendEmailToOwnerAfterRentReceived(ownerOfProperty);
+      await sendEmailToOwnerAfterRentReceived(details);
     }
   }
 
@@ -322,17 +346,19 @@ const deleteConnectedAccount = async (accountId: string): Promise<any> => {
 // ! ==============================================
 const checkAndUpdateBulkOrderStatus = async () => {
   // Fetch pending orders from the database
-  const getAllPendingOrders = async (): Promise<any> => {
+
+  const getAllPendingOrders = async (): Promise<OrderWithPaymentInfo[]> => {
     try {
       const allOrdersData = await prisma.order.findMany({
         where: {
-          orderStatus: "PROCESSING",
+          orderStatus: OrderStatus.PROCESSING,
           PaymentInformation: {
             isNot: null,
           },
         },
         select: {
           orderId: true,
+          orderStatus: true,
           PaymentInformation: {
             select: {
               paymentPlatformId: true,
@@ -346,6 +372,14 @@ const checkAndUpdateBulkOrderStatus = async () => {
           },
           tenant: {
             select: {
+              tenantId: true,
+              firstName: true,
+              lastName: true,
+              user: {
+                select: {
+                  email: true,
+                },
+              },
               property: {
                 select: {
                   owner: {
@@ -363,12 +397,14 @@ const checkAndUpdateBulkOrderStatus = async () => {
           },
         },
       });
-
       return allOrdersData?.map((order) => ({
+        orderStatus: order.orderStatus,
         orderId: order.orderId,
         paymentPlatformId: order.PaymentInformation?.paymentPlatformId || "",
         finOrgAccountId: order?.tenant?.property?.owner?.FinancialAccount?.finOrgAccountId,
         properties: order?.properties || [], // Make sure to get properties
+        tenant: order?.tenant,
+        amount_received: 0,
       }));
     } catch (error) {
       errorLogger.error("Error fetching orders:", error);
@@ -400,9 +436,12 @@ const checkAndUpdateBulkOrderStatus = async () => {
 
   // Main logic to check payment status and update orders
   const pendingOrders = await getAllPendingOrders();
+  if (!pendingOrders?.length) {
+    return null;
+  }
   const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
 
-  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single: any) => {
+  const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
     if (
       single?.paymentStatus === "succeeded" ||
       single?.paymentStatus === "processing" ||
@@ -419,20 +458,23 @@ const checkAndUpdateBulkOrderStatus = async () => {
                   ? "PROCESSING"
                   : "FAILED",
             PaymentInformation: {
-              update: { paymentStatus: single.paymentStatus, amountPaid: single?.amount_received },
+              update: {
+                paymentStatus: single.paymentStatus,
+                amountPaid: single?.amount_received,
+              },
             },
             properties: {
               updateMany: {
                 where: {
                   propertyId: {
-                    in: single?.properties?.map((property: any) => property?.propertyId), // Extract propertyIds correctly
+                    in: single?.properties?.map((property: any) => property?.propertyId),
                   },
                 },
                 data: {
                   // Only update paidTo if paymentStatus is "succeeded" or "processing"
                   paidTo:
                     single?.paymentStatus === "succeeded" || single?.paymentStatus === "processing"
-                      ? { set: single?.properties?.map((property: any) => property?.pendingPaidTo)[0] } // Use set to assign pendingPaidTo value
+                      ? { set: single?.properties?.map((property: any) => property?.pendingPaidTo)[0] }
                       : undefined, // Keep the old value if status is "failed"
                   // Handle pendingPaidTo based on paymentStatus
                   pendingPaidTo:
@@ -446,13 +488,40 @@ const checkAndUpdateBulkOrderStatus = async () => {
         }),
       );
     }
+
     return acc; // Return the accumulated array
   }, []);
 
   // Execute the transaction with valid promises only
-  if (updatePromises.length > 0) {
+  if (updatePromises?.length > 0) {
     await prisma.$transaction(updatePromises);
   }
+
+  // Sending email to tenants outside the reduce function
+  await Promise.all(
+    updatedOrders?.map(async (single) => {
+      if (
+        (single?.tenant?.tenantId && single?.tenant?.user?.email && single?.paymentStatus === "succeeded") ||
+        single?.paymentStatus === "failed"
+      ) {
+        // Send email to tenant
+        const tenantDetails = {
+          firstName: single?.tenant?.firstName,
+          lastName: single?.tenant?.lastName,
+          email: single?.tenant?.user?.email,
+          amount: single?.amount_received,
+        };
+        // for success
+        if (single?.paymentStatus === "succeeded") {
+          await sendEmailToTenantAfterPaymentApproved(tenantDetails);
+        }
+        // for failure
+        if (single?.paymentStatus === "failed") {
+          await sendEmailToTenantAfterPaymentFailed(tenantDetails);
+        }
+      }
+    }) || [],
+  );
 
   return null;
 };
@@ -558,7 +627,6 @@ const checkAndSendNotificationForDueRent = async () => {
       try {
         await sendDueRentEmailToTenant(singleTenant);
       } catch (error) {
-        console.log(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
         errorLogger.error(`Failed to send email to tenant ${singleTenant.user?.email}:`, error);
         // Continue with the next tenant
       }

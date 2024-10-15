@@ -219,9 +219,9 @@ export const sendEmailForMaintenanceRequestToServiceProvider = async (details: I
 
       <p>We would like to request maintenance services for the following issue:</p>
 
-      <p><strong>Issue Description:</strong> [Description of the issue]</p>
-      <p><strong>Location:</strong> [Location]</p>
-      <p><strong>Requested Service Date:</strong> [Date]</p>
+      <p><strong>Tenant Name:</strong> ${details?.tenantName}</p>
+      <p><strong>Issue Description:</strong> ${details?.issueDescription}</p>
+      <p><strong>Location:</strong> ${details?.location}</p>
 
       <p>Please confirm the service appointment at your earliest convenience. We appreciate your prompt attention to this
         matter.</p>
