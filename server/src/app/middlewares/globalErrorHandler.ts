@@ -16,7 +16,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Respo
   // config.env === 'development'
   //   ? errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error.statusCode)
   //   : errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error.statusCode);
-  console.log("Error Message  -------", error);
+  // console.log("Error Message  -------", error);
   errorLogger.error(`🐱‍🏍 ErrorMessages ~~`, error, error.statusCode);
 
   let statusCode = 500;

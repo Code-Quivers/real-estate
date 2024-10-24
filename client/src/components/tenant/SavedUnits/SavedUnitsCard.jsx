@@ -1,10 +1,7 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import SavedUnitsModal from "./SavedUnitModal";
-import houseLogo from "@/assets/house/house-logo.jpg";
 import { useGetAllSavedItemsQuery } from "@/redux/features/propertyOwner/savedItemApi";
-import { fileUrlKey } from "@/configs/envConfig";
 import Score from "@/components/Shared/Score/Score";
 import UnitCardSkeleton from "@/components/loading-skeleton/UnitCardSkeleton";
 import SavedUnitsCardSwiper from "./swiper/SavedUnitsCardSwiper";

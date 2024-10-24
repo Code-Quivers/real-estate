@@ -25,6 +25,10 @@ import {
 } from "./properties.constants";
 import { calculatePropertyScore } from "./properties.utils";
 import { differenceInMonths } from "../tenants/tenants.utils";
+import {
+  sendAssignedEmailToServiceProvider,
+  sendAssignedEmailToTenant,
+} from "../../../shared/emailNotification/emailForPropertyInsights";
 
 // ! createNewProperty
 const createNewProperty = async (profileId: string, req: Request) => {
@@ -806,6 +810,21 @@ const updatePropertyDetailsFromAdmin = async (propertyId: string, payload: IProp
 const assignServiceProviderToProperty = async (profileId: string, payload: IAssignServiceProviderToProperty) => {
   const { propertyId, serviceProviderId } = payload;
 
+  const isExistServiceProvider = await prisma.serviceProvider.findUnique({
+    where: {
+      serviceProviderId,
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  });
+
   const result = await prisma.$transaction(async (transactionClient) => {
     // Check if the user is the owner of the property
     const isOwner = await transactionClient.property.findFirst({
@@ -850,6 +869,10 @@ const assignServiceProviderToProperty = async (profileId: string, payload: IAssi
           },
         },
       },
+      select: {
+        title: true,
+        address: true,
+      },
     });
 
     if (!res) {
@@ -858,6 +881,16 @@ const assignServiceProviderToProperty = async (profileId: string, payload: IAssi
 
     return res;
   });
+
+  if (isExistServiceProvider?.user?.email && result) {
+    const details = {
+      fullName: `${isExistServiceProvider?.firstName} ${isExistServiceProvider?.lastName}`,
+      title: result?.title,
+      address: result?.address,
+      email: isExistServiceProvider?.user?.email,
+    };
+    await sendAssignedEmailToServiceProvider(details);
+  }
 
   return result;
 };
@@ -879,24 +912,24 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
       throw new ApiError(httpStatus.BAD_REQUEST, "Property does not exist");
     }
 
-    if (isOwner?.planType === "ON_TRIAL" || isOwner?.planType === "PREMIUM") {
-      const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
-        where: {
-          propertyOwnerId: profileId,
-          FinancialAccount: {
-            is: {
-              detailsSubmitted: true,
-            },
-          },
-        },
-      });
+    // if (isOwner?.planType === "ON_TRIAL" || isOwner?.planType === "PREMIUM") {
+    //   const isFinancialAdded = await transactionClient.propertyOwner.findUnique({
+    //     where: {
+    //       propertyOwnerId: profileId,
+    //       FinancialAccount: {
+    //         is: {
+    //           detailsSubmitted: true,
+    //         },
+    //       },
+    //     },
+    //   });
 
-      // check financial account added or not
+    //   // check financial account added or not
 
-      if (!isFinancialAdded) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
-      }
-    }
+    //   if (!isFinancialAdded) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, "You haven't added your Card Details");
+    //   }
+    // }
 
     // check if already assigned to other property
     const isAlreadyAssigned = await transactionClient.tenant.findUnique({
@@ -920,6 +953,12 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
           isNot: null,
         },
       },
+      select: {
+        monthlyRent: true,
+        title: true,
+        address: true,
+        tenantAssignedAt: true,
+      },
     });
 
     if (isPropertyBooked) {
@@ -941,6 +980,13 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
       select: {
         tenantId: true,
         property: true,
+        firstName: true,
+        lastName: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
       },
     });
 
@@ -962,7 +1008,18 @@ const assignTenantToProperty = async (profileId: string, payload: IAssignTenantT
 
     return res;
   });
+  if (result?.user?.email) {
+    const details = {
+      monthlyRent: result?.property?.monthlyRent,
+      address: result?.property?.address,
+      title: result?.property?.title,
+      tenantAssignedAt: result?.property?.tenantAssignedAt,
+      fullName: `${result?.firstName} ${result?.lastName}`,
+      user: result?.user,
+    };
 
+    await sendAssignedEmailToTenant(details);
+  }
   return result;
 };
 // ! remove  tenant user from property or unit -----------------

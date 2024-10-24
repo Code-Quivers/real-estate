@@ -15,6 +15,7 @@ import {
   IDetailsForMaintenanceNotification,
   IDetailsForMaintenanceNotificationForTenant,
 } from "../../../shared/emailNotification/types/emailNotificationTypes";
+import { RequestMaintenancePriorityEnum } from "@prisma/client";
 
 // ! add request maintenance request to property owner from tenant user
 const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Request) => {
@@ -77,7 +78,7 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
     return res;
   });
 
-  if (newData.priority === "HIGH_PRIORITY") {
+  if (newData.priority === RequestMaintenancePriorityEnum.HIGH_PRIORITY) {
     // ! send email notification to all service providers
 
     const allServiceProviders = await prisma.property.findUnique({
@@ -101,7 +102,7 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
       },
     });
 
-    // send email to service provider
+    //! send email to service providers
     if (allServiceProviders?.serviceProviders && allServiceProviders?.serviceProviders?.length > 0) {
       allServiceProviders?.serviceProviders.map(async (serviceProvider: any) => {
         await sendEmailForMaintenanceRequestToServiceProvider(serviceProvider);
@@ -118,7 +119,7 @@ const addRequestMaintenanceToPropertyOwner = async (tenantId: string, req: Reque
       issueType: result?.issueType,
       tenantName: `${isAssigned?.firstName} ${isAssigned?.lastName}`,
     };
-    console.log("details", details);
+
     await sendEmailForMaintenanceRequestToPropertyOwner(details as IDetailsForMaintenanceNotification);
   }
 

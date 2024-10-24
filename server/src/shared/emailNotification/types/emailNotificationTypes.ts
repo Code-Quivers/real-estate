@@ -82,3 +82,19 @@ export type IResetPassword = {
   token: string;
   link: string;
 };
+export type ITenantDetailsAssigned = {
+  monthlyRent?: number;
+  address?: string;
+  title?: string;
+  tenantAssignedAt: Date | null | undefined;
+  fullName: string;
+  user: {
+    email: string;
+  };
+};
+export type IServiceProviderDetailsAssigned = {
+  address?: string;
+  title?: string;
+  fullName: string;
+  email: string;
+};

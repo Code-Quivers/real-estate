@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Server as SocketIoServer } from "socket.io";
+import { errorLogger } from "./shared/logger";
 
 export function setupSocket(server: any) {
   const io = new SocketIoServer(server, {
-    path:'/chatapp/socket.io',
+    path: "/chatapp/socket.io",
     cors: {
       origin: ["http://localhost:3000", "http://77.237.234.238:3000"],
       methods: ["GET", "POST"],
@@ -35,7 +36,7 @@ export function setupSocket(server: any) {
     socket.on("new message", (newMessageReceived) => {
       const participants = newMessageReceived?.data?.conversation?.perticipants;
 
-      if (!participants?.length) return console.log("Chat.users not defined");
+      if (!participants?.length) return errorLogger.error("Chat.users not defined");
       else {
         participants?.forEach((user: any) => {
           if (user?.userId === newMessageReceived?.data?.senderId) return;

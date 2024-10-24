@@ -31,7 +31,7 @@ const PropertyPaymentDone = ({ params }) => {
             <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">Payment Done!</h3>
             <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
             <p> Have a great day! </p>
-            {}
+
             <div className="py-10 text-center">
               {!isLoading && isSuccess && (
                 <Link href="/property-owner/unit-information" className="px-12 bg-primary hover:bg-indigo-700 text-white font-semibold py-3">

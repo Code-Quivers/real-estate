@@ -243,7 +243,6 @@ const getFinancialAccountInfo = async (ownerId: string) => {
     });
     return finAcctData;
   } catch (err) {
-    console.log(err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get data!");
   }
 };
@@ -329,7 +328,6 @@ const getDashboardInfo = async (ownerId: string) => {
       monthlyTotalCost: costOfCurrentMonth + currentMonthExtraCost,
     };
   } catch (err) {
-    console.log(err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get dashboard info");
   }
 };
@@ -546,7 +544,7 @@ const deletePropertyOwnerData = async (propertyOwnerId: string): Promise<any | n
           ownerId: propertyOwnerId,
         },
       });
-      console.log("count deleting", removingAllProperties);
+
       if (!removingAllProperties?.count) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Properties removing Failed");
       }

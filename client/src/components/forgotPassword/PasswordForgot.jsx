@@ -21,7 +21,6 @@ const PasswordForgot = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  // console.log(errors);
 
   const handleForgotPassword = async (data) => {
     removeUserInfo(getAuthKey());

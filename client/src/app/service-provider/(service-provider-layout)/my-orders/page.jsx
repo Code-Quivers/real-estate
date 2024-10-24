@@ -10,7 +10,7 @@ import SendMessagePopOverFromServiceProvider from "@/components/service-provider
 import OrderInfoDrawer from "@/components/service-provider/my-orders/OrderInfoDrawer";
 
 const MyAcceptedAllOrders = () => {
-  const { data: myAllOrders, isLoading, isFetching, isError, error } = useGetMyAllAcceptedOrdersQuery({});
+  const { data: myAllOrders, isLoading, isError, error } = useGetMyAllAcceptedOrdersQuery({});
   const [editData, setEditData] = useState(null);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const handleClose = () => setIsOpenEdit(false);
@@ -46,6 +46,7 @@ const MyAcceptedAllOrders = () => {
                   onClick={() => {
                     setOpen(true);
                     setRequestToDrawer(request);
+                    setEditData(request);
                   }}
                 >
                   <RequestCardSwiper requestImages={request?.images} />

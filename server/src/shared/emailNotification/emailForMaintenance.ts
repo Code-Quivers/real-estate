@@ -83,7 +83,7 @@ export const sendEmailForMaintenanceRequestToPropertyOwner = async (details: IDe
                 <p>Please review the request and confirm it for service providers as soon as possible.</p>
               </div>
               <div class="email-footer">
-                © 2024 *****. All rights reserved.
+                © 2024 * All rights reserved.
               </div>
             </div>
           </body>
@@ -92,7 +92,6 @@ export const sendEmailForMaintenanceRequestToPropertyOwner = async (details: IDe
     await mailerSend.email.send(emailParams);
     infoLogger.info(`Email notification sent to ${details?.user?.email}`);
   } catch (error) {
-    console.log(error);
     errorLogger.error(`Failed to send email: ${details?.user?.email}`, error);
   }
 };
@@ -232,7 +231,7 @@ export const sendEmailForMaintenanceRequestToServiceProvider = async (details: I
 
     
     <div class="email-footer">
-      © 2024 *****. All rights reserved.
+      © 2024 * All rights reserved.
     </div>
   </div>
 
@@ -244,7 +243,6 @@ export const sendEmailForMaintenanceRequestToServiceProvider = async (details: I
 
     infoLogger.info(`Email notification sent to  ${details?.companyEmailAddress || details?.user?.email}`);
   } catch (error) {
-    console.log(error);
     errorLogger.error(`Failed to send email : ${details?.companyEmailAddress || details?.user?.email}`, error);
   }
 };
@@ -352,7 +350,7 @@ export const sendEmailForMaintenanceRequestForAcceptToTenant = async (
             </div>
 
             <div class="email-footer">
-              © 2024 *****. All rights reserved.
+              © 2024 * All rights reserved.
             </div>
           </div>
         </body>
@@ -497,7 +495,7 @@ export const sendEmailToTenantAfterStatusChanged = async (
 
     <!-- Email Footer -->
     <div class="email-footer">
-      © 2024 ****. All rights reserved.
+      © 2024  All rights reserved.
     </div>
   </div>
 

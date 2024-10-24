@@ -23,15 +23,7 @@ const PropertiesEditModal = ({
     },
   });
 
-  // ! handle submit
-  const handleDashboardLogin = async (values: any) => {
-    console.log("values", values);
-    const loginData = {
-      email: values?.email,
-      password: values?.password,
-    };
-  };
-
+ 
   return (
     <>
       <Stack>

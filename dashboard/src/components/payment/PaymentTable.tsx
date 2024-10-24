@@ -36,7 +36,7 @@ const PaymentTable = ({}: any) => {
     deleteFinancialAccount,
     { isLoading: isLoadingDelete, isError: isDeleteError, error: deleteError },
   ] = useDeleteFinancialAccountMutation();
-  console.log(isLoadingDelete, "isLoadingDelete");
+  
   const query: any = {};
 
   // Store pagination state in your own state
@@ -52,12 +52,10 @@ const PaymentTable = ({}: any) => {
     isLoading,
     isFetching,
   } = useGetPaymentReportsQuery({ ...query });
-
-  //   console.log(data, "data");
+ 
   // @ts-ignore
   const { data } = paymentReports || {};
-  // console.log(data, "data");
-
+ 
   //should be memoized or stable
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -188,7 +186,7 @@ const PaymentTable = ({}: any) => {
         withBorder: true,
       });
       const response = await deleteFinancialAccount(accountId);
-      console.log(response, "response");
+   
       if ((response?.data as { success?: boolean })?.success) {
         notifications.update({
           id,

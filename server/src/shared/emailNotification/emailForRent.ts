@@ -131,7 +131,7 @@ export const sendEmailToOwnerAfterRentReceived = async (details: IOwnerDetailsFo
     </div>
 
     <div class="email-footer">
-      © 2024 ****. All rights reserved.
+      © 2024  All rights reserved.
     </div>
   </div>
 

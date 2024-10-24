@@ -9,9 +9,7 @@ import SavedTenantModalDetails from "@/components/property-owner/saved-tenants/S
 const PropertyOwnerSavedTenants = () => {
   const query = {};
 
-  const [itemType, setItemType] = useState("TENANT");
-
-  query["itemType"] = itemType;
+  query["itemType"] = "TENANT";
 
   const { data, isLoading } = useGetAllSavedItemsQuery({ ...query });
   const [serviceModalActive, setServiceModalActive] = useState(false);

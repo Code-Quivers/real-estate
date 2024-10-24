@@ -62,7 +62,7 @@ const PropertyOwnerTable = () => {
     });
     try {
       const response = await deletePropertyOwnerData({ propertyOwnerId });
-      console.log(response, "response");
+  
       if ((response?.data as { success?: boolean })?.success) {
         notifications.update({
           id,

@@ -66,10 +66,8 @@ const UpdatePropertyOwner = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getFinancialAccount = catchAsync(async (req: Request, res: Response) => {
-  // console.log("Financial info getting api hit.....");
   const ownerId = (req.user as IRequestUser).profileId;
   const finOrgAccountId = await StripeAccountManager.isAccountNeedToUpdate(ownerId);
-  // console.log(finOrgAccountId);
 
   let result = null;
   if (finOrgAccountId) {
