@@ -138,8 +138,6 @@ export const sendResetPasswordLink = async (details: IResetPassword) => {
     await mailerSend.email.send(emailParams);
     infoLogger.info(`Email notification sent to  ${details?.email}`);
   } catch (error) {
-    console.log("error", error);
-    //@ts-ignore
-    errorLogger.error(`Failed to send login email to  : ${details?.email}`, error);
+    errorLogger.error(`Failed to send Reset Password email to  : ${details?.email}`, error);
   }
 };

@@ -18,8 +18,6 @@ const RemoveTenantModal = ({ tenantRemoveData, isOpenTenantRemove, handleCloseRe
   const [removeTenantFromProperty, { data, isLoading, isSuccess, isError, error, reset: resetReq }] = useRemoveTenantFromPropertyMutation();
 
   const handleRemoveTenant = async (reasonData) => {
-    // console.log("nw data", newData);
-
     const removeData = {
       propertyId: tenantRemoveData?.propertyId,
       tenantId: tenantRemoveData?.Tenant?.tenantId,

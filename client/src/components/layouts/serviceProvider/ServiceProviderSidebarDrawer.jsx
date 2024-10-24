@@ -32,8 +32,6 @@ const ServiceProviderSidebarDrawer = () => {
 
   const { data: myProfileData } = dataResponse || {};
 
-  // console.log(data);
-
   // Clear all caches
   const dispatch = useDispatch();
 

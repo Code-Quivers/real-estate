@@ -18,9 +18,9 @@ import { baseApi } from "@/redux/api/baseApi";
 const SidebarMenu = ({ toggleMobile }: any) => {
   const router = useRouter();
   const path = usePathname();
-  // console.log(path, "path");
+  //  
   const userInfo: any = getUserInfo();
-  console.log(userInfo);
+ 
   // Clear all caches
   const dispatch = useDispatch();
 

@@ -120,7 +120,7 @@ const createOrUpdateService = async (profileId: string, payload: IServiceUpdateR
       });
 
       const profileScore = calculateServiceProviderProfileScore(provider as any);
-      // console.log(profileScore);
+
       await transactionClient.serviceProvider.update({
         where: {
           serviceProviderId: profileId,

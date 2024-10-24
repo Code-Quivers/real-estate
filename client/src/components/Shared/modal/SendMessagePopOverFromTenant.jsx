@@ -4,7 +4,6 @@ import { useStartNewConversationMutation } from "@/redux/features/conversations/
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BiSolidMessageRounded } from "react-icons/bi";
-import { FaRegMessage } from "react-icons/fa6";
 import { Button, Input, Notification, Popover, Whisper, useToaster } from "rsuite";
 
 const SendMessagePopOverFromTenant = ({ receiverId }) => {

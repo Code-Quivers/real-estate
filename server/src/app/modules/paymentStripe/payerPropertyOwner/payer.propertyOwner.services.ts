@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import httpStatus from "http-status";
 import ApiError from "../../../../errors/ApiError";
 import config from "../../../../config";
+import { errorLogger } from "../../../../shared/logger";
 
 /**
  * Creates a PayPal order for processing payment.
@@ -38,7 +39,7 @@ class PropertyOwnerPaymentProcessor {
         httpStatusCode: 201,
       };
     } catch (err) {
-      console.log(err);
+      errorLogger.error("Failed to get client secret from stripe", err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get client secret from Stripe!!!");
     }
   };

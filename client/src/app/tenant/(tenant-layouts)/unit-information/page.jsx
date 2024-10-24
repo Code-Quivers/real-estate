@@ -135,11 +135,8 @@ const TenantUnitInformation = () => {
                     <strong>Payment Status:</strong> {unitRes?.lastOrderInfo?.PaymentInformation?.paymentStatus}
                   </p>
                   <p>
-                    <strong>Amount to Pay:</strong> ${unitRes?.lastOrderInfo?.PaymentInformation?.amountToPay}{" "}
+                    <strong>Amount Paid:</strong> ${unitRes?.lastOrderInfo?.PaymentInformation?.amountToPay}{" "}
                     {unitRes?.lastOrderInfo?.PaymentInformation?.currency.toUpperCase()}
-                  </p>
-                  <p>
-                    <strong>Payment Platform:</strong> {unitRes?.lastOrderInfo?.PaymentInformation?.platform}
                   </p>
                 </div>
               )}

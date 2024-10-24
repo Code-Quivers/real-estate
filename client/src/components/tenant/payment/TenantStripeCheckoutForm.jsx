@@ -9,6 +9,7 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
   const elements = useElements();
 
   const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -31,10 +32,12 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
           setMessage("Your payment is processing.");
           break;
         case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
+          setMessage("");
+          setErrorMessage("Your payment was not successful, please try again.");
           break;
         default:
-          setMessage("Something went wrong.");
+          setMessage("");
+          setErrorMessage("Something went wrong.");
           break;
       }
     });
@@ -50,7 +53,8 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
     }
 
     setIsLoading(true);
-
+    setErrorMessage("");
+    setMessage("");
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -65,9 +69,9 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
+      setErrorMessage(error.message);
     } else {
-      setMessage("An unexpected error occurred.");
+      setErrorMessage(error?.message || "An unexpected error occurred.");
     }
 
     setIsLoading(false);
@@ -80,18 +84,34 @@ const TenantStripeCheckoutForm = ({ orderInfo }) => {
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      {isLoading ? (
-        <button
-          disabled={isLoading}
-          className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full disabled:cursor-not-allowed disabled:opacity-35"
-        >
-          <Loader size="sm" />
-        </button>
-      ) : (
-        <button className="py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] hover:bg-black text-white w-full" id="submit">
-          Pay now
-        </button>
-      )}
+      <div>
+        {message && (
+          <div className="my-2 bg-green-100 p-2 rounded-sm">
+            <p className="font-mono text-green-600 ">aada{message}</p>
+          </div>
+        )}
+        {errorMessage && (
+          <div className="mt-2 bg-red-200 p-2 rounded-sm">
+            <p className="text-red-600 font-semibold font-mono">{errorMessage}</p>
+          </div>
+        )}
+      </div>
+      <button
+        disabled={isLoading}
+        className={`py-2.5 mt-5 rounded-md font-bold text-lg bg-[#0f193d] text-white w-full flex justify-center items-center
+    ${isLoading ? "cursor-not-allowed opacity-50" : "hover:bg-black"}`}
+        id="submit"
+      >
+        {isLoading ? (
+          <>
+            <Loader size="sm" className="mr-2 animate-spin" />
+            Processing...
+          </>
+        ) : (
+          "Pay Now"
+        )}
+      </button>
+
       {/* <button className="border p-3" disabled={isLoading || !stripe || !elements} id="submit">
         Pay now
       </button> */}

@@ -45,11 +45,11 @@ const PropertiesTable = () => {
     useDeletePropertyMutation();
   // @ts-ignore
   const { data } = propertiesData || {};
-  // console.log(data, "data");
+   
   const [validationErrors, setValidationErrors] = useState<{
     address?: string;
   }>({});
-  // console.log(data, "data");
+  
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -300,7 +300,7 @@ const PropertiesTable = () => {
   };
   // delete properties model
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    // console.log(row, "row");
+  
     const propertyId = row?.original?.propertyId;
     modals.openConfirmModal({
       title: "Delete property",

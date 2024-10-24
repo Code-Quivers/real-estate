@@ -442,53 +442,62 @@ const checkAndUpdateBulkOrderStatus = async () => {
   const updatedOrders = await checkBulkPaymentStatus(pendingOrders);
 
   const updatePromises = updatedOrders?.reduce<Prisma.PrismaPromise<any>[]>((acc, single) => {
-    if (
-      single?.paymentStatus === "succeeded" ||
-      single?.paymentStatus === "processing" ||
-      single?.paymentStatus === "failed"
-    ) {
-      acc.push(
-        prisma.order.update({
-          where: { orderId: single.orderId },
-          data: {
-            orderStatus:
-              single?.paymentStatus === "succeeded"
-                ? "CONFIRMED"
-                : single?.paymentStatus === "processing"
-                  ? "PROCESSING"
-                  : "FAILED",
-            PaymentInformation: {
-              update: {
-                paymentStatus: single.paymentStatus,
-                amountPaid: single?.amount_received,
+    if (single?.tenant) {
+      if (single?.paymentStatus !== "processing") {
+        acc.push(
+          prisma.order.update({
+            where: { orderId: single.orderId },
+            data: {
+              orderStatus: single?.paymentStatus === "succeeded" ? "CONFIRMED" : "FAILED",
+              PaymentInformation: {
+                update: {
+                  paymentStatus: single.paymentStatus,
+                  amountPaid: single?.amount_received,
+                },
               },
             },
-            properties: {
-              updateMany: {
-                where: {
-                  propertyId: {
-                    in: single?.properties?.map((property: any) => property?.propertyId),
+          }),
+        );
+      }
+    } else {
+      if (single?.paymentStatus !== "processing") {
+        acc.push(
+          prisma.order.update({
+            where: { orderId: single.orderId },
+            data: {
+              orderStatus: single?.paymentStatus === "succeeded" ? "CONFIRMED" : "FAILED",
+              PaymentInformation: {
+                update: {
+                  paymentStatus: single.paymentStatus,
+                  amountPaid: single?.amount_received,
+                },
+              },
+              properties: {
+                updateMany: {
+                  where: {
+                    propertyId: {
+                      in: single?.properties?.map((property: any) => property?.propertyId),
+                    },
+                  },
+                  data: {
+                    // Only update paidTo if paymentStatus is "succeeded" or "processing"
+                    paidTo:
+                      single?.paymentStatus === "succeeded" || single?.paymentStatus === "processing"
+                        ? { set: single?.properties?.map((property: any) => property?.pendingPaidTo)[0] }
+                        : undefined, // Keep the old value if status is "failed"
+                    // Handle pendingPaidTo based on paymentStatus
+                    pendingPaidTo:
+                      single?.paymentStatus === "succeeded" || single?.paymentStatus === "failed"
+                        ? null // Clear pendingPaidTo when payment succeeds or fails
+                        : undefined, // Don't change pendingPaidTo if status is "processing"
                   },
                 },
-                data: {
-                  // Only update paidTo if paymentStatus is "succeeded" or "processing"
-                  paidTo:
-                    single?.paymentStatus === "succeeded" || single?.paymentStatus === "processing"
-                      ? { set: single?.properties?.map((property: any) => property?.pendingPaidTo)[0] }
-                      : undefined, // Keep the old value if status is "failed"
-                  // Handle pendingPaidTo based on paymentStatus
-                  pendingPaidTo:
-                    single?.paymentStatus === "succeeded" || single?.paymentStatus === "failed"
-                      ? null // Clear pendingPaidTo when payment succeeds or fails
-                      : undefined, // Don't change pendingPaidTo if status is "processing"
-                },
               },
             },
-          },
-        }),
-      );
+          }),
+        );
+      }
     }
-
     return acc; // Return the accumulated array
   }, []);
 
@@ -501,8 +510,11 @@ const checkAndUpdateBulkOrderStatus = async () => {
   await Promise.all(
     updatedOrders?.map(async (single) => {
       if (
-        (single?.tenant?.tenantId && single?.tenant?.user?.email && single?.paymentStatus === "succeeded") ||
-        single?.paymentStatus === "failed"
+        (single?.paymentStatus !== "processing" &&
+          single?.tenant?.tenantId &&
+          single?.tenant?.user?.email &&
+          single?.paymentStatus === "succeeded") ||
+        single?.paymentStatus !== "succeeded"
       ) {
         // Send email to tenant
         const tenantDetails = {
@@ -514,11 +526,11 @@ const checkAndUpdateBulkOrderStatus = async () => {
         // for success
         if (single?.paymentStatus === "succeeded") {
           await sendEmailToTenantAfterPaymentApproved(tenantDetails);
-        }
-        // for failure
-        if (single?.paymentStatus === "failed") {
+        } else {
+          // for failure
           await sendEmailToTenantAfterPaymentFailed(tenantDetails);
         }
+        // for failure
       }
     }) || [],
   );

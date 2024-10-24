@@ -63,7 +63,7 @@ const PropertyOwnerEditModal = ({
         data: formData,
         propertyOwnerId,
       });
-      // console.log(response, "response");
+    
       if (response?.data?.success) {
         // toggleOverlay();
         notifications.update({

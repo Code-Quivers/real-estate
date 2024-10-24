@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import prisma from "../../../../shared/prisma";
 import { OrderServices } from "../../orders/orders.service";
 import config from "../../../../config";
+import { errorLogger } from "../../../../shared/logger";
 
 const stripe = new Stripe(config.stripe_sk);
 
@@ -42,7 +43,7 @@ class TenantPaymentProcessor {
         httpStatusCode: 201,
       };
     } catch (err) {
-      console.log(err);
+      errorLogger.error("Failed to get client secret from stripe", err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get client secret from Stripe!!!");
     }
   };
@@ -77,7 +78,7 @@ class TenantPaymentProcessor {
     const connectedAccountId: string = propertyInfo?.owner?.FinancialAccount?.finOrgAccountId || "";
 
     if (!amount || !connectedAccountId) {
-      console.log("NO Stripe account found for the property owner", amount, connectedAccountId);
+      errorLogger.error(`NO Stripe account found for the property owner, ${amount}, ${connectedAccountId}`);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to extract related information!");
     }
     const { jsonResponse, httpStatusCode } = await this.createPaymentIntent(

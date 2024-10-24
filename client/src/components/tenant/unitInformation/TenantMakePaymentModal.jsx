@@ -3,13 +3,20 @@
 import { IoClose } from "react-icons/io5";
 import { Modal, useMediaQuery } from "rsuite";
 import TenantStripeCheckout from "../payment/TenantStripePayment";
-import { useState } from "react";
+
+// ACH payments on Stripe cost 0.80%, capped at $5.00, with no monthly fees or verification fees.
 
 const TenantMakePaymentModal = ({ isOpen, handleClose, propertyInfo, tenantId, dueRent, dueMonths }) => {
   const [isMobile] = useMediaQuery("(max-width: 575px)");
-  const grossAmount = (dueRent + 0.3) / (1 - 0.029);
-  const netAmount = grossAmount - (grossAmount * 0.029 - 0.3);
-
+  // let grossAmount = (dueRent + 0.3) / (1 - 0.029);
+  let grossAmount = 0;
+  const expectedCharge = dueRent * 0.008;
+  if (expectedCharge >= 5) {
+    grossAmount = dueRent + 5;
+  } else {
+    grossAmount = dueRent / (1 - 0.008);
+  }
+  // const netAmount = grossAmount - (grossAmount * 0.029 - 0.3);
   return (
     <div>
       <Modal

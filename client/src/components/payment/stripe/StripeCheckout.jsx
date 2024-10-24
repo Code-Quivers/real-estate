@@ -10,7 +10,6 @@ const stripePromise = loadStripe(getStripePKLive());
 const StripeCheckout = ({ ownerOrderedId, amountToPaid, orderData, ...others }) => {
   const [getClientSecret, { data, isError, isLoading }] = useGetClientSecretMutation();
   const [clientSecret, setClientSecret] = useState("");
-  console.log("srvsrvsrv", orderData, others);
 
   const fetchClientSecret = async () => {
     const resp = await getClientSecret({ ownerOrderedId, amountToPaid, orderData, ...others });

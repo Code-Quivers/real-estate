@@ -125,7 +125,7 @@ export const sendEmailToMessageReceiver = async (details: IReceiverForNotificati
 
     <!-- Footer -->
     <div class="email-footer">
-      © 2024 ****. All rights reserved.
+      © 2024 All rights reserved.
     </div>
   </div>
 
@@ -136,8 +136,6 @@ export const sendEmailToMessageReceiver = async (details: IReceiverForNotificati
     await mailerSend.email.send(emailParams);
     infoLogger.info(`Email notification sent to ${details.email} for conversation message received.`);
   } catch (error) {
-    //@ts-ignore
-    console.log(error);
     errorLogger.error(`Failed to send email to  :  ${details.email}`, error);
   }
 };

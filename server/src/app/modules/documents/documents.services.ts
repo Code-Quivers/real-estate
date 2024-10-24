@@ -3,6 +3,7 @@
 import httpStatus from "http-status";
 import prisma from "../../../shared/prisma";
 import ApiError from "../../../errors/ApiError";
+import { errorLogger } from "../../../shared/logger";
 
 // get my all templates
 const getTemplates = async (ownerId: string) => {
@@ -16,7 +17,7 @@ const getTemplates = async (ownerId: string) => {
 
     return property?.templates;
   } catch (err) {
-    console.log("Error in getTemplates service: ", err);
+    errorLogger.error("Error in getTemplates service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get templates!");
   }
 };
@@ -37,7 +38,7 @@ const getTemplate = async (ownerId: string, templateId: number) => {
       return [];
     }
   } catch (err) {
-    console.log("Error in getTemplate service: ", err);
+    errorLogger.error("Error in getTemplate service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get the template!");
   }
 };
@@ -71,7 +72,7 @@ const addTemplate = async (ownerId: string, title: string, filePath: string) => 
     // Return the result of the transaction
     return result;
   } catch (err) {
-    console.log("Error in add template service: ", err);
+    errorLogger.error("Error in add template service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to add template!");
   }
 };
@@ -111,7 +112,7 @@ const removeTemplate = async (ownerId: string, filePath: string) => {
     // Return the result of the transaction
     return result;
   } catch (err) {
-    console.log("Error in remove template service: ", err);
+    errorLogger.error("Error in remove template service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to remove template!");
   }
 };
@@ -136,7 +137,7 @@ const sendDocument = async (ownerId: string, title: string, tenantId: string, pr
     // Return the result of the transaction
     return result;
   } catch (err) {
-    console.log("Error in send document service: ", err);
+    errorLogger.error("Error in send document service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to send document!");
   }
 };
@@ -160,7 +161,7 @@ const updateDocumentWithTenantSigned = async (documentId: string, filePath: stri
     // Return the result of the transaction
     return result;
   } catch (err) {
-    console.log("Error in updateDocumentWithTenantSigned service: ", err);
+    errorLogger.error("Error in updateDocumentWithTenantSigned service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update document!");
   }
 };
@@ -182,7 +183,7 @@ const getDocuments = async (profileId: string, userRole: string) => {
 
     return documents;
   } catch (err) {
-    console.log("Error in getDocuments service: ", err);
+    errorLogger.error("Error in getDocuments service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, `Failed to get documents for ${userRole}!`);
   }
 };
@@ -194,7 +195,7 @@ const getDocument = async (documentId: string) => {
     });
     return document;
   } catch (err) {
-    console.log("Error in getDocument service: ", err);
+    errorLogger.error("Error in getDocument service: ", err);
     throw new ApiError(httpStatus.BAD_REQUEST, "Failed to get the document!");
   }
 };

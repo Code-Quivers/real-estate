@@ -6,7 +6,7 @@ import ApiError from "../../../../errors/ApiError";
 import prisma from "../../../../shared/prisma";
 import { calculatePropertyOwnerProfileScore } from "../../propertyOwner/propertyOwner.utils";
 import config from "../../../../config";
-import { infoLogger } from "../../../../shared/logger";
+import { errorLogger, infoLogger } from "../../../../shared/logger";
 
 const stripe = new Stripe(config.stripe_sk);
 
@@ -63,7 +63,7 @@ class StripeAccountManager {
       const resp = await this.createAccountLink(newAccount.id);
       return resp;
     } catch (err) {
-      console.log(err);
+      errorLogger.error("Failed to create financial account", err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create Financial Account!");
     }
   };
@@ -79,7 +79,6 @@ class StripeAccountManager {
       },
     });
 
-    console.log(accountLink, "linked account information-----------------");
     if (!accountLink) {
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to create linked for the account!");
     }
@@ -109,7 +108,6 @@ class StripeAccountManager {
     });
 
     if (!updatedFinAcctData) {
-      console.log("Failed to update the Financial Account Data!");
       throw new ApiError(httpStatus.BAD_REQUEST, "Failed to update!");
     }
 
@@ -151,8 +149,7 @@ class StripeAccountManager {
       if (finAcctData === null || finAcctData?.detailsSubmitted) return "";
       return finAcctData.finOrgAccountId;
     } catch (err) {
-      console.log(err);
-      console.log("Failed to fetch financial account information from db!");
+      errorLogger.error("Failed to fetch financial account information from db!", err);
       throw new ApiError(httpStatus.BAD_REQUEST, "Something went wrong!");
     }
   };

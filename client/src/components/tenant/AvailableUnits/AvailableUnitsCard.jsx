@@ -1,6 +1,5 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
-import profileLogo from "@/assets/propertyOwner/profilePic.png";
 import { Input, InputGroup, SelectPicker } from "rsuite";
 import { availableUnits } from "./AvailableUnitsCardFakeData";
 import AvailableUnitsModal from "./AvailableUnitsModal";

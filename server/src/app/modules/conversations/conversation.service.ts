@@ -125,6 +125,7 @@ const sendMessage = async (userId: string, conversationId: string, req: Request)
             perticipants: {
               select: {
                 userId: true,
+                email: true,
               },
             },
           },
@@ -141,6 +142,13 @@ const sendMessage = async (userId: string, conversationId: string, req: Request)
       where: { conversationId },
       data: { lastMessage: messageData?.text },
     });
+
+    const srv = newMessage.conversation?.perticipants?.find((single) => single?.userId !== userId);
+
+    // ! send email notification to message receiver
+    if (srv) {
+      await sendEmailToMessageReceiver(srv);
+    }
 
     return newMessage;
   });
